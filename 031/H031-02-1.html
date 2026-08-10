@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10000以內的加法與估算 - 閒雲數學小棧</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Noto Sans TC & Fredoka -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * {
+            font-family: 'Noto Sans TC', 'Fredoka', sans-serif;
+        }
+
+        /* 新海誠天空風格漸層與背景 */
+        body {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 25%, #415a77 50%, #778da9 75%, #e0e1dd 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        .shinkai-sky {
+            background: linear-gradient(180deg, 
+                #1a2a6c 0%, 
+                #b21f1f 45%, 
+                #fdbb2d 80%, 
+                #f0f4f8 100%);
+            background-size: 100% 300%;
+            animation: skyShift 25s ease infinite alternate;
+        }
+
+        @keyframes skyShift {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 0% 50%; }
+            100% { background-position: 0% 100%; }
+        }
+
+        /* 雲朵與光暈流動效果 */
+        .cloud-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 800'%3E%3Cpath fill='%23ffffff' fill-opacity='0.15' d='M250 300 Q280 250 330 260 Q380 220 440 250 Q490 230 520 280 Q570 300 550 350 Q520 400 450 390 Q380 410 320 380 Q260 400 230 350 Q220 310 250 300 Z'/%3E%3C/svg%3E") repeat-x;
+            animation: cloudMove 40s linear infinite;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        @keyframes cloudMove {
+            from { background-position: 0 0; }
+            to { background-position: 800px 0; }
+        }
+
+        /* 玻璃擬態 (Glassmorphism) 塗層 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        .glass-nav {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* 自訂按鈕與亮色細節 */
+        .btn-shinkai {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-shinkai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+            background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+        }
+
+        .btn-sunset {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-sunset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
+        }
+
+        /* 數線條樣式 */
+        .bar-gradient-1 {
+            background: linear-gradient(90deg, #38bdf8 0%, #818cf8 100%);
+        }
+        .bar-gradient-2 {
+            background: linear-gradient(90deg, #34d399 0%, #10b981 100%);
+        }
+
+        /* 數字動畫 */
+        .number-glow {
+            text-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+        }
+
+        /* 頁籤隱藏/顯示 */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 直式位值樣式 */
+        .digit-col {
+            width: 52px;
+            text-align: center;
+        }
+
+        .carry-indicator {
+            font-size: 0.85rem;
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen pb-12 overflow-x-hidden">
+    <!-- 背景流雲層 -->
+    <div class="cloud-bg"></div>
+
+    <!-- 頂部導覽列 -->
+    <header class="glass-nav sticky top-0 z-50 px-4 py-3 text-white shadow-lg">
+        <div class="max-w-6xl mx-auto flex flex-col gap-2">
+            
+            <!-- 修改：使用轉換後的 Google Drive 直接連結 -->
+            <div class="w-full max-w-4xl flex items-center justify-start mb-2 px-2 fade-in">
+                <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+                <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center gap-3">
+                <h1 class="text-xl md:text-2xl font-black tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-sky-200 via-amber-200 to-white">
+                    10000以內的加法與估算
+                </h1>
+
+                <!-- 分頁切換按鈕 -->
+                <nav class="flex flex-wrap gap-2 justify-center">
+                    <button onclick="switchTab('est')" id="nav-est" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-sky-500 text-white shadow-md">
+                        <i class="fa-solid fa-chart-line mr-1"></i> 1. 數線估算感
+                    </button>
+                    <button onclick="switchTab('vertical')" id="nav-vertical" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-white/10 hover:bg-white/20 text-sky-100">
+                        <i class="fa-solid fa-cubes mr-1"></i> 2. 直式進位與積木
+                    </button>
+                    <button onclick="switchTab('decompose')" id="nav-decompose" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-white/10 hover:bg-white/20 text-sky-100">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> 3. 湊千拆數思考帽
+                    </button>
+                    <button onclick="switchTab('quiz')" id="nav-quiz" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-white/10 hover:bg-white/20 text-sky-100">
+                        <i class="fa-solid fa-pen-to-square mr-1"></i> 4. 歷程挑戰測驗
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主體內容區 -->
+    <main class="max-w-5xl mx-auto px-4 mt-6 relative z-10">
+
+        <!-- 模組一：數線估算感探究 -->
+        <section id="tab-est" class="tab-content active">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="flex items-center space-x-3 mb-6 border-b border-sky-200/50 pb-4">
+                    <span class="p-3 bg-sky-500/10 text-sky-600 rounded-2xl text-xl"><i class="fa-solid fa-compass"></i></span>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">情境一：數線估算與範圍臆測</h2>
+                        <p class="text-sm text-slate-600">拉動滑桿調整人數，觀察拉近到幾千（四捨五入/百位估算），體驗不計算也能掌握大約範圍！</p>
+                    </div>
+                </div>
+
+                <!-- 預設情境按鈕 -->
+                <div class="flex flex-wrap gap-2 mb-6">
+                    <span class="text-sm font-bold text-slate-700 self-center mr-2"><i class="fa-solid fa-bookmark text-amber-500"></i> 教材經典範例：</span>
+                    <button onclick="setEstPreset(1823, 3145)" class="px-3 py-1.5 rounded-lg bg-sky-100 text-sky-800 hover:bg-sky-200 text-sm font-semibold transition">
+                        動物園參觀 (1823 + 3145)
+                    </button>
+                    <button onclick="setEstPreset(916, 382)" class="px-3 py-1.5 rounded-lg bg-amber-100 text-amber-800 hover:bg-amber-200 text-sm font-semibold transition">
+                        圖書館參觀 (916 + 382)
+                    </button>
+                    <button onclick="setEstPreset(2725, 1275)" class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-800 hover:bg-emerald-200 text-sm font-semibold transition">
+                        海生館參觀 (2725 + 1275)
+                    </button>
+                </div>
+
+                <!-- 數值控制區 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-sky-50/80 p-5 rounded-2xl border border-sky-100 mb-6">
+                    <!-- 第一個數 slider -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between font-bold text-slate-700">
+                            <span>上週參觀人數 (A)：<span id="est-v1" class="text-sky-600 text-lg">1823</span> 人</span>
+                            <span class="text-xs bg-sky-200 text-sky-800 px-2 py-1 rounded">接近 <span id="est-approx1">2000</span></span>
+                        </div>
+                        <input type="range" id="est-slider1" min="100" max="4900" step="1" value="1823" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600" oninput="updateEstView()">
+                    </div>
+
+                    <!-- 第二個數 slider -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between font-bold text-slate-700">
+                            <span>本週參觀人數 (B)：<span id="est-v2" class="text-emerald-600 text-lg">3145</span> 人</span>
+                            <span class="text-xs bg-emerald-200 text-emerald-800 px-2 py-1 rounded">接近 <span id="est-approx2">3000</span></span>
+                        </div>
+                        <input type="range" id="est-slider2" min="100" max="4900" step="1" value="3145" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600" oninput="updateEstView()">
+                    </div>
+                </div>
+
+                <!-- 動態雙重數線估算圖解 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-inner space-y-6">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-ruler-horizontal text-sky-500"></i> 動態數線模擬圖解
+                    </h3>
+
+                    <!-- 數線 1 -->
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-slate-500 mb-1">
+                            <span>上週: <span id="lbl-val1">1823</span></span>
+                            <span id="lbl-think1">估計思考：1823 介於 1000 和 2000 之間，比較接近 2000</span>
+                        </div>
+                        <div class="relative w-full h-8 bg-slate-100 rounded-full overflow-hidden border border-slate-300 flex">
+                            <div id="bar-num1" class="h-full bar-gradient-1 transition-all duration-300 rounded-full flex items-center justify-end pr-3 text-xs font-bold text-white shadow" style="width: 36.46%;">
+                                1823
+                            </div>
+                        </div>
+                        <!-- 刻度標示 -->
+                        <div class="flex justify-between text-[11px] text-slate-400 mt-1 px-1 font-mono">
+                            <span>0</span><span>1000</span><span>2000</span><span>3000</span><span>4000</span><span>5000</span>
+                        </div>
+                    </div>
+
+                    <!-- 數線 2 -->
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-slate-500 mb-1">
+                            <span>本週: <span id="lbl-val2">3145</span></span>
+                            <span id="lbl-think2">估計思考：3145 介於 3000 和 4000 之間，比較接近 3000</span>
+                        </div>
+                        <div class="relative w-full h-8 bg-slate-100 rounded-full overflow-hidden border border-slate-300 flex">
+                            <div id="bar-num2" class="h-full bar-gradient-2 transition-all duration-300 rounded-full flex items-center justify-end pr-3 text-xs font-bold text-white shadow" style="width: 62.9%;">
+                                3145
+                            </div>
+                        </div>
+                        <!-- 刻度標示 -->
+                        <div class="flex justify-between text-[11px] text-slate-400 mt-1 px-1 font-mono">
+                            <span>0</span><span>1000</span><span>2000</span><span>3000</span><span>4000</span><span>5000</span>
+                        </div>
+                    </div>
+
+                    <!-- 估算 vs 精確計算 比對看板 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-100">
+                        <!-- 估算卡片 -->
+                        <div class="p-4 rounded-xl bg-amber-50/80 border border-amber-200">
+                            <div class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1"><i class="fa-solid fa-lightbulb"></i> 思考帽先想一想 (估算)</div>
+                            <div class="text-lg font-black text-amber-900">
+                                <span id="est-math-str">2000 + 3000</span> = <span id="est-sum-val" class="text-2xl text-amber-600">5000</span> 人
+                            </div>
+                            <p id="est-explanation" class="text-xs text-amber-700 mt-1">「小甲：1823接近2000，3145接近3000，合起來會接近5000。」</p>
+                        </div>
+
+                        <!-- 精確答案卡片 -->
+                        <div class="p-4 rounded-xl bg-sky-50/80 border border-sky-200">
+                            <div class="text-xs font-bold text-sky-700 uppercase tracking-wider mb-1"><i class="fa-solid fa-calculator"></i> 精確算算看 (準確值)</div>
+                            <div class="text-lg font-black text-sky-900">
+                                <span id="exact-math-str">1823 + 3145</span> = <span id="exact-sum-val" class="text-2xl text-sky-600">4968</span> 人
+                            </div>
+                            <p class="text-xs text-sky-700 mt-1">
+                                估算與準確值僅相差 <span id="diff-val" class="font-bold text-red-500">32</span>，估算的範圍非常精準！
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模組二：直式進位與積木魔法 -->
+        <section id="tab-vertical" class="tab-content">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="flex items-center space-x-3 mb-6 border-b border-sky-200/50 pb-4">
+                    <span class="p-3 bg-amber-500/10 text-amber-600 rounded-2xl text-xl"><i class="fa-solid fa-cubes"></i></span>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">情境二：直式計算與「千、百、十、個」進位積木</h2>
+                        <p class="text-sm text-slate-600">觀察個位滿10進到十位、百位滿10進到千位的動態歷程！</p>
+                    </div>
+                </div>
+
+                <!-- 輸入數字控制區 -->
+                <div class="flex flex-wrap items-center justify-between gap-4 bg-slate-100/80 p-4 rounded-2xl mb-6">
+                    <div class="flex items-center space-x-2">
+                        <label class="font-bold text-slate-700 text-sm">被加數 A:</label>
+                        <input type="number" id="v-num1" value="1032" min="1" max="8999" class="w-24 px-3 py-1.5 rounded-lg border border-slate-300 font-mono font-bold text-center text-sky-700 focus:ring-2 focus:ring-sky-400 outline-none">
+                        <span class="font-bold text-slate-500">+</span>
+                        <label class="font-bold text-slate-700 text-sm">加數 B:</label>
+                        <input type="number" id="v-num2" value="1993" min="1" max="8999" class="w-24 px-3 py-1.5 rounded-lg border border-slate-300 font-mono font-bold text-center text-emerald-700 focus:ring-2 focus:ring-sky-400 outline-none">
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="renderVerticalStepByStep()" class="btn-shinkai px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-play"></i> 重置並繪製積木
+                        </button>
+                        <button onclick="setPresetVertical(916, 382)" class="px-3 py-2 bg-white text-slate-700 rounded-xl text-xs font-bold border border-slate-200 hover:bg-slate-50">
+                            916+382
+                        </button>
+                        <button onclick="setPresetVertical(1032, 1993)" class="px-3 py-2 bg-white text-slate-700 rounded-xl text-xs font-bold border border-slate-200 hover:bg-slate-50">
+                            1032+1993
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 直式算式 + 位值積木展示區 -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <!-- 左側：位值直式紙筆看板 -->
+                    <div class="lg:col-span-5 bg-amber-50/90 rounded-2xl p-6 border-2 border-amber-200 shadow-md flex flex-col items-center">
+                        <div class="text-xs font-bold text-amber-800 bg-amber-200/80 px-3 py-1 rounded-full mb-4">
+                            千 百 十 個 位直式卡片
+                        </div>
+
+                        <!-- 直式算式主體 -->
+                        <div class="font-mono text-2xl font-black text-slate-800 tracking-wider">
+                            <!-- 位值標頭 -->
+                            <div class="flex border-b-2 border-amber-300 pb-1 text-sm text-slate-500 font-sans font-bold">
+                                <div class="digit-col">千</div>
+                                <div class="digit-col">百</div>
+                                <div class="digit-col">十</div>
+                                <div class="digit-col">個</div>
+                            </div>
+
+                            <!-- 進位標記列 -->
+                            <div class="flex my-1">
+                                <div id="carry-1000" class="digit-col carry-indicator"></div>
+                                <div id="carry-100" class="digit-col carry-indicator"></div>
+                                <div id="carry-10" class="digit-col carry-indicator"></div>
+                                <div class="digit-col"></div>
+                            </div>
+
+                            <!-- 第一個數字 -->
+                            <div class="flex py-1">
+                                <div id="d1-1000" class="digit-col">1</div>
+                                <div id="d1-100" class="digit-col text-sky-600">0</div>
+                                <div id="d1-10" class="digit-col text-sky-600">3</div>
+                                <div id="d1-1" class="digit-col text-sky-600">2</div>
+                            </div>
+
+                            <!-- 加號與第二個數字 -->
+                            <div class="flex py-1 border-b-4 border-slate-800 relative">
+                                <span class="absolute -left-6 text-xl font-bold text-amber-600">+</span>
+                                <div id="d2-1000" class="digit-col">1</div>
+                                <div id="d2-100" class="digit-col text-emerald-600">9</div>
+                                <div id="d2-10" class="digit-col text-emerald-600">9</div>
+                                <div id="d2-1" class="digit-col text-emerald-600">3</div>
+                            </div>
+
+                            <!-- 答案結果列 -->
+                            <div class="flex pt-2 text-3xl text-indigo-700">
+                                <div id="ans-1000" class="digit-col">3</div>
+                                <div id="ans-100" class="digit-col">0</div>
+                                <div id="ans-10" class="digit-col">2</div>
+                                <div id="ans-1" class="digit-col">5</div>
+                            </div>
+                        </div>
+
+                        <!-- 計算步驟解析文字 -->
+                        <div id="vertical-step-text" class="mt-6 w-full p-3 bg-white/80 rounded-xl border border-amber-200 text-xs font-semibold text-slate-700 leading-relaxed shadow-sm">
+                            <span class="text-amber-600 font-bold"><i class="fa-solid fa-comment-dots"></i> 步驟說明：</span>
+                            點擊「進位鍵」進行滿 10 進位，或點擊「復原鍵」回到原始狀態。
+                        </div>
+                    </div>
+
+                    <!-- 右側：位值錢幣/積木動態分組與操作按鈕 -->
+                    <div class="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-200 shadow-inner">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                    <i class="fa-solid fa-layer-group text-sky-500"></i> 位值積木動態呈現
+                                </h3>
+                                <div class="flex items-center gap-3 text-[11px] font-bold mt-1">
+                                    <span class="inline-flex items-center gap-1 text-blue-600"><span class="w-3 h-3 rounded bg-blue-100 border border-blue-500 inline-block"></span> 被加數 (藍框)</span>
+                                    <span class="inline-flex items-center gap-1 text-red-600"><span class="w-3 h-3 rounded bg-red-100 border border-red-500 inline-block"></span> 加數 (紅框)</span>
+                                    <span class="inline-flex items-center gap-1 text-emerald-600"><span class="w-3 h-3 rounded bg-emerald-100 border border-emerald-500 inline-block"></span> 進位後結果 (綠框)</span>
+                                </div>
+                            </div>
+
+                            <!-- 進位與復原操作按鈕 -->
+                            <div class="flex items-center gap-2">
+                                <button id="btn-do-carry" onclick="executeCarry()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center gap-1">
+                                    <i class="fa-solid fa-angles-right"></i> 進位鍵
+                                </button>
+                                <button id="btn-undo-carry" onclick="resetCarryState()" class="px-3 py-1.5 bg-slate-500 hover:bg-slate-600 text-white rounded-xl text-xs font-bold shadow transition flex items-center gap-1">
+                                    <i class="fa-solid fa-rotate-left"></i> 復原鍵
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 千百十個位圖像卡片 -->
+                        <div class="grid grid-cols-4 gap-2 text-center text-xs">
+                            <!-- 千位卡片 -->
+                            <div class="bg-indigo-50/60 border border-indigo-200 rounded-xl p-2 flex flex-col">
+                                <div class="font-black text-indigo-800 border-b border-indigo-200 pb-1 mb-2">千位 [1000]</div>
+                                <div id="block-1000-container" class="flex-1 flex flex-col gap-2 justify-start min-h-[160px]">
+                                    <!-- 積木區 -->
+                                </div>
+                            </div>
+
+                            <!-- 百位卡片 -->
+                            <div class="bg-sky-50/60 border border-sky-200 rounded-xl p-2 flex flex-col">
+                                <div class="font-black text-sky-800 border-b border-sky-200 pb-1 mb-2">百位 [100]</div>
+                                <div id="block-100-container" class="flex-1 flex flex-col gap-2 justify-start min-h-[160px]">
+                                    <!-- 積木區 -->
+                                </div>
+                            </div>
+
+                            <!-- 十位卡片 -->
+                            <div class="bg-amber-50/60 border border-amber-200 rounded-xl p-2 flex flex-col">
+                                <div class="font-black text-amber-800 border-b border-amber-200 pb-1 mb-2">十位 [10]</div>
+                                <div id="block-10-container" class="flex-1 flex flex-col gap-2 justify-start min-h-[160px]">
+                                    <!-- 積木區 -->
+                                </div>
+                            </div>
+
+                            <!-- 個位卡片 -->
+                            <div class="bg-rose-50/60 border border-rose-200 rounded-xl p-2 flex flex-col">
+                                <div class="font-black text-rose-800 border-b border-rose-200 pb-1 mb-2">個位 [1]</div>
+                                <div id="block-1-container" class="flex-1 flex flex-col gap-2 justify-start min-h-[160px]">
+                                    <!-- 積木區 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模組三：湊千拆數思考帽 -->
+        <section id="tab-decompose" class="tab-content">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="flex items-center space-x-3 mb-6 border-b border-sky-200/50 pb-4">
+                    <span class="p-3 bg-indigo-500/10 text-indigo-600 rounded-2xl text-xl"><i class="fa-solid fa-graduation-cap"></i></span>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">情境三：丹丹的思考帽 —— 湊千拆數速算策略</h2>
+                        <p class="text-sm text-slate-600">當遇到像 993 + 1209 時，把 1209 拆出 7 給 993 湊成 1000，計算會變得超簡單！</p>
+                    </div>
+                </div>
+
+                <!-- 互動拆數展示 -->
+                <div class="bg-gradient-to-r from-sky-900 to-indigo-900 text-white rounded-2xl p-6 shadow-xl mb-6">
+                    <div class="text-center font-bold text-amber-300 text-sm mb-2"><i class="fa-solid fa-hat-wizard"></i> 魔法拆數思考卡</div>
+
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-6 py-4 font-mono">
+                        <!-- 第一個數 -->
+                        <div class="text-center bg-white/10 p-4 rounded-2xl border border-white/20 min-w-[140px]">
+                            <div class="text-xs text-sky-200 font-sans mb-1">差 <span id="decomp-need-top">5</span> 滿 1000</div>
+                            <div id="decomp-val1" class="text-3xl font-black text-amber-300">995</div>
+                        </div>
+
+                        <div class="text-2xl text-amber-400 font-bold">+</div>
+
+                        <!-- 第二個數 被拆開 -->
+                        <div class="text-center bg-white/10 p-4 rounded-2xl border border-white/20 min-w-[200px]">
+                            <div id="decomp-val2-desc" class="text-xs text-emerald-200 font-sans mb-1">1450 拆成 (5 + 1445)</div>
+                            <div class="flex items-center justify-center space-x-3 mt-1">
+                                <span id="decomp-borrow" class="text-2xl font-bold text-amber-300 bg-amber-400/20 px-2 py-1 rounded">5</span>
+                                <span class="text-xl text-slate-300">+</span>
+                                <span id="decomp-remain" class="text-2xl font-bold text-emerald-300 bg-emerald-400/20 px-2 py-1 rounded">1445</span>
+                            </div>
+                        </div>
+
+                        <div class="text-2xl text-amber-400 font-bold">=</div>
+
+                        <!-- 組合結果 -->
+                        <div class="text-center bg-amber-500/20 p-4 rounded-2xl border border-amber-400/40 min-w-[160px]">
+                            <div id="decomp-combine-desc" class="text-xs text-amber-200 font-sans mb-1">1000 + 1445</div>
+                            <div id="decomp-total" class="text-3xl font-black text-amber-300">2445</div>
+                        </div>
+                    </div>
+
+                    <!-- 互動調整滑桿：自由試試看 -->
+                    <div class="mt-6 pt-4 border-t border-white/10 max-w-xl mx-auto space-y-3 font-sans">
+                        <div class="flex justify-between text-sm">
+                            <span>動態自訂題目：接近整千的數 (A)</span>
+                            <span class="text-amber-300 font-bold" id="user-near-1000">995</span>
+                        </div>
+                        <input type="range" id="near-thousand-slider" min="980" max="999" value="995" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-400" oninput="updateDecompCustom()">
+
+                        <div class="flex justify-between text-sm">
+                            <span>被拆解的第二個數 (B)</span>
+                            <span class="text-emerald-300 font-bold" id="user-second-num">1450</span>
+                        </div>
+                        <input type="range" id="second-num-slider" min="1005" max="3500" value="1450" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-400" oninput="updateDecompCustom()">
+                    </div>
+                </div>
+
+                <!-- 拆數解說面板 -->
+                <div id="decomp-step-box" class="bg-white p-5 rounded-2xl border border-slate-200 text-slate-700 text-sm leading-relaxed">
+                    <!-- 動態由 JS 填入說明 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 模組四：歷程性評量測驗 (5 題) -->
+        <section id="tab-quiz" class="tab-content">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="flex items-center justify-between border-b border-sky-200/50 pb-4 mb-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="p-3 bg-emerald-500/10 text-emerald-600 rounded-2xl text-xl"><i class="fa-solid fa-clipboard-question"></i></span>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">天空冒險小試身手（歷程評量 5 題）</h2>
+                            <p class="text-sm text-slate-600">完成後點擊提交，獲得星空徽章與即時解說！</p>
+                        </div>
+                    </div>
+                    <!-- 得分顯示 -->
+                    <div class="bg-amber-100 text-amber-900 font-black px-4 py-2 rounded-2xl border border-amber-200 text-sm">
+                        得分：<span id="quiz-score" class="text-xl text-amber-600">0</span> / 100
+                    </div>
+                </div>
+
+                <!-- 5 題問題清單 -->
+                <form id="quiz-form" onsubmit="event.preventDefault(); evaluateQuiz();" class="space-y-6">
+
+                    <!-- Q1 -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex items-start gap-2">
+                            <span class="bg-sky-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg">Q1</span>
+                            <p class="font-bold text-slate-800 text-sm">
+                                動物園第一週有 1823 人，第二週有 3145 人。如果「先估算大約總人數」，下列哪一個想法最合理？
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pl-7 text-sm">
+                            <label class="p-3 rounded-xl border border-slate-200 hover:bg-sky-50 flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="q1" value="A" class="accent-sky-600">
+                                <span>(A) 把 1823 想成 1000，3145 想成 3000，大約是 4000 多</span>
+                            </label>
+                            <label class="p-3 rounded-xl border border-slate-200 hover:bg-sky-50 flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="q1" value="B" class="accent-sky-600">
+                                <span>(B) 把 1823 想成接近 2000，3145 想成接近 3000，大約是 5000</span>
+                            </label>
+                            <label class="p-3 rounded-xl border border-slate-200 hover:bg-sky-50 flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="q1" value="C" class="accent-sky-600">
+                                <span>(C) 把兩數都想成 4000，大約是 8000</span>
+                            </label>
+                        </div>
+                        <div id="q1-feedback" class="hidden text-xs font-bold p-2.5 rounded-lg"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex items-start gap-2">
+                            <span class="bg-sky-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg">Q2</span>
+                            <p class="font-bold text-slate-800 text-sm">
+                                馬賽克牆已經貼了 916 塊，還差 382 塊。請問這面牆共要多少塊馬賽克磚？（請精確計算：916 + 382）
+                            </p>
+                        </div>
+                        <div class="pl-7">
+                            <input type="number" id="q2-ans" placeholder="請輸入數字答案" class="w-48 px-3 py-2 border border-slate-300 rounded-xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-sky-400">
+                        </div>
+                        <div id="q2-feedback" class="hidden text-xs font-bold p-2.5 rounded-lg"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex items-start gap-2">
+                            <span class="bg-sky-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg">Q3</span>
+                            <p class="font-bold text-slate-800 text-sm">
+                                進行直式加法 1032 + 1993 時，百位是 0 + 9 = 9，加上十位進位過來的 1 後等於 10 個百。這時「百位要記多少？千位要記多少？」
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pl-7 text-sm">
+                            <label class="p-3 rounded-xl border border-slate-200 hover:bg-sky-50 flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="q3" value="A" class="accent-sky-600">
+                                <span>(A) 百位記 0，並向千位進 1 個千</span>
+                            </label>
+                            <label class="p-3 rounded-xl border border-slate-200 hover:bg-sky-50 flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="q3" value="B" class="accent-sky-600">
+                                <span>(B) 百位記 10，千位不記</span>
+                            </label>
+                            <label class="p-3 rounded-xl border border-slate-200 hover:bg-sky-50 flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="q3" value="C" class="accent-sky-600">
+                                <span>(C) 百位記 1，千位記 0</span>
+                            </label>
+                        </div>
+                        <div id="q3-feedback" class="hidden text-xs font-bold p-2.5 rounded-lg"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex items-start gap-2">
+                            <span class="bg-sky-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg">Q4</span>
+                            <p class="font-bold text-slate-800 text-sm">
+                                弟弟的存錢筒有 3823 元，弟弟的錢比哥哥少 2184 元。請問哥哥存了多少元？
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 pl-7 text-sm">
+                            <label class="p-3 rounded-xl border border-slate-200 hover:bg-sky-50 flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="q4" value="A" class="accent-sky-600">
+                                <span>(A) 1639 元</span>
+                            </label>
+                            <label class="p-3 rounded-xl border border-slate-200 hover:bg-sky-50 flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="q4" value="B" class="accent-sky-600">
+                                <span>(B) 6007 元</span>
+                            </label>
+                            <label class="p-3 rounded-xl border border-slate-200 hover:bg-sky-50 flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="q4" value="C" class="accent-sky-600">
+                                <span>(C) 5907 元</span>
+                            </label>
+                        </div>
+                        <div id="q4-feedback" class="hidden text-xs font-bold p-2.5 rounded-lg"></div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex items-start gap-2">
+                            <span class="bg-sky-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg">Q5</span>
+                            <p class="font-bold text-slate-800 text-sm">
+                                丹丹計算 993 + 1209 時，把 1209 拆成 7 和 1202。他這樣做最主要的好處是什麼？
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pl-7 text-sm">
+                            <label class="p-3 rounded-xl border border-slate-200 hover:bg-sky-50 flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="q5" value="A" class="accent-sky-600">
+                                <span>(A) 可以先把 993 和 7 湊成整千的 1000，心算更快更容易！</span>
+                            </label>
+                            <label class="p-3 rounded-xl border border-slate-200 hover:bg-sky-50 flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="q5" value="B" class="accent-sky-600">
+                                <span>(B) 可以讓算式裡的數字變多，看起來比較厲害</span>
+                            </label>
+                        </div>
+                        <div id="q5-feedback" class="hidden text-xs font-bold p-2.5 rounded-lg"></div>
+                    </div>
+
+                    <!-- 送出按鈕 -->
+                    <div class="text-center pt-4">
+                        <button type="submit" class="btn-sunset px-8 py-3 rounded-2xl text-base font-black shadow-lg">
+                            <i class="fa-solid fa-paper-plane mr-2"></i> 提交評量作業
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript 邏輯控制 -->
+    <script>
+        // 分頁切換功能
+        function switchTab(tabId) {
+            const tabs = ['est', 'vertical', 'decompose', 'quiz'];
+            tabs.forEach(id => {
+                const content = document.getElementById(`tab-${id}`);
+                const navBtn = document.getElementById(`nav-${id}`);
+                if (content && navBtn) {
+                    if (id === tabId) {
+                        content.classList.add('active');
+                        navBtn.className = 'tab-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-sky-500 text-white shadow-md';
+                    } else {
+                        content.classList.remove('active');
+                        navBtn.className = 'tab-btn px-4 py-2 rounded-xl text-sm font-bold transition-all bg-white/10 hover:bg-white/20 text-sky-100';
+                    }
+                }
+            });
+        }
+
+        // 全域狀態：直式進位模式 (false: 尚未進位/顯示藍紅方框; true: 已執行進位)
+        let isCarriedState = false;
+
+        /* ----------------------------------------------------
+           2. 模組一：數線估算感邏輯
+        ---------------------------------------------------- */
+        function updateEstView() {
+            const v1 = parseInt(document.getElementById('est-slider1').value);
+            const v2 = parseInt(document.getElementById('est-slider2').value);
+
+            document.getElementById('est-v1').innerText = v1;
+            document.getElementById('est-v2').innerText = v2;
+            document.getElementById('lbl-val1').innerText = v1;
+            document.getElementById('lbl-val2').innerText = v2;
+
+            // 接近整千計算
+            const approx1 = Math.round(v1 / 1000) * 1000;
+            const approx2 = Math.round(v2 / 1000) * 1000;
+
+            const floor1 = Math.floor(v1 / 1000) * 1000;
+            const ceil1 = floor1 + 1000;
+            const floor2 = Math.floor(v2 / 1000) * 1000;
+            const ceil2 = floor2 + 1000;
+
+            // 動態更新數線估計思考說明文字
+            document.getElementById('lbl-think1').innerText = `估計思考：${v1} 介於 ${floor1} 和 ${ceil1} 之間，比較接近 ${approx1}`;
+            document.getElementById('lbl-think2').innerText = `估計思考：${v2} 介於 ${floor2} 和 ${ceil2} 之間，比較接近 ${approx2}`;
+
+            document.getElementById('est-approx1').innerText = approx1;
+            document.getElementById('est-approx2').innerText = approx2;
+
+            // 動態條長度 (最大刻度以 5000 為基準)
+            const pct1 = Math.min(100, (v1 / 5000) * 100);
+            const pct2 = Math.min(100, (v2 / 5000) * 100);
+
+            document.getElementById('bar-num1').style.width = pct1 + '%';
+            document.getElementById('bar-num1').innerText = v1;
+            document.getElementById('bar-num2').style.width = pct2 + '%';
+            document.getElementById('bar-num2').innerText = v2;
+
+            // 估算與精確值
+            const estSum = approx1 + approx2;
+            const exactSum = v1 + v2;
+            const diff = Math.abs(estSum - exactSum);
+
+            document.getElementById('est-math-str').innerText = `${approx1} + ${approx2}`;
+            document.getElementById('est-sum-val').innerText = estSum;
+
+            document.getElementById('exact-math-str').innerText = `${v1} + ${v2}`;
+            document.getElementById('exact-sum-val').innerText = exactSum;
+            document.getElementById('diff-val').innerText = diff;
+
+            document.getElementById('est-explanation').innerText = 
+                `「${v1}接近${approx1}，${v2}接近${approx2}，估計兩數合起來約接近 ${estSum}。」`;
+        }
+
+        function setEstPreset(n1, n2) {
+            document.getElementById('est-slider1').value = n1;
+            document.getElementById('est-slider2').value = n2;
+            updateEstView();
+        }
+
+        /* ----------------------------------------------------
+           3. 模組二：直式進位與積木渲染 (支援進位鍵與復原鍵)
+        ---------------------------------------------------- */
+        function setPresetVertical(n1, n2) {
+            document.getElementById('v-num1').value = n1;
+            document.getElementById('v-num2').value = n2;
+            isCarriedState = false;
+            renderVerticalStepByStep();
+        }
+
+        function executeCarry() {
+            isCarriedState = true;
+            renderVerticalStepByStep();
+        }
+
+        function resetCarryState() {
+            isCarriedState = false;
+            renderVerticalStepByStep();
+        }
+
+        function renderVerticalStepByStep() {
+            const v1 = parseInt(document.getElementById('v-num1').value) || 0;
+            const v2 = parseInt(document.getElementById('v-num2').value) || 0;
+
+            // 拆解千百十個位 (被加數 A)
+            const d1_1000 = Math.floor(v1 / 1000) % 10;
+            const d1_100  = Math.floor(v1 / 100) % 10;
+            const d1_10   = Math.floor(v1 / 10) % 10;
+            const d1_1    = v1 % 10;
+
+            // 拆解千百十個位 (加數 B)
+            const d2_1000 = Math.floor(v2 / 1000) % 10;
+            const d2_100  = Math.floor(v2 / 100) % 10;
+            const d2_10   = Math.floor(v2 / 10) % 10;
+            const d2_1    = v2 % 10;
+
+            // 設定直式紙筆數字
+            document.getElementById('d1-1000').innerText = d1_1000 || '';
+            document.getElementById('d1-100').innerText  = d1_100;
+            document.getElementById('d1-10').innerText   = d1_10;
+            document.getElementById('d1-1').innerText    = d1_1;
+
+            document.getElementById('d2-1000').innerText = d2_1000 || '';
+            document.getElementById('d2-100').innerText  = d2_100;
+            document.getElementById('d2-10').innerText   = d2_10;
+            document.getElementById('d2-1').innerText    = d2_1;
+
+            // 計算各個位的進位值
+            let c10 = 0, c100 = 0, c1000 = 0;
+
+            const sum1 = d1_1 + d2_1;
+            if (sum1 >= 10) c10 = 1;
+
+            const sum10 = d1_10 + d2_10 + c10;
+            if (sum10 >= 10) c100 = 1;
+
+            const sum100 = d1_100 + d2_100 + c100;
+            if (sum100 >= 10) c1000 = 1;
+
+            const sum1000 = d1_1000 + d2_1000 + c1000;
+
+            // 依據是否按下「進位鍵」顯示直式進位卡片的結果
+            if (isCarriedState) {
+                document.getElementById('carry-10').innerText   = c10 ? '1' : '';
+                document.getElementById('carry-100').innerText  = c100 ? '1' : '';
+                document.getElementById('carry-1000').innerText = c1000 ? '1' : '';
+
+                document.getElementById('ans-1').innerText    = sum1 % 10;
+                document.getElementById('ans-10').innerText   = sum10 % 10;
+                document.getElementById('ans-100').innerText  = sum100 % 10;
+                document.getElementById('ans-1000').innerText = sum1000;
+
+                let desc = `<p class="mb-1 text-indigo-700 font-bold"><i class="fa-solid fa-circle-check"></i> <strong>已完成進位結果：</strong></p>`;
+                desc += `1. <strong>個位：</strong>${d1_1} + ${d2_1} = ${sum1} ${c10 ? '➔ 滿10個1換成1個10進位到十位，個位留 ' + (sum1%10) : ''}<br>`;
+                desc += `2. <strong>十位：</strong>${d1_10} + ${d2_10} + ${c10}(進位) = ${sum10} ${c100 ? '➔ 滿10個10換成1個100進位到百位，十位留 ' + (sum10%10) : ''}<br>`;
+                desc += `3. <strong>百位：</strong>${d1_100} + ${d2_100} + ${c100}(進位) = ${sum100} ${c1000 ? '➔ 滿10個100換成1個1000進位到千位，百位留 ' + (sum100%10) : ''}<br>`;
+                desc += `4. <strong>千位：</strong>${d1_1000} + ${d2_1000} + ${c1000}(進位) = ${sum1000}。`;
+                document.getElementById('vertical-step-text').innerHTML = desc;
+            } else {
+                // 尚未進位：顯示問號或原相加狀態
+                document.getElementById('carry-10').innerText   = '';
+                document.getElementById('carry-100').innerText  = '';
+                document.getElementById('carry-1000').innerText = '';
+
+                document.getElementById('ans-1').innerText    = '?';
+                document.getElementById('ans-10').innerText   = '?';
+                document.getElementById('ans-100').innerText  = '?';
+                document.getElementById('ans-1000').innerText = '?';
+
+                document.getElementById('vertical-step-text').innerHTML = 
+                    `<p class="text-slate-600 font-bold"><i class="fa-solid fa-hand-pointer text-amber-500"></i> <strong>觀察提示：</strong> 右側積木以<span class="text-blue-600 font-black">藍色方框 (被加數)</span>與<span class="text-red-600 font-black">紅色方框 (加數)</span>標註。請點擊上方<strong>「進位鍵」</strong>觀察滿 10 個積木如何組合並向左進位！</p>`;
+            }
+
+            // 渲染右側積木 (傳入兩數各自位值與進位狀態)
+            renderDualGroupBlocks('block-1-container', d1_1, d2_1, c10, sum1 % 10, '1', 'bg-rose-400 text-white', isCarriedState);
+            renderDualGroupBlocks('block-10-container', d1_10, d2_10, c100, sum10 % 10, '10', 'bg-amber-400 text-amber-900', isCarriedState, c10);
+            renderDualGroupBlocks('block-100-container', d1_100, d2_100, c1000, sum100 % 10, '100', 'bg-sky-400 text-white', isCarriedState, c100);
+            renderDualGroupBlocks('block-1000-container', d1_1000, d2_1000, 0, sum1000, '1000', 'bg-indigo-500 text-white', isCarriedState, c1000);
+        }
+
+        // 渲染包含被加數(藍框)與加數(紅框)的雙分組積木，並支援進位後狀態
+        function renderDualGroupBlocks(containerId, countA, countB, nextCarryOut, carryRemain, label, colorClass, isCarried, carryInFromRight = 0) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            if (!isCarried) {
+                // 尚未進位模式：分別以藍框標註被加數、紅框標註加數
+                // 1. 被加數 (藍框)
+                const boxA = document.createElement('div');
+                boxA.className = 'border-2 border-blue-400 bg-blue-50/70 rounded-xl p-1.5 shadow-sm';
+                boxA.innerHTML = `<div class="text-[10px] font-bold text-blue-700 mb-1">被加數 (${countA})</div>`;
+                const listA = document.createElement('div');
+                listA.className = 'flex flex-wrap gap-1 justify-center';
+                for (let i = 0; i < countA; i++) {
+                    listA.appendChild(createSingleBlock(label, colorClass));
+                }
+                if (countA === 0) listA.innerHTML = `<span class="text-[10px] text-blue-300">0</span>`;
+                boxA.appendChild(listA);
+                container.appendChild(boxA);
+
+                // 2. 加數 (紅框)
+                const boxB = document.createElement('div');
+                boxB.className = 'border-2 border-red-400 bg-red-50/70 rounded-xl p-1.5 shadow-sm';
+                boxB.innerHTML = `<div class="text-[10px] font-bold text-red-700 mb-1">加數 (${countB})</div>`;
+                const listB = document.createElement('div');
+                listB.className = 'flex flex-wrap gap-1 justify-center';
+                for (let i = 0; i < countB; i++) {
+                    listB.appendChild(createSingleBlock(label, colorClass));
+                }
+                if (countB === 0) listB.innerHTML = `<span class="text-[10px] text-red-300">0</span>`;
+                boxB.appendChild(listB);
+                container.appendChild(boxB);
+
+            } else {
+                // 已進位模式：以綠色方框呈現進位後的結果與來自右邊的進位積木
+                const boxCarried = document.createElement('div');
+                boxCarried.className = 'border-2 border-emerald-500 bg-emerald-50/80 rounded-xl p-2 shadow-md';
+
+                let totalDisplay = carryRemain;
+                boxCarried.innerHTML = `<div class="text-[10px] font-bold text-emerald-900 mb-1">進位後剩餘 (${totalDisplay})</div>`;
+
+                const listCarried = document.createElement('div');
+                listCarried.className = 'flex flex-wrap gap-1 justify-center';
+
+                // 來自低位的進位積木 (以金黃色亮點標示)
+                if (carryInFromRight > 0) {
+                    const carryBlock = document.createElement('div');
+                    // 判斷若為 1000 的積木則不加入 animate-bounce 彈跳效果
+                    const bounceClass = label === '1000' ? '' : 'animate-bounce';
+                    carryBlock.className = `w-7 h-7 rounded-lg font-black text-[9px] flex items-center justify-center bg-amber-300 text-amber-950 border-2 border-amber-500 shadow ${bounceClass}`.trim();
+                    carryBlock.title = '低位滿10進位過來的1個積木';
+                    carryBlock.innerText = label;
+                    listCarried.appendChild(carryBlock);
+                }
+
+                for (let i = 0; i < carryRemain - (carryInFromRight ? 1 : 0); i++) {
+                    listCarried.appendChild(createSingleBlock(label, colorClass));
+                }
+
+                if (totalDisplay === 0) {
+                    listCarried.innerHTML = `<span class="text-[10px] text-emerald-600 font-bold">滿10全部進位 (留0)</span>`;
+                }
+
+                boxCarried.appendChild(listCarried);
+                container.appendChild(boxCarried);
+            }
+        }
+
+        function createSingleBlock(label, colorClass) {
+            const block = document.createElement('div');
+            block.className = `w-6 h-6 rounded-md font-bold text-[9px] flex items-center justify-center shadow-sm ${colorClass}`;
+            block.innerText = label;
+            return block;
+        }
+
+        /* ----------------------------------------------------
+           4. 模組三：湊千拆數速算
+        ---------------------------------------------------- */
+        function updateDecompCustom() {
+            const nearVal = parseInt(document.getElementById('near-thousand-slider').value);
+            const secondVal = parseInt(document.getElementById('second-num-slider').value);
+
+            document.getElementById('user-near-1000').innerText = nearVal;
+            document.getElementById('user-second-num').innerText = secondVal;
+
+            const needed = 1000 - nearVal;
+            const remain = secondVal - needed;
+            const total = 1000 + remain;
+
+            // 同步更新上方「魔法拆數思考卡」所有數值
+            document.getElementById('decomp-val1').innerText = nearVal;
+            document.getElementById('decomp-need-top').innerText = needed;
+            document.getElementById('decomp-val2-desc').innerText = `${secondVal} 拆成 (${needed} + ${remain})`;
+            document.getElementById('decomp-borrow').innerText = needed;
+            document.getElementById('decomp-remain').innerText = remain;
+            document.getElementById('decomp-combine-desc').innerText = `1000 + ${remain}`;
+            document.getElementById('decomp-total').innerText = total;
+
+            document.getElementById('decomp-step-box').innerHTML = `
+                <div class="space-y-2">
+                    <p class="font-bold text-indigo-900"><i class="fa-solid fa-lightbulb text-amber-500"></i> 拆解思考歷程：</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>第一步：觀察到 <strong>${nearVal}</strong> 只需要 <strong>${needed}</strong> 就可以湊成 <strong class="text-amber-600">1000</strong>。</li>
+                        <li>第二步：把 <strong>${secondVal}</strong> 拆成 <strong>${needed}</strong> 與 <strong>${remain}</strong>。</li>
+                        <li>第三步：算式變成 (${nearVal} + ${needed}) + ${remain} = 1000 + ${remain} = <strong>${total}</strong>！</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        /* ----------------------------------------------------
+           5. 模組四：歷程性評量計分與回饋
+        ---------------------------------------------------- */
+        function evaluateQuiz() {
+            let score = 0;
+
+            // Q1
+            const q1Val = document.querySelector('input[name="q1"]:checked')?.value;
+            const q1Fb = document.getElementById('q1-feedback');
+            q1Fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+            if(q1Val === 'B') {
+                score += 20;
+                q1Fb.classList.add('bg-emerald-100', 'text-emerald-800');
+                q1Fb.innerHTML = `<i class="fa-solid fa-circle-check"></i> 太棒了！答對了！1823 接近 2000，3145 接近 3000，估算約 5000 最合理。`;
+            } else {
+                q1Fb.classList.add('bg-rose-100', 'text-rose-800');
+                q1Fb.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> 思考看看：1823 比較接近 2000 還是 1000 呢？`;
+            }
+
+            // Q2
+            const q2Val = parseInt(document.getElementById('q2-ans').value);
+            const q2Fb = document.getElementById('q2-feedback');
+            q2Fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+            if(q2Val === 1298) {
+                score += 20;
+                q2Fb.classList.add('bg-emerald-100', 'text-emerald-800');
+                q2Fb.innerHTML = `<i class="fa-solid fa-circle-check"></i> 完全正確！916 + 382 = 1298 塊。`;
+            } else {
+                q2Fb.classList.add('bg-rose-100', 'text-rose-800');
+                q2Fb.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> 算算看：16 + 82 = 98，9 + 3 = 12 個百，所以是 1298 喔！`;
+            }
+
+            // Q3
+            const q3Val = document.querySelector('input[name="q3"]:checked')?.value;
+            const q3Fb = document.getElementById('q3-feedback');
+            q3Fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+            if(q3Val === 'A') {
+                score += 20;
+                q3Fb.classList.add('bg-emerald-100', 'text-emerald-800');
+                q3Fb.innerHTML = `<i class="fa-solid fa-circle-check"></i> 觀念非常清楚！10 個百換成 1 個千，百位記 0，向千位進 1。`;
+            } else {
+                q3Fb.classList.add('bg-rose-100', 'text-rose-800');
+                q3Fb.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> 提示：滿 10 個百可以換成幾千呢？`;
+            }
+
+            // Q4
+            const q4Val = document.querySelector('input[name="q4"]:checked')?.value;
+            const q4Fb = document.getElementById('q4-feedback');
+            q4Fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+            if(q4Val === 'B') {
+                score += 20;
+                q4Fb.classList.add('bg-emerald-100', 'text-emerald-800');
+                q4Fb.innerHTML = `<i class="fa-solid fa-circle-check"></i> 讚喔！弟弟比哥哥少，表示哥哥比較多：3823 + 2184 = 6007。`;
+            } else {
+                q4Fb.classList.add('bg-rose-100', 'text-rose-800');
+                q4Fb.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> 再想一下：誰的錢比較多？應該用加法還是減法？`;
+            }
+
+            // Q5
+            const q5Val = document.querySelector('input[name="q5"]:checked')?.value;
+            const q5Fb = document.getElementById('q5-feedback');
+            q5Fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+            if(q5Val === 'A') {
+                score += 20;
+                q5Fb.classList.add('bg-emerald-100', 'text-emerald-800');
+                q5Fb.innerHTML = `<i class="fa-solid fa-circle-check"></i> 太棒了！湊整千（1000）能大幅簡化心算難度！`;
+            } else {
+                q5Fb.classList.add('bg-rose-100', 'text-rose-800');
+                q5Fb.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> 再思考一下，湊成整千的 1000 是不是好算很多呢？`;
+            }
+
+            // 更新得分面板
+            document.getElementById('quiz-score').innerText = score;
+
+            // 慶祝效果 (滿分或80分以上發射彩帶)
+            if(score >= 80 && typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // 頁面初始化
+        window.onload = function() {
+            updateEstView();
+            updateDecompCustom();
+            renderVerticalStepByStep();
+        }
+    </script>
+</body>
+</html>

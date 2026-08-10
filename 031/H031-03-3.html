@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>國小數學：長度的加減法探究學院</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        shinkai: {
+                            sky: '#2b5876',
+                            twilight: '#4e4376',
+                            sunset: '#ff7e5f',
+                            peach: '#feb47b',
+                            cloud: '#ffffff',
+                            accent: '#38ef7d',
+                            blue: '#4facfe',
+                            pink: '#ff0844'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Zen Maru Gothic"', '"Noto Sans TC"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #2b5876 0%, #4e4376 40%, #ff7e5f 80%, #feb47b 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #2d3748;
+        }
+
+        /* Dynamic Animated Cloud Canvas Background */
+        #shinkai-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        /* Glassmorphism Styling */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .glass-card-dark {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Custom Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            background: #cbd5e1;
+            border-radius: 5px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 22px;
+            width: 22px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.1s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: #2563eb;
+        }
+
+        /* Vertical Math Layout Styles */
+        .math-column {
+            display: inline-grid;
+            grid-template-columns: 2.5rem 4.5rem 4.5rem;
+            row-gap: 0.4rem;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .strike-through {
+            position: relative;
+            color: #94a3b8;
+        }
+        .strike-through::after {
+            content: '';
+            position: absolute;
+            left: 20%;
+            top: 50%;
+            width: 60%;
+            height: 3px;
+            background-color: #ef4444;
+            transform: rotate(-25deg);
+        }
+
+        .glow-active {
+            animation: pulse-glow 1.5s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
+            100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.9); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.2);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.5);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen pb-12 overflow-x-hidden">
+
+    <canvas id="shinkai-canvas"></canvas>
+
+    <div class="relative z-10 max-w-6xl mx-auto px-4 py-6">
+        
+        <!-- 閒雲數學小棧 Logo Header -->
+        <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
+            <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+            <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+        </div>
+
+        <!-- Header Section -->
+        <header class="glass-card rounded-3xl p-6 mb-8 text-center relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-amber-300/30 rounded-full blur-2xl"></div>
+            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-sky-400/30 rounded-full blur-2xl"></div>
+            
+            <h1 class="text-3xl md:text-4xl font-black text-slate-800 tracking-wide mb-2">
+                <i class="fa-solid fa-ruler-combined text-sky-500 mr-2"></i>長度的加減法探究學院
+            </h1>
+            <p class="text-slate-600 font-medium text-sm md:text-base max-w-2xl mx-auto">
+                觀察 $1\text{ 公分} = 10\text{ 毫米}$ 的動態轉換，學習二階單位的直式進位加法與退位減法！
+            </p>
+
+            <!-- Navigation Tabs -->
+            <div class="flex justify-center gap-3 mt-6">
+                <button id="tab-lab-btn" onclick="switchTab('lab')" class="px-6 py-2.5 rounded-full font-bold text-sm transition-all bg-sky-600 text-white shadow-lg shadow-sky-500/30">
+                    <i class="fa-solid fa-flask mr-1.5"></i>動態直式探究區
+                </button>
+                <button id="tab-quiz-btn" onclick="switchTab('quiz')" class="px-6 py-2.5 rounded-full font-bold text-sm transition-all bg-white/80 text-slate-700 hover:bg-white shadow-sm">
+                    <i class="fa-solid fa-pen-ruler mr-1.5"></i>歷程性隨堂測驗 (5題)
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN TAB 1: INTERACTIVE EXPLORATION LAB -->
+        <main id="tab-lab" class="space-y-6">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left Control Panel -->
+                <div class="lg:col-span-5 glass-card rounded-3xl p-6 space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-200/80 pb-3">
+                        <h2 class="text-xl font-bold text-slate-800 flex items-center">
+                            <i class="fa-solid fa-sliders text-indigo-500 mr-2"></i>設定長度數據
+                        </h2>
+                        <!-- Mode Selector Switcher -->
+                        <div class="inline-flex p-1 bg-slate-200/80 rounded-xl">
+                            <button id="op-add-btn" onclick="setOperation('+')" class="px-3 py-1 rounded-lg text-xs font-bold bg-white text-indigo-600 shadow-sm transition">
+                                <i class="fa-solid fa-plus mr-1"></i>加法(+)
+                            </button>
+                            <button id="op-sub-btn" onclick="setOperation('-')" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-600 transition">
+                                <i class="fa-solid fa-minus mr-1"></i>減法(-)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Slider 1: Length A -->
+                    <div class="bg-sky-50/80 p-4 rounded-2xl border border-sky-100 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-sky-900 text-sm flex items-center">
+                                <span class="w-3 h-3 rounded-full bg-sky-500 inline-block mr-2"></span>長度 A (被加數/被減數)
+                            </span>
+                            <span class="font-bold text-sky-600 text-lg bg-white px-3 py-0.5 rounded-lg shadow-sm border border-sky-200" id="val-a-text">
+                                5 公分 7 毫米
+                            </span>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs text-slate-500 mb-1">
+                                <span>公分 (cm): <b id="val-a-cm-num" class="text-sky-700">5</b></span>
+                                <span>0 ~ 15 cm</span>
+                            </div>
+                            <input type="range" id="slider-a-cm" min="0" max="15" value="5" oninput="updateLab()">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs text-slate-500 mb-1">
+                                <span>毫米 (mm): <b id="val-a-mm-num" class="text-sky-700">7</b></span>
+                                <span>0 ~ 9 mm</span>
+                            </div>
+                            <input type="range" id="slider-a-mm" min="0" max="9" value="7" oninput="updateLab()">
+                        </div>
+                    </div>
+
+                    <!-- Slider 2: Length B -->
+                    <div class="bg-pink-50/80 p-4 rounded-2xl border border-pink-100 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-pink-900 text-sm flex items-center">
+                                <span class="w-3 h-3 rounded-full bg-pink-500 inline-block mr-2"></span>長度 B (加數/減數)
+                            </span>
+                            <span class="font-bold text-pink-600 text-lg bg-white px-3 py-0.5 rounded-lg shadow-sm border border-pink-200" id="val-b-text">
+                                2 公分 5 毫米
+                            </span>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs text-slate-500 mb-1">
+                                <span>公分 (cm): <b id="val-b-cm-num" class="text-pink-700">2</b></span>
+                                <span>0 ~ 15 cm</span>
+                            </div>
+                            <input type="range" id="slider-b-cm" min="0" max="15" value="2" oninput="updateLab()">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs text-slate-500 mb-1">
+                                <span>毫米 (mm): <b id="val-b-mm-num" class="text-pink-700">5</b></span>
+                                <span>0 ~ 9 mm</span>
+                            </div>
+                            <input type="range" id="slider-b-mm" min="0" max="9" value="5" oninput="updateLab()">
+                        </div>
+                    </div>
+
+                    <!-- Single Unit Fast Conversion Prompt Box -->
+                    <div class="p-4 bg-amber-50/90 rounded-2xl border border-amber-200 text-xs text-amber-900 leading-relaxed">
+                        <div class="font-bold mb-1 text-amber-800 flex items-center">
+                            <i class="fa-solid fa-lightbulb text-amber-500 mr-1.5 text-sm"></i>小知識提醒：
+                        </div>
+                        $1\text{ 公分} = 10\text{ 毫米}$。<br>
+                        • 毫米超過 10 時，可以滿 10 換成 1 公分 (進位)。<br>
+                        • 毫米不夠減時，可以從公分借 1 公分換成 10 毫米 (退位)。
+                    </div>
+
+                </div>
+
+                <!-- Right Calculation & Visualizing Board -->
+                <div class="lg:col-span-7 space-y-6">
+                    
+                    <!-- Dynamic Vertical Column Card -->
+                    <div class="glass-card rounded-3xl p-6 relative overflow-hidden">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+                            <h3 class="font-bold text-slate-800 text-lg flex items-center">
+                                <i class="fa-solid fa-calculator text-sky-600 mr-2"></i>二階單位直式計算板
+                            </h3>
+                            <span id="carry-borrow-badge" class="px-3 py-1 bg-amber-100 text-amber-800 font-bold text-xs rounded-full border border-amber-300">
+                                無進退位
+                            </span>
+                        </div>
+
+                        <!-- Column Layout Display -->
+                        <div class="flex justify-center items-center py-4">
+                            <div class="bg-white/90 p-6 rounded-2xl shadow-inner border border-slate-200/80 min-w-[280px]">
+                                
+                                <!-- Unit Header -->
+                                <div class="grid grid-cols-3 text-center text-sm font-bold text-slate-500 mb-2 pb-1 border-b border-slate-200">
+                                    <div></div>
+                                    <div class="text-sky-600">公分</div>
+                                    <div class="text-pink-600">毫米</div>
+                                </div>
+
+                                <!-- Carry/Borrow Notation Row -->
+                                <div id="column-notation-row" class="grid grid-cols-3 text-center font-bold text-amber-600 text-sm h-6 items-center">
+                                    <div></div>
+                                    <div id="col-note-cm"></div>
+                                    <div id="col-note-mm"></div>
+                                </div>
+
+                                <!-- Number Row A -->
+                                <div class="grid grid-cols-3 text-center text-2xl font-bold text-slate-800 py-1">
+                                    <div class="text-slate-400 font-normal"></div>
+                                    <div id="col-a-cm">5</div>
+                                    <div id="col-a-mm">7</div>
+                                </div>
+
+                                <!-- Number Row B -->
+                                <div class="grid grid-cols-3 text-center text-2xl font-bold text-slate-800 py-1 border-b-2 border-slate-800">
+                                    <div id="col-op-sign" class="text-slate-600 font-bold text-xl">+</div>
+                                    <div id="col-b-cm">2</div>
+                                    <div id="col-b-mm">5</div>
+                                </div>
+
+                                <!-- Intermediate/Process Row (For visual carry/borrow) -->
+                                <div id="column-middle-step" class="grid grid-cols-3 text-center font-bold text-sm text-indigo-500 py-1 hidden">
+                                    <div>思考:</div>
+                                    <div id="step-cm-note"></div>
+                                    <div id="step-mm-note">12 毫米</div>
+                                </div>
+
+                                <!-- Final Answer Row -->
+                                <div class="grid grid-cols-3 text-center text-3xl font-black text-emerald-600 py-2">
+                                    <div class="text-xs font-bold text-emerald-500 self-center">結果</div>
+                                    <div id="col-ans-cm">8</div>
+                                    <div id="col-ans-mm">2</div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Step Explanations Card -->
+                        <div class="bg-indigo-50/80 p-4 rounded-2xl border border-indigo-100 text-sm space-y-2">
+                            <div class="font-bold text-indigo-900 flex items-center">
+                                <i class="fa-solid fa-list-check mr-2 text-indigo-600"></i>計算解說步驟：
+                            </div>
+                            <ol id="step-explanation-list" class="list-decimal list-inside space-y-1 text-slate-700 font-medium">
+                                <!-- JS inserted steps -->
+                            </ol>
+                        </div>
+
+                    </div>
+
+                    <!-- Visual Length Bar / Simulated Ruler -->
+                    <div class="glass-card rounded-3xl p-6">
+                        <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center">
+                            <i class="fa-solid fa-eye text-emerald-500 mr-2"></i>長度視覺化比較 (單位：cm)
+                        </h3>
+                        
+                        <!-- Visualizing Bar Graphics -->
+                        <div class="space-y-3 bg-white/70 p-4 rounded-2xl border border-slate-200">
+                            <!-- Bar A -->
+                            <div>
+                                <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                                    <span>長度 A</span>
+                                    <span id="bar-a-label">5.7 cm</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-5 rounded-full overflow-hidden flex">
+                                    <div id="bar-a-fill" class="bg-sky-500 h-full transition-all duration-300 rounded-full" style="width: 38%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Bar B -->
+                            <div>
+                                <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                                    <span>長度 B</span>
+                                    <span id="bar-b-label">2.5 cm</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-5 rounded-full overflow-hidden flex">
+                                    <div id="bar-b-fill" class="bg-pink-500 h-full transition-all duration-300 rounded-full" style="width: 16%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Total Result Bar -->
+                            <div class="pt-2 border-t border-slate-200">
+                                <div class="flex justify-between text-xs font-bold text-emerald-700 mb-1">
+                                    <span id="bar-ans-title">合計長度 (A + B)</span>
+                                    <span id="bar-ans-label">8.2 cm</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-6 rounded-full overflow-hidden">
+                                    <div id="bar-ans-fill" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full transition-all duration-300 rounded-full" style="width: 54%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+        <!-- MAIN TAB 2: QUIZ SECTION (5 QUESTIONS) -->
+        <main id="tab-quiz" class="hidden space-y-6">
+            
+            <!-- Quiz Progress and Score Header -->
+            <div class="glass-card rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">
+                        <i class="fa-solid fa-list-ol text-indigo-600 mr-2"></i>長度加減法 - 隨堂歷程測驗
+                    </h2>
+                    <p class="text-slate-600 text-sm mt-1">根據課本核心概念設計，請計算出正確的公分與毫米數值。</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <div class="text-xs text-slate-500 font-bold">總分進度</div>
+                        <div id="quiz-score-text" class="text-2xl font-black text-indigo-600">0 / 5 題</div>
+                    </div>
+                    <button onclick="resetQuiz()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl transition">
+                        <i class="fa-solid fa-rotate-left mr-1"></i>重設測驗
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Items Container -->
+            <div id="quiz-container" class="space-y-6">
+                <!-- Dynamic Questions rendered via JS -->
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // -------------------------------------------------------------
+        // 1. SHINKAI SKY CANVAS BACKGROUND ANIMATION
+        // -------------------------------------------------------------
+        const canvas = document.getElementById('shinkai-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Star / Light shimmer particles
+        const particles = Array.from({ length: 35 }, () => ({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 2 + 0.5,
+            alpha: Math.random(),
+            speed: Math.random() * 0.01 + 0.005
+        }));
+
+        function drawBackground() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Shimmering stars/lights
+            particles.forEach(p => {
+                p.alpha += p.speed;
+                if (p.alpha > 1 || p.alpha < 0) p.speed = -p.speed;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(p.alpha) * 0.6})`;
+                ctx.fill();
+            });
+
+            requestAnimationFrame(drawBackground);
+        }
+        drawBackground();
+
+        // -------------------------------------------------------------
+        // 2. INTERACTIVE EXPLORATION LAB STATE & LOGIC
+        // -------------------------------------------------------------
+        let currentOp = '+'; // '+' or '-'
+
+        function setOperation(op) {
+            currentOp = op;
+            const addBtn = document.getElementById('op-add-btn');
+            const subBtn = document.getElementById('op-sub-btn');
+
+            if (op === '+') {
+                addBtn.className = 'px-3 py-1 rounded-lg text-xs font-bold bg-white text-indigo-600 shadow-sm transition';
+                subBtn.className = 'px-3 py-1 rounded-lg text-xs font-bold text-slate-600 transition';
+            } else {
+                subBtn.className = 'px-3 py-1 rounded-lg text-xs font-bold bg-white text-indigo-600 shadow-sm transition';
+                addBtn.className = 'px-3 py-1 rounded-lg text-xs font-bold text-slate-600 transition';
+            }
+            updateLab();
+        }
+
+        function updateLab() {
+            let aCm = parseInt(document.getElementById('slider-a-cm').value);
+            let aMm = parseInt(document.getElementById('slider-a-mm').value);
+            let bCm = parseInt(document.getElementById('slider-b-cm').value);
+            let bMm = parseInt(document.getElementById('slider-b-mm').value);
+
+            // Update Input Labels
+            document.getElementById('val-a-cm-num').innerText = aCm;
+            document.getElementById('val-a-mm-num').innerText = aMm;
+            document.getElementById('val-a-text').innerText = `${aCm} 公分 ${aMm} 毫米`;
+
+            document.getElementById('val-b-cm-num').innerText = bCm;
+            document.getElementById('val-b-mm-num').innerText = bMm;
+            document.getElementById('val-b-text').innerText = `${bCm} 公分 ${bMm} 毫米`;
+
+            // Enforce A >= B for Subtraction
+            if (currentOp === '-') {
+                const totalA_mm = aCm * 10 + aMm;
+                const totalB_mm = bCm * 10 + bMm;
+                if (totalA_mm < totalB_mm) {
+                    // Auto push B sliders down to fit A
+                    bCm = aCm;
+                    bMm = aMm;
+                    document.getElementById('slider-b-cm').value = bCm;
+                    document.getElementById('slider-b-mm').value = bMm;
+                    document.getElementById('val-b-cm-num').innerText = bCm;
+                    document.getElementById('val-b-mm-num').innerText = bMm;
+                    document.getElementById('val-b-text').innerText = `${bCm} 公分 ${bMm} 毫米`;
+                }
+            }
+
+            // UI Column Updates
+            document.getElementById('col-op-sign').innerText = currentOp;
+            document.getElementById('col-a-cm').innerText = aCm;
+            document.getElementById('col-a-mm').innerText = aMm;
+            document.getElementById('col-b-cm').innerText = bCm;
+            document.getElementById('col-b-mm').innerText = bMm;
+
+            const badge = document.getElementById('carry-borrow-badge');
+            const noteCm = document.getElementById('col-note-cm');
+            const noteMm = document.getElementById('col-note-mm');
+            const explanationList = document.getElementById('step-explanation-list');
+
+            let ansCm = 0;
+            let ansMm = 0;
+
+            if (currentOp === '+') {
+                const rawMmSum = aMm + bMm;
+                const carry = Math.floor(rawMmSum / 10);
+                const remMm = rawMmSum % 10;
+                ansCm = aCm + bCm + carry;
+                ansMm = remMm;
+
+                if (carry > 0) {
+                    badge.className = "px-3 py-1 bg-amber-100 text-amber-800 font-bold text-xs rounded-full border border-amber-300 animate-pulse";
+                    badge.innerText = `進位提昇：毫米滿 10 進 1 公分 (+${carry})`;
+                    noteCm.innerHTML = `<span class="bg-amber-200 text-amber-900 rounded-full w-6 h-6 inline-flex items-center justify-center text-xs shadow-sm">+${carry}</span>`;
+                    noteMm.innerHTML = ``;
+                    
+                    explanationList.innerHTML = `
+                        <li><b>步驟 1 (毫米計算)：</b> $${aMm} + ${bMm} = ${rawMmSum}$ 毫米。</li>
+                        <li><b>步驟 2 (單位進位)：</b> ${rawMmSum} 毫米超過 10 毫米！換成 <b>${carry} 公分 ${remMm} 毫米</b>。在毫米位置記 <b class="text-pink-600">${remMm}</b>，並在公分位置上方進位記 <b class="text-amber-600">+${carry}</b>。</li>
+                        <li><b>步驟 3 (公分計算)：</b> $${aCm} + ${bCm} + ${carry} (\text{進位}) = ${ansCm}$ 公分。</li>
+                        <li class="text-emerald-700 font-bold">👉 合計答案為：${ansCm} 公分 ${ansMm} 毫米。</li>
+                    `;
+                } else {
+                    badge.className = "px-3 py-1 bg-emerald-100 text-emerald-800 font-bold text-xs rounded-full border border-emerald-300";
+                    badge.innerText = "直式加法：無需進位";
+                    noteCm.innerHTML = ``;
+                    noteMm.innerHTML = ``;
+
+                    explanationList.innerHTML = `
+                        <li><b>步驟 1 (毫米計算)：</b> $${aMm} + ${bMm} = ${rawMmSum}$ 毫米 (未超過 10 毫米，不需進位)。</li>
+                        <li><b>步驟 2 (公分計算)：</b> $${aCm} + ${bCm} = ${ansCm}$ 公分。</li>
+                        <li class="text-emerald-700 font-bold">👉 合計答案為：${ansCm} 公分 ${ansMm} 毫米。</li>
+                    `;
+                }
+            } else {
+                // Subtraction Logic
+                if (aMm < bMm) {
+                    // Borrowing needed
+                    badge.className = "px-3 py-1 bg-rose-100 text-rose-800 font-bold text-xs rounded-full border border-rose-300 animate-pulse";
+                    badge.innerText = "退位借值：毫米不夠減，從公分借 1 (化為 10 毫米)";
+
+                    noteCm.innerHTML = `<span class="strike-through text-slate-400 mr-1">${aCm}</span><span class="text-rose-600">${aCm - 1}</span>`;
+                    noteMm.innerHTML = `<span class="bg-rose-100 text-rose-700 rounded-lg px-1.5 py-0.5 text-xs border border-rose-300">+10 (${10 + aMm})</span>`;
+
+                    ansMm = (aMm + 10) - bMm;
+                    ansCm = (aCm - 1) - bCm;
+
+                    explanationList.innerHTML = `
+                        <li><b>步驟 1 (檢查毫米)：</b> $${aMm}$ 毫米不夠減 $${bMm}$ 毫米。</li>
+                        <li><b>步驟 2 (退位換算)：</b> 向公分借 1 公分 ($1\\text{ cm} = 10\\text{ mm}$)，公分剩下 <b class="text-rose-600">${aCm - 1}</b>，毫米變為 $10 + ${aMm} = ${10 + aMm}$ 毫米。</li>
+                        <li><b>步驟 3 (毫米相減)：</b> $${10 + aMm} - ${bMm} = ${ansMm}$ 毫米。</li>
+                        <li><b>步驟 4 (公分相減)：</b> $${aCm - 1} - ${bCm} = ${ansCm}$ 公分。</li>
+                        <li class="text-emerald-700 font-bold">👉 相差答案為：${ansCm} 公分 ${ansMm} 毫米。</li>
+                    `;
+                } else {
+                    badge.className = "px-3 py-1 bg-emerald-100 text-emerald-800 font-bold text-xs rounded-full border border-emerald-300";
+                    badge.innerText = "直式減法：無需退位";
+                    noteCm.innerHTML = ``;
+                    noteMm.innerHTML = ``;
+
+                    ansMm = aMm - bMm;
+                    ansCm = aCm - bCm;
+
+                    explanationList.innerHTML = `
+                        <li><b>步驟 1 (毫米計算)：</b> $${aMm} - ${bMm} = ${ansMm}$ 毫米。</li>
+                        <li><b>步驟 2 (公分計算)：</b> $${aCm} - ${bCm} = ${ansCm}$ 公分。</li>
+                        <li class="text-emerald-700 font-bold">👉 相差答案為：${ansCm} 公分 ${ansMm} 毫米。</li>
+                    `;
+                }
+            }
+
+            document.getElementById('col-ans-cm').innerText = ansCm;
+            document.getElementById('col-ans-mm').innerText = ansMm;
+
+            // Visualizing Ruler Bars
+            const maxVal = 30; // Max scale in cm for bar calculation
+            const valA_cm = aCm + aMm / 10;
+            const valB_cm = bCm + bMm / 10;
+            const ansVal_cm = currentOp === '+' ? (valA_cm + valB_cm) : (valA_cm - valB_cm);
+
+            document.getElementById('bar-a-label').innerText = `${valA_cm.toFixed(1)} cm`;
+            document.getElementById('bar-b-label').innerText = `${valB_cm.toFixed(1)} cm`;
+            document.getElementById('bar-ans-label').innerText = `${ansVal_cm.toFixed(1)} cm`;
+            document.getElementById('bar-ans-title').innerText = currentOp === '+' ? '合計長度 (A + B)' : '相差長度 (A - B)';
+
+            document.getElementById('bar-a-fill').style.width = `${(valA_cm / maxVal) * 100}%`;
+            document.getElementById('bar-b-fill').style.width = `${(valB_cm / maxVal) * 100}%`;
+            document.getElementById('bar-ans-fill').style.width = `${Math.max(0, (ansVal_cm / maxVal) * 100)}%`;
+        }
+
+        // -------------------------------------------------------------
+        // 3. QUIZ QUESTIONS & INTERACTIVE DIAGNOSIS LOGIC
+        // -------------------------------------------------------------
+        const quizData = [
+            {
+                id: 1,
+                title: "情境 1：兔子公仔與底座",
+                tag: "加法進位",
+                story: "兔子公仔高 5 公分 7 毫米，底座高 25 毫米（即 2 公分 5 毫米）。請問公仔和底座合起來高幾公分幾毫米？",
+                ansCm: 8,
+                ansMm: 2,
+                hint: "先算毫米：$7 + 5 = 12$ 毫米；$12$ 毫米滿 $10$ 換成 $1$ 公分 $2$ 毫米。再算公分：$5 + 2 + 1 = 8$ 公分。"
+            },
+            {
+                id: 2,
+                title: "情境 2：兩段紙條長度比較",
+                tag: "退位減法",
+                story: "有一段紅紙條長 7 公分 4 毫米，藍紙條長 5 公分 9 毫米。這兩段紙條相差幾公分幾毫米？",
+                ansCm: 1,
+                ansMm: 5,
+                hint: "$4$ 毫米不夠減 $9$ 毫米，向 $7$ 公分借 $1$ 公分換成 $10$ 毫米。$14 - 9 = 5$ 毫米，公分剩下 $6 - 5 = 1$ 公分。"
+            },
+            {
+                id: 3,
+                title: "情境 3：動物模型高度相差",
+                tag: "退位減法",
+                story: "長頸鹿模型高 8 公分（即 8 公分 0 毫米），大象模型高 6 公分 4 毫米。長頸鹿模型比大象模型高幾公分幾毫米？",
+                ansCm: 1,
+                ansMm: 6,
+                hint: "$8$ 公分看成 $7$ 公分 $10$ 毫米。$10 - 4 = 6$ 毫米，$7 - 6 = 1$ 公分。"
+            },
+            {
+                id: 4,
+                title: "練習 4：二階單位加法直式",
+                tag: "直式加法",
+                story: "計算：4 公分 7 毫米 + 5 公分 8 毫米 = (  ) 公分 (  ) 毫米。",
+                ansCm: 10,
+                ansMm: 5,
+                hint: "毫米：$7 + 8 = 15$ 毫米 ($= 1$ 公分 $5$ 毫米)。公分：$4 + 5 + 1 = 10$ 公分。"
+            },
+            {
+                id: 5,
+                title: "練習 5：二階單位減法直式",
+                tag: "直式減法",
+                story: "計算：8 公分 3 毫米 - 1 公分 5 毫米 = (  ) 公分 (  ) 毫米。",
+                ansCm: 6,
+                ansMm: 8,
+                hint: "毫米：$13 - 5 = 8$ 毫米。公分：$7 - 1 = 6$ 公分。"
+            }
+        ];
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizData.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-3xl p-6 space-y-4 relative border border-white/60";
+                card.id = `q-card-${q.id}`;
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-slate-200/80 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-indigo-600 text-white font-black text-xs flex items-center justify-center">
+                                ${q.id}
+                            </span>
+                            <h3 class="font-bold text-slate-800 text-base md:text-lg">${q.title}</h3>
+                        </div>
+                        <span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg border border-indigo-200">
+                            ${q.tag}
+                        </span>
+                    </div>
+
+                    <p class="text-slate-700 font-medium text-sm md:text-base leading-relaxed">
+                        ${q.story}
+                    </p>
+
+                    <div class="flex flex-wrap items-center gap-3 bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80">
+                        <span class="font-bold text-slate-700 text-sm">您的答案：</span>
+                        
+                        <div class="flex items-center gap-1.5">
+                            <input type="number" id="input-cm-${q.id}" placeholder="0" min="0" 
+                                class="w-16 px-3 py-1.5 rounded-xl border border-slate-300 text-center font-bold text-indigo-600 focus:ring-2 focus:ring-indigo-400 outline-none">
+                            <span class="font-bold text-slate-600 text-sm">公分</span>
+                        </div>
+
+                        <div class="flex items-center gap-1.5">
+                            <input type="number" id="input-mm-${q.id}" placeholder="0" min="0" max="9" 
+                                class="w-16 px-3 py-1.5 rounded-xl border border-slate-300 text-center font-bold text-pink-600 focus:ring-2 focus:ring-pink-400 outline-none">
+                            <span class="font-bold text-slate-600 text-sm">毫米</span>
+                        </div>
+
+                        <button onclick="checkAnswer(${q.id})" class="ml-auto px-5 py-2 bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-600 hover:to-sky-600 text-white font-bold text-xs rounded-xl shadow-md transition">
+                            提交驗證
+                        </button>
+                    </div>
+
+                    <!-- Feedback Output -->
+                    <div id="feedback-${q.id}" class="hidden p-4 rounded-2xl text-xs md:text-sm font-medium leading-relaxed"></div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        let answeredCount = 0;
+        let scoreState = {};
+
+        function checkAnswer(id) {
+            const q = quizData.find(item => item.id === id);
+            const userCm = parseInt(document.getElementById(`input-cm-${id}`).value);
+            const userMm = parseInt(document.getElementById(`input-mm-${id}`).value);
+            const feedbackBox = document.getElementById(`feedback-${id}`);
+
+            if (isNaN(userCm) || isNaN(userMm)) {
+                feedbackBox.className = "p-4 rounded-2xl text-xs md:text-sm font-bold bg-amber-100 text-amber-900 border border-amber-300 block";
+                feedbackBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> 請輸入完整的公分與毫米數值！`;
+                return;
+            }
+
+            feedbackBox.classList.remove('hidden');
+
+            if (userCm === q.ansCm && userMm === q.ansMm) {
+                feedbackBox.className = "p-4 rounded-2xl text-xs md:text-sm font-medium bg-emerald-50 text-emerald-900 border border-emerald-200 block";
+                feedbackBox.innerHTML = `
+                    <div class="font-bold text-emerald-700 text-base mb-1 flex items-center">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mr-2 text-lg"></i>答對了！太棒了！ 🎉
+                    </div>
+                    <b>解析：</b>${q.hint}
+                `;
+                if (!scoreState[id]) {
+                    scoreState[id] = true;
+                    answeredCount++;
+                }
+            } else {
+                feedbackBox.className = "p-4 rounded-2xl text-xs md:text-sm font-medium bg-rose-50 text-rose-900 border border-rose-200 block";
+                feedbackBox.innerHTML = `
+                    <div class="font-bold text-rose-700 text-base mb-1 flex items-center">
+                        <i class="fa-solid fa-circle-xmark text-rose-500 mr-2 text-lg"></i>再想一想喔！💡
+                    </div>
+                    <b>觀念指引：</b>${q.hint}<br>
+                    <span class="text-xs text-rose-600 mt-1 inline-block">提示：記得滿 10 毫米要換成 1 公分，或是毫米不夠減時要向 1 公分借 10 毫米！</span>
+                `;
+            }
+
+            document.getElementById('quiz-score-text').innerText = `${answeredCount} / 5 題`;
+        }
+
+        function resetQuiz() {
+            answeredCount = 0;
+            scoreState = {};
+            document.getElementById('quiz-score-text').innerText = `0 / 5 題`;
+            renderQuiz();
+        }
+
+        // -------------------------------------------------------------
+        // 4. UI TAB SWITCHER & MODALS
+        // -------------------------------------------------------------
+        function switchTab(tab) {
+            const lab = document.getElementById('tab-lab');
+            const quiz = document.getElementById('tab-quiz');
+            const labBtn = document.getElementById('tab-lab-btn');
+            const quizBtn = document.getElementById('tab-quiz-btn');
+
+            if (tab === 'lab') {
+                lab.classList.remove('hidden');
+                quiz.classList.add('hidden');
+                labBtn.className = 'px-6 py-2.5 rounded-full font-bold text-sm transition-all bg-sky-600 text-white shadow-lg shadow-sky-500/30';
+                quizBtn.className = 'px-6 py-2.5 rounded-full font-bold text-sm transition-all bg-white/80 text-slate-700 hover:bg-white shadow-sm';
+            } else {
+                quiz.classList.remove('hidden');
+                lab.classList.add('hidden');
+                quizBtn.className = 'px-6 py-2.5 rounded-full font-bold text-sm transition-all bg-indigo-600 text-white shadow-lg shadow-indigo-500/30';
+                labBtn.className = 'px-6 py-2.5 rounded-full font-bold text-sm transition-all bg-white/80 text-slate-700 hover:bg-white shadow-sm';
+            }
+        }
+
+        // Initialize App on Load
+        window.onload = function() {
+            updateLab();
+            renderQuiz();
+        };
+    </script>
+</body>
+</html>

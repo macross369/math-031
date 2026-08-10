@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小學數學：長度的換算與比較 | 互動式教學探索</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    },
+                    colors: {
+                        shinkai: {
+                            sky: '#0f172a',
+                            deep: '#1e3a8a',
+                            primary: '#0284c7',
+                            light: '#38bdf8',
+                            sunset: '#f43f5e',
+                            gold: '#fbbf24',
+                            cloud: '#f0f9ff'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #0c192c 0%, #1a365d 35%, #2b5278 70%, #4a7c9d 100%);
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        /* Ambient background glow & Shinkai sky light */
+        .shinkai-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 20% 80%, rgba(244, 63, 94, 0.15) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Glassmorphic card styling */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 30px -5px rgba(2, 132, 199, 0.15), 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Custom styling for length ruler ticks */
+        .ruler-tick {
+            stroke: #334155;
+            stroke-linecap: round;
+        }
+        
+        /* Shimmer gradient effect */
+        .shimmer-text {
+            background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #f43f5e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Smooth transition for ribbons */
+        .ribbon-transition {
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Custom range input slider styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: #cbd5e1;
+            height: 10px;
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #0284c7;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background: #0369a1;
+        }
+    </style>
+</head>
+<body class="relative text-slate-800 pb-12">
+    <div class="shinkai-bg"></div>
+
+    <div class="relative z-10 max-w-5xl mx-auto px-4 py-8">
+        
+        <!-- 修改：使用轉換後的 Google Drive 直接連結 -->
+        <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
+            <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+            <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+        </div>
+
+        <!-- Header / Banner -->
+        <header class="glass-card rounded-3xl p-6 mb-8 text-center relative overflow-hidden">
+            <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-sky-300/30 rounded-full blur-2xl"></div>
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-100 text-sky-800 text-sm font-semibold mb-3">
+                <i class="fa-solid fa-graduation-cap"></i> 國小數學 3-2 單元互動教室
+            </div>
+            <h1 class="text-3xl md:text-4xl font-black tracking-tight text-slate-800 mb-2">
+                長度的換算與比較 <span class="shimmer-text">探究工作坊</span>
+            </h1>
+            <p class="text-slate-600 text-sm md:text-base max-w-2xl mx-auto">
+                透過直觀滑桿、動態微觀放大鏡與兩兩比對，輕鬆搞懂 <span class="font-bold text-sky-600">1 公分 = 10 毫米</span> 的神奇化聚關係！
+            </p>
+
+            <!-- Navigation Tabs -->
+            <div class="flex justify-center gap-3 mt-6">
+                <button id="tab-btn-1" onclick="switchTab(1)" class="px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-sky-600 text-white shadow-lg shadow-sky-500/30">
+                    <i class="fa-solid fa-magnifying-glass"></i> 探索一：毫米公分換算器
+                </button>
+                <button id="tab-btn-2" onclick="switchTab(2)" class="px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-white/80 text-slate-700 hover:bg-white">
+                    <i class="fa-solid fa-code-compare"></i> 探索二：長度 PK 比一比
+                </button>
+                <button id="tab-btn-3" onclick="switchTab(3)" class="px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-white/80 text-slate-700 hover:bg-white">
+                    <i class="fa-solid fa-pen-to-square"></i> 隨堂小測驗 (5題)
+                </button>
+            </div>
+        </header>
+
+        <!-- Tab Content 1: Unit Conversion & Interactive Ruler -->
+        <section id="tab-1" class="space-y-6">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="flex items-center justify-between border-b border-slate-200/80 pb-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-tape text-sky-500"></i> 動態膠帶與直尺（公分與毫米）
+                        </h2>
+                        <p class="text-xs md:text-sm text-slate-500 mt-1">拖動下方滑桿，觀察膠帶拉長時，「公分」與「毫米」格線的數量變化！</p>
+                    </div>
+                    <div class="bg-sky-50 border border-sky-200 px-4 py-2 rounded-2xl text-right">
+                        <span class="text-xs text-sky-600 block">核心定律</span>
+                        <span class="text-base font-extrabold text-sky-700">1 公分 = 10 毫米</span>
+                    </div>
+                </div>
+
+                <!-- Slider Control -->
+                <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200 mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <label for="length-slider" class="font-bold text-slate-700 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-sky-600"></i> 調整膠帶長度：
+                        </label>
+                        <span id="slider-readout" class="text-lg font-black text-sky-600 bg-white px-3 py-1 rounded-xl shadow-sm border border-sky-100">
+                            24 毫米 (mm)
+                        </span>
+                    </div>
+                    <input type="range" id="length-slider" min="0" max="100" value="24" oninput="updateTapeRuler(this.value)">
+                    <div class="flex justify-between text-xs text-slate-400 mt-2 font-mono">
+                        <span>0 mm (0 cm)</span>
+                        <span>50 mm (5 cm)</span>
+                        <span>100 mm (10 cm)</span>
+                    </div>
+                </div>
+
+                <!-- Visual Canvas Render Container -->
+                <div class="bg-white rounded-2xl p-4 md:p-6 border border-slate-200 shadow-inner overflow-x-auto relative">
+                    <p class="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">即時長度模擬與測量畫面</p>
+                    
+                    <!-- Tape Visual -->
+                    <div class="relative mb-6 h-12 bg-slate-100 rounded-lg overflow-hidden border border-slate-300 flex items-center">
+                        <div id="tape-graphic" class="h-full bg-gradient-to-r from-amber-400 to-amber-300 border-r-4 border-amber-600 flex items-center justify-end px-2 text-amber-900 font-bold text-xs ribbon-transition" style="width: 24%;">
+                            <span id="tape-label" class="whitespace-nowrap drop-shadow-sm">24 毫米</span>
+                        </div>
+                    </div>
+
+                    <!-- SVG Ruler -->
+                    <div class="w-full overflow-x-auto">
+                        <svg id="ruler-svg" viewBox="0 0 1000 120" class="w-full min-w-[600px] h-32 select-none">
+                            <!-- Ruler Body -->
+                            <rect x="0" y="20" width="1000" height="90" fill="#f8fafc" rx="8" stroke="#cbd5e1" stroke-width="2"/>
+                            <!-- Ticks dynamically rendered via JS -->
+                            <g id="ruler-ticks"></g>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Live Mathematical Breakdown Card -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                    <div class="bg-gradient-to-br from-sky-50 to-blue-50 border border-sky-200 p-5 rounded-2xl">
+                        <div class="text-xs font-bold text-sky-600 mb-1"><i class="fa-solid fa-cubes-stacked"></i> 毫米拆解法 (化聚思考)</div>
+                        <div id="breakdown-math-1" class="text-2xl font-black text-slate-800">
+                            24 毫米 = <span class="text-sky-600">20</span> 毫米 + <span class="text-amber-500">4</span> 毫米
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2">每滿 10 毫米就能換成 1 公分哦！</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 p-5 rounded-2xl">
+                        <div class="text-xs font-bold text-emerald-600 mb-1"><i class="fa-solid fa-equals"></i> 雙單位表示法</div>
+                        <div id="breakdown-math-2" class="text-2xl font-black text-slate-800">
+                            = <span class="text-sky-600">2</span> 公分 <span class="text-amber-500">4</span> 毫米
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2">寫作：「2 公分 4 毫米」，也可記作 24 毫米。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab Content 2: Ribbon Length Comparison -->
+        <section id="tab-2" class="hidden space-y-6">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="border-b border-slate-200/80 pb-4 mb-6">
+                    <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-code-compare text-rose-500"></i> 彩帶長度大比拼 (長度比較與符號)
+                    </h2>
+                    <p class="text-xs md:text-sm text-slate-500 mt-1">分別設定兩條彩帶的長度，系統將自動示範「先換算成同一單位」再進行大小的比較！</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Red Ribbon Controls -->
+                    <div class="bg-rose-50/60 border border-rose-200 p-5 rounded-2xl">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="font-bold text-rose-800 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-rose-500"></span> 紅色彩帶 (甲)
+                            </span>
+                            <span id="ribbon1-text" class="font-black text-rose-700 bg-white px-3 py-1 rounded-xl shadow-sm text-sm">
+                                4 公分 6 毫米
+                            </span>
+                        </div>
+                        <label class="text-xs text-slate-500">拉動設定長度：</label>
+                        <input type="range" id="ribbon1-slider" min="5" max="95" value="46" oninput="updateRibbonComparison()">
+                        <div class="mt-2 text-xs text-rose-600 font-semibold" id="ribbon1-mm">換算 = 46 毫米</div>
+                    </div>
+
+                    <!-- Blue Ribbon Controls -->
+                    <div class="bg-sky-50/60 border border-sky-200 p-5 rounded-2xl">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="font-bold text-sky-800 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-sky-500"></span> 藍色彩帶 (乙)
+                            </span>
+                            <span id="ribbon2-text" class="font-black text-sky-700 bg-white px-3 py-1 rounded-xl shadow-sm text-sm">
+                                6 公分 0 毫米
+                            </span>
+                        </div>
+                        <label class="text-xs text-slate-500">拉動設定長度：</label>
+                        <input type="range" id="ribbon2-slider" min="5" max="95" value="60" oninput="updateRibbonComparison()">
+                        <div class="mt-2 text-xs text-sky-600 font-semibold" id="ribbon2-mm">換算 = 60 毫米</div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Comparison Visual Area -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-inner space-y-4">
+                    <div class="relative">
+                        <div class="text-xs text-slate-400 font-bold mb-1">紅色彩帶</div>
+                        <div class="w-full bg-slate-100 h-8 rounded-lg overflow-hidden relative">
+                            <div id="ribbon1-bar" class="h-full bg-rose-500 ribbon-transition rounded-r-md flex items-center justify-end px-3 text-white text-xs font-bold" style="width: 46%;">
+                                46 mm
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div class="text-xs text-slate-400 font-bold mb-1">藍色彩帶</div>
+                        <div class="w-full bg-slate-100 h-8 rounded-lg overflow-hidden relative">
+                            <div id="ribbon2-bar" class="h-full bg-sky-500 ribbon-transition rounded-r-md flex items-center justify-end px-3 text-white text-xs font-bold" style="width: 60%;">
+                                60 mm
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparison Result Banner -->
+                <div class="mt-6 p-6 bg-gradient-to-r from-amber-500/10 via-sky-500/10 to-rose-500/10 rounded-2xl border border-amber-200/60 text-center">
+                    <div class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">比較解題步驟與結果</div>
+                    <div id="comparison-result" class="text-2xl md:text-3xl font-black text-slate-800">
+                        46 毫米 <span class="text-rose-600 px-2">&lt;</span> 60 毫米
+                    </div>
+                    <div id="comparison-explain" class="text-sm font-medium text-slate-600 mt-2">
+                        因此，紅色彩帶 (46毫米) 比 藍色彩帶 (60毫米) <span class="text-rose-600 font-bold">較短</span>！
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab Content 3: Quiz Assessment -->
+        <section id="tab-3" class="hidden space-y-6">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="flex items-center justify-between border-b border-slate-200/80 pb-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-emerald-500"></i> 歷程性隨堂測驗
+                        </h2>
+                        <p class="text-xs md:text-sm text-slate-500 mt-1">完成下列 5 題觀念評量，獲得即時反饋與觀念修正！</p>
+                    </div>
+                    <button onclick="resetQuiz()" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-bold transition">
+                        <i class="fa-solid fa-rotate-right"></i> 重新測驗
+                    </button>
+                </div>
+
+                <form id="quiz-form" class="space-y-6" onsubmit="event.preventDefault(); evaluateQuiz();">
+                    <!-- Q1 -->
+                    <div class="bg-white/80 p-5 rounded-2xl border border-slate-200 shadow-sm" id="q1-box">
+                        <div class="flex items-start gap-3">
+                            <span class="w-7 h-7 bg-sky-100 text-sky-700 rounded-full font-bold flex items-center justify-center text-sm shrink-0">1</span>
+                            <div class="grow">
+                                <p class="font-bold text-slate-800 mb-3">2 公分等於多少毫米？</p>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                    <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer text-sm">
+                                        <input type="radio" name="q1" value="2" class="text-sky-600"> 2 毫米
+                                    </label>
+                                    <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer text-sm">
+                                        <input type="radio" name="q1" value="20" class="text-sky-600"> 20 毫米
+                                    </label>
+                                    <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer text-sm">
+                                        <input type="radio" name="q1" value="200" class="text-sky-600"> 200 毫米
+                                    </label>
+                                    <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer text-sm">
+                                        <input type="radio" name="q1" value="12" class="text-sky-600"> 12 毫米
+                                    </label>
+                                </div>
+                                <div id="q1-feedback" class="mt-3 text-sm font-semibold hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="bg-white/80 p-5 rounded-2xl border border-slate-200 shadow-sm" id="q2-box">
+                        <div class="flex items-start gap-3">
+                            <span class="w-7 h-7 bg-sky-100 text-sky-700 rounded-full font-bold flex items-center justify-center text-sm shrink-0">2</span>
+                            <div class="grow">
+                                <p class="font-bold text-slate-800 mb-3">透明膠帶的寬度是 48 毫米，可以說是「幾公分幾毫米」？</p>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                    <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer text-sm">
+                                        <input type="radio" name="q2" value="A" class="text-sky-600"> 8 公分 4 毫米
+                                    </label>
+                                    <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer text-sm">
+                                        <input type="radio" name="q2" value="B" class="text-sky-600"> 4 公分 8 毫米
+                                    </label>
+                                    <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer text-sm">
+                                        <input type="radio" name="q2" value="C" class="text-sky-600"> 48 公分 0 毫米
+                                    </label>
+                                </div>
+                                <div id="q2-feedback" class="mt-3 text-sm font-semibold hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="bg-white/80 p-5 rounded-2xl border border-slate-200 shadow-sm" id="q3-box">
+                        <div class="flex items-start gap-3">
+                            <span class="w-7 h-7 bg-sky-100 text-sky-700 rounded-full font-bold flex items-center justify-center text-sm shrink-0">3</span>
+                            <div class="grow">
+                                <p class="font-bold text-slate-800 mb-3">請比較大小：7 公分 2 毫米  <span class="bg-slate-100 border border-slate-300 px-2 py-0.5 rounded text-sky-600 font-bold">？</span> 75 毫米</p>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <label class="flex items-center justify-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer font-extrabold text-lg">
+                                        <input type="radio" name="q3" value="<" class="text-sky-600"> &lt;
+                                    </label>
+                                    <label class="flex items-center justify-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer font-extrabold text-lg">
+                                        <input type="radio" name="q3" value="=" class="text-sky-600"> =
+                                    </label>
+                                    <label class="flex items-center justify-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer font-extrabold text-lg">
+                                        <input type="radio" name="q3" value=">" class="text-sky-600"> &gt;
+                                    </label>
+                                </div>
+                                <div id="q3-feedback" class="mt-3 text-sm font-semibold hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="bg-white/80 p-5 rounded-2xl border border-slate-200 shadow-sm" id="q4-box">
+                        <div class="flex items-start gap-3">
+                            <span class="w-7 h-7 bg-sky-100 text-sky-700 rounded-full font-bold flex items-center justify-center text-sm shrink-0">4</span>
+                            <div class="grow">
+                                <p class="font-bold text-slate-800 mb-3">封箱膠帶寬度是 60 毫米，這和幾公分一樣長？</p>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                    <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer text-sm">
+                                        <input type="radio" name="q4" value="6" class="text-sky-600"> 6 公分
+                                    </label>
+                                    <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer text-sm">
+                                        <input type="radio" name="q4" value="60" class="text-sky-600"> 60 公分
+                                    </label>
+                                    <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer text-sm">
+                                        <input type="radio" name="q4" value="16" class="text-sky-600"> 16 公分
+                                    </label>
+                                    <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer text-sm">
+                                        <input type="radio" name="q4" value="600" class="text-sky-600"> 600 公分
+                                    </label>
+                                </div>
+                                <div id="q4-feedback" class="mt-3 text-sm font-semibold hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="bg-white/80 p-5 rounded-2xl border border-slate-200 shadow-sm" id="q5-box">
+                        <div class="flex items-start gap-3">
+                            <span class="w-7 h-7 bg-sky-100 text-sky-700 rounded-full font-bold flex items-center justify-center text-sm shrink-0">5</span>
+                            <div class="grow">
+                                <p class="font-bold text-slate-800 mb-3">鮪魚罐頭高 46 毫米，玉米罐頭高 9 公分，哪一個罐頭比較矮？</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer text-sm">
+                                        <input type="radio" name="q5" value="鮪魚罐頭" class="text-sky-600"> 鮪魚罐頭 (46 毫米)
+                                    </label>
+                                    <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer text-sm">
+                                        <input type="radio" name="q5" value="玉米罐頭" class="text-sky-600"> 玉米罐頭 (9 公分)
+                                    </label>
+                                </div>
+                                <div id="q5-feedback" class="mt-3 text-sm font-semibold hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center pt-4">
+                        <button type="submit" class="px-8 py-3 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white font-extrabold rounded-2xl shadow-lg shadow-sky-500/30 transition transform active:scale-95 text-lg">
+                            <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案評分
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Score Summary Box -->
+                <div id="quiz-score-card" class="hidden mt-8 p-6 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-2xl border border-emerald-300 text-center">
+                    <h3 class="text-lg font-bold text-emerald-800">測驗總結反饋</h3>
+                    <div id="score-display" class="text-4xl font-black text-emerald-600 my-2">0 / 100 分</div>
+                    <p id="score-comment" class="text-sm font-medium text-slate-600"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-xs text-slate-300/80 space-y-1">
+        </footer>
+    </div>
+
+    <script>
+        function switchTab(tabIndex) {
+            // Hide all tabs
+            document.getElementById('tab-1').classList.add('hidden');
+            document.getElementById('tab-2').classList.add('hidden');
+            document.getElementById('tab-3').classList.add('hidden');
+
+            // Reset tab button states
+            const btns = [1, 2, 3];
+            btns.forEach(i => {
+                const btn = document.getElementById(`tab-btn-${i}`);
+                btn.className = "px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-white/80 text-slate-700 hover:bg-white";
+            });
+
+            // Active chosen tab
+            document.getElementById(`tab-${tabIndex}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-btn-${tabIndex}`);
+            activeBtn.className = "px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-sky-600 text-white shadow-lg shadow-sky-500/30";
+        }
+
+        function initRulerSVG() {
+            const svgGroup = document.getElementById('ruler-ticks');
+            svgGroup.innerHTML = '';
+
+            // Generate ticks for 10 cm (100 mm)
+            // Each mm is 10 units wide on SVG scale (0 to 1000 total length)
+            for (let mm = 0; mm <= 100; mm++) {
+                const x = mm * 10; // SVG coordinate
+                let tickHeight = 15;
+                let strokeWidth = 1.5;
+                let color = "#64748b";
+
+                if (mm % 10 === 0) { // Centimeter main tick
+                    tickHeight = 45;
+                    strokeWidth = 3;
+                    color = "#0284c7";
+
+                    // Add CM label text
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", x);
+                    text.setAttribute("y", 85);
+                    text.setAttribute("text-anchor", "middle");
+                    text.setAttribute("fill", "#0f172a");
+                    text.setAttribute("font-size", "16");
+                    text.setAttribute("font-weight", "bold");
+                    text.textContent = (mm / 10) + " cm";
+                    svgGroup.appendChild(text);
+
+                } else if (mm % 5 === 0) { // 5mm mid tick
+                    tickHeight = 30;
+                    strokeWidth = 2;
+                    color = "#334155";
+                }
+
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", x);
+                line.setAttribute("y1", 20);
+                line.setAttribute("x2", x);
+                line.setAttribute("y2", 20 + tickHeight);
+                line.setAttribute("stroke", color);
+                line.setAttribute("stroke-width", strokeWidth);
+                line.setAttribute("class", "ruler-tick");
+                svgGroup.appendChild(line);
+            }
+        }
+
+        function updateTapeRuler(val) {
+            const mm = parseInt(val);
+            const cm = Math.floor(mm / 10);
+            const remMm = mm % 10;
+
+            // Update readout labels
+            document.getElementById('slider-readout').textContent = `${mm} 毫米 (mm)`;
+            document.getElementById('tape-label').textContent = `${mm} 毫米`;
+            
+            // Tape graphic width
+            const tapeBar = document.getElementById('tape-graphic');
+            tapeBar.style.width = `${Math.max(mm, 4)}%`;
+
+            // Math break down cards
+            const math1 = document.getElementById('breakdown-math-1');
+            const math2 = document.getElementById('breakdown-math-2');
+
+            math1.innerHTML = `${mm} 毫米 = <span class="text-sky-600">${cm * 10}</span> 毫米 + <span class="text-amber-500">${remMm}</span> 毫米`;
+            math2.innerHTML = `= <span class="text-sky-600">${cm}</span> 公分 <span class="text-amber-500">${remMm}</span> 毫米`;
+        }
+
+        function updateRibbonComparison() {
+            const val1 = parseInt(document.getElementById('ribbon1-slider').value);
+            const val2 = parseInt(document.getElementById('ribbon2-slider').value);
+
+            // Ribbon 1 Calculations
+            const cm1 = Math.floor(val1 / 10);
+            const mm1 = val1 % 10;
+            document.getElementById('ribbon1-text').textContent = `${cm1} 公分 ${mm1} 毫米`;
+            document.getElementById('ribbon1-mm').textContent = `換算 = ${val1} 毫米`;
+            document.getElementById('ribbon1-bar').style.width = `${val1}%`;
+            document.getElementById('ribbon1-bar').textContent = `${val1} mm`;
+
+            // Ribbon 2 Calculations
+            const cm2 = Math.floor(val2 / 10);
+            const mm2 = val2 % 10;
+            document.getElementById('ribbon2-text').textContent = `${cm2} 公分 ${mm2} 毫米`;
+            document.getElementById('ribbon2-mm').textContent = `換算 = ${val2} 毫米`;
+            document.getElementById('ribbon2-bar').style.width = `${val2}%`;
+            document.getElementById('ribbon2-bar').textContent = `${val2} mm`;
+
+            // Compare Operator and Text
+            const resultElem = document.getElementById('comparison-result');
+            const explainElem = document.getElementById('comparison-explain');
+
+            if (val1 < val2) {
+                resultElem.innerHTML = `${val1} 毫米 <span class="text-rose-600 px-2">&lt;</span> ${val2} 毫米`;
+                explainElem.innerHTML = `因此，紅色彩帶 (${val1}毫米) 比 藍色彩帶 (${val2}毫米) <span class="text-rose-600 font-bold">較短</span>！`;
+            } else if (val1 > val2) {
+                resultElem.innerHTML = `${val1} 毫米 <span class="text-emerald-600 px-2">&gt;</span> ${val2} 毫米`;
+                explainElem.innerHTML = `因此，紅色彩帶 (${val1}毫米) 比 藍色彩帶 (${val2}毫米) <span class="text-emerald-600 font-bold">較長</span>！`;
+            } else {
+                resultElem.innerHTML = `${val1} 毫米 <span class="text-amber-600 px-2 font-bold">=</span> ${val2} 毫米`;
+                explainElem.innerHTML = `兩條彩帶長度 <span class="text-amber-600 font-bold">一樣長</span>！`;
+            }
+        }
+
+        const quizAnswers = {
+            q1: "20",
+            q2: "B",
+            q3: "<",
+            q4: "6",
+            q5: "鮪魚罐頭"
+        };
+
+        const quizExplanations = {
+            q1: "答對了！因為 1 公分 = 10 毫米，所以 2 公分就是 2 個 10 毫米，等於 20 毫米。",
+            q2: "答對了！48 毫米可拆成 40 毫米與 8 毫米，40 毫米可換算為 4 公分，合起來就是 4 公分 8 毫米。",
+            q3: "答對了！7 公分 2 毫米等於 72 毫米。比對 72 毫米 < 75 毫米，所以填入 < 符號。",
+            q4: "答對了！60 毫米包含 6 個 10 毫米，6 個 10 毫米就是 6 公分。",
+            q5: "答對了！玉米罐頭 9 公分 = 90 毫米。46 毫米 (鮪魚罐頭) 比 90 毫米矮！"
+        };
+
+        function evaluateQuiz() {
+            let score = 0;
+            const totalQuestions = 5;
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const key = `q${i}`;
+                const selectedOption = document.querySelector(`input[name="${key}"]:checked`);
+                const feedbackElem = document.getElementById(`q${i}-feedback`);
+                const boxElem = document.getElementById(`q${i}-box`);
+
+                feedbackElem.classList.remove('hidden', 'text-emerald-600', 'text-rose-600');
+                boxElem.classList.remove('border-emerald-400', 'border-rose-400', 'bg-emerald-50/50', 'bg-rose-50/50');
+
+                if (selectedOption && selectedOption.value === quizAnswers[key]) {
+                    score += 20;
+                    feedbackElem.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${quizExplanations[key]}`;
+                    feedbackElem.classList.add('text-emerald-600');
+                    boxElem.classList.add('border-emerald-400', 'bg-emerald-50/50');
+                } else {
+                    const wrongText = selectedOption ? "不太對哦，再想想看！" : "尚未選擇答案！";
+                    feedbackElem.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> ${wrongText} (提示：1公分=10毫米)`;
+                    feedbackElem.classList.add('text-rose-600');
+                    boxElem.classList.add('border-rose-400', 'bg-rose-50/50');
+                }
+            }
+
+            // Score card summary
+            const scoreCard = document.getElementById('quiz-score-card');
+            const scoreDisplay = document.getElementById('score-display');
+            const scoreComment = document.getElementById('score-comment');
+            
+            scoreCard.classList.remove('hidden');
+            scoreDisplay.textContent = `${score} / 100 分`;
+
+            if (score === 100) {
+                scoreComment.textContent = "太厲害了！你已經完全掌握長度的化聚與比較觀念！🌟";
+            } else if (score >= 60) {
+                scoreComment.textContent = "做得好！觀察錯題的反饋，再試一次就能拿滿分囉！👍";
+            } else {
+                scoreComment.textContent = "別灰心！可以切換到「探索一」與「探索二」頁面拉拉看滑桿，會更容易理解哦！💪";
+            }
+
+            scoreCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetQuiz() {
+            document.getElementById('quiz-form').reset();
+            document.getElementById('quiz-score-card').classList.add('hidden');
+            
+            for (let i = 1; i <= 5; i++) {
+                const feedbackElem = document.getElementById(`q${i}-feedback`);
+                const boxElem = document.getElementById(`q${i}-box`);
+                feedbackElem.classList.add('hidden');
+                boxElem.classList.remove('border-emerald-400', 'border-rose-400', 'bg-emerald-50/50', 'bg-rose-50/50');
+            }
+        }
+
+        window.onload = function() {
+            initRulerSVG();
+            updateTapeRuler(24);
+            updateRibbonComparison();
+        };
+    </script>
+</body>
+</html>

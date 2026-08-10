@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>加與減未知數 - 新海誠風動態線段圖探究網頁</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Noto Sans TC & Comic Neue -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            dawn: '#3b82f6',
+                            dusk: '#8b5cf6',
+                            twilight: '#ec4899',
+                            cloud: '#f0f9ff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 25%, #4338ca 50%, #6366f1 75%, #a855f7 100%);
+            background-attachment: fixed;
+            font-family: 'Noto Sans TC', sans-serif;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        /* Dreamy sky atmosphere overlay */
+        .shinkai-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(254, 240, 138, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 80% 30%, rgba(244, 114, 182, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(99, 102, 241, 0.2) 0%, transparent 60%);
+        }
+
+        /* Animated floating cloud background element */
+        .cloud-bg {
+            position: absolute;
+            opacity: 0.15;
+            animation: floatClouds 60s linear infinite;
+        }
+
+        @keyframes floatClouds {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100vw); }
+        }
+
+        /* Glassmorphism Card Style */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+        }
+
+        /* Glow Button Effects */
+        .btn-shinkai {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #c026d3 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.35);
+        }
+        .btn-shinkai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.5);
+        }
+
+        .btn-tab {
+            transition: all 0.3s ease;
+        }
+        .btn-tab.active {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Custom Range Input Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            background: #cbd5e1;
+            border-radius: 5px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #6366f1;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -7px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.1s ease, background-color 0.2s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: #4f46e5;
+        }
+
+        /* Diagram Line Glow Animation */
+        .line-glow {
+            filter: drop-shadow(0px 0px 6px rgba(99, 102, 241, 0.6));
+        }
+
+        .missing-box {
+            border: 3px dashed #ec4899;
+            background-color: #fdf2f8;
+            animation: pulseBox 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseBox {
+            0%, 100% { border-color: #ec4899; }
+            50% { border-color: #8b5cf6; }
+        }
+    </style>
+</head>
+<body class="p-2 sm:p-4 md:p-8 relative overflow-x-hidden min-h-screen">
+
+    <!-- Background visual layer -->
+    <div class="shinkai-bg"></div>
+    <div class="cloud-bg top-10 text-white text-9xl"><i class="fa-solid fa-cloud"></i></div>
+    <div class="cloud-bg top-60 text-white text-8xl" style="animation-duration: 90s; animation-delay: -30s;"><i class="fa-solid fa-cloud"></i></div>
+
+    <!-- Main Container -->
+    <div class="max-w-5xl mx-auto relative z-10">
+
+        <!-- 品牌標頭：閒雲數學小棧 -->
+        <div class="w-full max-w-5xl flex items-center justify-start mb-4 px-2">
+            <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+            <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+        </div>
+
+        <!-- Title Header Card -->
+        <header class="glass-card rounded-3xl p-6 mb-6 text-center shadow-2xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-pink-400 rounded-full blur-3xl opacity-30"></div>
+            <div class="absolute -left-10 -top-10 w-40 h-40 bg-indigo-400 rounded-full blur-3xl opacity-30"></div>
+            
+            <span class="inline-block px-4 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs sm:text-sm font-bold mb-2">
+                <i class="fa-solid fa-graduation-cap mr-1"></i> 國小數學 2-3 加與減應用
+            </span>
+            <h1 class="text-2xl sm:text-4xl font-black text-slate-800 tracking-wide mb-2">
+                動態線段圖探究器 <span class="text-indigo-600">✦</span> 未知數解密
+            </h1>
+            <p class="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto">
+                移動滑桿、觀察「部分」與「整體」的長度變化，理解 <span class="text-pink-600 font-bold">括號 (未知數)</span> 在加減法中的意義！
+            </p>
+
+            <!-- Navigation Tabs -->
+            <div class="flex justify-center gap-3 mt-6">
+                <button id="tab-sandbox" onclick="switchTab('sandbox')" class="btn-tab active px-6 py-2.5 rounded-full font-bold text-sm sm:text-base flex items-center gap-2">
+                    <i class="fa-solid fa-sliders"></i> 動態線段圖探究
+                </button>
+                <button id="tab-quiz" onclick="switchTab('quiz')" class="btn-tab bg-white text-slate-700 hover:bg-slate-100 px-6 py-2.5 rounded-full font-bold text-sm sm:text-base flex items-center gap-2 border border-slate-200">
+                    <i class="fa-solid fa-clipboard-question"></i> 歷程評量 (5題)
+                </button>
+            </div>
+        </header>
+
+        <!-- SECTION 1: SANDBOX / EXPLORER -->
+        <main id="section-sandbox" class="space-y-6">
+            
+            <!-- Scenario Selection Buttons -->
+            <div class="glass-card rounded-3xl p-5 shadow-lg">
+                <h2 class="text-base font-bold text-slate-700 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-book-open text-indigo-500"></i> 請選擇學習情境 (課本對應題型)：
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <button onclick="loadScenario(0)" id="scen-btn-0" class="scenario-btn p-3 rounded-2xl text-left border border-slate-200 hover:border-indigo-400 bg-white transition-all shadow-sm">
+                        <div class="text-xs font-bold text-indigo-600">【題型一】加數未知</div>
+                        <div class="text-sm font-black text-slate-800 mt-1">715 + ( ? ) = 1080</div>
+                        <div class="text-xs text-slate-500 mt-1 truncate">魚缸放進幾條魚？</div>
+                    </button>
+                    <button onclick="loadScenario(1)" id="scen-btn-1" class="scenario-btn p-3 rounded-2xl text-left border border-slate-200 hover:border-indigo-400 bg-white transition-all shadow-sm">
+                        <div class="text-xs font-bold text-purple-600">【題型二】被加數未知</div>
+                        <div class="text-sm font-black text-slate-800 mt-1">( ? ) + 2780 = 7870</div>
+                        <div class="text-xs text-slate-500 mt-1 truncate">募款箱原本有多少錢？</div>
+                    </button>
+                    <button onclick="loadScenario(2)" id="scen-btn-2" class="scenario-btn p-3 rounded-2xl text-left border border-slate-200 hover:border-indigo-400 bg-white transition-all shadow-sm">
+                        <div class="text-xs font-bold text-pink-600">【題型三】減數未知</div>
+                        <div class="text-sm font-black text-slate-800 mt-1">2500 - ( ? ) = 860</div>
+                        <div class="text-xs text-slate-500 mt-1 truncate">工廠用掉幾袋麵粉？</div>
+                    </button>
+                    <button onclick="loadScenario(3)" id="scen-btn-3" class="scenario-btn p-3 rounded-2xl text-left border border-slate-200 hover:border-indigo-400 bg-white transition-all shadow-sm">
+                        <div class="text-xs font-bold text-emerald-600">【題型四】被減數未知</div>
+                        <div class="text-sm font-black text-slate-800 mt-1">( ? ) - 2328 = 1172</div>
+                        <div class="text-xs text-slate-500 mt-1 truncate">馬拉松原本準備多少瓶水？</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Interactive Visualization Canvas & Controls Card -->
+            <div class="glass-card rounded-3xl p-6 shadow-xl relative">
+                
+                <!-- Situation Description Banner -->
+                <div class="bg-indigo-50/80 border-l-4 border-indigo-500 p-4 rounded-r-2xl mb-6">
+                    <div class="flex items-start gap-3">
+                        <div class="p-2 bg-indigo-500 text-white rounded-xl shadow">
+                            <i class="fa-solid fa-comment-dots text-xl"></i>
+                        </div>
+                        <div>
+                            <span id="scenario-type-badge" class="px-2.5 py-0.5 rounded text-xs font-bold bg-indigo-200 text-indigo-800">
+                                加數未知情境
+                            </span>
+                            <p id="scenario-text" class="text-slate-800 font-medium text-base sm:text-lg mt-1">
+                                魚缸裡原本有 715 條魚，又放進一些魚後，現在共有 1080 條魚，放進幾條魚？
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Line Diagram (SVG Canvas Container) -->
+                <div class="bg-slate-900/90 rounded-2xl p-6 mb-6 shadow-inner relative overflow-hidden text-white">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs text-slate-400 font-mono tracking-wider">VISUAL LINE DIAGRAM / 動態線段圖</span>
+                        <div class="flex items-center gap-4 text-xs">
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-cyan-400"></span>已知部分</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-pink-400"></span>未知/求值部分</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-amber-300"></span>全部(整體)</span>
+                        </div>
+                    </div>
+
+                    <!-- SVG Container -->
+                    <div class="w-full h-48 sm:h-56 relative flex items-center justify-center">
+                        <svg id="svg-diagram" class="w-full h-full" viewBox="0 0 800 220" preserveAspectRatio="xMidYMid meet">
+                            <!-- SVG Dynamically rendered by JS -->
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Controls & Equation Panel Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Slider & Value Controls -->
+                    <div class="bg-white/80 p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="font-bold text-slate-800 text-sm flex items-center justify-between">
+                            <span><i class="fa-solid fa-sliders text-indigo-500 mr-2"></i>拖動滑桿觀察數據變化：</span>
+                            <span id="slider-hint" class="text-xs text-indigo-600 font-normal">可調範圍：100 ~ 5000</span>
+                        </h3>
+
+                        <!-- Interactive Range Slider -->
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                                <span id="slider-label">改變未知數 ( ? ) 的值：</span>
+                                <span id="slider-value-display" class="text-indigo-600 font-mono text-base">365</span>
+                            </div>
+                            <input type="range" id="interactive-slider" min="10" max="2000" value="365" step="1" oninput="onSliderChange(this.value)">
+                        </div>
+
+                        <!-- Quick Action Toggles -->
+                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span class="text-xs text-slate-500">提示：點擊右側可切換直式思考！</span>
+                            <button onclick="toggleStepByStep()" class="text-xs bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg hover:bg-indigo-200 font-bold transition flex items-center gap-1">
+                                <i id="vertical-btn-icon" class="fa-solid fa-lightbulb"></i>
+                                <span id="vertical-btn-text">顯示直式思考</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Math Notation Card -->
+                    <div class="bg-white/80 p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm mb-3">
+                                <i class="fa-solid fa-calculator text-pink-500 mr-2"></i>數學記法與算式轉換：
+                            </h3>
+
+                            <!-- Sentence Recording -->
+                            <div class="bg-slate-50 p-3 rounded-xl mb-3 border border-slate-200">
+                                <div class="text-xs text-slate-500 mb-1">題目文字紀錄式：</div>
+                                <div id="equation-recorded" class="text-base sm:text-lg font-black text-indigo-900 tracking-wide font-mono">
+                                    715 + ( <span class="text-pink-600 underline">365</span> ) = 1080
+                                </div>
+                            </div>
+
+                            <!-- Calculation Formula -->
+                            <div class="bg-pink-50/70 p-3 rounded-xl border border-pink-200">
+                                <div class="text-xs text-pink-700 mb-1">求解算式 (用已知求未知)：</div>
+                                <div id="equation-solved" class="text-base sm:text-lg font-black text-pink-900 tracking-wide font-mono">
+                                    1080 - 715 = <span class="text-pink-600 font-bold">365</span>
+                                </div>
+                            </div>
+
+                            <!-- Vertical Calculation Display Card -->
+                            <div id="vertical-calc-display" class="hidden mt-3 p-3 bg-indigo-50/90 border border-indigo-200 rounded-xl transition-all">
+                                <div class="text-xs font-bold text-indigo-800 mb-2 flex items-center justify-between">
+                                    <span><i class="fa-solid fa-square-root-variable mr-1"></i>直式思考與位值對齊：</span>
+                                    <span class="text-xs text-indigo-500 font-normal">千、百、十、個位</span>
+                                </div>
+                                <div class="flex justify-center items-center py-2">
+                                    <div class="font-mono text-xl sm:text-2xl tracking-widest text-right inline-block bg-white px-6 py-3 rounded-xl shadow-sm border border-slate-200 text-slate-800 min-w-[150px]">
+                                        <div id="vert-num1">1080</div>
+                                        <div class="flex items-center justify-between gap-3 border-b-2 border-slate-800 pb-1">
+                                            <span id="vert-op" class="text-indigo-600 font-bold">-</span>
+                                            <span id="vert-num2">715</span>
+                                        </div>
+                                        <div id="vert-result" class="pt-1 text-pink-600 font-bold">365</div>
+                                    </div>
+                                </div>
+                                <div class="text-xs text-slate-700 mt-2 bg-white/80 p-2.5 rounded-lg border border-indigo-100 flex items-start gap-2">
+                                    <i class="fa-solid fa-lightbulb text-amber-500 mt-0.5 text-sm"></i>
+                                    <span id="vert-hint-text">💡 思考提示：求部分要用全部減去已知部分。</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Concept Explanation -->
+                        <div id="concept-explanation" class="mt-3 text-xs text-slate-600 bg-amber-50 p-2.5 rounded-lg border border-amber-200 flex items-start gap-2">
+                            <i class="fa-solid fa-circle-info text-amber-500 mt-0.5"></i>
+                            <span>觀念重點：全部的數量減掉原有的數量，剩下的就是放進去的數量！</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+
+        <!-- SECTION 2: FORMATIVE QUIZ -->
+        <main id="section-quiz" class="space-y-6 hidden">
+            
+            <!-- Quiz Progress & Score Card -->
+            <div class="glass-card rounded-3xl p-6 shadow-xl flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-black text-slate-800">
+                        <i class="fa-solid fa-award text-amber-500 mr-2"></i>加與減未知數 - 觀念檢測挑戰
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-600 mt-1">測驗包含 5 道精選實踐題，即時核對並觀看動畫線段圖診斷。</p>
+                </div>
+                <div class="flex items-center gap-4 bg-white/90 px-5 py-3 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="text-center">
+                        <div class="text-xs text-slate-400 font-bold">目前得分</div>
+                        <div id="quiz-score" class="text-2xl font-black text-indigo-600">0 / 100</div>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <button onclick="resetQuiz()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-xl transition">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> 重新測驗
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Questions Container -->
+            <div id="quiz-container" class="space-y-6">
+                <!-- Dynamically Rendered Questions via JS -->
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-xs text-white/80 pb-6">
+            <p>Designed for Elementary School Mathematics Learning • AI 教育網頁專家極致打造</p>
+        </footer>
+
+    </div>
+
+    <script>
+        
+        // Scenario Data Structure representing the 4 key textbook problems
+        const scenarios = [
+            {
+                type: '加數未知',
+                typeBadgeClass: 'bg-indigo-100 text-indigo-800',
+                title: '1. 魚缸原有 715 條魚，又放進一些魚後，現在共有 1080 條魚，放進幾條魚？',
+                mode: 'add_unknown_part2', // A + (?) = Whole
+                part1Name: '原有的魚',
+                part1Value: 715,
+                part2Name: '放進的魚 (未知)',
+                part2Value: 365, // default
+                wholeName: '現在共有 (全部)',
+                wholeValue: 1080,
+                minSlider: 50,
+                maxSlider: 800,
+                step: 5,
+                sliderLabel: '調整放進魚的數量 ( ? )：',
+                formulaRecord: (p1, p2, w) => `${p1} + ( <span class="text-pink-600 font-bold">${p2}</span> ) = ${w}`,
+                formulaSolve: (p1, p2, w) => `${w} - ${p1} = <span class="text-pink-600 font-bold">${p2}</span>`,
+                explanation: '全部的魚 (1080) 減去原有的魚 (715)，剩下的就是放進去的魚！'
+            },
+            {
+                type: '被加數未知',
+                typeBadgeClass: 'bg-purple-100 text-purple-800',
+                title: '2. 募款箱裡原本有一些錢，又募到 2780 元後，最後結算共有 7870 元，原本有多少元？',
+                mode: 'add_unknown_part1', // (?) + B = Whole
+                part1Name: '原本的錢 (未知)',
+                part1Value: 5090, // default
+                part2Name: '募到的錢',
+                part2Value: 2780,
+                wholeName: '最後共有 (全部)',
+                wholeValue: 7870,
+                minSlider: 1000,
+                maxSlider: 6000,
+                step: 10,
+                sliderLabel: '調整原本有的金額 ( ? )：',
+                formulaRecord: (p1, p2, w) => `( <span class="text-pink-600 font-bold">${p1}</span> ) + ${p2} = ${w}`,
+                formulaSolve: (p1, p2, w) => `${w} - ${p2} = <span class="text-pink-600 font-bold">${p1}</span>`,
+                explanation: '全部的錢 (7870) 減去後來募到的錢 (2780)，就是原本有的錢！'
+            },
+            {
+                type: '減數未知',
+                typeBadgeClass: 'bg-pink-100 text-pink-800',
+                title: '3. 工廠進貨 2500 袋麵粉，製造麵包用掉一些後，還剩下 860 袋，用掉多少袋？',
+                mode: 'sub_unknown_part1', // Whole - (?) = Part2
+                part1Name: '用掉的麵粉 (未知)',
+                part1Value: 1640,
+                part2Name: '剩下的麵粉',
+                part2Value: 860,
+                wholeName: '原有的麵粉 (全部)',
+                wholeValue: 2500,
+                minSlider: 100,
+                maxSlider: 2000,
+                step: 10,
+                sliderLabel: '調整用掉的麵粉數 ( ? )：',
+                formulaRecord: (p1, p2, w) => `${w} - ( <span class="text-pink-600 font-bold">${p1}</span> ) = ${p2}`,
+                formulaSolve: (p1, p2, w) => `${w} - ${p2} = <span class="text-pink-600 font-bold">${p1}</span>`,
+                explanation: '全部進貨的麵粉 (2500) 減去剩下的麵粉 (860)，就是用掉的麵粉！'
+            },
+            {
+                type: '被減數未知',
+                typeBadgeClass: 'bg-emerald-100 text-emerald-800',
+                title: '4. 馬拉松主辦單位準備一些礦泉水，發了 2328 瓶後，還剩下 1172 瓶，原本準備多少瓶？',
+                mode: 'sub_unknown_whole', // (?) - B = C
+                part1Name: '發出的數量',
+                part1Value: 2328,
+                part2Name: '剩下的數量',
+                part2Value: 1172,
+                wholeName: '原本準備 (全部未知)',
+                wholeValue: 3500,
+                minSlider: 500,
+                maxSlider: 3000,
+                step: 10,
+                sliderLabel: '調整剩下礦泉水數量：',
+                formulaRecord: (p1, p2, w) => `( <span class="text-pink-600 font-bold">${w}</span> ) - ${p1} = ${p2}`,
+                formulaSolve: (p1, p2, w) => `${p1} + ${p2} = <span class="text-pink-600 font-bold">${w}</span>`,
+                explanation: '發出的數量加上剩下的數量，合起來就是原本準備的全部數量！'
+            }
+        ];
+
+        let currentScenarioIdx = 0;
+        let showVerticalCalc = false;
+
+        
+        // Render SVG Line Diagram based on active state parameters
+        function renderSvgDiagram() {
+            const sc = scenarios[currentScenarioIdx];
+            const svg = document.getElementById('svg-diagram');
+            
+            let part1 = sc.part1Value;
+            let part2 = sc.part2Value;
+            let whole = sc.wholeValue;
+
+            // Compute SVG proportions
+            const totalWidth = 680;
+            const startX = 60;
+            const lineY = 110;
+            const barHeight = 28;
+
+            let ratio1 = part1 / whole;
+            let ratio2 = part2 / whole;
+
+            let width1 = Math.max(40, totalWidth * ratio1);
+            let width2 = Math.max(40, totalWidth * ratio2);
+
+            // Re-normalize if sum differs slightly
+            const actualRenderWidth = width1 + width2;
+
+            // Highlight status
+            const isPart1Unknown = (sc.mode === 'add_unknown_part1');
+            const isPart2Unknown = (sc.mode === 'add_unknown_part2' || sc.mode === 'sub_unknown_part1');
+            const isWholeUnknown = (sc.mode === 'sub_unknown_whole');
+
+            svg.innerHTML = `
+                <!-- Background Grid Light -->
+                <defs>
+                    <linearGradient id="gradCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#38bdf8" />
+                        <stop offset="100%" stop-color="#0284c7" />
+                    </linearGradient>
+                    <linearGradient id="gradPink" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#f472b6" />
+                        <stop offset="100%" stop-color="#db2777" />
+                    </linearGradient>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <!-- Part 1 Bar Segment -->
+                <rect x="${startX}" y="${lineY - barHeight/2}" width="${width1}" height="${barHeight}" rx="8" 
+                      fill="${isPart1Unknown ? 'url(#gradPink)' : 'url(#gradCyan)'}" 
+                      class="transition-all duration-300 ${isPart1Unknown ? 'line-glow' : ''}" />
+                <text x="${startX + width1/2}" y="${lineY + 5}" text-anchor="middle" fill="#ffffff" font-weight="bold" font-size="14">
+                    ${part1}
+                </text>
+
+                <!-- Part 2 Bar Segment -->
+                <rect x="${startX + width1 + 4}" y="${lineY - barHeight/2}" width="${width2 - 4}" height="${barHeight}" rx="8" 
+                      fill="${isPart2Unknown ? 'url(#gradPink)' : 'url(#gradCyan)'}" 
+                      class="transition-all duration-300 ${isPart2Unknown ? 'line-glow' : ''}" />
+                <text x="${startX + width1 + width2/2}" y="${lineY + 5}" text-anchor="middle" fill="#ffffff" font-weight="bold" font-size="14">
+                    ${part2}
+                </text>
+
+                <!-- Upper Label Bracket for Part 1 -->
+                <path d="M ${startX} ${lineY - 22} Q ${startX} ${lineY - 35} ${startX + width1/2} ${lineY - 35} Q ${startX + width1} ${lineY - 35} ${startX + width1} ${lineY - 22}" 
+                      fill="none" stroke="${isPart1Unknown ? '#f472b6' : '#38bdf8'}" stroke-width="2" />
+                <text x="${startX + width1/2}" y="${lineY - 42}" text-anchor="middle" fill="${isPart1Unknown ? '#f472b6' : '#cbd5e1'}" font-size="13" font-weight="bold">
+                    ${sc.part1Name}: ${isPart1Unknown ? '(' + part1 + ')' : part1}
+                </text>
+
+                <!-- Upper Label Bracket for Part 2 -->
+                <path d="M ${startX + width1 + 4} ${lineY - 22} Q ${startX + width1 + 4} ${lineY - 35} ${startX + width1 + width2/2} ${lineY - 35} Q ${startX + width1 + width2} ${lineY - 35} ${startX + width1 + width2} ${lineY - 22}" 
+                      fill="none" stroke="${isPart2Unknown ? '#f472b6' : '#38bdf8'}" stroke-width="2" />
+                <text x="${startX + width1 + width2/2}" y="${lineY - 42}" text-anchor="middle" fill="${isPart2Unknown ? '#f472b6' : '#cbd5e1'}" font-size="13" font-weight="bold">
+                    ${sc.part2Name}: ${isPart2Unknown ? '(' + part2 + ')' : part2}
+                </text>
+
+                <!-- Lower Overall Bracket for Whole Total -->
+                <path d="M ${startX} ${lineY + 22} Q ${startX} ${lineY + 45} ${startX + actualRenderWidth/2} ${lineY + 45} Q ${startX + actualRenderWidth} ${lineY + 45} ${startX + actualRenderWidth} ${lineY + 22}" 
+                      fill="none" stroke="${isWholeUnknown ? '#f472b6' : '#fde047'}" stroke-width="2.5" stroke-dasharray="${isWholeUnknown ? '6,4' : 'none'}" />
+                <text x="${startX + actualRenderWidth/2}" y="${lineY + 68}" text-anchor="middle" fill="${isWholeUnknown ? '#f472b6' : '#fde047'}" font-size="15" font-weight="900">
+                    ${sc.wholeName}: ${isWholeUnknown ? '(' + whole + ')' : whole}
+                </text>
+            `;
+        }
+
+
+        function loadScenario(idx) {
+            currentScenarioIdx = idx;
+            const sc = scenarios[idx];
+
+            // Highlight Scenario Active Button
+            document.querySelectorAll('.scenario-btn').forEach((btn, i) => {
+                if (i === idx) {
+                    btn.classList.add('border-indigo-500', 'bg-indigo-50/50', 'ring-2', 'ring-indigo-300');
+                } else {
+                    btn.classList.remove('border-indigo-500', 'bg-indigo-50/50', 'ring-2', 'ring-indigo-300');
+                }
+            });
+
+            // Update UI Labels
+            document.getElementById('scenario-type-badge').className = `px-2.5 py-0.5 rounded text-xs font-bold ${sc.typeBadgeClass}`;
+            document.getElementById('scenario-type-badge').innerText = sc.type;
+            document.getElementById('scenario-text').innerText = sc.title;
+
+            // Configure Slider
+            const slider = document.getElementById('interactive-slider');
+            slider.min = sc.minSlider;
+            slider.max = sc.maxSlider;
+            slider.step = sc.step;
+
+            if (sc.mode === 'add_unknown_part2') {
+                slider.value = sc.part2Value;
+            } else if (sc.mode === 'add_unknown_part1') {
+                slider.value = sc.part1Value;
+            } else if (sc.mode === 'sub_unknown_part1') {
+                slider.value = sc.part1Value;
+            } else if (sc.mode === 'sub_unknown_whole') {
+                slider.value = sc.part2Value;
+            }
+
+            document.getElementById('slider-label').innerText = sc.sliderLabel;
+            onSliderChange(slider.value);
+        }
+
+        function onSliderChange(val) {
+            const sc = scenarios[currentScenarioIdx];
+            const numVal = parseInt(val);
+            document.getElementById('slider-value-display').innerText = numVal;
+
+            if (sc.mode === 'add_unknown_part2') {
+                sc.part2Value = numVal;
+                sc.wholeValue = sc.part1Value + sc.part2Value;
+            } else if (sc.mode === 'add_unknown_part1') {
+                sc.part1Value = numVal;
+                sc.wholeValue = sc.part1Value + sc.part2Value;
+            } else if (sc.mode === 'sub_unknown_part1') {
+                sc.part1Value = numVal;
+                sc.wholeValue = sc.part1Value + sc.part2Value;
+            } else if (sc.mode === 'sub_unknown_whole') {
+                sc.part2Value = numVal;
+                sc.wholeValue = sc.part1Value + sc.part2Value;
+            }
+
+            // Update Equations Display
+            document.getElementById('equation-recorded').innerHTML = sc.formulaRecord(sc.part1Value, sc.part2Value, sc.wholeValue);
+            document.getElementById('equation-solved').innerHTML = sc.formulaSolve(sc.part1Value, sc.part2Value, sc.wholeValue);
+            document.getElementById('concept-explanation').innerHTML = `<i class="fa-solid fa-circle-info text-amber-500 mt-0.5"></i><span>觀念解析：${sc.explanation}</span>`;
+
+            renderSvgDiagram();
+            updateVerticalCalc();
+        }
+
+        function toggleStepByStep() {
+            showVerticalCalc = !showVerticalCalc;
+            const vertCard = document.getElementById('vertical-calc-display');
+            const btnText = document.getElementById('vertical-btn-text');
+            const btnIcon = document.getElementById('vertical-btn-icon');
+            
+            if (showVerticalCalc) {
+                if (vertCard) vertCard.classList.remove('hidden');
+                if (btnText) btnText.innerText = "隱藏直式思考";
+                if (btnIcon) btnIcon.className = "fa-solid fa-eye-slash text-indigo-600";
+                updateVerticalCalc();
+            } else {
+                if (vertCard) vertCard.classList.add('hidden');
+                if (btnText) btnText.innerText = "顯示直式思考";
+                if (btnIcon) btnIcon.className = "fa-solid fa-lightbulb";
+            }
+        }
+
+        function updateVerticalCalc() {
+            if (!showVerticalCalc) return;
+            const sc = scenarios[currentScenarioIdx];
+            let top, op, bottom, res, hint;
+
+            if (sc.mode === 'add_unknown_part2') {
+                top = sc.wholeValue;
+                op = '-';
+                bottom = sc.part1Value;
+                res = sc.part2Value;
+                hint = `求「放進的魚 (部分)」，用「全部 (${sc.wholeValue})」減去「原有的魚 (${sc.part1Value})」。`;
+            } else if (sc.mode === 'add_unknown_part1') {
+                top = sc.wholeValue;
+                op = '-';
+                bottom = sc.part2Value;
+                res = sc.part1Value;
+                hint = `求「原本的錢 (部分)」，用「全部 (${sc.wholeValue})」減去「募到的錢 (${sc.part2Value})」。`;
+            } else if (sc.mode === 'sub_unknown_part1') {
+                top = sc.wholeValue;
+                op = '-';
+                bottom = sc.part2Value;
+                res = sc.part1Value;
+                hint = `求「用掉的麵粉 (部分)」，用「全部 (${sc.wholeValue})」減去「剩下的麵粉 (${sc.part2Value})」。`;
+            } else if (sc.mode === 'sub_unknown_whole') {
+                top = sc.part1Value;
+                op = '+';
+                bottom = sc.part2Value;
+                res = sc.wholeValue;
+                hint = `求「原本準備的礦泉水 (全部)」，把「發出的 (${sc.part1Value})」與「剩下的 (${sc.part2Value})」加起來。`;
+            }
+
+            const elNum1 = document.getElementById('vert-num1');
+            const elOp = document.getElementById('vert-op');
+            const elNum2 = document.getElementById('vert-num2');
+            const elRes = document.getElementById('vert-result');
+            const elHint = document.getElementById('vert-hint-text');
+
+            if (elNum1) elNum1.innerText = top;
+            if (elOp) elOp.innerText = op;
+            if (elNum2) elNum2.innerText = bottom;
+            if (elRes) elRes.innerText = res;
+            if (elHint) elHint.innerText = hint;
+        }
+
+        const quizQuestions = [
+            {
+                id: 1,
+                title: "【加數未知】小明原有一些點數 450 點，玩遊戲後又獲得一些點數，現在共有 920 點。請問他獲得了多少點？",
+                options: [
+                    { text: "920 + 450 = 1370 點", correct: false, reason: "錯誤！920 是獲得之後的「全部」，求部分應該用減法。" },
+                    { text: "920 - 450 = 470 點", correct: true, reason: "正確！全部點數 (920) 減去原本的點數 (450)，就是獲得的點數 (470)。" },
+                    { text: "450 + 920 = 1370 點", correct: false, reason: "錯誤！不能直接把原有的點數與全部相加。" }
+                ],
+                explanation: "算式記錄為 450 + ( ? ) = 920，計算時用 920 - 450 = 470。"
+            },
+            {
+                id: 2,
+                title: "【被加數未知】存錢筒裡原本有一些錢，今天存入 2530 元後，現在共有 5420 元。存錢筒原本有多少元？",
+                options: [
+                    { text: "5420 - 2530 = 2890 元", correct: true, reason: "正確！全部的錢 (5420) 減去今天存入的 (2530)，就是原本的金額 (2890)。" },
+                    { text: "5420 + 2530 = 7950 元", correct: false, reason: "錯誤！原本的錢不可能比最後總金額 (5420) 還要多。" },
+                    { text: "2530 - 1000 = 1530 元", correct: false, reason: "錯誤！算式數字不對。" }
+                ],
+                explanation: "算式記錄為 ( ? ) + 2530 = 5420，計算時用 5420 - 2530 = 2890。"
+            },
+            {
+                id: 3,
+                title: "【減數未知】飲料店準備了 2300 杯飲料，賣掉一些後，剩下 970 杯。飲料店賣掉了幾杯飲料？",
+                options: [
+                    { text: "2300 + 970 = 3270 杯", correct: false, reason: "錯誤！賣掉的杯數不能超過一開始準備的總數 (2300)。" },
+                    { text: "2300 - 970 = 1330 杯", correct: true, reason: "正確！總數量 (2300) 減去剩下的數量 (970)，就是賣掉的數量 (1330)。" },
+                    { text: "970 + 2300 = 3270 杯", correct: false, reason: "錯誤！賣掉的數量用減法計算。" }
+                ],
+                explanation: "算式記錄為 2300 - ( ? ) = 970，計算時用 2300 - 970 = 1330。"
+            },
+            {
+                id: 4,
+                title: "【被減數未知】博物館裡原本有一些明信片，發了 1583 張後，還剩下 1417 張。原本有多少張明信片？",
+                options: [
+                    { text: "1583 - 1417 = 166 張", correct: false, reason: "錯誤！發出的加剩下的才是原本發放前的全部總數。" },
+                    { text: "1583 + 1417 = 3000 張", correct: true, reason: "正確！發出的數量 (1583) 加上剩下的數量 (1417)，合起來就是原本全部的數量 (3000)。" },
+                    { text: "3000 - 1583 = 1417 張", correct: false, reason: "這是驗算式，題目要求計算原本總量的算式。" }
+                ],
+                explanation: "算式記錄為 ( ? ) - 1583 = 1417，計算時用 1583 + 1417 = 3000。"
+            },
+            {
+                id: 5,
+                title: "【觀念綜合題】線段圖中，「全部 (整體)」由「部分 A」與「部分 B」組成。若已知「部分 A」與「全部」，求「部分 B」該怎麼算？",
+                options: [
+                    { text: "部分 A + 全部", correct: false, reason: "錯誤！這樣算出來會大於全部。" },
+                    { text: "全部 - 部分 A", correct: true, reason: "正確！全部減去已知的部分，剩下的就是另一個部分！" },
+                    { text: "部分 A × 2", correct: false, reason: "錯誤！兩部分長度不一定相等。" }
+                ],
+                explanation: "部分 + 部分 = 全部 ➔ 全部的數量減去已知的一部分，就是未知的另一部分。"
+            }
+        ];
+
+        let quizUserAnswers = {};
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizQuestions.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-3xl p-6 shadow-md transition-all";
+                card.id = `quiz-card-${q.id}`;
+
+                let optionsHtml = q.options.map((opt, oIdx) => `
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 hover:border-indigo-400 bg-white cursor-pointer transition">
+                        <input type="radio" name="question-${q.id}" value="${oIdx}" onclick="selectAnswer(${q.id}, ${oIdx})" class="mt-1 text-indigo-600 focus:ring-indigo-500">
+                        <span class="text-sm text-slate-800 font-medium">${opt.text}</span>
+                    </label>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-4 mb-4">
+                        <h3 class="text-base font-bold text-slate-800">
+                            <span class="inline-block px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-700 text-xs mr-2">第 ${idx + 1} 題</span>
+                            ${q.title}
+                        </h3>
+                    </div>
+                    <div class="space-y-2.5 mb-4">
+                        ${optionsHtml}
+                    </div>
+                    <div id="quiz-feedback-${q.id}" class="hidden p-4 rounded-xl text-xs sm:text-sm font-medium"></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectAnswer(qId, optionIdx) {
+            quizUserAnswers[qId] = optionIdx;
+            const q = quizQuestions.find(item => item.id === qId);
+            const selectedOpt = q.options[optionIdx];
+            const feedbackEl = document.getElementById(`quiz-feedback-${qId}`);
+
+            feedbackEl.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200');
+            feedbackEl.classList.add('border');
+
+            if (selectedOpt.correct) {
+                feedbackEl.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+                feedbackEl.innerHTML = `
+                    <div class="flex items-center gap-2 font-bold mb-1">
+                        <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i> 回答正確！ (+20分)
+                    </div>
+                    <div>${selectedOpt.reason}</div>
+                    <div class="mt-1 text-slate-500 text-xs">💡 觀念解析：${q.explanation}</div>
+                `;
+            } else {
+                feedbackEl.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+                feedbackEl.innerHTML = `
+                    <div class="flex items-center gap-2 font-bold mb-1">
+                        <i class="fa-solid fa-circle-xmark text-rose-600 text-base"></i> 再思考看看！
+                    </div>
+                    <div>${selectedOpt.reason}</div>
+                    <div class="mt-1 text-slate-500 text-xs">💡 觀念解析：${q.explanation}</div>
+                `;
+            }
+
+            calculateScore();
+        }
+
+        function calculateScore() {
+            let total = 0;
+            quizQuestions.forEach(q => {
+                const userAns = quizUserAnswers[q.id];
+                if (userAns !== undefined && q.options[userAns].correct) {
+                    total += 20;
+                }
+            });
+            document.getElementById('quiz-score').innerText = `${total} / 100`;
+        }
+
+        function resetQuiz() {
+            quizUserAnswers = {};
+            calculateScore();
+            renderQuiz();
+        }
+
+
+        function switchTab(tabName) {
+            const btnSandbox = document.getElementById('tab-sandbox');
+            const btnQuiz = document.getElementById('tab-quiz');
+            const secSandbox = document.getElementById('section-sandbox');
+            const secQuiz = document.getElementById('section-quiz');
+
+            if (tabName === 'sandbox') {
+                btnSandbox.className = "btn-tab active px-6 py-2.5 rounded-full font-bold text-sm sm:text-base flex items-center gap-2";
+                btnQuiz.className = "btn-tab bg-white text-slate-700 hover:bg-slate-100 px-6 py-2.5 rounded-full font-bold text-sm sm:text-base flex items-center gap-2 border border-slate-200";
+                secSandbox.classList.remove('hidden');
+                secQuiz.classList.add('hidden');
+            } else {
+                btnQuiz.className = "btn-tab active px-6 py-2.5 rounded-full font-bold text-sm sm:text-base flex items-center gap-2";
+                btnSandbox.className = "btn-tab bg-white text-slate-700 hover:bg-slate-100 px-6 py-2.5 rounded-full font-bold text-sm sm:text-base flex items-center gap-2 border border-slate-200";
+                secQuiz.classList.remove('hidden');
+                secSandbox.classList.add('hidden');
+            }
+        }
+
+        // Initialize App on Window Load
+        window.onload = function() {
+            loadScenario(0);
+            renderQuiz();
+        };
+    </script>
+</body>
+</html>
