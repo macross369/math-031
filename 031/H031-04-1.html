@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二位數乘以一位數：乘法直式與位值探索</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 35%, #e0c3fc 70%, #fbc2eb 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #2d3748;
+            overflow-x: hidden;
+        }
+
+        /* Shinkai style soft glowing cards with glassmorphism */
+        .shinkai-glass {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+        }
+
+        .shinkai-glass-dark {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Animated cloud float effect */
+        @keyframes floatCloud {
+            0% { transform: translateX(-5%) translateY(0px); }
+            50% { transform: translateX(5%) translateY(-10px); }
+            100% { transform: translateX(-5%) translateY(0px); }
+        }
+
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.35;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.8) 0%, transparent 40%),
+                radial-gradient(circle at 80% 60%, rgba(255, 255, 255, 0.6) 0%, transparent 50%);
+            animation: floatCloud 20s ease-in-out infinite;
+        }
+
+        /* Custom coins styling */
+        .coin-10 {
+            background: linear-gradient(135deg, #fce38a 0%, #f38181 100%);
+            box-shadow: 0 4px 10px rgba(243, 129, 129, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+        }
+
+        .coin-1 {
+            background: linear-gradient(135deg, #a8edf8 0%, #5580eb 100%);
+            box-shadow: 0 4px 10px rgba(85, 128, 235, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Number slider styling */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2), 0 0 0 4px #66a6ff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 0 6px #66a6ff;
+        }
+
+        /* Vertical multiplication grid alignment */
+        .math-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 2.5rem);
+            gap: 2px;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen pb-12">
+    <!-- Floating Background Layer -->
+    <div class="floating-bg"></div>
+
+    <!-- Main Outer Container -->
+    <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        
+        <!-- 修改：使用轉換後的 Google Drive 直接連結 -->
+        <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
+            <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+            <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+        </div>
+
+        <!-- Header Banner -->
+        <header class="shinkai-glass rounded-3xl p-6 sm:p-8 mb-8 text-center border-b-4 border-white/60">
+            <div class="inline-block px-4 py-1.5 bg-blue-500/10 text-blue-700 font-semibold rounded-full text-sm mb-3">
+                <i class="fa-solid fa-graduation-cap mr-2"></i>國小數學 4-1互動探究教學
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 tracking-tight">
+                二位數乘以一位數：乘法直式與位值探索
+            </h1>
+            <p class="mt-2 text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
+                透過拖動滑桿觀察錢幣排列，理解「幾個十」與「幾個一」的乘法運算過程，並掌握直式計算技巧！
+            </p>
+        </header>
+
+        <!-- Interactive Section Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Control & Visualizer Panel (7 Cols) -->
+            <div class="lg:col-span-7 space-y-6">
+                
+                <!-- Interactive Parameter Control Card -->
+                <div class="shinkai-glass rounded-2xl p-6 border border-white/80">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-sliders text-indigo-500 mr-2"></i> 題目數值設定
+                    </h2>
+
+                    <!-- Slider 1: Tens Place -->
+                    <div class="mb-5">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="font-medium text-gray-700">十位數字 (幾個 10 元)：</label>
+                            <span id="tensVal" class="text-lg font-bold text-orange-600 bg-orange-50 px-3 py-0.5 rounded-lg border border-orange-200">3</span>
+                        </div>
+                        <input id="tensSlider" type="range" min="1" max="9" value="3" class="w-full h-2 bg-orange-100 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <!-- Slider 2: Ones Place -->
+                    <div class="mb-5">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="font-medium text-gray-700">個位數字 (幾個 1 元)：</label>
+                            <span id="onesVal" class="text-lg font-bold text-blue-600 bg-blue-50 px-3 py-0.5 rounded-lg border border-blue-200">2</span>
+                        </div>
+                        <input id="onesSlider" type="range" min="0" max="9" value="2" class="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <!-- Slider 3: Multiplier -->
+                    <div class="mb-2">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="font-medium text-gray-700">乘以幾倍 (買幾份/幾倍)：</label>
+                            <span id="multiplierVal" class="text-lg font-bold text-purple-600 bg-purple-50 px-3 py-0.5 rounded-lg border border-purple-200">4</span>
+                        </div>
+                        <input id="multiplierSlider" type="range" min="1" max="9" value="4" class="w-full h-2 bg-purple-100 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <div class="mt-4 p-3 bg-white/60 rounded-xl text-center font-bold text-lg text-gray-800 border border-white">
+                        當前算式： <span id="mathEquation" class="text-2xl font-black">32 × 4 = ?</span>
+                    </div>
+                </div>
+
+                <!-- Dynamic Money Visualizer Card -->
+                <div class="shinkai-glass rounded-2xl p-6 border border-white/80">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                            <i class="fa-solid fa-coins text-amber-500 mr-2"></i> 錢幣實體圖像對應
+                        </h2>
+                        <span class="text-xs font-semibold px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full">動態觀察</span>
+                    </div>
+
+                    <div id="coinContainer" class="space-y-3 max-h-[380px] overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Coins rows will be injected by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Place Value & Vertical Math Panel (5 Cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- Vertical Algorithm Breakdown Card -->
+                <div class="shinkai-glass rounded-2xl p-6 border border-white/80">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-calculator text-emerald-500 mr-2"></i> 直式記錄與位值拆解
+                    </h2>
+
+                    <!-- Place Value Headers -->
+                    <div class="flex justify-center mb-2">
+                        <div class="math-grid text-sm text-gray-500 border-b border-gray-300 pb-1">
+                            <div>百</div>
+                            <div>十</div>
+                            <div>個</div>
+                        </div>
+                    </div>
+
+                    <!-- Main Vertical Display -->
+                    <div class="flex justify-center mb-4">
+                        <div class="math-grid text-2xl text-gray-800 leading-relaxed">
+                            <!-- Line 1: Tens & Ones -->
+                            <div id="vHundred1" class="text-gray-300"></div>
+                            <div id="vTen1" class="text-orange-500 font-bold">3</div>
+                            <div id="vOne1" class="text-blue-600 font-bold">2</div>
+
+                            <!-- Line 2: Multiplier -->
+                            <div class="text-gray-400">×</div>
+                            <div></div>
+                            <div id="vMultiplier" class="text-purple-600 font-bold">4</div>
+
+                            <!-- Line Divider -->
+                            <div class="col-span-3 border-b-2 border-gray-800 my-1"></div>
+
+                            <!-- Step 1: Ones breakdown -->
+                            <div id="vStep1_H" class="text-xs text-gray-400 flex items-center justify-center"></div>
+                            <div id="vStep1_T" class="text-sm font-semibold text-blue-500"></div>
+                            <div id="vStep1_O" class="text-sm font-semibold text-blue-500">8</div>
+
+                            <!-- Step 2: Tens breakdown -->
+                            <div id="vStep2_H" class="text-sm font-semibold text-orange-500">1</div>
+                            <div id="vStep2_T" class="text-sm font-semibold text-orange-500">2</div>
+                            <div id="vStep2_O" class="text-sm font-semibold text-gray-400">0</div>
+
+                            <!-- Line Divider -->
+                            <div class="col-span-3 border-b-2 border-indigo-400 my-1"></div>
+
+                            <!-- Final Total -->
+                            <div id="vTotal_H" class="text-2xl font-black text-emerald-600">1</div>
+                            <div id="vTotal_T" class="text-2xl font-black text-emerald-600">2</div>
+                            <div id="vTotal_O" class="text-2xl font-black text-emerald-600">8</div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Explanatory Notes -->
+                    <div class="space-y-2 text-sm bg-white/70 p-4 rounded-xl border border-white">
+                        <div class="flex items-start">
+                            <span class="w-3 h-3 rounded-full bg-blue-500 mt-1 mr-2 shrink-0"></span>
+                            <p id="explainStep1" class="text-gray-700">先算個位：2 個 1 的 4 倍是 <strong class="text-blue-600">8</strong> 個 1。</p>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="w-3 h-3 rounded-full bg-indigo-500 mt-1 mr-2 shrink-0"></span>
+                            <p id="explainStep2" class="text-gray-700">再算十位：3 個 10 的 4 倍是 <strong class="text-indigo-600">12</strong> 個 10，也就是 120。</p>
+                        </div>
+                        <div class="flex items-start border-t border-gray-200 pt-2">
+                            <span class="w-3 h-3 rounded-full bg-emerald-500 mt-1 mr-2 shrink-0"></span>
+                            <p id="explainTotal" class="text-gray-900 font-bold">合起來共是：128</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Carrying Insight Card -->
+                <div class="shinkai-glass rounded-2xl p-5 border border-white/80 bg-gradient-to-br from-indigo-50/50 to-purple-50/50">
+                    <h3 class="font-bold text-indigo-900 mb-2 flex items-center text-sm sm:text-base">
+                        <i class="fa-solid fa-lightbulb text-amber-500 mr-2"></i> 教學探究小提示
+                    </h3>
+                    <p id="insightText" class="text-xs sm:text-sm text-gray-700 leading-relaxed">
+                        當個位或十位計算結果滿 10 個時，記得要換成高一位值的單位（換成 10 元硬幣或 100 元鈔票）進行「進位」喔！
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Quiz & Formative Assessment Section -->
+        <section class="mt-12 mb-8">
+            <div class="shinkai-glass rounded-3xl p-6 sm:p-8 border border-white/80">
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 pb-4 border-b border-gray-200/80">
+                    <div>
+                        <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded-full uppercase tracking-wider">Formative Assessment</span>
+                        <h2 class="text-2xl font-bold text-gray-800 mt-1">歷程性學習自我評量 (共 5 題)</h2>
+                    </div>
+                    <div id="quizScoreBadge" class="mt-3 md:mt-0 px-4 py-2 bg-indigo-600 text-white rounded-xl font-bold shadow-md flex items-center">
+                        <i class="fa-solid fa-trophy mr-2 text-yellow-300"></i> 當前得分：<span id="scoreVal" class="text-xl ml-1">0</span> / 100
+                    </div>
+                </div>
+
+                <!-- Questions Container -->
+                <div id="quizContainer" class="space-y-6">
+                    <!-- Quiz Items Generated dynamically by JS -->
+                </div>
+
+                <!-- Quiz Reset / Summary Button -->
+                <div class="mt-8 text-center">
+                    <button id="resetQuizBtn" onclick="resetQuiz()" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold rounded-xl shadow-lg hover:from-blue-600 hover:to-indigo-700 transition transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-rotate-right mr-2"></i> 重新練習所有測驗
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // State Variables
+        let tens = 3;
+        let ones = 2;
+        let multiplier = 4;
+
+        // Quiz Question Dataset matching textbook scenarios
+        const quizData = [
+            {
+                id: 1,
+                title: "問題 1：整十數乘法 (不進位)",
+                question: "芋頭酥每個 20 元，丹丹買了 3 個，一共要付多少元？",
+                equation: "20 × 3",
+                ans: 60,
+                hint: "20 是 2 個 10，3 個 20 就是 6 個 10，也就是 60 元。",
+                options: [50, 60, 70, 80]
+            },
+            {
+                id: 2,
+                title: "問題 2：二位數乘以一位數 (不進位)",
+                question: "紅豆餅一個 20 元，妮妮買了 4 個，一共要付多少元？",
+                equation: "20 × 4",
+                ans: 80,
+                hint: "2 個 10 的 4 倍是 8 個 10，所以是 80 元。",
+                options: [60, 70, 80, 90]
+            },
+            {
+                id: 3,
+                title: "問題 3：整十數乘法 (進位)",
+                question: "蛋黃酥一盒 30 元，丹丹買了 4 盒，一共要付多少元？",
+                equation: "30 × 4",
+                ans: 120,
+                hint: "3 個 10 的 4 倍是 12 個 10，12 個 10 就是 120 元。",
+                options: [100, 110, 120, 140]
+            },
+            {
+                id: 4,
+                title: "問題 4：二位數乘以一位數 (一次進位)",
+                question: "鳳梨酥一個 32 元，丹丹買了 4 個，共要付多少元？",
+                equation: "32 × 4",
+                ans: 128,
+                hint: "先算 2×4=8，再算 30×4=120，合起來 120+8=128 元。",
+                options: [124, 128, 132, 138]
+            },
+            {
+                id: 5,
+                title: "問題 5：二位數乘以一位數 (進位與拆解)",
+                question: "一盒綠豆糕有 24 個，媽媽買了 8 盒，共有幾個綠豆糕？",
+                equation: "24 × 8",
+                ans: 192,
+                hint: "4×8=32 個一，20×8=160 (16 個十)，32 + 160 = 192。",
+                options: [182, 188, 192, 202]
+            }
+        ];
+
+        let quizUserAnswers = {};
+
+        // DOM Element References
+        const tensSlider = document.getElementById('tensSlider');
+        const onesSlider = document.getElementById('onesSlider');
+        const multiplierSlider = document.getElementById('multiplierSlider');
+
+        const tensVal = document.getElementById('tensVal');
+        const onesVal = document.getElementById('onesVal');
+        const multiplierVal = document.getElementById('multiplierVal');
+
+        const mathEquation = document.getElementById('mathEquation');
+        const coinContainer = document.getElementById('coinContainer');
+
+        // Initialize App
+        window.onload = function() {
+            setupEventListeners();
+            updateAllVisuals();
+            renderQuiz();
+        };
+
+        function setupEventListeners() {
+            tensSlider.addEventListener('input', (e) => {
+                tens = parseInt(e.target.value);
+                tensVal.textContent = tens;
+                updateAllVisuals();
+            });
+
+            onesSlider.addEventListener('input', (e) => {
+                ones = parseInt(e.target.value);
+                onesVal.textContent = ones;
+                updateAllVisuals();
+            });
+
+            multiplierSlider.addEventListener('input', (e) => {
+                multiplier = parseInt(e.target.value);
+                multiplierVal.textContent = multiplier;
+                updateAllVisuals();
+            });
+        }
+
+        // Master Visual Update Function
+        function updateAllVisuals() {
+            const multiplicand = tens * 10 + ones;
+            const total = multiplicand * multiplier;
+
+            // Update Equation Text with color coding (tens: orange, ones: blue, multiplier: purple)
+            mathEquation.innerHTML = `<span class="text-orange-500 font-extrabold">${tens}</span><span class="text-blue-600 font-extrabold">${ones}</span> × <span class="text-purple-600 font-extrabold">${multiplier}</span> = <span class="text-indigo-600 font-black">${total}</span>`;
+
+            // 1. Render Coin Visualizer
+            renderCoins();
+
+            // 2. Render Vertical Algorithm & Explanations
+            renderVerticalMath(multiplicand, total);
+        }
+
+        // Render Coins Grid
+        function renderCoins() {
+            coinContainer.innerHTML = '';
+
+            for (let r = 1; r <= multiplier; r++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'bg-white/60 p-3 rounded-xl border border-white/80 flex flex-wrap items-center justify-between gap-2 transition hover:bg-white/80';
+
+                const rowLabel = document.createElement('span');
+                rowLabel.className = 'text-xs font-bold text-purple-700 bg-purple-100 px-2.5 py-1 rounded-lg border border-purple-200 shrink-0';
+                rowLabel.textContent = `第 ${r} 份：`;
+
+                const coinsGroup = document.createElement('div');
+                coinsGroup.className = 'flex flex-wrap items-center gap-1.5 flex-1';
+
+                // Render Tens coins
+                for (let t = 0; t < tens; t++) {
+                    const coin10 = document.createElement('div');
+                    coin10.className = 'coin-10 w-9 h-9 rounded-full flex items-center justify-center font-black text-amber-900 text-xs shadow transform hover:scale-110 transition';
+                    coin10.innerHTML = '10';
+                    coinsGroup.appendChild(coin10);
+                }
+
+                // Render Ones coins
+                for (let o = 0; o < ones; o++) {
+                    const coin1 = document.createElement('div');
+                    coin1.className = 'coin-1 w-8 h-8 rounded-full flex items-center justify-center font-black text-blue-900 text-xs shadow transform hover:scale-110 transition';
+                    coin1.innerHTML = '1';
+                    coinsGroup.appendChild(coin1);
+                }
+
+                rowDiv.appendChild(rowLabel);
+                rowDiv.appendChild(coinsGroup);
+                coinContainer.appendChild(rowDiv);
+            }
+        }
+
+        // Render Vertical Algorithm Breakdown
+        function renderVerticalMath(multiplicand, total) {
+            const onesResult = ones * multiplier;
+            const tensResult = tens * multiplier * 10;
+
+            // Top Number Inputs
+            document.getElementById('vHundred1').textContent = tens * 10 >= 100 ? '' : '';
+            document.getElementById('vTen1').textContent = tens;
+            document.getElementById('vOne1').textContent = ones;
+            document.getElementById('vMultiplier').textContent = multiplier;
+
+            // Step 1: Ones Calculation Breakdown (Hide leading zero if single digit)
+            if (onesResult < 10) {
+                document.getElementById('vStep1_H').textContent = '';
+                document.getElementById('vStep1_T').textContent = '';
+                document.getElementById('vStep1_O').textContent = onesResult.toString();
+            } else {
+                const onesValStr = onesResult.toString();
+                document.getElementById('vStep1_H').textContent = '';
+                document.getElementById('vStep1_T').textContent = onesValStr[0];
+                document.getElementById('vStep1_O').textContent = onesValStr[1];
+            }
+
+            // Step 2: Tens Calculation Breakdown
+            const tensValStr = tensResult.toString();
+            if (tensResult >= 100) {
+                document.getElementById('vStep2_H').textContent = tensValStr[0];
+                document.getElementById('vStep2_T').textContent = tensValStr[1];
+                document.getElementById('vStep2_O').textContent = tensValStr[2];
+            } else {
+                document.getElementById('vStep2_H').textContent = '';
+                document.getElementById('vStep2_T').textContent = tensValStr[0];
+                document.getElementById('vStep2_O').textContent = tensValStr[1];
+            }
+
+            // Total Sum
+            const totalStr = total.toString().padStart(3, ' ');
+            document.getElementById('vTotal_H').textContent = totalStr[0] !== ' ' ? totalStr[0] : '';
+            document.getElementById('vTotal_T').textContent = totalStr[1] !== ' ' ? totalStr[1] : '';
+            document.getElementById('vTotal_O').textContent = totalStr[2];
+
+            // Explanations update
+            document.getElementById('explainStep1').innerHTML = 
+                `先算個位：${ones} 個 1 的 ${multiplier} 倍是 <strong class="text-blue-600">${onesResult}</strong>。`;
+
+            document.getElementById('explainStep2').innerHTML = 
+                `再算十位：<strong class="text-orange-500">${tens}</strong> 個 10 的 <strong class="text-purple-600">${multiplier}</strong> 倍是 <strong class="text-orange-600">${tens * multiplier}</strong> 個 10 (即 ${tensResult})。`;
+
+            document.getElementById('explainTotal').innerHTML = 
+                `合起來共是：${onesResult} + ${tensResult} = <span class="text-emerald-600 font-extrabold text-lg">${total}</span>`;
+            
+            // Insight Note Logic
+            const insight = document.getElementById('insightText');
+            if (onesResult >= 10 && tensResult >= 100) {
+                insight.textContent = `💡 注意：個位乘積 (${onesResult}) 滿 10 進到十位；十位乘積 (${tensResult}) 滿 100 進到百位，屬於雙重進位運算喔！`;
+            } else if (onesResult >= 10) {
+                insight.textContent = `💡 注意：個位乘積 (${onesResult}) 滿 10，需要換成 1 個 10 元硬幣進位到十位！`;
+            } else if (tensResult >= 100) {
+                insight.textContent = `💡 注意：十位乘積 (${tensResult}) 滿 100，需要換成 1 張 100 元進位到百位！`;
+            } else {
+                insight.textContent = `💡 此算式為不進位乘法，直接將個位與十位運算結果填入對應位值即可！`;
+            }
+        }
+
+        // Render Formative Assessment Questions
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+
+            quizData.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = 'bg-white/80 p-5 sm:p-6 rounded-2xl border border-white shadow-sm transition hover:shadow-md';
+
+                const title = document.createElement('h3');
+                title.className = 'font-bold text-indigo-900 text-base sm:text-lg mb-2';
+                title.textContent = q.title;
+
+                const qText = document.createElement('p');
+                qText.className = 'text-gray-700 font-medium mb-4 text-sm sm:text-base';
+                qText.textContent = q.question;
+
+                // Options list
+                const optionsGrid = document.createElement('div');
+                optionsGrid.className = 'grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4';
+
+                q.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = `opt-btn-${q.id}-${opt} py-2.5 px-4 rounded-xl font-bold border border-gray-200 bg-white hover:bg-indigo-50 hover:border-indigo-300 transition text-gray-800 text-center`;
+                    btn.textContent = `${opt} 元`;
+                    btn.onclick = () => selectQuizAnswer(q.id, opt, q.ans, q.hint);
+                    optionsGrid.appendChild(btn);
+                });
+
+                // Feedback box
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.id = `feedback-${q.id}`;
+                feedbackDiv.className = 'hidden p-3.5 rounded-xl text-sm font-medium transition';
+
+                card.appendChild(title);
+                card.appendChild(qText);
+                card.appendChild(optionsGrid);
+                card.appendChild(feedbackDiv);
+                container.appendChild(card);
+            });
+        }
+
+        // Quiz Selection Logic
+        function selectQuizAnswer(qId, selectedOpt, correctAns, hintText) {
+            quizUserAnswers[qId] = (selectedOpt === correctAns);
+
+            // Update button styles
+            const q = quizData.find(item => item.id === qId);
+            q.options.forEach(opt => {
+                const btn = document.querySelector(`.opt-btn-${qId}-${opt}`);
+                if (opt === selectedOpt) {
+                    if (selectedOpt === correctAns) {
+                        btn.className = 'py-2.5 px-4 rounded-xl font-bold bg-emerald-500 text-white border border-emerald-600 shadow';
+                    } else {
+                        btn.className = 'py-2.5 px-4 rounded-xl font-bold bg-rose-500 text-white border border-rose-600 shadow';
+                    }
+                } else {
+                    btn.className = 'py-2.5 px-4 rounded-xl font-bold border border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed';
+                }
+            });
+
+            // Show Feedback
+            const fb = document.getElementById(`feedback-${qId}`);
+            fb.classList.remove('hidden');
+
+            if (selectedOpt === correctAns) {
+                fb.className = 'p-3.5 rounded-xl text-sm font-medium bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center';
+                fb.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 text-lg mr-2.5"></i> 答對了！非常棒！${hintText}`;
+            } else {
+                fb.className = 'p-3.5 rounded-xl text-sm font-medium bg-rose-100 text-rose-800 border border-rose-200 flex items-center';
+                fb.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 text-lg mr-2.5"></i> 答錯囉！提示：${hintText}`;
+            }
+
+            updateScore();
+        }
+
+        // Score Calculator
+        function updateScore() {
+            const totalQuestions = quizData.length;
+            let correctCount = 0;
+
+            Object.values(quizUserAnswers).forEach(isCorrect => {
+                if (isCorrect) correctCount++;
+            });
+
+            const score = Math.round((correctCount / totalQuestions) * 100);
+            document.getElementById('scoreVal').textContent = score;
+        }
+
+        // Reset Quiz
+        function resetQuiz() {
+            quizUserAnswers = {};
+            document.getElementById('scoreVal').textContent = '0';
+            renderQuiz();
+        }
+    </script>
+</body>
+</html>

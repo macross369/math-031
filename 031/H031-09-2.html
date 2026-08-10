@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二維表格大冒險 - 國小數學互動學習網</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 35%, #415a77 70%, #1d2d44 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Starry sky particle canvas overlay */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Glassmorphism card effects */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card-hover:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+        }
+
+        /* Glow Text Effect */
+        .glow-text {
+            text-shadow: 0 0 12px rgba(125, 211, 252, 0.6), 0 0 24px rgba(244, 114, 182, 0.4);
+        }
+
+        /* Interactive table highlighting */
+        .cell-highlight {
+            background-color: rgba(56, 189, 248, 0.25) !important;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Active Tab Styling */
+        .active-tab {
+            background: rgba(56, 189, 248, 0.3) !important;
+            border-color: rgba(125, 211, 252, 0.8) !important;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+            color: #ffffff !important;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.4);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.7);
+        }
+    </style>
+</head>
+<body class="p-3 md:p-6 text-slate-100">
+    <!-- Starfield Canvas -->
+    <canvas id="starfield"></canvas>
+
+    <!-- Main Container -->
+    <div class="max-w-6xl mx-auto relative z-10">
+        
+        <!-- 修改：使用轉換後的 Google Drive 直接連結 -->
+        <div class="w-full flex items-center justify-start mb-4 px-2 fade-in">
+            <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+            <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+        </div>
+
+        <!-- Header Banner -->
+        <header class="text-center mb-8">
+            <div class="inline-block px-4 py-1.5 rounded-full glass-card text-cyan-300 text-xs md:text-sm font-semibold mb-3 tracking-wide border border-cyan-400/30">
+                <i class="fa-solid fa-cloud-moon mr-2 text-pink-300"></i>國小數學 ‧ 三年級第九單元 ‧ 二維表格探究
+            </div>
+            <h1 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-pink-200 to-amber-200 tracking-wider glow-text mb-3">
+                二維表格大冒險
+            </h1>
+            <p class="text-slate-300 text-sm md:text-base max-w-2xl mx-auto">
+                點選下方標籤頁切換主題，觀察「橫列」與「直欄」交叉匯整的數學奧秘！
+            </p>
+        </header>
+
+        <!-- Tab Navigation Bar -->
+        <nav class="flex justify-center mb-8 gap-2 md:gap-4 flex-wrap" aria-label="學習主題分頁">
+            <button id="tab-btn-1" onclick="switchTab(1)" class="tab-btn active-tab px-4 py-2.5 md:px-5 md:py-3 rounded-2xl glass-card border border-cyan-400/50 text-white font-bold text-xs md:text-sm flex items-center gap-2 transition-all duration-300 active:scale-95">
+                <i class="fa-solid fa-sliders text-pink-400"></i>
+                主題一：資源回收動態探究
+            </button>
+            <button id="tab-btn-2" onclick="switchTab(2)" class="tab-btn px-4 py-2.5 md:px-5 md:py-3 rounded-2xl glass-card border border-white/10 text-slate-300 hover:text-white font-bold text-xs md:text-sm flex items-center gap-2 transition-all duration-300 active:scale-95">
+                <i class="fa-solid fa-puzzle-piece text-amber-300"></i>
+                主題二：血型與缺值推算
+            </button>
+            <button id="tab-btn-3" onclick="switchTab(3)" class="tab-btn px-4 py-2.5 md:px-5 md:py-3 rounded-2xl glass-card border border-white/10 text-slate-300 hover:text-white font-bold text-xs md:text-sm flex items-center gap-2 transition-all duration-300 active:scale-95">
+                <i class="fa-solid fa-graduation-cap text-cyan-300"></i>
+                主題三：觀念自我挑戰 (5題)
+            </button>
+        </nav>
+
+        <!-- Main Content Panels Container -->
+        <div>
+
+            <!-- TAB PANEL 1: Dynamic Table Explorer -->
+            <div id="tab-panel-1" class="tab-panel space-y-8">
+                <section class="glass-card rounded-3xl p-5 md:p-8">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold text-cyan-300 flex items-center gap-2">
+                                <i class="fa-solid fa-recycle text-emerald-400"></i>
+                                主題一：10~12月資源回收物重量統計表
+                            </h2>
+                            <p class="text-xs md:text-sm text-slate-300 mt-1">
+                                可直接修改表格中的數字，觀察「橫列合計」與「直欄合計」如何自動連動更新！
+                            </p>
+                        </div>
+                        <button onclick="resetRecyclingData()" class="self-start md:self-auto px-3.5 py-2 text-xs bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition flex items-center gap-1.5 border border-white/20 active:scale-95">
+                            <i class="fa-solid fa-rotate-left text-amber-300"></i> 重置課本原題數據
+                        </button>
+                    </div>
+
+                    <!-- Interactive Table -->
+                    <div class="overflow-x-auto mb-6">
+                        <table class="w-full text-center border-collapse text-xs md:text-sm min-w-[550px]">
+                            <thead>
+                                <tr class="bg-indigo-950/80 text-cyan-200 border-b border-white/20">
+                                    <th class="p-3 border border-white/10 w-28">類別 \ 月份</th>
+                                    <th class="p-3 border border-white/10">10月</th>
+                                    <th class="p-3 border border-white/10">11月</th>
+                                    <th class="p-3 border border-white/10">12月</th>
+                                    <th class="p-3 border border-white/10 bg-pink-950/50 text-pink-300 font-bold">合計 (kg)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recycling-tbody">
+                                <!-- Generated by JS dynamically -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="bg-cyan-950/60 text-cyan-200 font-bold border-t border-white/20">
+                                    <td class="p-3 border border-white/10 bg-indigo-950/80">合計 (kg)</td>
+                                    <td class="p-3 border border-white/10 text-cyan-300" id="col-total-10">63</td>
+                                    <td class="p-3 border border-white/10 text-cyan-300" id="col-total-11">48</td>
+                                    <td class="p-3 border border-white/10 text-cyan-300" id="col-total-12">50</td>
+                                    <td class="p-3 border border-white/10 bg-amber-500/20 text-amber-300 text-base" id="grand-total-rec">161</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Dynamic Visual Comparison Chart -->
+                    <div class="pt-6 border-t border-white/10">
+                        <h3 class="font-bold text-sm text-cyan-300 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-column text-pink-300"></i> 各月總回收量動態比較圖
+                        </h3>
+                        <div class="grid grid-cols-3 gap-4 items-end h-36 bg-black/30 p-4 rounded-2xl border border-white/10">
+                            <!-- 10月 Bar -->
+                            <div class="flex flex-col items-center h-full justify-end">
+                                <span class="text-xs text-cyan-300 font-bold mb-1" id="bar-val-10">63 kg</span>
+                                <div class="w-full max-w-[60px] bg-gradient-to-t from-cyan-600 to-cyan-300 rounded-t-md transition-all duration-300" id="bar-10" style="height: 60%;"></div>
+                                <span class="text-xs text-slate-300 mt-2">10月</span>
+                            </div>
+                            <!-- 11月 Bar -->
+                            <div class="flex flex-col items-center h-full justify-end">
+                                <span class="text-xs text-pink-300 font-bold mb-1" id="bar-val-11">48 kg</span>
+                                <div class="w-full max-w-[60px] bg-gradient-to-t from-pink-600 to-pink-300 rounded-t-md transition-all duration-300" id="bar-11" style="height: 45%;"></div>
+                                <span class="text-xs text-slate-300 mt-2">11月</span>
+                            </div>
+                            <!-- 12月 Bar -->
+                            <div class="flex flex-col items-center h-full justify-end">
+                                <span class="text-xs text-amber-300 font-bold mb-1" id="bar-val-12">50 kg</span>
+                                <div class="w-full max-w-[60px] bg-gradient-to-t from-amber-600 to-amber-300 rounded-t-md transition-all duration-300" id="bar-12" style="height: 48%;"></div>
+                                <span class="text-xs text-slate-300 mt-2">12月</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- TAB PANEL 2: Missing Value Fill-in Practice -->
+            <div id="tab-panel-2" class="tab-panel hidden space-y-8">
+                <section class="glass-card rounded-3xl p-5 md:p-8">
+                    <div class="mb-6 pb-4 border-b border-white/10">
+                        <h2 class="text-xl md:text-2xl font-bold text-pink-300 flex items-center gap-2">
+                            <i class="fa-solid fa-puzzle-piece text-amber-300"></i>
+                            主題二：快樂國小學生血型調查表 (推算缺值填空)
+                        </h2>
+                        <p class="text-xs md:text-sm text-slate-300 mt-1">
+                            觀察合併後的二維表格，利用「已知總計減去其他類別」或「橫列加總」算出空格中的數字！
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                        <div class="lg:col-span-8 overflow-x-auto">
+                            <table class="w-full text-center border-collapse text-xs md:text-sm min-w-[500px]">
+                                <thead>
+                                    <tr class="bg-purple-950/80 text-purple-200 border-b border-white/20">
+                                        <th class="p-3 border border-white/10">性別 \ 血型</th>
+                                        <th class="p-3 border border-white/10">A 型</th>
+                                        <th class="p-3 border border-white/10">B 型</th>
+                                        <th class="p-3 border border-white/10">O 型</th>
+                                        <th class="p-3 border border-white/10">AB 型</th>
+                                        <th class="p-3 border border-white/10 bg-pink-950/60 text-pink-300 font-bold">合計 (人)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="p-3 border border-white/10 font-bold bg-indigo-950/40">👦 男生</td>
+                                        <td class="p-3 border border-white/10">55</td>
+                                        <!-- Missing Input 1 -->
+                                        <td class="p-3 border border-white/10 bg-amber-500/10">
+                                            <input type="number" id="puz-b-male" placeholder="?" class="w-16 bg-black/40 border border-amber-300/60 rounded-lg text-center text-amber-200 font-bold p-1.5 focus:outline-none focus:ring-2 focus:ring-amber-300">
+                                        </td>
+                                        <td class="p-3 border border-white/10">62</td>
+                                        <td class="p-3 border border-white/10">15</td>
+                                        <td class="p-3 border border-white/10 font-bold text-pink-300">177</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 border border-white/10 font-bold bg-indigo-950/40">👧 女生</td>
+                                        <td class="p-3 border border-white/10">47</td>
+                                        <td class="p-3 border border-white/10">39</td>
+                                        <td class="p-3 border border-white/10">82</td>
+                                        <!-- Missing Input 2 -->
+                                        <td class="p-3 border border-white/10 bg-amber-500/10">
+                                            <input type="number" id="puz-ab-female" placeholder="?" class="w-16 bg-black/40 border border-amber-300/60 rounded-lg text-center text-amber-200 font-bold p-1.5 focus:outline-none focus:ring-2 focus:ring-amber-300">
+                                        </td>
+                                        <td class="p-3 border border-white/10 font-bold text-pink-300">174</td>
+                                    </tr>
+                                    <tr class="bg-cyan-950/50 font-bold text-cyan-200">
+                                        <td class="p-3 border border-white/10">合計 (人)</td>
+                                        <!-- Missing Input 3 -->
+                                        <td class="p-3 border border-white/10 bg-amber-500/10">
+                                            <input type="number" id="puz-a-total" placeholder="?" class="w-16 bg-black/40 border border-amber-300/60 rounded-lg text-center text-amber-200 font-bold p-1.5 focus:outline-none focus:ring-2 focus:ring-amber-300">
+                                        </td>
+                                        <td class="p-3 border border-white/10">84</td>
+                                        <td class="p-3 border border-white/10">144</td>
+                                        <td class="p-3 border border-white/10">21</td>
+                                        <!-- Missing Input 4 -->
+                                        <td class="p-3 border border-white/10 bg-amber-500/20">
+                                            <input type="number" id="puz-grand-total" placeholder="?" class="w-20 bg-black/40 border border-amber-300/60 rounded-lg text-center text-amber-200 font-bold p-1.5 focus:outline-none focus:ring-2 focus:ring-amber-300">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="lg:col-span-4 space-y-4">
+                            <div class="bg-black/30 p-5 rounded-2xl border border-white/10 space-y-3">
+                                <h3 class="font-bold text-amber-300 text-sm flex items-center gap-1.5">
+                                    <i class="fa-regular fa-lightbulb"></i> 解題推算提示：
+                                </h3>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    • 男生 B 型 ＝ 男生合計 (177) － 55 － 62 － 15<br>
+                                    • 女生 AB 型 ＝ 女生合計 (174) － 47 － 39 － 82<br>
+                                    • 全校總人數 ＝ 男生合計 (177) ＋ 女生合計 (174)
+                                </p>
+                                <button onclick="checkPuzzle()" class="w-full py-2.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg transition active:scale-95 text-xs md:text-sm">
+                                    <i class="fa-solid fa-circle-check mr-1.5"></i> 檢查答案
+                                </button>
+                                <div id="puzzle-feedback" class="hidden p-3 rounded-xl text-xs font-semibold text-center"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- TAB PANEL 3: Formative Assessment -->
+            <div id="tab-panel-3" class="tab-panel hidden space-y-8">
+                <section class="glass-card rounded-3xl p-5 md:p-8">
+                    <div class="mb-6 pb-4 border-b border-white/10 flex justify-between items-center flex-wrap gap-3">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold text-amber-300 flex items-center gap-2">
+                                <i class="fa-solid fa-graduation-cap text-cyan-300"></i>
+                                主題三：觀念自我挑戰測驗 (5題)
+                            </h2>
+                            <p class="text-xs md:text-sm text-slate-300 mt-1">
+                                測試你對二維表格的理解程度，每題都有即時回饋與詳細解析！
+                            </p>
+                        </div>
+                        <div id="score-badge" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full font-bold text-white text-xs md:text-sm shadow-md">
+                            目前得分：<span id="quiz-score">0</span> / 100
+                        </div>
+                    </div>
+
+                    <!-- Quiz Items Container -->
+            <div class="space-y-6" id="quiz-container">
+                <!-- Quiz items rendered by JS -->
+            </div>
+        </section>
+    </div>
+
+</div>
+
+    </div>
+
+    <script>
+        function initStarfield() {
+            const canvas = document.getElementById('starfield');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const stars = Array.from({ length: 80 }, () => ({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                size: Math.random() * 1.8 + 0.5,
+                alpha: Math.random(),
+                speed: Math.random() * 0.015 + 0.005
+            }));
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                stars.forEach(star => {
+                    star.alpha += star.speed;
+                    if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
+                    ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function switchTab(tabIndex) {
+            for (let i = 1; i <= 3; i++) {
+                const panel = document.getElementById(`tab-panel-${i}`);
+                const btn = document.getElementById(`tab-btn-${i}`);
+                if (panel && btn) {
+                    if (i === tabIndex) {
+                        panel.classList.remove('hidden');
+                        btn.classList.add('active-tab');
+                        btn.classList.remove('border-white/10', 'text-slate-300');
+                        btn.classList.add('border-cyan-400/50', 'text-white');
+                    } else {
+                        panel.classList.add('hidden');
+                        btn.classList.remove('active-tab', 'border-cyan-400/50', 'text-white');
+                        btn.classList.add('border-white/10', 'text-slate-300');
+                    }
+                }
+            }
+        }
+
+        const initialRecyclingData = [
+            { item: '🥫 鐵鋁罐', m10: 17, m11: 15, m12: 19 },
+            { item: '📦 紙類',   m10: 25, m11: 20, m12: 11 },
+            { item: '🥤 塑膠類', m10: 12, m11: 13, m12: 0  },
+            { item: '🍾 玻璃類', m10: 9,  m11: 0,  m12: 20 }
+        ];
+
+        let recData = JSON.parse(JSON.stringify(initialRecyclingData));
+
+        function renderRecyclingTable() {
+            const tbody = document.getElementById('recycling-tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            recData.forEach((row, rIdx) => {
+                const rowSum = row.m10 + row.m11 + row.m12;
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-white/5 transition";
+                tr.innerHTML = `
+                    <td class="p-3 border border-white/10 font-bold bg-indigo-950/40">${row.item}</td>
+                    <td class="p-2 border border-white/10">
+                        <input type="number" value="${row.m10}" min="0" onchange="updateRecVal(${rIdx}, 'm10', this.value)" class="w-16 bg-black/30 border border-cyan-400/40 rounded text-center text-cyan-200 font-semibold p-1 focus:outline-none focus:ring-1 focus:ring-cyan-300">
+                    </td>
+                    <td class="p-2 border border-white/10">
+                        <input type="number" value="${row.m11}" min="0" onchange="updateRecVal(${rIdx}, 'm11', this.value)" class="w-16 bg-black/30 border border-pink-400/40 rounded text-center text-pink-200 font-semibold p-1 focus:outline-none focus:ring-1 focus:ring-pink-300">
+                    </td>
+                    <td class="p-2 border border-white/10">
+                        <input type="number" value="${row.m12}" min="0" onchange="updateRecVal(${rIdx}, 'm12', this.value)" class="w-16 bg-black/30 border border-amber-400/40 rounded text-center text-amber-200 font-semibold p-1 focus:outline-none focus:ring-1 focus:ring-amber-300">
+                    </td>
+                    <td class="p-3 border border-white/10 font-bold text-pink-300 bg-pink-950/20">${rowSum}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            calcRecTotals();
+        }
+
+        function updateRecVal(rIdx, monthKey, val) {
+            const parsed = parseInt(val, 10);
+            recData[rIdx][monthKey] = isNaN(parsed) || parsed < 0 ? 0 : parsed;
+            renderRecyclingTable();
+        }
+
+        function calcRecTotals() {
+            let sum10 = 0, sum11 = 0, sum12 = 0;
+            recData.forEach(r => {
+                sum10 += r.m10;
+                sum11 += r.m11;
+                sum12 += r.m12;
+            });
+
+            const grand = sum10 + sum11 + sum12;
+
+            document.getElementById('col-total-10').textContent = sum10;
+            document.getElementById('col-total-11').textContent = sum11;
+            document.getElementById('col-total-12').textContent = sum12;
+            document.getElementById('grand-total-rec').textContent = grand;
+
+            // Update Chart
+            const maxVal = Math.max(sum10, sum11, sum12, 1);
+            document.getElementById('bar-val-10').textContent = `${sum10} kg`;
+            document.getElementById('bar-val-11').textContent = `${sum11} kg`;
+            document.getElementById('bar-val-12').textContent = `${sum12} kg`;
+
+            document.getElementById('bar-10').style.height = `${Math.min(100, Math.round((sum10 / maxVal) * 85 + 10))}%`;
+            document.getElementById('bar-11').style.height = `${Math.min(100, Math.round((sum11 / maxVal) * 85 + 10))}%`;
+            document.getElementById('bar-12').style.height = `${Math.min(100, Math.round((sum12 / maxVal) * 85 + 10))}%`;
+        }
+
+        function resetRecyclingData() {
+            recData = JSON.parse(JSON.stringify(initialRecyclingData));
+            renderRecyclingTable();
+        }
+
+        function checkPuzzle() {
+            const bMale = parseInt(document.getElementById('puz-b-male').value, 10);
+            const abFemale = parseInt(document.getElementById('puz-ab-female').value, 10);
+            const aTotal = parseInt(document.getElementById('puz-a-total').value, 10);
+            const grandTotal = parseInt(document.getElementById('puz-grand-total').value, 10);
+
+            const feedback = document.getElementById('puzzle-feedback');
+            feedback.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-300', 'border-emerald-500/40', 'bg-rose-500/20', 'text-rose-300', 'border-rose-500/40');
+
+            if (bMale === 45 && abFemale === 6 && aTotal === 102 && grandTotal === 351) {
+                feedback.classList.add('bg-emerald-500/20', 'text-emerald-300', 'border', 'border-emerald-500/40');
+                feedback.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> 太棒了！全部填答正確！恭喜掌握缺值推算方法！';
+            } else {
+                feedback.classList.add('bg-rose-500/20', 'text-rose-300', 'border', 'border-rose-500/40');
+                feedback.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> 還有數字不太對喔，請參考解題提示再試試看！';
+            }
+        }
+
+        const quizQuestions = [
+            {
+                q: "1. 觀察10~12月資源回收統計表，11月「玻璃類」顯示為 0 kg，這代表什麼意思？",
+                options: [
+                    "忘記紀錄了",
+                    "11月份完全沒有回收玻璃類",
+                    "玻璃類不屬於資源回收項目",
+                    "11月的玻璃被全數打破了"
+                ],
+                answer: 1,
+                explanation: "表格中的「0」代表該月該項目的統計數量為0（沒有回收該類別），並非忘記紀錄。"
+            },
+            {
+                q: "2. 在快樂國小血型二維表格中，如果要快速找出「全校學生總人數」，應該看表格的哪一個位置？",
+                options: [
+                    "最左上角的類別欄",
+                    "男生A型的交叉格子",
+                    "最右下角的合計交叉格 (351人)",
+                    "第一橫列的最右邊數字"
+                ],
+                answer: 2,
+                explanation: "二維表格的最右下角合計格，代表橫列總計與直欄總計的交叉匯總，即全校學生總人數。"
+            },
+            {
+                q: "3. 早餐飲料調查中，冰飲合計76杯、熱飲合計51杯。請問全營隊一共調查了多少杯飲料？",
+                options: [
+                    "127 杯",
+                    "100 杯",
+                    "150 杯",
+                    "64 杯"
+                ],
+                answer: 0,
+                explanation: "將冰飲總數與熱飲總數相加：76 ＋ 51 ＝ 127 杯。"
+            },
+            {
+                q: "4. 三年級學生有45人，其中男生有20人（有5人戴眼鏡）。請問「不戴眼鏡的男生」有多少人？",
+                options: [
+                    "25 人",
+                    "15 人",
+                    "8 人",
+                    "10 人"
+                ],
+                answer: 1,
+                explanation: "用男生總人數扣除戴眼鏡的男生：20 － 5 ＝ 15 人。"
+            },
+            {
+                q: "5. 為什麼把「男生血型」與「女生血型」兩個獨立表格合併成一個「二維表格」會更有幫助？",
+                options: [
+                    "因為二維表格會使用更多顏色",
+                    "能同時呈現「性別」與「血型」兩種分類交叉關係，更方便比較與計算總數",
+                    "因為這樣數字會變得比較多",
+                    "因為比較省紙張"
+                ],
+                answer: 1,
+                explanation: "二維表格（列聯表）的核心價值在於同時呈現兩種屬性的交叉數據，使資料呈現更簡潔且易於橫向/縱向比較。"
+            }
+        ];
+
+        let userAnswers = Array(quizQuestions.length).fill(null);
+
+        function renderQuiz() {
+            const qContainer = document.getElementById('quiz-container');
+            if (!qContainer) return;
+
+            qContainer.innerHTML = '';
+
+            quizQuestions.forEach((q, qIdx) => {
+                const card = document.createElement('div');
+                card.className = "bg-black/20 p-5 rounded-2xl border border-white/10 space-y-3";
+
+                let optionsHTML = q.options.map((opt, oIdx) => `
+                    <button onclick="selectQuizOption(${qIdx}, ${oIdx})" id="q-${qIdx}-opt-${oIdx}" class="w-full text-left p-3 rounded-xl border border-white/10 hover:bg-white/10 transition text-xs md:text-sm flex items-center justify-between">
+                        <span>${['A','B','C','D'][oIdx]}. ${opt}</span>
+                        <i class="fa-regular fa-circle text-slate-400" id="q-${qIdx}-icon-${oIdx}"></i>
+                    </button>
+                `).join('');
+
+                card.innerHTML = `
+                    <p class="font-bold text-sm md:text-base text-cyan-200">${q.q}</p>
+                    <div class="space-y-2" id="q-options-${qIdx}">${optionsHTML}</div>
+                    <div id="q-exp-${qIdx}" class="hidden p-3 rounded-xl text-xs bg-cyan-950/40 border border-cyan-400/30 text-cyan-200 mt-2">
+                        💡 <strong>解析：</strong>${q.explanation}
+                    </div>
+                `;
+                qContainer.appendChild(card);
+            });
+        }
+
+        function selectQuizOption(qIdx, oIdx) {
+            userAnswers[qIdx] = oIdx;
+            
+            // Update UI selection
+            quizQuestions[qIdx].options.forEach((_, idx) => {
+                const btn = document.getElementById(`q-${qIdx}-opt-${idx}`);
+                const icon = document.getElementById(`q-${qIdx}-icon-${idx}`);
+                if (idx === oIdx) {
+                    btn.className = "w-full text-left p-3 rounded-xl border border-cyan-400 bg-cyan-500/20 text-white font-semibold text-xs md:text-sm flex items-center justify-between";
+                    icon.className = "fa-solid fa-circle-check text-cyan-300";
+                } else {
+                    btn.className = "w-full text-left p-3 rounded-xl border border-white/10 hover:bg-white/10 transition text-xs md:text-sm flex items-center justify-between text-slate-300";
+                    icon.className = "fa-regular fa-circle text-slate-400";
+                }
+            });
+
+            // Show explanation
+            document.getElementById(`q-exp-${qIdx}`).classList.remove('hidden');
+
+            updateQuizScore();
+        }
+
+        function updateQuizScore() {
+            let score = 0;
+            userAnswers.forEach((ans, idx) => {
+                if (ans === quizQuestions[idx].answer) {
+                    score += 20;
+                }
+            });
+            document.getElementById('quiz-score').textContent = score;
+        }
+
+        window.onload = function() {
+            initStarfield();
+            renderRecyclingTable();
+            renderQuiz();
+        };
+    </script>
+</body>
+</html>

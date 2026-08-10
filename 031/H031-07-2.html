@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7-2 認識公克與 1000g 磅秤 - 互動探究實驗室</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'sans-serif'],
+                    },
+                    colors: {
+                        shinkai: {
+                            sky: '#2b580c',
+                            blue: '#1b3b6f',
+                            dusk: '#6c5ce7',
+                            sunset: '#ff7675',
+                            gold: '#fdcb6e',
+                            cloud: '#f8fafc'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 30%, #312e81 60%, #4338ca 100%);
+            background-attachment: fixed;
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        /* Shinkai style glowing cloud card background */
+        .shinkai-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .shinkai-card-light {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 30px rgba(31, 38, 135, 0.15);
+            color: #1e293b;
+        }
+
+        /* Glow effects */
+        .glow-gold {
+            box-shadow: 0 0 15px rgba(253, 203, 110, 0.6);
+        }
+        
+        .glow-blue {
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+        }
+
+        /* Smooth needle transition */
+        .scale-needle {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: 200px 200px;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #6366f1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="font-sans pb-12">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-900/70 border-b border-indigo-500/30 px-4 py-3 mb-6">
+        <div class="max-w-7xl mx-auto">
+            <!-- 修改：使用轉換後的 Google Drive 直接連結 (置於最左上方) -->
+            <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
+                <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+                <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-rose-500 flex items-center justify-center text-white text-xl font-bold shadow-lg glow-gold">
+                        <i class="fa-solid fa-weight-scale"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-sky-300 via-amber-200 to-rose-300">
+                            7-2 認識公克與 1000g 磅秤
+                        </h1>
+                        <!-- 已移除 "新海誠風格動態互動教具｜" 文字 -->
+                        <p class="text-xs text-sky-200/80">1大格=50g．1小格=5g．1000g=1kg</p>
+                    </div>
+                </div>
+
+                <!-- Tab Buttons -->
+                <div class="flex bg-slate-800/80 p-1 rounded-xl border border-indigo-400/30">
+                    <button onclick="switchTab('explore')" id="tab-explore" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold transition-all bg-indigo-600 text-white shadow">
+                        <i class="fa-solid fa-compass mr-1"></i> 探究實驗室
+                    </button>
+                    <button onclick="switchTab('concept')" id="tab-concept" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold text-slate-300 hover:text-white transition-all">
+                        <i class="fa-solid fa-lightbulb mr-1"></i> 核心概念
+                    </button>
+                    <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold text-slate-300 hover:text-white transition-all">
+                        <i class="fa-solid fa-graduation-cap mr-1"></i> 歷程評量 (5題)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4">
+
+        <!-- TAB 1: EXPLORE LAB -->
+        <section id="sec-explore" class="tab-content grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Left Panel: Scale Visualizer (7 cols) -->
+            <div class="lg:col-span-7 space-y-6">
+                <!-- Scale & Magnifier Card -->
+                <div class="shinkai-card rounded-3xl p-6 relative overflow-hidden">
+                    <div class="absolute -top-12 -right-12 w-48 h-48 bg-sky-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -bottom-12 -left-12 w-48 h-48 bg-rose-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-xs font-bold uppercase tracking-wider text-sky-300 bg-sky-950/60 border border-sky-400/30 px-3 py-1 rounded-full">
+                            <i class="fa-solid fa-eye mr-1"></i> 動態 1000g 磅秤觀察器
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleAnswer()" id="btn-toggle-ans" class="text-xs bg-amber-500/20 text-amber-300 border border-amber-400/40 px-3 py-1.5 rounded-lg font-semibold hover:bg-amber-500/30 transition">
+                                <i class="fa-solid fa-eye-slash mr-1"></i> 隱藏讀數(教學模式)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Main Scale SVG Container -->
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-6 my-2">
+                        <!-- SVG Dial Scale -->
+                        <div class="relative w-72 h-72 md:w-80 md:h-80 flex-shrink-0">
+                            <!-- Tray Platform -->
+                            <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 w-44 h-8 bg-gradient-to-r from-slate-300 via-slate-100 to-slate-400 rounded-t-xl border-b-2 border-slate-600 shadow-md flex items-center justify-center">
+                                <span id="tray-item-label" class="text-xs text-slate-800 font-bold px-2 truncate">托盤 (空)</span>
+                            </div>
+                            <div class="absolute top-5 left-1/2 -translate-x-1/2 w-8 h-6 bg-slate-400/80 border-x border-slate-600"></div>
+
+                            <!-- Dial SVG -->
+                            <svg id="scale-svg" viewBox="0 0 400 400" class="w-full h-full drop-shadow-2xl">
+                                <!-- Scale Outer Rim -->
+                                <circle cx="200" cy="200" r="185" fill="#f8fafc" stroke="#3b82f6" stroke-width="8"/>
+                                <circle cx="200" cy="200" r="180" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+                                <circle cx="200" cy="200" r="172" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                                
+                                <!-- Inner Decorative Ring -->
+                                <circle cx="200" cy="200" r="120" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.6"/>
+
+                                <!-- Ticks & Labels Group generated by JS -->
+                                <g id="svg-ticks"></g>
+
+                                <!-- Needle -->
+                                <g id="needle-group" class="scale-needle">
+                                    <!-- Needle shadow -->
+                                    <polygon points="200,205 194,200 200,30 206,200" fill="rgba(0,0,0,0.2)"/>
+                                    <!-- Needle body -->
+                                    <polygon points="200,215 193,200 198,25 200,15 202,25 207,200" fill="#ef4444"/>
+                                    <circle cx="200" cy="200" r="14" fill="#dc2626"/>
+                                    <circle cx="200" cy="200" r="6" fill="#fef08a"/>
+                                </g>
+                            </svg>
+                        </div>
+
+                        <!-- Magnifier Glass Scope (局部刻度放大鏡) -->
+                        <div class="flex flex-col items-center">
+                            <div class="relative w-48 h-48 rounded-full border-4 border-amber-400 bg-slate-900 shadow-2xl overflow-hidden flex flex-col items-center justify-center glow-gold">
+                                <div class="absolute inset-0 bg-gradient-to-b from-sky-500/10 to-transparent pointer-events-none"></div>
+                                
+                                <div class="text-[10px] text-amber-300 font-bold mb-1 uppercase tracking-widest">
+                                    <i class="fa-solid fa-magnifying-glass"></i> 局部刻度放大鏡
+                                </div>
+
+                                <!-- Magnifier Scope Graphic -->
+                                <div class="w-full h-24 relative flex items-center justify-center px-2">
+                                    <svg id="magnifier-svg" viewBox="0 0 200 80" class="w-full h-full">
+                                        <!-- Dynamic magnified ticks -->
+                                    </svg>
+                                </div>
+
+                                <div id="magnifier-text" class="text-xs font-bold text-sky-200 mt-1">
+                                    指針位置刻度細節
+                                </div>
+                            </div>
+                            <span class="text-xs text-slate-300 mt-2"><i class="fa-solid fa-circle-info text-amber-400 mr-1"></i>1大格=50g｜1小格=5g</span>
+                        </div>
+                    </div>
+
+                    <!-- Digital Readout Display -->
+                    <div class="mt-6 bg-slate-900/80 rounded-2xl p-4 border border-indigo-500/30 flex flex-wrap items-center justify-between gap-4">
+                        <div>
+                            <span class="text-xs text-slate-400">當前測量重量：</span>
+                            <div id="readout-box" class="flex items-baseline gap-2">
+                                <span id="weight-display-g" class="text-3xl md:text-4xl font-black text-amber-300 font-mono">0</span>
+                                <span class="text-lg font-bold text-slate-300">公克 (g)</span>
+                                <span class="text-slate-500 mx-1">|</span>
+                                <span id="weight-display-kg" class="text-xl font-bold text-sky-300 font-mono">0 公斤</span>
+                            </div>
+                        </div>
+                        <div id="readout-breakdown" class="text-xs bg-indigo-950/80 border border-indigo-400/30 px-3 py-2 rounded-xl text-indigo-200 leading-relaxed">
+                            相當於：<span id="breakdown-text" class="font-bold text-amber-200">0 大格 0 小格</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Interactive Number Line (刻度數線) -->
+                <div class="shinkai-card rounded-3xl p-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-sm font-bold text-sky-200 flex items-center gap-2">
+                            <i class="fa-solid fa-ruler-horizontal text-sky-400"></i> 對應刻度數線 (0 ~ 1000g)
+                        </h3>
+                        <span class="text-xs text-slate-300">把秤面刻度看成數線</span>
+                    </div>
+
+                    <!-- Number Line Container -->
+                    <div class="relative pt-6 pb-2 px-4 bg-slate-900/60 rounded-2xl border border-slate-700/50 overflow-x-auto">
+                        <svg id="ruler-svg" viewBox="0 0 500 60" class="w-full min-w-[450px]">
+                            <!-- Generated by JS -->
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Controls & Item Dragging (5 cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                <!-- Precision Slider Control -->
+                <div class="shinkai-card rounded-3xl p-6">
+                    <h3 class="text-base font-bold text-amber-300 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-amber-400"></i> 微調滑桿 (探究數值變化)
+                    </h3>
+                    <p class="text-xs text-slate-300 mb-4">滑動滑桿觀察磅秤指針與放大鏡刻度的即時變化：</p>
+                    
+                    <input type="range" id="weight-slider" min="0" max="1000" step="5" value="0" 
+                           class="w-full h-3 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-400 focus:outline-none glow-gold">
+                    
+                    <div class="flex justify-between text-xs text-slate-400 mt-2 font-mono">
+                        <span>0g</span>
+                        <span>250g</span>
+                        <span>500g</span>
+                        <span>750g</span>
+                        <span>1000g</span>
+                    </div>
+
+                    <div class="grid grid-cols-4 gap-2 mt-4">
+                        <button onclick="addWeight(-50)" class="px-2 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs font-bold transition">-50g</button>
+                        <button onclick="addWeight(-5)" class="px-2 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-xs font-bold transition">-5g</button>
+                        <button onclick="addWeight(5)" class="px-2 py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-xs font-bold transition">+5g</button>
+                        <button onclick="addWeight(50)" class="px-2 py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-xs font-bold transition">+50g</button>
+                    </div>
+                </div>
+
+                <!-- Add Blocks & Preset Objects -->
+                <div class="shinkai-card rounded-3xl p-6">
+                    <h3 class="text-base font-bold text-sky-200 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-cubes text-sky-400"></i> 放上積木與課本物品
+                    </h3>
+
+                    <!-- 積木控制項 -->
+                    <div class="mb-4">
+                        <label class="text-xs font-bold text-slate-300 block mb-2">【積木組合】</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="addBlocks(1, 5)" class="p-3 bg-slate-800/80 hover:bg-slate-700/80 border border-sky-400/30 rounded-2xl flex items-center gap-3 transition text-left group">
+                                <div class="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-300 flex items-center justify-center font-bold group-hover:scale-110 transition">
+                                    5g
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-white">5 個 1g 積木</div>
+                                    <div class="text-[10px] text-slate-400">+5g (1 小格)</div>
+                                </div>
+                            </button>
+
+                            <button onclick="addBlocks(1, 50)" class="p-3 bg-slate-800/80 hover:bg-slate-700/80 border border-amber-400/30 rounded-2xl flex items-center gap-3 transition text-left group">
+                                <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold group-hover:scale-110 transition">
+                                    50g
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-white">50 個 1g 積木</div>
+                                    <div class="text-[10px] text-slate-400">+50g (1 大格)</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 課本經典例題物品 -->
+                    <div>
+                        <label class="text-xs font-bold text-slate-300 block mb-2">【課本情境物品】</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setPresetItem('訂書機', 60)" class="p-2.5 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-600/50 rounded-xl text-xs font-bold flex items-center gap-2 transition">
+                                <i class="fa-solid fa-stapler text-rose-400"></i> 訂書機 (60g)
+                            </button>
+                            <button onclick="setPresetItem('字典', 845)" class="p-2.5 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-600/50 rounded-xl text-xs font-bold flex items-center gap-2 transition">
+                                <i class="fa-solid fa-book text-amber-400"></i> 字典 (845g)
+                            </button>
+                            <button onclick="setPresetItem('熱水壺', 750)" class="p-2.5 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-600/50 rounded-xl text-xs font-bold flex items-center gap-2 transition">
+                                <i class="fa-solid fa-mug-hot text-sky-400"></i> 熱水壺 (750g)
+                            </button>
+                            <button onclick="setPresetItem('麵粉', 1000)" class="p-2.5 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-600/50 rounded-xl text-xs font-bold flex items-center gap-2 transition">
+                                <i class="fa-solid fa-wheat-awn text-emerald-400"></i> 一包麵粉 (1kg)
+                            </button>
+                        </div>
+                    </div>
+
+                    <button onclick="resetScale()" class="w-full mt-4 py-2.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-left"></i> 清空歸零
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: CORE CONCEPTS -->
+        <section id="sec-concept" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Concept Card 1 -->
+                <div class="shinkai-card-light rounded-3xl p-6 space-y-3">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-xl font-black shadow-lg">
+                        1
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800">認識 1 大格與 1 小格</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        在 1000g 磅秤上：<br>
+                        • 指針從 0 走到下一個標示數字的刻度，是 <strong class="text-amber-600">1 大格 = 50公克</strong>。<br>
+                        • 1 大格裡面平分成 10 個小格，所以 <strong class="text-amber-600">1 小格 = 5公克</strong>。
+                    </p>
+                </div>
+
+                <!-- Concept Card 2 -->
+                <div class="shinkai-card-light rounded-3xl p-6 space-y-3">
+                    <div class="w-12 h-12 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-xl font-black shadow-lg">
+                        2
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800">報讀指針位置的方法</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        • 先找到指針前面<strong class="text-sky-600">最接近的大格數字</strong>（例如 800g）。<br>
+                        • 再數指針超過該數字後走了幾小格（每小格 5g）。<br>
+                        例如：800 往後數 9 小格 = 800 + 45 = <strong class="text-sky-600">845公克</strong>。
+                    </p>
+                </div>
+
+                <!-- Concept Card 3 -->
+                <div class="shinkai-card-light rounded-3xl p-6 space-y-3">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-500 text-white flex items-center justify-center text-xl font-black shadow-lg">
+                        3
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800">重量單位換算 (g 與 kg)</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        當物品重達 1000 公克時：<br>
+                        • <strong class="text-indigo-600">1000 公克 (g) = 1 公斤 (kg)</strong>。<br>
+                        • 1000g 秤轉完一整圈正好就是 1 公斤。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: QUIZ ASSESSMENT -->
+        <section id="sec-quiz" class="tab-content hidden max-w-4xl mx-auto space-y-6">
+            <div class="shinkai-card rounded-3xl p-6 md:p-8">
+                <div class="flex items-center justify-between border-b border-slate-700/60 pb-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-black text-amber-300 flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-question"></i> 歷程性小評量 (全 5 題)
+                        </h2>
+                        <p class="text-xs text-slate-300">請仔細觀察題幹與刻度，完成測驗立即獲得回饋！</p>
+                    </div>
+                    <div id="score-badge" class="px-4 py-2 bg-slate-800 rounded-2xl border border-amber-400/40 text-amber-300 font-bold text-sm">
+                        得分：<span id="quiz-score" class="text-xl font-mono text-white">0</span> / 100
+                    </div>
+                </div>
+
+                <div class="space-y-8" id="quiz-container">
+                    <!-- Questions will be rendered dynamically -->
+                </div>
+
+                <button onclick="checkAllAnswers()" class="w-full mt-8 py-4 bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-slate-950 font-black rounded-2xl text-lg shadow-xl glow-gold transition">
+                    提交答案，檢視評量結果
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- STATE MANAGEMENT ---
+        let currentWeight = 0;
+        let currentItemName = "空";
+        let isAnswerHidden = false;
+
+        // --- QUIZ QUESTIONS DATA ---
+        const quizData = [
+            {
+                id: 1,
+                question: "1. 在 1000g 磅秤上，秤面上「1 大格」代表多少公克？「1 小格」代表多少公克？",
+                type: "radio",
+                options: [
+                    "1大格 100g，1小格 10g",
+                    "1大格 50g，1小格 5g",
+                    "1大格 50g，1小格 1g",
+                    "1大格 10g，1小格 1g"
+                ],
+                answer: 1,
+                explain: "1000g 秤面上 0 到 50 是一大格 (50g)，一大格分成 10 小格，每一小格代表 5g。"
+            },
+            {
+                id: 2,
+                question: "2. 如果指針從 0 開始，走了 2 個大格又 4 個小格，請問代表多少公克？",
+                type: "radio",
+                options: [
+                    "104 公克",
+                    "120 公克",
+                    "140 公克",
+                    "240 公克"
+                ],
+                answer: 1,
+                explain: "2 個大格 = 50g × 2 = 100g；4 個小格 = 5g × 4 = 20g。100g + 20g = 120g。"
+            },
+            {
+                id: 3,
+                question: "3. 課本題：小明用 1000g 磅秤稱字典，指針指向「超過 800g 往後數 9 小格」，請問字典重多少公克？",
+                type: "input",
+                answer: "845",
+                explain: "800g + (9 小格 × 5g) = 800 + 45 = 845 公克。"
+            },
+            {
+                id: 4,
+                question: "4. 丹丹稱了一包麵粉重 1000 公克，1000 公克和多少公斤一樣重？",
+                type: "radio",
+                options: [
+                    "0.1 公斤",
+                    "1 公斤",
+                    "10 公斤",
+                    "100 公斤"
+                ],
+                answer: 1,
+                explain: "1000 公克 (g) = 1 公斤 (kg)。"
+            },
+            {
+                id: 5,
+                question: "5. 水壺重 750 公克，請問在 1000g 磅秤上，指針一共相當於指在幾個「大格」的位置？",
+                type: "radio",
+                options: [
+                    "10 大格",
+                    "12 大格",
+                    "15 大格",
+                    "20 大格"
+                ],
+                answer: 2,
+                explain: "750 ÷ 50 = 15 大格。"
+            }
+        ];
+
+        window.onload = function() {
+            renderScaleTicks();
+            renderRuler();
+            updateScaleUI();
+            renderQuiz();
+
+            // Bind Slider
+            const slider = document.getElementById('weight-slider');
+            slider.addEventListener('input', (e) => {
+                currentWeight = parseInt(e.target.value);
+                currentItemName = currentWeight > 0 ? "自訂重量" : "空";
+                updateScaleUI();
+            });
+        };
+
+        // Render main 360deg dial scale tick marks
+        function renderScaleTicks() {
+            const ticksGroup = document.getElementById('svg-ticks');
+            ticksGroup.innerHTML = '';
+
+            // 1000g total = 200 small ticks (each 5g = 1.8 deg)
+            for (let i = 0; i < 200; i++) {
+                const grams = i * 5;
+                const angle = (grams / 1000) * 360;
+                const rad = (angle - 90) * (Math.PI / 180);
+
+                const isMajor = grams % 50 === 0;
+                const isMid = grams % 25 === 0 && !isMajor;
+
+                const outerR = 170;
+                const innerR = isMajor ? 148 : (isMid ? 156 : 160);
+
+                const x1 = 200 + outerR * Math.cos(rad);
+                const y1 = 200 + outerR * Math.sin(rad);
+                const x2 = 200 + innerR * Math.cos(rad);
+                const y2 = 200 + innerR * Math.sin(rad);
+
+                const strokeColor = isMajor ? '#0f172a' : '#64748b';
+                const strokeWidth = isMajor ? '2.5' : (isMid ? '1.5' : '1');
+
+                // Tick Line
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+                line.setAttribute('stroke', strokeColor);
+                line.setAttribute('stroke-width', strokeWidth);
+                ticksGroup.appendChild(line);
+
+                // Major Numbers
+                if (isMajor && grams < 1000) {
+                    const textR = 132;
+                    const tx = 200 + textR * Math.cos(rad);
+                    const ty = 200 + textR * Math.sin(rad);
+
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', tx);
+                    text.setAttribute('y', ty + 4);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('font-size', grams === 0 ? '14' : '11');
+                    text.setAttribute('font-weight', 'bold');
+                    text.setAttribute('fill', grams === 0 ? '#ef4444' : '#1e293b');
+                    text.textContent = grams === 0 ? '0/1000g' : grams;
+                    ticksGroup.appendChild(text);
+                }
+            }
+        }
+
+        // Main UI Update loop
+        function updateScaleUI() {
+            // Clamp
+            if (currentWeight < 0) currentWeight = 0;
+            if (currentWeight > 1000) currentWeight = 1000;
+
+            // Sync Slider
+            document.getElementById('weight-slider').value = currentWeight;
+
+            // Rotate Needle
+            const angle = (currentWeight / 1000) * 360;
+            document.getElementById('needle-group').style.transform = `rotate(${angle}deg)`;
+
+            // Readout Displays
+            document.getElementById('tray-item-label').textContent = `物品：${currentItemName}`;
+            
+            const gDisp = document.getElementById('weight-display-g');
+            const kgDisp = document.getElementById('weight-display-kg');
+            const breakdownText = document.getElementById('breakdown-text');
+
+            if (isAnswerHidden) {
+                gDisp.textContent = "???";
+                kgDisp.textContent = "??? 公斤";
+                breakdownText.textContent = "點擊「顯示讀數」查看細節";
+            } else {
+                gDisp.textContent = currentWeight;
+                const kgVal = (currentWeight / 1000).toFixed(3).replace(/\.?0+$/, "");
+                kgDisp.textContent = `${kgVal} 公斤`;
+
+                const major = Math.floor(currentWeight / 50);
+                const minor = Math.round((currentWeight % 50) / 5);
+                breakdownText.textContent = `${major} 大格 ${minor} 小格 (${major * 50}g + ${minor * 5}g)`;
+            }
+
+            // Update Magnifier Scope SVG
+            updateMagnifierSVG();
+
+            // Update Ruler Indicator
+            updateRulerIndicator();
+        }
+
+        // Update local Magnifier Scope
+        function updateMagnifierSVG() {
+            const magSvg = document.getElementById('magnifier-svg');
+            magSvg.innerHTML = '';
+
+            const baseY = 50;
+
+            // Draw baseline
+            const baseLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            baseLine.setAttribute('x1', '10');
+            baseLine.setAttribute('y1', baseY);
+            baseLine.setAttribute('x2', '190');
+            baseLine.setAttribute('y2', baseY);
+            baseLine.setAttribute('stroke', '#94a3b8');
+            baseLine.setAttribute('stroke-width', '2');
+            magSvg.appendChild(baseLine);
+
+            // Red Pointer Indicator Triangle placed right under the baseline (y = baseY)
+            const redPointer = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            redPointer.setAttribute('points', `100,${baseY} 92,${baseY + 16} 108,${baseY + 16}`);
+            redPointer.setAttribute('fill', '#ef4444');
+            magSvg.appendChild(redPointer);
+
+            // Map grams to x coordinate in [10, 190]
+            const range = 70; // 70g range visible
+            const centerG = currentWeight;
+
+            for (let g = Math.floor((centerG - 40) / 5) * 5; g <= centerG + 40; g += 5) {
+                if (g < 0 || g > 1000) continue;
+
+                // X offset relative to center
+                const offsetG = g - centerG;
+                const x = 100 + (offsetG / (range / 2)) * 80;
+
+                if (x >= 10 && x <= 190) {
+                    const isMajor = g % 50 === 0;
+                    const isMid = g % 25 === 0 && !isMajor; // 5th small tick (25g, 75g, 125g...)
+
+                    // Tick length hierarchy: Major (Orange) = 20px, Mid (5th small tick) = 15px, Minor (Blue) = 10px
+                    const h = isMajor ? 20 : (isMid ? 15 : 10);
+                    const color = isMajor ? '#f59e0b' : '#38bdf8';
+                    const strokeWidth = isMajor ? '3' : (isMid ? '2' : '1.5');
+
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', x);
+                    line.setAttribute('y1', baseY);
+                    line.setAttribute('x2', x);
+                    line.setAttribute('y2', baseY - h);
+                    line.setAttribute('stroke', color);
+                    line.setAttribute('stroke-width', strokeWidth);
+                    magSvg.appendChild(line);
+
+                    if (isMajor) {
+                        const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                        txt.setAttribute('x', x);
+                        txt.setAttribute('y', '20');
+                        txt.setAttribute('text-anchor', 'middle');
+                        txt.setAttribute('font-size', '11');
+                        txt.setAttribute('font-weight', 'bold');
+                        txt.setAttribute('fill', '#f59e0b');
+                        txt.textContent = g;
+                        magSvg.appendChild(txt);
+                    }
+                }
+            }
+
+            document.getElementById('magnifier-text').textContent = isAnswerHidden ? 
+                "指針位置局部放大" : `指針對準：${currentWeight}g`;
+        }
+
+        // Render 0-1000 Ruler Number line
+        function renderRuler() {
+            const rulerSvg = document.getElementById('ruler-svg');
+            rulerSvg.innerHTML = '';
+
+            // Horizontal line
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', '20');
+            line.setAttribute('y1', '30');
+            line.setAttribute('x2', '480');
+            line.setAttribute('y2', '30');
+            line.setAttribute('stroke', '#64748b');
+            line.setAttribute('stroke-width', '2');
+            rulerSvg.appendChild(line);
+
+            // Major Ticks (every 50g)
+            for (let g = 0; g <= 1000; g += 50) {
+                const x = 20 + (g / 1000) * 460;
+                
+                const tLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                tLine.setAttribute('x1', x);
+                tLine.setAttribute('y1', '30');
+                tLine.setAttribute('x2', x);
+                tLine.setAttribute('y2', '18');
+                tLine.setAttribute('stroke', '#38bdf8');
+                tLine.setAttribute('stroke-width', '2');
+                rulerSvg.appendChild(tLine);
+
+                if (g % 100 === 0) {
+                    const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    txt.setAttribute('x', x);
+                    txt.setAttribute('y', '12');
+                    txt.setAttribute('text-anchor', 'middle');
+                    txt.setAttribute('font-size', '9');
+                    txt.setAttribute('fill', '#cbd5e1');
+                    txt.textContent = g;
+                    rulerSvg.appendChild(txt);
+                }
+            }
+
+            // Indicator Pin Group
+            const pinGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            pinGroup.setAttribute('id', 'ruler-pin');
+            rulerSvg.appendChild(pinGroup);
+
+            updateRulerIndicator();
+        }
+
+        function updateRulerIndicator() {
+            const pinGroup = document.getElementById('ruler-pin');
+            if (!pinGroup) return;
+
+            const x = 20 + (currentWeight / 1000) * 460;
+            pinGroup.innerHTML = `
+                <polygon points="${x},30 ${x-6},45 ${x+6},45" fill="#ef4444" />
+                <circle cx="${x}" cy="48" r="3" fill="#ef4444" />
+            `;
+        }
+
+        // --- HELPER CONTROLS ---
+        function addWeight(val) {
+            currentWeight += val;
+            currentItemName = "自由組合";
+            updateScaleUI();
+        }
+
+        function addBlocks(count, weightEach) {
+            const total = count * weightEach;
+            currentWeight += total;
+            currentItemName = `${count*weightEach}g 積木`;
+            updateScaleUI();
+        }
+
+        function setPresetItem(name, weight) {
+            currentWeight = weight;
+            currentItemName = name;
+            updateScaleUI();
+        }
+
+        function resetScale() {
+            currentWeight = 0;
+            currentItemName = "空";
+            updateScaleUI();
+        }
+
+        function toggleAnswer() {
+            isAnswerHidden = !isAnswerHidden;
+            const btn = document.getElementById('btn-toggle-ans');
+            if (isAnswerHidden) {
+                btn.innerHTML = '<i class="fa-solid fa-eye mr-1"></i> 顯示讀數';
+                btn.className = "text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 px-3 py-1.5 rounded-lg font-semibold hover:bg-emerald-500/30 transition";
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-eye-slash mr-1"></i> 隱藏讀數(教學模式)';
+                btn.className = "text-xs bg-amber-500/20 text-amber-300 border border-amber-400/40 px-3 py-1.5 rounded-lg font-semibold hover:bg-amber-500/30 transition";
+            }
+            updateScaleUI();
+        }
+
+        // --- TAB SWITCHING ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.className = "tab-btn px-4 py-2 rounded-lg text-sm font-bold text-slate-300 hover:text-white transition-all";
+            });
+
+            document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-bold transition-all bg-indigo-600 text-white shadow";
+        }
+
+        // --- QUIZ RENDER & CHECKING ---
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizData.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900/60 border border-slate-700/80 rounded-2xl p-5 space-y-3";
+                
+                let optionsHTML = '';
+                if (q.type === 'radio') {
+                    optionsHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                        ${q.options.map((opt, oIdx) => `
+                            <label class="flex items-center gap-3 p-3 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/50 rounded-xl cursor-pointer text-sm text-slate-200 transition">
+                                <input type="radio" name="q_${q.id}" value="${oIdx}" class="w-4 h-4 accent-amber-400">
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>`;
+                } else if (q.type === 'input') {
+                    optionsHTML = `<div class="flex items-center gap-3 mt-2">
+                        <input type="number" id="input_q_${q.id}" placeholder="請輸入公克數" class="px-4 py-2 bg-slate-800 border border-slate-600 rounded-xl text-white font-mono text-sm focus:outline-none focus:border-amber-400 w-48">
+                        <span class="text-sm font-bold text-slate-300">公克 (g)</span>
+                    </div>`;
+                }
+
+                card.innerHTML = `
+                    <div class="text-sm md:text-base font-bold text-slate-100">${q.question}</div>
+                    ${optionsHTML}
+                    <div id="feedback_q_${q.id}" class="hidden p-3 rounded-xl text-xs font-semibold leading-relaxed"></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function checkAllAnswers() {
+            let correctCount = 0;
+
+            quizData.forEach((q) => {
+                const fb = document.getElementById(`feedback_q_${q.id}`);
+                fb.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-300', 'border-emerald-500/40', 'bg-rose-500/20', 'text-rose-300', 'border-rose-500/40');
+                fb.classList.add('border');
+
+                let isCorrect = false;
+
+                if (q.type === 'radio') {
+                    const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
+                    if (selected && parseInt(selected.value) === q.answer) {
+                        isCorrect = true;
+                    }
+                } else if (q.type === 'input') {
+                    const inputVal = document.getElementById(`input_q_${q.id}`).value.trim();
+                    if (inputVal === q.answer) {
+                        isCorrect = true;
+                    }
+                }
+
+                if (isCorrect) {
+                    correctCount++;
+                    fb.classList.add('bg-emerald-500/20', 'text-emerald-300', 'border-emerald-500/40');
+                    fb.innerHTML = `<i class="fa-solid fa-circle-check mr-1 text-emerald-400"></i> 答對了！${q.explain}`;
+                } else {
+                    fb.classList.add('bg-rose-500/20', 'text-rose-300', 'border-rose-500/40');
+                    fb.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1 text-rose-400"></i> 需要再想想看哦！解析：${q.explain}`;
+                }
+            });
+
+            const finalScore = (correctCount / quizData.length) * 100;
+            document.getElementById('quiz-score').textContent = finalScore;
+        }
+    </script>
+</body>
+</html>

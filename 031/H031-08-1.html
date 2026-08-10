@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>分數奇幻探索樂園 - 8-1 幾分之幾</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 30%, #415a77 70%, #e0a96d 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: #1e293b;
+    }
+
+    /* 新海誠夢幻天空背景粒子與雲霧效果 */
+    .shinkai-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .shinkai-cloud {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      filter: blur(40px);
+      animation: floatCloud 25s infinite ease-in-out alternate;
+    }
+
+    @keyframes floatCloud {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(60px, -30px) scale(1.15); }
+    }
+
+    /* 玻璃擬物風格卡片 */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+    }
+
+    /* 鮮豔漸層按鈕 */
+    .btn-gradient {
+      background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-gradient:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    /* 數詞序列氣泡動畫 */
+    .sequence-item {
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.6) translateY(10px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* 分數線排版 */
+    .fraction-inline {
+      display: inline-flex;
+      flex-direction: column;
+      vertical-align: middle;
+      text-align: center;
+      padding: 0 4px;
+      font-weight: 700;
+    }
+    .fraction-inline .num { border-bottom: 2px solid currentColor; padding-bottom: 1px; }
+    .fraction-inline .den { padding-top: 1px; }
+  </style>
+</head>
+<body class="p-3 md:p-6 text-slate-800">
+
+  <!-- 背景天空裝飾 -->
+  <div class="shinkai-bg">
+    <div class="shinkai-cloud" style="width: 400px; height: 400px; top: -50px; right: -50px; background: rgba(251, 146, 60, 0.25);"></div>
+    <div class="shinkai-cloud" style="width: 500px; height: 500px; bottom: -100px; left: -100px; background: rgba(129, 140, 248, 0.25);"></div>
+  </div>
+
+  <div class="max-w-5xl mx-auto">
+    <div class="w-full flex items-center justify-start mb-4 px-2">
+      <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+      <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+    </div>
+
+    <!-- 頂部標題區塊 -->
+    <header class="glass-card rounded-3xl p-6 mb-6 text-center relative overflow-hidden">
+      <div class="absolute -right-6 -bottom-6 text-indigo-500/10 text-9xl font-black pointer-events-none">分數</div>
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-100 text-indigo-700 text-sm font-bold mb-3">
+        <i class="fa-solid fa-graduation-cap"></i> 國小數學三上 8-1 幾分之幾
+      </div>
+      <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
+        ✨ 分數奇幻探索樂園 ✨
+      </h1>
+      <p class="text-slate-600 mt-2 text-sm md:text-base">
+        動態拉動滑桿與點選，觀察「平分成幾分」與「數詞序列」的奇妙變化！
+      </p>
+    </header>
+
+    <!-- 主導覽分頁按鈕 -->
+    <nav class="flex flex-wrap justify-center gap-2 mb-6">
+      <button onclick="switchTab('pie')" id="tab-btn-pie" class="px-5 py-3 rounded-2xl font-bold transition flex items-center gap-2 bg-white/90 shadow text-indigo-600 border-2 border-indigo-500">
+        <i class="fa-solid fa-chart-pie"></i> 蔥油餅 (圓形平分)
+      </button>
+      <button onclick="switchTab('strip')" id="tab-btn-strip" class="px-5 py-3 rounded-2xl font-bold transition flex items-center gap-2 bg-white/60 text-slate-700 hover:bg-white/80">
+        <i class="fa-solid fa-note-sticky"></i> 色紙與蛋糕 (數詞序列)
+      </button>
+      <button onclick="switchTab('choco')" id="tab-btn-choco" class="px-5 py-3 rounded-2xl font-bold transition flex items-center gap-2 bg-white/60 text-slate-700 hover:bg-white/80">
+        <i class="fa-solid fa-cubes"></i> 巧克力 (方格陣)
+      </button>
+      <button onclick="switchTab('hat')" id="tab-btn-hat" class="px-5 py-3 rounded-2xl font-bold transition flex items-center gap-2 bg-white/60 text-slate-700 hover:bg-white/80">
+        <i class="fa-solid fa-lightbulb text-amber-500"></i> 思考帽 (迷思解密)
+      </button>
+      <button onclick="switchTab('quiz')" id="tab-btn-quiz" class="px-5 py-3 rounded-2xl font-bold transition flex items-center gap-2 bg-white/60 text-slate-700 hover:bg-white/80">
+        <i class="fa-solid fa-pen-to-square"></i> 隨堂測驗 (5題)
+      </button>
+    </nav>
+
+    <!-- TAB 1: 蔥油餅 (圓形分數與分子分母意義) -->
+    <section id="tab-pie" class="tab-content space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        
+        <!-- 左側互動控制與 SVG 圖形 -->
+        <div class="md:col-span-7 glass-card rounded-3xl p-6 flex flex-col items-center justify-between">
+          <div class="w-full flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-pizza-slice text-amber-500"></i> 蔥油餅平分探索
+            </h2>
+            <span class="text-xs bg-amber-100 text-amber-800 px-3 py-1 rounded-full font-bold">1 張蔥油餅</span>
+          </div>
+
+          <!-- SVG 圓餅畫布 -->
+          <div class="relative w-64 h-64 md:w-72 md:h-72 my-2">
+            <svg id="pie-svg" class="w-full h-full drop-shadow-xl" viewBox="0 0 200 200"></svg>
+          </div>
+
+          <!-- 控制面板 -->
+          <div class="w-full space-y-4 bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80">
+            <div>
+              <div class="flex justify-between text-sm font-bold text-slate-700 mb-1">
+                <span>1. 平分成幾等分 (分母)：</span>
+                <span id="pie-den-val" class="text-indigo-600 font-black text-lg">4</span>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="setPieDen(2)" class="flex-1 py-1.5 rounded-lg bg-white border border-slate-300 font-bold hover:bg-indigo-50">2等分</button>
+                <button onclick="setPieDen(3)" class="flex-1 py-1.5 rounded-lg bg-white border border-slate-300 font-bold hover:bg-indigo-50">3等分</button>
+                <button onclick="setPieDen(4)" class="flex-1 py-1.5 rounded-lg bg-indigo-600 text-white font-bold shadow">4等分</button>
+                <button onclick="setPieDen(6)" class="flex-1 py-1.5 rounded-lg bg-white border border-slate-300 font-bold hover:bg-indigo-50">6等分</button>
+                <button onclick="setPieDen(8)" class="flex-1 py-1.5 rounded-lg bg-white border border-slate-300 font-bold hover:bg-indigo-50">8等分</button>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-sm font-bold text-slate-700 mb-1">
+                <span>2. 選取幾等分 (分子)：</span>
+                <span id="pie-num-val" class="text-amber-600 font-black text-lg">1</span>
+              </div>
+              <input type="range" id="pie-num-slider" min="0" max="4" value="1" oninput="updatePieFromSlider()" class="w-full accent-amber-500 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+            </div>
+          </div>
+        </div>
+
+        <!-- 右側分數概念結構說明 -->
+        <div class="md:col-span-5 glass-card rounded-3xl p-6 flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800 mb-3 border-b pb-2 border-slate-200">
+              <i class="fa-solid fa-book-open text-indigo-500"></i> 分數結構解析
+            </h3>
+
+            <!-- 動態分數卡片 -->
+            <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-2xl border border-amber-200 text-center my-4 shadow-inner">
+              <p class="text-xs font-bold text-slate-500 mb-2">這份蔥油餅是：</p>
+              <div class="text-5xl font-black text-slate-800 inline-flex items-center gap-3">
+                <span id="pie-fraction-display">
+                  <span class="fraction-inline text-amber-600">
+                    <span class="num">1</span>
+                    <span class="den">4</span>
+                  </span>
+                </span>
+                <span class="text-2xl text-slate-700 font-bold">張</span>
+              </div>
+              <p id="pie-read-text" class="mt-3 text-sm font-bold text-amber-800 bg-amber-100/80 py-1.5 px-3 rounded-lg">
+                讀作：「四分之一」張
+              </p>
+            </div>
+
+            <!-- 分子與分母說明圖解 -->
+            <div class="space-y-3 text-sm">
+              <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 flex items-start gap-3">
+                <div class="bg-indigo-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shrink-0">子</div>
+                <div>
+                  <div class="font-bold text-indigo-900">分子 (上方數字)：<span id="pie-num-explain" class="text-amber-600 font-black">1</span></div>
+                  <div class="text-xs text-indigo-700 mt-0.5">表示「佔了其中的幾等分」。</div>
+                </div>
+              </div>
+
+              <div class="p-3 bg-slate-100 rounded-xl border border-slate-200 flex items-start gap-3">
+                <div class="bg-slate-700 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold shrink-0">母</div>
+                <div>
+                  <div class="font-bold text-slate-900">分母 (下方數字)：<span id="pie-den-explain" class="text-indigo-600 font-black">4</span></div>
+                  <div class="text-xs text-slate-600 mt-0.5">表示「一張蔥油餅平分成幾等分」。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="pie-special-note" class="mt-4 p-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold flex items-center gap-2">
+            <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+            <span>提示：4個 1/4 張和 1 張蔥油餅一樣大！</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 2: 色紙與蛋糕 (數詞序列) -->
+    <section id="tab-strip" class="tab-content hidden space-y-6">
+      <div class="glass-card rounded-3xl p-6">
+        <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-cubes-stacked text-indigo-500"></i> 分數數詞序列與累加
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">觀察「幾個單位分數」累積成「幾分之幾」的聲音與語言序列</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="setStripItem('paper')" id="btn-item-paper" class="px-4 py-2 rounded-xl text-sm font-bold bg-indigo-600 text-white shadow">
+              📄 色紙 (張)
+            </button>
+            <button onclick="setStripItem('cake')" id="btn-item-cake" class="px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-700 border hover:bg-slate-50">
+              🍰 蜂蜜蛋糕 (條)
+            </button>
+          </div>
+        </div>
+
+        <!-- 條形視覺畫布 -->
+        <div class="bg-slate-100/80 p-6 rounded-2xl border border-slate-200 text-center mb-6">
+          <div class="text-sm font-bold text-slate-600 mb-2 flex justify-between px-2">
+            <span>1 <span id="strip-unit-label">張色紙</span></span>
+            <span id="strip-equal-badge" class="bg-indigo-100 text-indigo-700 px-2.5 py-0.5 rounded-full text-xs">平分成 6 等分</span>
+          </div>
+          
+          <div id="strip-container" class="w-full h-24 bg-white rounded-xl border-2 border-slate-300 overflow-hidden flex shadow-inner">
+            <!-- 動態產生分割塊 -->
+          </div>
+        </div>
+
+        <!-- 滑桿與控制區 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-5 rounded-2xl border border-slate-200">
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-2">平分成幾等分 (分母)：</label>
+            <div class="flex gap-2">
+              <button onclick="setStripDen(3)" class="flex-1 py-2 rounded-xl border bg-white font-bold hover:bg-indigo-50">3等分</button>
+              <button onclick="setStripDen(5)" class="flex-1 py-2 rounded-xl border bg-white font-bold hover:bg-indigo-50">5等分</button>
+              <button onclick="setStripDen(6)" class="flex-1 py-2 rounded-xl bg-indigo-600 text-white font-bold shadow">6等分</button>
+              <button onclick="setStripDen(9)" class="flex-1 py-2 rounded-xl border bg-white font-bold hover:bg-indigo-50">9等分</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-sm font-bold text-slate-700 mb-2">
+              <span>選取份數 (分子)：</span>
+              <span id="strip-num-val" class="text-indigo-600 font-black text-base">3</span>
+            </div>
+            <input type="range" id="strip-num-slider" min="1" max="6" value="3" oninput="updateStripFromSlider()" class="w-full accent-indigo-600 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+          </div>
+        </div>
+
+        <!-- 數詞序列顯示區 -->
+        <div class="mt-6 border-t pt-4 border-slate-200">
+          <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-comments text-amber-500"></i> 分數數詞序列 (說說看)：
+          </h3>
+          <div id="sequence-box" class="flex flex-wrap gap-2 items-center p-4 bg-indigo-50/60 rounded-2xl border border-indigo-100 min-h-[60px]">
+            <!-- 動態產生數詞氣泡 -->
+          </div>
+          <div id="sequence-summary" class="mt-3 text-base font-bold text-indigo-900 bg-white p-4 rounded-xl border border-indigo-200 shadow-sm flex items-center justify-between">
+            <span>累積結果：</span>
+            <span class="text-xl text-indigo-600">3 個 1/6 是 3/6 張</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 3: 巧克力 (方格陣與量感) -->
+    <section id="tab-choco" class="tab-content hidden space-y-6">
+      <div class="glass-card rounded-3xl p-6">
+        <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-cookie text-amber-700"></i> 巧克力方格與分數表現
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">點擊巧克力格子或拖動滑桿，觀察「1格是幾分之幾片」</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="changeChocoTotal(8)" id="btn-choco-8" class="px-4 py-2 bg-amber-600 text-white text-sm font-bold rounded-xl shadow">8 格包裝</button>
+            <button onclick="changeChocoTotal(10)" id="btn-choco-10" class="px-4 py-2 bg-white text-slate-700 hover:bg-amber-100 text-sm font-bold rounded-xl border border-slate-200">10 格包裝</button>
+            <button onclick="changeChocoTotal(12)" id="btn-choco-12" class="px-4 py-2 bg-white text-slate-700 hover:bg-amber-100 text-sm font-bold rounded-xl border border-slate-200">12 格包裝</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+          <!-- 巧克力方格互動畫布 -->
+          <div class="md:col-span-7 flex flex-col items-center justify-center bg-amber-950/10 p-6 rounded-3xl border border-amber-900/20">
+            <div id="chocolate-grid" class="grid gap-2.5 p-4 bg-amber-950/80 rounded-2xl shadow-2xl border-4 border-amber-900 max-w-sm w-full">
+              <!-- 動態生成巧克力格子 -->
+            </div>
+            <p class="text-xs text-slate-500 mt-3"><i class="fa-solid fa-hand-pointer"></i> 提示：可以直接點擊上方巧克力方格來選取/取消！</p>
+          </div>
+
+          <!-- 右側數量統計面板 -->
+          <div class="md:col-span-5 space-y-4">
+            <div class="bg-amber-50 p-5 rounded-2xl border border-amber-200 space-y-3">
+              <div class="flex justify-between items-center text-sm border-b border-amber-200 pb-2">
+                <span class="font-bold text-amber-900">總共格數 (平分等份)：</span>
+                <span id="choco-total-text" class="font-black text-amber-800 text-base">8 格</span>
+              </div>
+              <div class="flex justify-between items-center text-sm border-b border-amber-200 pb-2">
+                <span class="font-bold text-amber-900">每 1 格代表：</span>
+                <span id="choco-unit-text" class="font-black text-amber-600 text-base">1/8 片</span>
+              </div>
+              <div class="flex justify-between items-center text-sm">
+                <span class="font-bold text-amber-900">深色選取格數：</span>
+                <span id="choco-selected-text" class="font-black text-amber-800 text-xl">5 格</span>
+              </div>
+            </div>
+
+            <!-- 滑桿控制 -->
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+              <label class="block text-xs font-bold text-slate-600 mb-2">調整選取格數：</label>
+              <input type="range" id="choco-count-slider" min="0" max="8" value="5" oninput="updateChocoFromSlider()" class="w-full accent-amber-700 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+              <div class="flex justify-between text-xs text-slate-400 mt-1">
+                <span>0格</span>
+                <button onclick="resetChocolate(true)" class="text-amber-700 hover:underline font-bold">全選</button>
+                <button onclick="resetChocolate(false)" class="text-slate-500 hover:underline">清空</button>
+              </div>
+            </div>
+
+            <!-- 分數卡片 -->
+            <div class="bg-gradient-to-r from-amber-600 to-amber-700 text-white p-5 rounded-2xl text-center shadow-lg">
+              <p class="text-xs font-medium text-amber-100">深色部分是：</p>
+              <div class="text-3xl font-black mt-1 flex items-center justify-center gap-2">
+                <span id="choco-fraction-num">5/8</span>
+                <span class="text-lg font-normal">片巧克力</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 4: 思考帽 (迷思解密) -->
+    <section id="tab-hat" class="tab-content hidden space-y-6">
+      <div class="glass-card rounded-3xl p-6">
+        <div class="flex items-center gap-3 border-b border-slate-200 pb-4 mb-4">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-2xl shadow-lg">
+            <i class="fa-solid fa-lightbulb"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-slate-800">思考帽觀念大考驗 (課本 P.121)</h2>
+            <p class="text-xs text-slate-500">媽媽買了一片白巧克力，她吃了 4/10 片，原本買的是哪一片？</p>
+          </div>
+        </div>
+
+        <div class="bg-amber-50/60 p-4 rounded-2xl border border-amber-200/80 mb-6 text-sm text-slate-700">
+          <p class="font-bold text-amber-900 mb-1">💡 觀念澄清引導：</p>
+          <p>「4/10 片」代表這片巧克力原本要被<strong>平分成 10 格</strong>（分母），而吃了其中的 <strong>4 格</strong>（分子）。請觀察下面三片巧克力，哪一片才是原本的白巧克力？</p>
+        </div>
+
+        <!-- 三個選項巧克力 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- 選項 1 -->
+          <div onclick="checkHatChoice(1)" id="hat-opt-1" class="cursor-pointer glass-card p-5 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 transition text-center space-y-3">
+            <div class="text-xs font-bold bg-slate-100 py-1 px-3 rounded-full text-slate-600 inline-block">選項 A (4格包裝)</div>
+            <div class="grid grid-cols-2 gap-1.5 bg-amber-100 p-3 rounded-xl border border-amber-200 max-w-[160px] mx-auto">
+              <div class="h-10 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-10 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-10 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-10 bg-amber-50 rounded border border-amber-300"></div>
+            </div>
+            <p class="text-xs font-bold text-slate-600">共有 4 格</p>
+          </div>
+
+          <!-- 選項 2 -->
+          <div onclick="checkHatChoice(2)" id="hat-opt-2" class="cursor-pointer glass-card p-5 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 transition text-center space-y-3">
+            <div class="text-xs font-bold bg-slate-100 py-1 px-3 rounded-full text-slate-600 inline-block">選項 B (6格包裝)</div>
+            <div class="grid grid-cols-3 gap-1.5 bg-amber-100 p-3 rounded-xl border border-amber-200 max-w-[200px] mx-auto">
+              <div class="h-10 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-10 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-10 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-10 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-10 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-10 bg-amber-50 rounded border border-amber-300"></div>
+            </div>
+            <p class="text-xs font-bold text-slate-600">剩餘 6 格 (容易誤答選這個)</p>
+          </div>
+
+          <!-- 選項 3 (正確) -->
+          <div onclick="checkHatChoice(3)" id="hat-opt-3" class="cursor-pointer glass-card p-5 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 transition text-center space-y-3">
+            <div class="text-xs font-bold bg-indigo-100 py-1 px-3 rounded-full text-indigo-700 inline-block">選項 C (10格包裝)</div>
+            <div class="grid grid-cols-5 gap-1.5 bg-amber-100 p-3 rounded-xl border border-amber-200 max-w-[240px] mx-auto">
+              <div class="h-8 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-8 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-8 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-8 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-8 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-8 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-8 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-8 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-8 bg-amber-50 rounded border border-amber-300"></div>
+              <div class="h-8 bg-amber-50 rounded border border-amber-300"></div>
+            </div>
+            <p class="text-xs font-bold text-indigo-600">共有 10 格</p>
+          </div>
+
+        </div>
+
+        <!-- 診斷解析反饋 -->
+        <div id="hat-feedback" class="mt-6 p-4 rounded-2xl bg-slate-100 border border-slate-200 hidden">
+          <!-- 動態填充解析 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: 隨堂測驗 (5題歷程評量) -->
+    <section id="tab-quiz" class="tab-content hidden space-y-6">
+      <div class="glass-card rounded-3xl p-6">
+        <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-clipboard-question text-indigo-600"></i> 分數學習歷程隨堂測驗
+            </h2>
+            <p class="text-xs text-slate-500">共 5 題，即時回饋診斷學習成效</p>
+          </div>
+          <div id="quiz-score-badge" class="px-4 py-2 bg-indigo-100 text-indigo-800 rounded-2xl font-black text-base">
+            得分：-- / 100
+          </div>
+        </div>
+
+        <div id="quiz-container" class="space-y-6">
+          <!-- 5 題題目將由 JS 動態生成 -->
+        </div>
+
+        <div class="mt-8 flex justify-center gap-4">
+          <button onclick="submitQuiz()" class="btn-gradient text-white px-8 py-3 rounded-2xl font-bold shadow-lg">
+            <i class="fa-solid fa-paper-plane"></i> 提交測驗答案
+          </button>
+          <button onclick="resetQuiz()" class="bg-slate-200 text-slate-700 px-6 py-3 rounded-2xl font-bold hover:bg-slate-300">
+            <i class="fa-solid fa-rotate-left"></i> 重新測驗
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    /* ===================================================================
+     * AUDIO SYNTHESIZER (Web Audio API - 無需外部音效檔)
+     * =================================================================== */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'click') {
+          osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.08);
+        } else if (type === 'correct') {
+          osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+          osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.25);
+        } else if (type === 'wrong') {
+          osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.2);
+        }
+      } catch(e){}
+    }
+
+    /* ===================================================================
+     * TAB SWITCHING LOGIC
+     * =================================================================== */
+    function switchTab(tabId) {
+      playSound('click');
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+      ['pie', 'strip', 'choco', 'hat', 'quiz'].forEach(id => {
+        const btn = document.getElementById('tab-btn-' + id);
+        if (id === tabId) {
+          btn.className = "px-5 py-3 rounded-2xl font-bold transition flex items-center gap-2 bg-white/90 shadow text-indigo-600 border-2 border-indigo-500";
+        } else {
+          btn.className = "px-5 py-3 rounded-2xl font-bold transition flex items-center gap-2 bg-white/60 text-slate-700 hover:bg-white/80";
+        }
+      });
+    }
+
+    /* ===================================================================
+     * TAB 1: SCALLION PANCAKE CIRCLE LOGIC
+     * =================================================================== */
+    let pieDen = 4;
+    let pieNum = 1;
+
+    function setPieDen(den) {
+      playSound('click');
+      pieDen = den;
+      if (pieNum > pieDen) pieNum = pieDen;
+      
+      const slider = document.getElementById('pie-num-slider');
+      slider.max = pieDen;
+      slider.value = pieNum;
+
+      document.getElementById('pie-den-val').innerText = pieDen;
+      renderPie();
+    }
+
+    function updatePieFromSlider() {
+      pieNum = parseInt(document.getElementById('pie-num-slider').value);
+      renderPie();
+    }
+
+    function renderPie() {
+      document.getElementById('pie-num-val').innerText = pieNum;
+      document.getElementById('pie-num-explain').innerText = pieNum;
+      document.getElementById('pie-den-explain').innerText = pieDen;
+
+      // 更新分數顯示
+      document.getElementById('pie-fraction-display').innerHTML = `
+        <span class="fraction-inline text-amber-600">
+          <span class="num">${pieNum}</span>
+          <span class="den">${pieDen}</span>
+        </span>
+      `;
+
+      // 中文讀法
+      const numMap = ['零', '一', '二', '三', '四', '五', '六', '七', '八'];
+      document.getElementById('pie-read-text').innerText = `讀作：「${numMap[pieDen]}分之${numMap[pieNum]}」張`;
+
+      // 特別備註
+      const noteEl = document.getElementById('pie-special-note');
+      if (pieNum === pieDen) {
+        noteEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 text-base"></i><span>完整！ ${pieNum}個 1/${pieDen} 張和 1 張蔥油餅一樣大！</span>`;
+        noteEl.className = "mt-4 p-3 rounded-xl bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold text-xs flex items-center gap-2";
+      } else {
+        noteEl.innerHTML = `<i class="fa-solid fa-circle-info text-indigo-600 text-base"></i><span>觀念：${pieNum}個 1/${pieDen} 張就是 ${pieNum}/${pieDen} 張蔥油餅。</span>`;
+        noteEl.className = "mt-4 p-3 rounded-xl bg-indigo-50 text-indigo-800 border border-indigo-200 text-xs font-bold flex items-center gap-2";
+      }
+
+      // 繪製 SVG 圓餅
+      const svg = document.getElementById('pie-svg');
+      svg.innerHTML = '';
+
+      const cx = 100, cy = 100, r = 85;
+      
+      // 底圖：蔥油餅黃金色外圈
+      const bgCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      bgCircle.setAttribute("cx", cx);
+      bgCircle.setAttribute("cy", cy);
+      bgCircle.setAttribute("r", r);
+      bgCircle.setAttribute("fill", "#fef3c7");
+      bgCircle.setAttribute("stroke", "#d97706");
+      bgCircle.setAttribute("stroke-width", "4");
+      svg.appendChild(bgCircle);
+
+      // 繪製扇形切片
+      for (let i = 0; i < pieDen; i++) {
+        const startAngle = (i * 360 / pieDen) - 90;
+        const endAngle = ((i + 1) * 360 / pieDen) - 90;
+
+        const x1 = cx + r * Math.cos(Math.PI * startAngle / 180);
+        const y1 = cy + r * Math.sin(Math.PI * startAngle / 180);
+        const x2 = cx + r * Math.cos(Math.PI * endAngle / 180);
+        const y2 = cy + r * Math.sin(Math.PI * endAngle / 180);
+
+        const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
+        const pathData = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", pathData);
+        
+        if (i < pieNum) {
+          path.setAttribute("fill", "#f59e0b"); // 亮黃色選取
+          path.setAttribute("opacity", "0.85");
+        } else {
+          path.setAttribute("fill", "#fef3c7"); // 未選取
+        }
+        path.setAttribute("stroke", "#b45309");
+        path.setAttribute("stroke-width", "2");
+
+        svg.appendChild(path);
+      }
+    }
+
+    /* ===================================================================
+     * TAB 2: COLORED PAPER & HONEY CAKE SEQUENCE
+     * =================================================================== */
+    let stripItem = 'paper'; // 'paper' or 'cake'
+    let stripDen = 6;
+    let stripNum = 3;
+
+    function setStripItem(item) {
+      playSound('click');
+      stripItem = item;
+      document.getElementById('btn-item-paper').className = item === 'paper' ? "px-4 py-2 rounded-xl text-sm font-bold bg-indigo-600 text-white shadow" : "px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-700 border hover:bg-slate-50";
+      document.getElementById('btn-item-cake').className = item === 'cake' ? "px-4 py-2 rounded-xl text-sm font-bold bg-amber-600 text-white shadow" : "px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-700 border hover:bg-slate-50";
+      document.getElementById('strip-unit-label').innerText = item === 'paper' ? "張色紙" : "條蜂蜜蛋糕";
+      renderStrip();
+    }
+
+    function setStripDen(den) {
+      playSound('click');
+      stripDen = den;
+      if (stripNum > stripDen) stripNum = stripDen;
+      const slider = document.getElementById('strip-num-slider');
+      slider.max = stripDen;
+      slider.value = stripNum;
+      renderStrip();
+    }
+
+    function updateStripFromSlider() {
+      stripNum = parseInt(document.getElementById('strip-num-slider').value);
+      renderStrip();
+    }
+
+    function renderStrip() {
+      document.getElementById('strip-num-val').innerText = stripNum;
+      document.getElementById('strip-equal-badge').innerText = `平分成 ${stripDen} 等分`;
+
+      const container = document.getElementById('strip-container');
+      container.innerHTML = '';
+
+      for (let i = 0; i < stripDen; i++) {
+        const seg = document.createElement('div');
+        seg.style.width = `${100 / stripDen}%`;
+        seg.className = `h-full border-r border-dashed border-slate-400 flex items-center justify-center font-bold text-xs transition-all ${
+          i < stripNum 
+            ? (stripItem === 'paper' ? 'bg-indigo-400 text-white' : 'bg-amber-500 text-white')
+            : 'bg-white text-slate-300'
+        }`;
+        seg.innerText = `1/${stripDen}`;
+        container.appendChild(seg);
+      }
+
+      // 動態數詞序列
+      const seqBox = document.getElementById('sequence-box');
+      seqBox.innerHTML = '';
+      const unitStr = stripItem === 'paper' ? '張' : '條';
+
+      for (let i = 1; i <= stripNum; i++) {
+        const item = document.createElement('div');
+        item.className = "sequence-item px-3 py-1.5 bg-white rounded-xl shadow-sm border border-indigo-200 text-xs font-bold text-indigo-900 flex items-center gap-1";
+        item.innerHTML = `<span class="bg-indigo-100 text-indigo-700 px-1.5 rounded">${i}個</span> 1/${stripDen} ${unitStr}`;
+        seqBox.appendChild(item);
+
+        if (i < stripNum) {
+          const arrow = document.createElement('span');
+          arrow.className = "text-indigo-300 text-xs font-black";
+          arrow.innerText = "➔";
+          seqBox.appendChild(arrow);
+        }
+      }
+
+      // 總結文字
+      let extraNote = "";
+      if (stripNum * 2 === stripDen) {
+        extraNote = ` (正好和半${unitStr}一樣大！)`;
+      } else if (stripNum === stripDen) {
+        extraNote = ` (正好和 1 ${unitStr}一樣大！)`;
+      }
+
+      document.getElementById('sequence-summary').innerHTML = `
+        <span>數詞序列累積：</span>
+        <span class="text-indigo-600 font-black">${stripNum} 個 1/${stripDen} ${unitStr} 是 <span class="text-2xl">${stripNum}/${stripDen}</span> ${unitStr}${extraNote}</span>
+      `;
+    }
+
+    /* ===================================================================
+     * TAB 3: CHOCOLATE GRID LOGIC
+     * =================================================================== */
+    let chocoTotal = 8;
+    let chocoSelected = 5;
+
+    function changeChocoTotal(total) {
+      playSound('click');
+      chocoTotal = total;
+      const slider = document.getElementById('choco-count-slider');
+      slider.max = total;
+      if (chocoSelected > total) chocoSelected = total;
+      slider.value = chocoSelected;
+
+      [8, 10, 12].forEach(num => {
+        const btn = document.getElementById('btn-choco-' + num);
+        btn.className = num === total 
+          ? "px-4 py-2 bg-amber-600 text-white text-sm font-bold rounded-xl shadow"
+          : "px-4 py-2 bg-white text-slate-700 hover:bg-amber-100 text-sm font-bold rounded-xl border border-slate-200";
+      });
+
+      renderChocolate();
+    }
+
+    function updateChocoFromSlider() {
+      chocoSelected = parseInt(document.getElementById('choco-count-slider').value);
+      renderChocolate();
+    }
+
+    function resetChocolate(selectAll) {
+      playSound('click');
+      chocoSelected = selectAll ? chocoTotal : 0;
+      document.getElementById('choco-count-slider').value = chocoSelected;
+      renderChocolate();
+    }
+
+    function renderChocolate() {
+      const grid = document.getElementById('chocolate-grid');
+      grid.innerHTML = '';
+
+      // 設定 Grid 欄數
+      if (chocoTotal === 8) grid.className = "grid grid-cols-4 gap-2.5 p-4 bg-amber-950 rounded-2xl shadow-2xl border-4 border-amber-900 max-w-xs w-full mx-auto";
+      else if (chocoTotal === 10) grid.className = "grid grid-cols-5 gap-2.5 p-4 bg-amber-950 rounded-2xl shadow-2xl border-4 border-amber-900 max-w-sm w-full mx-auto";
+      else grid.className = "grid grid-cols-4 gap-2.5 p-4 bg-amber-950 rounded-2xl shadow-2xl border-4 border-amber-900 max-w-sm w-full mx-auto";
+
+      for (let i = 0; i < chocoTotal; i++) {
+        const sq = document.createElement('div');
+        sq.className = `h-14 rounded-lg cursor-pointer transition-all border-2 flex items-center justify-center font-bold text-xs ${
+          i < chocoSelected 
+            ? 'bg-amber-800 border-amber-600 text-amber-200 shadow-inner' 
+            : 'bg-amber-200/30 border-amber-900/40 text-amber-900/40'
+        }`;
+        sq.innerText = `1/${chocoTotal}`;
+        sq.onclick = () => {
+          playSound('click');
+          chocoSelected = (i < chocoSelected) ? i : i + 1;
+          document.getElementById('choco-count-slider').value = chocoSelected;
+          renderChocolate();
+        };
+        grid.appendChild(sq);
+      }
+
+      document.getElementById('choco-total-text').innerText = `${chocoTotal} 格`;
+      document.getElementById('choco-unit-text').innerText = `1/${chocoTotal} 片`;
+      document.getElementById('choco-selected-text').innerText = `${chocoSelected} 格`;
+      document.getElementById('choco-fraction-num').innerText = `${chocoSelected}/${chocoTotal}`;
+    }
+
+    /* ===================================================================
+     * TAB 4: THINKING CAP MISCONCEPTION
+     * =================================================================== */
+    function checkHatChoice(opt) {
+      const fb = document.getElementById('hat-feedback');
+      fb.classList.remove('hidden');
+
+      [1, 2, 3].forEach(id => {
+        document.getElementById('hat-opt-' + id).className = "cursor-pointer glass-card p-5 rounded-2xl border-2 border-slate-200 hover:border-indigo-400 transition text-center space-y-3";
+      });
+
+      if (opt === 3) {
+        playSound('correct');
+        document.getElementById('hat-opt-3').className = "cursor-pointer glass-card p-5 rounded-2xl border-2 border-emerald-500 bg-emerald-50/50 text-center space-y-3 shadow-lg";
+        fb.className = "mt-6 p-5 rounded-2xl bg-emerald-100/80 border border-emerald-300 text-emerald-900 space-y-2";
+        fb.innerHTML = `
+          <div class="font-black text-base flex items-center gap-2 text-emerald-800">
+            <i class="fa-solid fa-circle-check text-xl"></i> 太棒了！答對了！
+          </div>
+          <p class="text-sm">因為「<strong>4/10 片</strong>」的分母是 <strong>10</strong>，表示這片白巧克力原本被<strong>平分成 10 格</strong>。媽媽吃了其中的 4 格！</p>
+        `;
+      } else {
+        playSound('wrong');
+        document.getElementById('hat-opt-' + opt).className = "cursor-pointer glass-card p-5 rounded-2xl border-2 border-rose-400 bg-rose-50/50 text-center space-y-3";
+        fb.className = "mt-6 p-5 rounded-2xl bg-rose-100/80 border border-rose-300 text-rose-900 space-y-2";
+        fb.innerHTML = `
+          <div class="font-black text-base flex items-center gap-2 text-rose-800">
+            <i class="fa-solid fa-circle-xmark text-xl"></i> 再想一想喔！
+          </div>
+          <p class="text-sm">分數「4/10 片」的<strong>分母 10</strong> 代表「整片巧克力原本平分成的總格數」。請找找看哪一片原本有 10 格呢？</p>
+        `;
+      }
+    }
+
+    /* ===================================================================
+     * TAB 5: 5 QUIZ QUESTIONS LOGIC
+     * =================================================================== */
+    const quizData = [
+      {
+        q: "1. 一張蔥油餅平分成 4 等分，其中的 1 等分是多少張蔥油餅？",
+        options: ["4 張", "1/4 張", "2/4 張", "1 張"],
+        ans: 1,
+        exp: "平分成 4 等分，每 1 等分就是 1/4 張。"
+      },
+      {
+        q: "2. 觀察數詞序列：3 個 1/6 張色紙累積起來，是多少張色紙？",
+        options: ["1/6 張", "2/6 張", "3/6 張", "6/3 張"],
+        ans: 2,
+        exp: "1個 1/6、2個 1/6、3個 1/6，合起來就是 3/6 張色紙。"
+      },
+      {
+        q: "3. 一片巧克力有 8 格，小明吃了 5 格，是吃了幾片巧克力？",
+        options: ["5/8 片", "8/5 片", "5 片", "8 片"],
+        ans: 0,
+        exp: "平分成 8 格（分母為8），吃了 5 格（分子為5），代表吃了 5/8 片。"
+      },
+      {
+        q: "4. 蜂蜜蛋糕平分成 9 片，拿了 9 片相當於幾條蜂蜜蛋糕？",
+        options: ["9 條", "1/9 條", "1 條", "0 條"],
+        ans: 2,
+        exp: "9/9 條和 1 條蜂蜜蛋糕一樣大！"
+      },
+      {
+        q: "5. 分數 4/10 中，數字「10」代表什麼意思？",
+        options: ["吃了 10 格", "剩下 10 格", "整體平分成 10 等分", "共有 10 人吃"],
+        ans: 2,
+        exp: "分母（下方數字）代表整體被平分成的總等份數。"
+      }
+    ];
+
+    function renderQuiz() {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = '';
+
+      quizData.forEach((q, idx) => {
+        const qCard = document.createElement('div');
+        qCard.className = "p-5 bg-white/90 rounded-2xl border border-slate-200/80 shadow-sm space-y-3";
+        
+        let optsHtml = '';
+        q.options.forEach((opt, oIdx) => {
+          optsHtml += `
+            <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-indigo-50/50 cursor-pointer text-sm font-medium">
+              <input type="radio" name="quiz-q-${idx}" value="${oIdx}" class="accent-indigo-600">
+              <span>${opt}</span>
+            </label>
+          `;
+        });
+
+        qCard.innerHTML = `
+          <div class="font-bold text-slate-800 text-base">${q.q}</div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">${optsHtml}</div>
+          <div id="quiz-exp-${idx}" class="hidden p-3 rounded-xl text-xs font-bold mt-2"></div>
+        `;
+        container.appendChild(qCard);
+      });
+    }
+
+    function submitQuiz() {
+      let score = 0;
+      quizData.forEach((q, idx) => {
+        const selected = document.querySelector(`input[name="quiz-q-${idx}"]:checked`);
+        const expEl = document.getElementById(`quiz-exp-${idx}`);
+        expEl.classList.remove('hidden');
+
+        if (selected && parseInt(selected.value) === q.ans) {
+          score += 20;
+          expEl.className = "p-3 rounded-xl text-xs font-bold mt-2 bg-emerald-100 text-emerald-800 border border-emerald-300";
+          expEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> 正確！${q.exp}`;
+        } else {
+          expEl.className = "p-3 rounded-xl text-xs font-bold mt-2 bg-rose-100 text-rose-800 border border-rose-300";
+          expEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> 訂正說明：正確答案是「${q.options[q.ans]}」。${q.exp}`;
+        }
+      });
+
+      const badge = document.getElementById('quiz-score-badge');
+      badge.innerText = `得分：${score} / 100`;
+      if (score >= 80) {
+        playSound('correct');
+        badge.className = "px-4 py-2 bg-emerald-500 text-white rounded-2xl font-black text-base shadow-lg animate-bounce";
+      } else {
+        playSound('wrong');
+        badge.className = "px-4 py-2 bg-amber-500 text-white rounded-2xl font-black text-base shadow-lg";
+      }
+    }
+
+    function resetQuiz() {
+      playSound('click');
+      document.getElementById('quiz-score-badge').innerText = "得分：-- / 100";
+      document.getElementById('quiz-score-badge').className = "px-4 py-2 bg-indigo-100 text-indigo-800 rounded-2xl font-black text-base";
+      renderQuiz();
+    }
+
+    /* ===================================================================
+     * INITIALIZATION ON PAGE LOAD
+     * =================================================================== */
+    window.onload = function() {
+      renderPie();
+      renderStrip();
+      renderChocolate();
+      renderQuiz();
+    };
+  </script>
+</body>
+</html>

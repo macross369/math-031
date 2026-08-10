@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>平分與除 - 國小數學 6-2 互動探究學堂</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Noto Sans TC & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Noto Sans TC', 'Inter', sans-serif;
+      background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 35%, #e0c3fc 70%, #8ec5fc 100%);
+      min-height: 100vh;
+      color: #2d3748;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Shinkai style animated cloud background layers */
+    .shinkai-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .cloud {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.45);
+      border-radius: 50px;
+      filter: blur(12px);
+      animation: floatCloud linear infinite;
+    }
+
+    .cloud-1 {
+      top: 8%;
+      left: -20%;
+      width: 350px;
+      height: 100px;
+      animation-duration: 42s;
+    }
+
+    .cloud-2 {
+      top: 28%;
+      left: -30%;
+      width: 480px;
+      height: 130px;
+      animation-duration: 55s;
+      animation-delay: -15s;
+    }
+
+    .cloud-3 {
+      top: 65%;
+      left: -25%;
+      width: 400px;
+      height: 110px;
+      animation-duration: 48s;
+      animation-delay: -8s;
+    }
+
+    @keyframes floatCloud {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(130vw); }
+    }
+
+    /* Glassmorphism card styling */
+    .shinkai-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 10px 30px rgba(31, 38, 135, 0.08);
+      border-radius: 1.5rem;
+    }
+
+    /* Custom range slider styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: transparent;
+    }
+    input[type=range]:focus {
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 10px;
+      cursor: pointer;
+      background: #c3dafe;
+      border-radius: 5px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      height: 24px;
+      width: 24px;
+      border-radius: 50%;
+      background: #4c51bf;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -7px;
+      box-shadow: 0 2px 8px rgba(76, 81, 191, 0.4);
+      transition: transform 0.15s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    /* Item popup animation */
+    .item-pop {
+      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.2); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Pulse effect for step button */
+    .pulse-btn {
+      animation: pulseGlow 2s infinite;
+    }
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); }
+      70% { box-shadow: 0 0 0 12px rgba(79, 70, 229, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+    }
+  </style>
+</head>
+<body class="p-3 md:p-6 min-h-screen">
+
+  <div class="shinkai-bg">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+  <!-- 閒雲數學小棧 Logo 與標題 -->
+  <div class="w-full max-w-5xl mx-auto flex items-center justify-start mb-4 px-2 relative z-10">
+    <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+    <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+  </div>
+
+  <!-- Page Header -->
+  <header class="max-w-5xl mx-auto mb-6 text-center relative z-10">
+    <div class="inline-block px-4 py-1.5 bg-white/70 backdrop-blur-md rounded-full text-indigo-900 text-xs md:text-sm font-bold mb-2 shadow-sm border border-white/60">
+      <i class="fa-solid fa-cloud-sun text-amber-500 mr-1.5"></i> 國小數學 6-2 概念探究
+    </div>
+    <h1 class="text-3xl md:text-4xl font-black text-slate-800 tracking-wide drop-shadow-sm">
+      <span class="bg-gradient-to-r from-sky-600 via-indigo-600 to-pink-500 bg-clip-text text-transparent">平分與除</span> 互動探究學堂
+    </h1>
+    <p class="text-slate-700 text-sm md:text-base mt-2 font-medium">
+      透過「一步一步平分」體驗連減過程，建立除法與乘法預估的核心數學觀念！
+    </p>
+  </header>
+
+  <!-- Navigation Tab Bar -->
+  <nav class="max-w-5xl mx-auto mb-6 flex justify-center gap-3 relative z-10 px-2">
+    <button id="tabBtnExplore" onclick="switchTab('explore')" class="px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 bg-white/90 text-indigo-700 shadow-lg border-2 border-indigo-400 scale-105 flex items-center cursor-pointer">
+      <i class="fa-solid fa-hand-holding-hand mr-2 text-amber-500"></i> 1. 動態平分探究區 (一步一步操作)
+    </button>
+    <button id="tabBtnQuiz" onclick="switchTab('quiz')" class="px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 bg-white/50 text-slate-600 hover:bg-white/80 flex items-center cursor-pointer">
+      <i class="fa-solid fa-graduation-cap mr-2 text-indigo-600"></i> 2. 歷程評量 (小試身手)
+    </button>
+  </nav>
+
+  <main class="max-w-5xl mx-auto relative z-10">
+
+    <!-- Tab 1: Dynamic Explorer (Step-by-Step) -->
+    <div id="tabExplore" class="space-y-6">
+      
+      <section class="shinkai-card p-5 md:p-7">
+        <div class="flex items-center justify-between border-b border-indigo-100 pb-3 mb-5">
+          <h2 class="text-xl font-bold text-indigo-900 flex items-center">
+            <i class="fa-solid fa-sliders text-indigo-600 mr-2.5"></i> 第一步：設定題目參數
+          </h2>
+          <span class="text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-bold">隨心調整題目</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Total Items Slider -->
+          <div class="bg-white/60 p-4 rounded-2xl border border-white/80">
+            <div class="flex justify-between items-center mb-2">
+              <label class="text-xs font-bold text-slate-700">物品總數量 (被除數)：</label>
+              <span id="totalItemsVal" class="text-lg font-black text-indigo-600">14</span>
+            </div>
+            <input type="range" id="totalItems" min="1" max="48" value="14" class="w-full">
+            <p class="text-[11px] text-slate-500 mt-1">例如：12 顆彈珠、18 張貼紙、14 顆糖果</p>
+          </div>
+
+          <!-- Group Count Slider -->
+          <div class="bg-white/60 p-4 rounded-2xl border border-white/80">
+            <div class="flex justify-between items-center mb-2">
+              <label class="text-xs font-bold text-slate-700">平分給幾人/幾組 (除數)：</label>
+              <span id="groupCountVal" class="text-lg font-black text-indigo-600">5</span>
+            </div>
+            <input type="range" id="groupCount" min="1" max="10" value="5" class="w-full">
+            <p class="text-[11px] text-slate-500 mt-1">例如：分給 4 個人、分給 6 個人、5 個人</p>
+          </div>
+
+          <!-- Item Type Selection -->
+          <div class="bg-white/60 p-4 rounded-2xl border border-white/80 flex flex-col justify-between">
+            <label class="text-xs font-bold text-slate-700 mb-2">選擇探究物品種類：</label>
+            <select id="itemType" class="w-full p-2.5 rounded-xl bg-white border border-indigo-200 text-slate-700 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+              <option value="candy">🍬 糖果 ( Candy )</option>
+              <option value="marble">🔮 彈珠 ( Marble )</option>
+              <option value="sticker">⭐ 貼紙 ( Sticker )</option>
+              <option value="cookie">🍪 餅乾 ( Cookie )</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="shinkai-card p-5 border-2 border-indigo-200 bg-indigo-50/50">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="text-center sm:text-left">
+            <span class="text-xs font-black text-indigo-600 uppercase tracking-wider block">第二步：動態一步一步分分看</span>
+            <div id="stepStatusText" class="text-base md:text-lg font-bold text-slate-800 mt-0.5">
+              準備開始平分！每個人每次分 1 個，共需要拿走 <span class="text-indigo-600 font-black" id="stepTakeCount">5</span> 個。
+            </div>
+          </div>
+
+          <!-- Step Action Buttons -->
+          <div class="flex flex-wrap items-center gap-2 justify-center">
+            <button id="btnNextStep" onclick="doNextStep()" class="pulse-btn px-5 py-3 rounded-2xl font-black text-sm md:text-base bg-gradient-to-r from-indigo-600 to-sky-600 text-white shadow-md hover:from-indigo-700 hover:to-sky-700 transition transform active:scale-95 flex items-center cursor-pointer">
+              <i class="fa-solid fa-hand-holding-hand mr-2 text-amber-300"></i> 分 1 次 (每人發 1 個)
+            </button>
+            <button id="btnAutoAll" onclick="autoComplete()" class="px-4 py-3 rounded-2xl font-bold text-xs md:text-sm bg-white/90 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 transition shadow-sm flex items-center cursor-pointer">
+              <i class="fa-solid fa-bolt mr-1.5 text-amber-500"></i> 一次全部分完
+            </button>
+            <button id="btnReset" onclick="resetSteps()" class="px-4 py-3 rounded-2xl font-bold text-xs md:text-sm bg-slate-200/80 text-slate-700 hover:bg-slate-300 transition flex items-center cursor-pointer">
+              <i class="fa-solid fa-rotate-left mr-1.5"></i> 重設重新分
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        
+        <!-- Left Column: Item Pool & Visual Distribution -->
+        <div class="md:col-span-7 space-y-6">
+          
+          <!-- Remaining Item Pool -->
+          <div class="shinkai-card p-5">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-slate-700 flex items-center">
+                <i class="fa-solid fa-cubes text-sky-500 mr-2"></i> 物品準備區 (尚未分出的剩餘數量)
+              </h3>
+              <span class="text-xs font-black bg-sky-100 text-sky-800 px-3 py-1 rounded-full">
+                還剩 <span id="poolRemCount" class="text-indigo-700 text-sm">14</span> 個
+              </span>
+            </div>
+            <div id="itemsPool" class="flex flex-wrap gap-2 min-h-[80px] p-3 bg-white/50 rounded-2xl border border-sky-100 items-center justify-center">
+              <!-- Dynamically populated remaining icons -->
+            </div>
+          </div>
+
+          <!-- Distribution Groups Container -->
+          <div class="shinkai-card p-5">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-slate-700 flex items-center">
+                <i class="fa-solid fa-users text-indigo-500 mr-2"></i> 平分狀況 (每個人目前拿到的數量)
+              </h3>
+              <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full">
+                目前每人分到 <span id="currentQuotientVal" class="font-black text-indigo-900 text-sm">0</span> 個
+              </span>
+            </div>
+            <div id="groupsContainer" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <!-- Dynamically populated group cards -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Subtraction Steps & Mathematical Formulas -->
+        <div class="md:col-span-5 space-y-6">
+          
+          <div class="shinkai-card p-5 space-y-5">
+            <h3 class="text-base font-bold text-indigo-900 border-b border-indigo-100 pb-2 flex items-center">
+              <i class="fa-solid fa-calculator text-amber-500 mr-2"></i> 數學概念對照記錄
+            </h3>
+
+            <!-- Subtraction Log -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-bold text-indigo-800 bg-indigo-50 px-2.5 py-1 rounded-md">1. 逐次連減過程記錄</span>
+                <span id="stepCounterBadge" class="text-[11px] font-bold text-slate-500">已減 0 次</span>
+              </div>
+              <div id="subtractionSteps" class="mt-2 space-y-2 max-h-[160px] overflow-y-auto pr-1">
+                <!-- Dynamic step subtraction cards go here -->
+              </div>
+            </div>
+
+            <!-- Multiplication Estimation -->
+            <div>
+              <span class="text-xs font-bold text-indigo-800 bg-indigo-50 px-2.5 py-1 rounded-md">2. 乘法預估總數</span>
+              <div class="mt-2.5 p-3 rounded-xl bg-amber-50/80 border border-amber-200 text-xs text-amber-900 font-medium">
+                平分給 <span id="multGroupCount" class="font-bold text-indigo-700">5</span> 人，每人分 <span id="multQuotient" class="font-bold text-indigo-700">0</span> 個，一共分掉：
+                <div class="text-center font-black text-base text-indigo-900 my-1 font-mono" id="multText">5 × 0 = 0</div>
+              </div>
+            </div>
+
+            <!-- Final Division Formula -->
+            <div>
+              <span class="text-xs font-bold text-indigo-800 bg-indigo-50 px-2.5 py-1 rounded-md">3. 除法算式與答案記錄</span>
+              <div class="mt-2.5 p-4 rounded-2xl bg-white/90 border-2 border-indigo-300 text-center shadow-inner">
+                <div class="text-lg md:text-xl font-black font-mono text-slate-800" id="divFormula">
+                  14 ÷ 5 = 0 ⋯⋯ 14
+                </div>
+                <div class="text-xs text-slate-600 mt-2 font-bold" id="resultSummary">
+                  每人分到 <span class="text-indigo-600">0</span> 個，還剩下 <span class="text-pink-600">14</span> 個
+                </div>
+              </div>
+            </div>
+
+            <!-- Remainder Safety Rule Notice -->
+            <div id="remainderRuleBox" class="p-3 rounded-xl bg-amber-100 text-amber-900 text-xs font-bold flex items-start border border-amber-300">
+              <i class="fa-solid fa-circle-info text-amber-600 text-base mr-2 mt-0.5"></i>
+              <span id="remainderRuleText">按一下「分 1 次」按鈕開始體驗平分歷程！</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- Tab 2: Assessment Quiz -->
+  <div id="tabQuiz" class="hidden space-y-6">
+      <section class="shinkai-card p-5 md:p-7">
+        <div class="flex items-center justify-between border-b border-indigo-100 pb-3 mb-5">
+          <h2 class="text-xl font-bold text-indigo-900 flex items-center">
+            <i class="fa-solid fa-graduation-cap text-indigo-600 mr-2.5"></i> 2. 歷程評量 (小試身手 5 題)
+          </h2>
+          <span id="scoreBadge" class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+            得分：0 / 100
+          </span>
+        </div>
+
+        <div class="space-y-6" id="quizContainer">
+          
+          <!-- Q1 -->
+          <div class="quiz-item bg-white/60 p-4.5 rounded-2xl border border-white/80 shadow-sm" data-qid="1">
+            <p class="font-bold text-slate-800 text-sm md:text-base mb-3">
+              <span class="text-indigo-600 mr-1">Q1.</span> 有 12 顆彈珠要平分給 4 個人，每次每人分 1 顆，減掉了 4 顆。一共減了 3 次剛好減完，請問連減算式該如何記錄？
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(1, 0, false)">A) 12 - 3 - 3 - 3 - 3 = 0</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(1, 1, true)">B) 12 - 4 = 8, 8 - 4 = 4, 4 - 4 = 0</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(1, 2, false)">C) 12 - 12 = 0</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(1, 3, false)">D) 12 + 4 + 4 = 20</button>
+            </div>
+            <div class="feedback hidden mt-3 p-3 rounded-xl text-xs font-semibold"></div>
+          </div>
+
+          <!-- Q2 -->
+          <div class="quiz-item bg-white/60 p-4.5 rounded-2xl border border-white/80 shadow-sm" data-qid="2">
+            <p class="font-bold text-slate-800 text-sm md:text-base mb-3">
+              <span class="text-indigo-600 mr-1">Q2.</span> 有 18 張貼紙平分給 6 個人。若用乘法算式來預估每人可分幾張：6 × ( &nbsp; ) = 18，請問括號中填入的數字代表什麼意思？
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(2, 0, false)">A) 總共有 6 張貼紙</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(2, 1, false)">B) 平分給 18 個人</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(2, 2, true)">C) 每人分到的貼紙數量 (商數)</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(2, 3, false)">D) 剩下的貼紙數量 (餘數)</button>
+            </div>
+            <div class="feedback hidden mt-3 p-3 rounded-xl text-xs font-semibold"></div>
+          </div>
+
+          <!-- Q3 -->
+          <div class="quiz-item bg-white/60 p-4.5 rounded-2xl border border-white/80 shadow-sm" data-qid="3">
+            <p class="font-bold text-slate-800 text-sm md:text-base mb-3">
+              <span class="text-indigo-600 mr-1">Q3.</span> 有 25 張椅子，要平分到 6 間教室。用除法上記錄為 25 ÷ 6 = 4 ⋯⋯ 1。請問算式中的「1」代表什麼？
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(3, 0, false)">A) 每間教室分到 1 張椅子</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(3, 1, true)">B) 盡量平分後，還剩下來 1 張椅子</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(3, 2, false)">C) 還差 1 張椅子就可以再分 1 間</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(3, 3, false)">D) 一共有 1 間教室</button>
+            </div>
+            <div class="feedback hidden mt-3 p-3 rounded-xl text-xs font-semibold"></div>
+          </div>
+
+          <!-- Q4 -->
+          <div class="quiz-item bg-white/60 p-4.5 rounded-2xl border border-white/80 shadow-sm" data-qid="4">
+            <p class="font-bold text-slate-800 text-sm md:text-base mb-3">
+              <span class="text-indigo-600 mr-1">Q4.</span> 學校要把 50 包餅乾平分給 7 個班級，每個班級最多可分到幾包？還剩下幾包？
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(4, 0, false)">A) 分到 8 包，剩下 6 包</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(4, 1, true)">B) 分到 7 包，剩下 1 包</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(4, 2, false)">C) 分到 6 包，剩下 8 包</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(4, 3, false)">D) 分到 7 包，剩下 0 包</button>
+            </div>
+            <div class="feedback hidden mt-3 p-3 rounded-xl text-xs font-semibold"></div>
+          </div>
+
+          <!-- Q5 -->
+          <div class="quiz-item bg-white/60 p-4.5 rounded-2xl border border-white/80 shadow-sm" data-qid="5">
+            <p class="font-bold text-slate-800 text-sm md:text-base mb-3">
+              <span class="text-indigo-600 mr-1">Q5.</span> (思考題) 老師有十幾顆糖果，每 4 顆裝成一袋，盡量裝完。最後剩下來的數量「不可能」是幾顆？為什麼？
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(5, 0, false)">A) 0 顆 (可能剛好裝完)</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(5, 1, false)">B) 1 顆</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(5, 2, false)">C) 3 顆</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(5, 3, true)">D) 4 顆 (因為若剩下 4 顆就可以湊成滿滿一袋！餘數必須小於 4)</button>
+            </div>
+            <div class="feedback hidden mt-3 p-3 rounded-xl text-xs font-semibold"></div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-slate-600 text-xs py-6 mt-6 relative z-10">
+  </footer>
+
+  <script>
+    let totalItems = 14;
+    let groupCount = 5;
+    let itemType = 'candy';
+    let currentStep = 0; // Tracks how many rounds of distribution have been performed
+
+    const itemIcons = {
+      candy: { icon: 'fa-candy-cane', color: 'text-pink-500', bg: 'bg-pink-100', name: '顆糖果' },
+      marble: { icon: 'fa-circle', color: 'text-sky-500', bg: 'bg-sky-100', name: '顆彈珠' },
+      sticker: { icon: 'fa-star', color: 'text-amber-500', bg: 'bg-amber-100', name: '張貼紙' },
+      cookie: { icon: 'fa-cookie', color: 'text-amber-700', bg: 'bg-amber-100', name: '包餅乾' }
+    };
+
+    let quizScores = {};
+
+    function switchTab(tab) {
+      const tabExplore = document.getElementById('tabExplore');
+      const tabQuiz = document.getElementById('tabQuiz');
+      const btnExplore = document.getElementById('tabBtnExplore');
+      const btnQuiz = document.getElementById('tabBtnQuiz');
+
+      if (tab === 'explore') {
+        tabExplore.classList.remove('hidden');
+        tabQuiz.classList.add('hidden');
+
+        btnExplore.className = "px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 bg-white/90 text-indigo-700 shadow-lg border-2 border-indigo-400 scale-105 flex items-center cursor-pointer";
+        btnQuiz.className = "px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 bg-white/50 text-slate-600 hover:bg-white/80 flex items-center cursor-pointer";
+      } else {
+        tabExplore.classList.add('hidden');
+        tabQuiz.classList.remove('hidden');
+
+        btnQuiz.className = "px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 bg-white/90 text-indigo-700 shadow-lg border-2 border-indigo-400 scale-105 flex items-center cursor-pointer";
+        btnExplore.className = "px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 bg-white/50 text-slate-600 hover:bg-white/80 flex items-center cursor-pointer";
+      }
+    }
+
+    function init() {
+      const totalSlider = document.getElementById('totalItems');
+      const groupSlider = document.getElementById('groupCount');
+      const itemSelect = document.getElementById('itemType');
+
+      if (totalSlider) {
+        totalSlider.addEventListener('input', (e) => {
+          totalItems = parseInt(e.target.value);
+          const valLabel = document.getElementById('totalItemsVal');
+          if (valLabel) valLabel.innerText = totalItems;
+          currentStep = 0; // reset step on parameter change
+          updateSimulation();
+        });
+      }
+
+      if (groupSlider) {
+        groupSlider.addEventListener('input', (e) => {
+          groupCount = parseInt(e.target.value);
+          const valLabel = document.getElementById('groupCountVal');
+          if (valLabel) valLabel.innerText = groupCount;
+          currentStep = 0; // reset step on parameter change
+          updateSimulation();
+        });
+      }
+
+      if (itemSelect) {
+        itemSelect.addEventListener('change', (e) => {
+          itemType = e.target.value;
+          updateSimulation();
+        });
+      }
+
+      updateSimulation();
+    }
+
+    function doNextStep() {
+      const maxQuotient = groupCount > 0 ? Math.floor(totalItems / groupCount) : 0;
+      if (currentStep < maxQuotient) {
+        currentStep++;
+        updateSimulation();
+      }
+    }
+
+    function autoComplete() {
+      const maxQuotient = groupCount > 0 ? Math.floor(totalItems / groupCount) : 0;
+      currentStep = maxQuotient;
+      updateSimulation();
+    }
+
+    function resetSteps() {
+      currentStep = 0;
+      updateSimulation();
+    }
+
+    function updateSimulation() {
+      const itemInfo = itemIcons[itemType] || itemIcons.candy;
+      const maxQuotient = groupCount > 0 ? Math.floor(totalItems / groupCount) : 0;
+      const currentRemaining = totalItems - (currentStep * groupCount);
+
+      // Update control step status & step take count
+      const stepTakeCount = document.getElementById('stepTakeCount');
+      if (stepTakeCount) stepTakeCount.innerText = groupCount;
+
+      const btnNextStep = document.getElementById('btnNextStep');
+      const stepStatusText = document.getElementById('stepStatusText');
+
+      if (currentStep < maxQuotient) {
+        if (btnNextStep) {
+          btnNextStep.disabled = false;
+          btnNextStep.className = "pulse-btn px-5 py-3 rounded-2xl font-black text-sm md:text-base bg-gradient-to-r from-indigo-600 to-sky-600 text-white shadow-md hover:from-indigo-700 hover:to-sky-700 transition transform active:scale-95 flex items-center cursor-pointer";
+          btnNextStep.innerHTML = `<i class="fa-solid fa-hand-holding-hand mr-2 text-amber-300"></i> 分 1 次 (每人發 1 個)`;
+        }
+        if (stepStatusText) {
+          if (currentStep === 0) {
+            stepStatusText.innerHTML = `準備開始平分！點擊按鈕，每次每人發 1 個（共拿走 <span class="text-indigo-600 font-black">${groupCount}</span> 個）。`;
+          } else {
+            stepStatusText.innerHTML = `已分了 <span class="text-indigo-600 font-black">${currentStep}</span> 次，還剩下 <span class="text-pink-600 font-black">${currentRemaining}</span> 個，可以繼續分喔！`;
+          }
+        }
+      } else {
+        if (btnNextStep) {
+          btnNextStep.disabled = true;
+          btnNextStep.className = "px-5 py-3 rounded-2xl font-bold text-sm md:text-base bg-slate-300 text-slate-500 cursor-not-allowed shadow-none flex items-center opacity-80";
+          btnNextStep.innerHTML = `<i class="fa-solid fa-circle-check mr-2 text-emerald-600"></i> 已盡量分完囉！`;
+        }
+        if (stepStatusText) {
+          stepStatusText.innerHTML = `🎉 已分了 <span class="text-indigo-600 font-black">${currentStep}</span> 次，剩餘 <span class="text-pink-600 font-black">${currentRemaining}</span> 個不足分給 ${groupCount} 人，平分完成！`;
+        }
+      }
+
+      // 1. Render item pool (remaining items)
+      const pool = document.getElementById('itemsPool');
+      const poolRemCount = document.getElementById('poolRemCount');
+      if (poolRemCount) poolRemCount.innerText = currentRemaining;
+
+      if (pool) {
+        pool.innerHTML = '';
+        if (currentRemaining === 0) {
+          pool.innerHTML = `<div class="text-xs font-bold text-slate-400 italic">物品已全部平分完畢囉！</div>`;
+        } else {
+          for (let i = 0; i < currentRemaining; i++) {
+            const itemEl = document.createElement('div');
+            itemEl.className = `w-8 h-8 md:w-9 md:h-9 rounded-full ${itemInfo.bg} ${itemInfo.color} flex items-center justify-center text-sm md:text-base shadow-sm item-pop transition-transform hover:scale-110`;
+            itemEl.innerHTML = `<i class="fa-solid ${itemInfo.icon}"></i>`;
+            pool.appendChild(itemEl);
+          }
+        }
+      }
+
+      // 2. Render groups container (each person's currently distributed items)
+      const currentQuotientVal = document.getElementById('currentQuotientVal');
+      if (currentQuotientVal) currentQuotientVal.innerText = currentStep;
+
+      const groupsContainer = document.getElementById('groupsContainer');
+      if (groupsContainer) {
+        groupsContainer.innerHTML = '';
+        for (let g = 0; g < groupCount; g++) {
+          const gCard = document.createElement('div');
+          gCard.className = 'p-3 bg-white/80 rounded-2xl border border-indigo-100 flex flex-col items-center justify-between min-h-[110px] shadow-sm transition-all hover:bg-white';
+
+          let itemsHtml = '<div class="flex flex-wrap gap-1 justify-center my-1.5 min-h-[28px] items-center">';
+          for (let q = 0; q < currentStep; q++) {
+            itemsHtml += `<div class="w-6 h-6 rounded-full ${itemInfo.bg} ${itemInfo.color} flex items-center justify-center text-xs shadow-xs item-pop"><i class="fa-solid ${itemInfo.icon}"></i></div>`;
+          }
+          itemsHtml += '</div>';
+
+          gCard.innerHTML = `
+            <div class="text-xs font-bold text-indigo-700">第 ${g + 1} 人 / 組</div>
+            ${itemsHtml}
+            <div class="text-xs font-bold text-slate-600">目前拿到 ${currentStep} ${itemInfo.name.substring(1)}</div>
+          `;
+          groupsContainer.appendChild(gCard);
+        }
+      }
+
+      // 3. Render repeated subtraction steps up to currentStep
+      const subContainer = document.getElementById('subtractionSteps');
+      const stepCounterBadge = document.getElementById('stepCounterBadge');
+      if (stepCounterBadge) stepCounterBadge.innerText = `已減 ${currentStep} 次`;
+
+      if (subContainer) {
+        subContainer.innerHTML = '';
+        let rem = totalItems;
+        if (currentStep === 0) {
+          subContainer.innerHTML = `<div class="text-xs text-slate-500 italic p-2 bg-slate-50/80 rounded-lg">按下「分 1 次」後，將會在此顯示逐次連減算式記錄。</div>`;
+        } else {
+          for (let step = 1; step <= currentStep; step++) {
+            const nextRem = rem - groupCount;
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'p-2 rounded-xl bg-indigo-50/90 border border-indigo-100 flex items-center justify-between text-xs font-semibold text-slate-700 item-pop';
+            stepDiv.innerHTML = `
+              <span>第 ${step} 次：每人分 1 個，共拿走 ${groupCount} 個</span>
+              <span class="font-mono bg-white px-2 py-0.5 rounded border border-indigo-200 text-indigo-800 font-bold">${rem} - ${groupCount} = ${nextRem}</span>
+            `;
+            subContainer.appendChild(stepDiv);
+            rem = nextRem;
+          }
+        }
+      }
+
+      // 4. Update multiplication estimation & division formula
+      const multGroupCount = document.getElementById('multGroupCount');
+      if (multGroupCount) multGroupCount.innerText = groupCount;
+
+      const multQuotient = document.getElementById('multQuotient');
+      if (multQuotient) multQuotient.innerText = currentStep;
+
+      const multText = document.getElementById('multText');
+      if (multText) multText.innerText = `${groupCount} × ${currentStep} = ${groupCount * currentStep}`;
+
+      const divFormula = document.getElementById('divFormula');
+      if (divFormula) {
+        divFormula.innerHTML = `${totalItems} ÷ ${groupCount} = <span class="text-indigo-600 font-extrabold text-xl mx-1">${currentStep}</span> ⋯⋯ <span class="text-pink-600 font-extrabold text-xl mx-1">${currentRemaining}</span>`;
+      }
+
+      const resultSummary = document.getElementById('resultSummary');
+      if (resultSummary) {
+        resultSummary.innerHTML = `每人分到 <span class="font-bold text-indigo-600 text-sm">${currentStep}</span> ${itemInfo.name}，還剩下 <span class="font-bold text-pink-600 text-sm">${currentRemaining}</span> ${itemInfo.name}`;
+      }
+
+      // 5. Remainder safety rule callout
+      const remainderRuleBox = document.getElementById('remainderRuleBox');
+      const remainderRuleText = document.getElementById('remainderRuleText');
+      if (remainderRuleBox && remainderRuleText) {
+        if (currentRemaining >= groupCount && groupCount > 0) {
+          remainderRuleBox.className = "p-3 rounded-xl bg-amber-100 text-amber-900 text-xs font-bold flex items-start border border-amber-300 transition-all";
+          remainderRuleText.innerHTML = `<i class="fa-solid fa-circle-exclamation text-amber-600 text-base mr-2 mt-0.5"></i> 剩餘數量 (${currentRemaining}) 大於或等於人數 (${groupCount})，表示還可以再繼續分 1 次喔！`;
+        } else {
+          remainderRuleBox.className = "p-3 rounded-xl bg-emerald-100 text-emerald-900 text-xs font-bold flex items-start border border-emerald-300 transition-all";
+          remainderRuleText.innerHTML = `<i class="fa-solid fa-shield-halved text-emerald-600 text-base mr-2 mt-0.5"></i> 餘數 (${currentRemaining}) 小於除數 (${groupCount})，已經盡量平分完囉！`;
+        }
+      }
+    }
+
+    function checkAnswer(qid, optIndex, isCorrect) {
+      const item = document.querySelector(`.quiz-item[data-qid="${qid}"]`);
+      if (!item) return;
+
+      const feedback = item.querySelector('.feedback');
+      const buttons = item.querySelectorAll('.opt-btn');
+
+      buttons.forEach((btn, idx) => {
+        btn.classList.remove('bg-emerald-100', 'border-emerald-500', 'text-emerald-900', 'bg-rose-100', 'border-rose-500', 'text-rose-900');
+        if (idx === optIndex) {
+          if (isCorrect) {
+            btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+          } else {
+            btn.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-900');
+          }
+        }
+      });
+
+      if (feedback) {
+        feedback.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+        if (isCorrect) {
+          quizScores[qid] = 20;
+          feedback.classList.add('bg-emerald-100', 'text-emerald-800');
+          feedback.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> 答對了！非常棒，融會貫通囉！`;
+        } else {
+          quizScores[qid] = 0;
+          feedback.classList.add('bg-rose-100', 'text-rose-800');
+          feedback.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 mr-1.5"></i> 答錯囉，再想想看連減、除數與餘數的關係！`;
+        }
+      }
+
+      const totalScore = Object.values(quizScores).reduce((a, b) => a + b, 0);
+      const scoreBadge = document.getElementById('scoreBadge');
+      if (scoreBadge) {
+        scoreBadge.innerText = `得分：${totalScore} / 100`;
+      }
+    }
+
+    // Attach onload initialization
+    window.onload = function() {
+      init();
+    };
+  </script>
+</body>
+</html>

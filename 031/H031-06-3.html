@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>國小數學：除法與直式動態探究館</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'sans-serif'],
+                    },
+                    colors: {
+                        shinkai: {
+                            night: '#0f172a',
+                            dusk: '#1e1b4b',
+                            indigo: '#312e81',
+                            sky: '#0284c7',
+                            twilight: '#c026d3',
+                            pink: '#f43f5e',
+                            sunset: '#fb923c',
+                            cloud: '#f8fafc',
+                            glass: 'rgba(255, 255, 255, 0.85)',
+                            card: 'rgba(30, 27, 75, 0.6)'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 新海誠動漫風格背景與光效 */
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 35%, #4c1d95 70%, #be185d 100%);
+            background-attachment: fixed;
+            color: #f8fafc;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 雲彩與星效裝飾 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 30%, rgba(244, 63, 94, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(251, 146, 60, 0.12) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 玻璃擬物風格卡片 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            color: #1e293b;
+        }
+
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 直式算式網格樣式 */
+        .division-grid {
+            display: grid;
+            grid-template-columns: 2.2rem 1.2rem 2.2rem 2.2rem;
+            grid-template-rows: repeat(4, 2.5rem);
+            gap: 2px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 1.5rem;
+            align-items: center;
+            justify-items: center;
+        }
+
+        /* 漸層按鈕 hover 動畫 */
+        .shinkai-btn {
+            background: linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #c026d3 100%);
+            background-size: 200% auto;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .shinkai-btn:hover {
+            background-position: right center;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(192, 38, 211, 0.4);
+        }
+
+        /* 水平切割線 */
+        .division-line {
+            border-bottom: 3px solid #1e293b;
+        }
+
+        /* 直式括號弧線 */
+        .division-bracket {
+            border-left: 3px solid #1e293b;
+            border-top: 3px solid #1e293b;
+            border-top-left-radius: 8px;
+        }
+
+        .floating-cloud {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+    </style>
+</head>
+<body class="p-3 md:p-6 text-slate-800">
+
+    <!-- 品牌 Logo 區域 -->
+    <div class="w-full max-w-6xl mx-auto flex items-center justify-start mb-4 px-2 relative z-10">
+        <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+        <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+    </div>
+
+    <!-- 頂部標題區域 -->
+    <header class="max-w-6xl mx-auto mb-6 text-center relative z-10">
+        <div class="inline-block px-4 py-1.5 rounded-full bg-white/20 text-sky-200 text-sm font-medium mb-2 backdrop-blur-md border border-white/30">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-amber-300"></i> 小學數學 6-3 概念探索
+        </div>
+        <h1 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-sky-200 via-pink-200 to-amber-200 drop-shadow-md tracking-wide">
+            除法與直式動態探究館
+        </h1>
+        <p class="text-sky-100/90 text-sm md:text-base mt-2 font-light">
+            動態調整數值，觀察「剪絲帶分裝」與「直式試商」的直觀魔法！
+        </p>
+    </header>
+
+    <!-- 主要分頁導覽 -->
+    <nav class="max-w-6xl mx-auto mb-6 flex justify-center gap-2 md:gap-4 relative z-10">
+        <button id="tab-btn-1" onclick="switchTab(1)" class="tab-btn active px-5 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all glass-card border-sky-400 text-sky-700 shadow-lg">
+            <i class="fa-solid fa-sliders mr-1.5"></i> 1. 動態分裝與直式探究
+        </button>
+        <button id="tab-btn-2" onclick="switchTab(2)" class="tab-btn px-5 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all bg-white/30 text-white hover:bg-white/40">
+            <i class="fa-solid fa-magnifying-glass-chart mr-1.5"></i> 2. 直式部位與「試商」解密
+        </button>
+        <button id="tab-btn-3" onclick="switchTab(3)" class="tab-btn px-5 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all bg-white/30 text-white hover:bg-white/40">
+            <i class="fa-solid fa-square-check mr-1.5"></i> 3. 歷程性小測驗
+        </button>
+    </nav>
+
+    <!-- 主內容容器 -->
+    <main class="max-w-6xl mx-auto relative z-10">
+
+        <!-- Tab 1: 動態分裝與直式探究 -->
+        <section id="tab-content-1" class="tab-content block">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- 左側：控制面板與視覺圖表 -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="glass-card p-5 md:p-6 rounded-2xl">
+                        <div class="flex items-center justify-between border-b border-slate-200/80 pb-3 mb-4">
+                            <h2 class="text-xl font-bold text-slate-800 flex items-center">
+                                <i class="fa-solid fa-scissors text-pink-500 mr-2"></i> 情境模擬：數值控制面板
+                            </h2>
+                            <!-- 經典課本範例快捷鈕 -->
+                            <div class="flex gap-1.5">
+                                <button onclick="setPreset(26, 3)" class="text-xs px-2.5 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-800 font-medium transition">
+                                    課本: 26÷3
+                                </button>
+                                <button onclick="setPreset(45, 6)" class="text-xs px-2.5 py-1 rounded-lg bg-pink-100 hover:bg-pink-200 text-pink-800 font-medium transition">
+                                    草莓: 45÷6
+                                </button>
+                                <button onclick="setPreset(35, 7)" class="text-xs px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-800 font-medium transition">
+                                    整除: 35÷7
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 滑桿控制器 -->
+                        <div class="space-y-5">
+                            <div>
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <label class="font-bold text-slate-700 text-sm flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-sky-500 inline-block mr-2"></span>
+                                        被除數（總長度 / 總數量）：
+                                    </label>
+                                    <span id="dividend-val" class="font-black text-sky-600 text-xl bg-sky-50 px-3 py-0.5 rounded-md border border-sky-200">26</span>
+                                </div>
+                                <input type="range" id="dividend-range" min="5" max="60" value="26" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600" oninput="updateCalculation()">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <label class="font-bold text-slate-700 text-sm flex items-center">
+                                        <span class="w-3 h-3 rounded-full bg-purple-500 inline-block mr-2"></span>
+                                        除數（每份長度 / 分給幾人）：
+                                    </label>
+                                    <span id="divisor-val" class="font-black text-purple-600 text-xl bg-purple-50 px-3 py-0.5 rounded-md border border-purple-200">3</span>
+                                </div>
+                                <input type="range" id="divisor-range" min="2" max="9" value="3" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-600" oninput="updateCalculation()">
+                            </div>
+                        </div>
+
+                        <!-- 橫式算式呈現 -->
+                        <div class="mt-6 p-4 rounded-xl bg-gradient-to-r from-sky-500/10 via-purple-500/10 to-pink-500/10 border border-sky-200/50 text-center">
+                            <span class="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-1">橫式記法</span>
+                            <div class="text-2xl md:text-3xl font-black text-slate-800 tracking-wide">
+                                <span id="math-dividend" class="text-sky-600">26</span> 
+                                <span class="text-slate-400">÷</span> 
+                                <span id="math-divisor" class="text-purple-600">3</span> 
+                                <span class="text-slate-400">=</span> 
+                                <span id="math-quotient" class="text-emerald-600">8</span> 
+                                <span class="text-slate-400">⋯</span> 
+                                <span id="math-remainder" class="text-pink-600">2</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 視覺化動畫圖像區 -->
+                    <div class="glass-card p-5 md:p-6 rounded-2xl">
+                        <h3 class="text-base font-bold text-slate-800 mb-3 flex items-center justify-between">
+                            <span><i class="fa-solid fa-film text-sky-500 mr-2"></i> 實物分裝即時視覺化</span>
+                            <span id="rem-status-badge" class="text-xs px-2.5 py-1 rounded-full bg-pink-100 text-pink-700 font-bold">
+                                剩餘 2 公分
+                            </span>
+                        </h3>
+
+                        <div id="visual-container" class="min-h-[160px] p-4 bg-slate-50/80 rounded-xl border border-slate-200 flex flex-col justify-center space-y-4">
+                            <!-- JS 動態生成絲帶/物件圖示 -->
+                        </div>
+
+                        <!-- 觀念重點提示卡 -->
+                        <div id="rule-tip-box" class="mt-4 p-3 rounded-lg text-sm flex items-start gap-2.5 transition-all">
+                            <!-- JS 動態帶入 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右側：直式算式呈現與部位剖析 -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="glass-card p-5 md:p-6 rounded-2xl flex flex-col justify-between h-full">
+                        <div>
+                            <div class="border-b border-slate-200/80 pb-3 mb-4">
+                                <h2 class="text-xl font-bold text-slate-800 flex items-center">
+                                    <i class="fa-solid fa-divide text-indigo-600 mr-2 text-2xl"></i> 除法直式記法
+                                </h2>
+                                <p class="text-xs text-slate-500 mt-0.5">點擊各數字可觀察對應教學意義</p>
+                            </div>
+
+                            <!-- 直式渲染核心區域 -->
+                            <div class="flex justify-center my-6">
+                                <div class="bg-amber-50/90 p-6 rounded-2xl border-2 border-amber-200 shadow-inner relative">
+                                    
+                                    <!-- 直式數字結構 (除號與數字分離獨立欄位) -->
+                                    <div class="division-grid relative">
+                                        <!-- Row 1: 十位商 / 個位商 -->
+                                        <div></div>
+                                        <div></div>
+                                        <div id="grid-q-ten" class="text-emerald-600 hover:scale-125 transition-transform cursor-pointer w-full text-center" title="商（十位）"></div>
+                                        <div id="grid-q-one" class="text-emerald-600 hover:scale-125 transition-transform cursor-pointer w-full text-center" title="商（個位）">8</div>
+
+                                        <!-- Row 2: 除數 | 除號 | 被除數(十位) 被除數(個位) (橫線獨立固定) -->
+                                        <div id="grid-divisor" class="text-purple-600 hover:scale-125 transition-transform cursor-pointer w-full text-center" title="除數">3</div>
+                                        <div class="text-slate-800 text-2xl font-normal select-none">)</div>
+                                        <div class="col-span-2 grid grid-cols-2 w-full h-full items-center border-t-[3px] border-slate-800">
+                                            <div id="grid-d-ten" class="text-sky-600 hover:scale-125 transition-transform cursor-pointer w-full text-center" title="被除數（十位）">2</div>
+                                            <div id="grid-d-one" class="text-sky-600 hover:scale-125 transition-transform cursor-pointer w-full text-center" title="被除數（個位）">6</div>
+                                        </div>
+
+                                        <!-- Row 3: 積(十位) 積(個位) (底部橫線獨立固定) -->
+                                        <div></div>
+                                        <div></div>
+                                        <div class="col-span-2 grid grid-cols-2 w-full h-full items-center border-b-[3px] border-slate-800">
+                                            <div id="grid-p-ten" class="text-slate-700 w-full text-center">2</div>
+                                            <div id="grid-p-one" class="text-slate-700 w-full text-center">4</div>
+                                        </div>
+
+                                        <!-- Row 4: 餘數(十位) 餘數(個位) -->
+                                        <div></div>
+                                        <div></div>
+                                        <div id="grid-r-ten" class="text-pink-600 w-full text-center"></div>
+                                        <div id="grid-r-one" class="text-pink-600 font-black w-full text-center">2</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 直式各步驟意義詳細說明區 -->
+                            <div class="space-y-2.5">
+                                <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 rounded-full bg-emerald-500 text-white text-xs font-bold flex items-center justify-center">商</span>
+                                        <span class="text-sm font-bold text-slate-700">最多可以剪成/分得：</span>
+                                    </div>
+                                    <span id="detail-quotient-desc" class="text-sm font-black text-emerald-700">8 段</span>
+                                </div>
+
+                                <div class="p-3 bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 rounded-full bg-slate-600 text-white text-xs font-bold flex items-center justify-center">積</span>
+                                        <span class="text-sm font-bold text-slate-700">一共剪掉了（3×8）：</span>
+                                    </div>
+                                    <span id="detail-product-desc" class="text-sm font-black text-slate-800">24 公分</span>
+                                </div>
+
+                                <div class="p-3 bg-pink-50 rounded-xl border border-pink-200 flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 rounded-full bg-pink-500 text-white text-xs font-bold flex items-center justify-center">餘</span>
+                                        <span class="text-sm font-bold text-slate-700">還剩下（26 - 24）：</span>
+                                    </div>
+                                    <span id="detail-remainder-desc" class="text-sm font-black text-pink-700">2 公分</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 直式減號提示 -->
+                        <div class="mt-4 p-2.5 bg-amber-50 rounded-lg text-xs text-amber-800 flex items-center gap-2 border border-amber-200">
+                            <i class="fa-solid fa-lightbulb text-amber-500 text-base"></i>
+                            <span>直式計算過程中的「減號 (－)」通常可以省略不寫喔！</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 2: 直式部位與「試商」解密 -->
+        <section id="tab-content-2" class="tab-content hidden">
+            <div class="glass-card p-6 rounded-2xl max-w-4xl mx-auto space-y-6">
+                <div class="border-b border-slate-200 pb-4">
+                    <h2 class="text-2xl font-black text-slate-800 flex items-center">
+                        <i class="fa-solid fa-brain text-purple-600 mr-2.5"></i> 課本亮點：如何找到最合適的「商」？（試商體驗）
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        以「把 45 顆草莓平分給 6 個人」為例，試試看不同的商會發生什麼事！
+                    </p>
+                </div>
+
+                <!-- 試商控制器 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- 美美的情境 (商太小) -->
+                    <div id="trial-card-small" onclick="testQuotient(6)" class="p-5 rounded-xl border-2 border-slate-200 hover:border-amber-400 bg-white/80 cursor-pointer transition-all shadow-sm hover:shadow-md relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-amber-600"><i class="fa-solid fa-face-grimace mr-1"></i> 美美的做法</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold">商設為 6</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-3">6 × 6 = 36，剩下 9 顆草莓</p>
+                        <div class="p-2.5 bg-amber-50 rounded-lg text-xs text-amber-900 font-medium">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-600 mr-1"></i> 剩餘 9 顆 ≧ 6 人，<strong>還可以再做一次平分！</strong>
+                        </div>
+                    </div>
+
+                    <!-- 妮妮的情境 (商太大) -->
+                    <div id="trial-card-large" onclick="testQuotient(8)" class="p-5 rounded-xl border-2 border-slate-200 hover:border-pink-400 bg-white/80 cursor-pointer transition-all shadow-sm hover:shadow-md relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-pink-600"><i class="fa-solid fa-face-dizzy mr-1"></i> 妮妮的做法</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-pink-100 text-pink-800 font-bold">商設為 8</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-3">6 × 8 = 48，超過 45 顆草莓</p>
+                        <div class="p-2.5 bg-pink-50 rounded-lg text-xs text-pink-900 font-medium">
+                            <i class="fa-solid fa-circle-xmark text-pink-600 mr-1"></i> 48 顆不夠分！<strong>商填太大了。</strong>
+                        </div>
+                    </div>
+
+                    <!-- 正確情境 (恰好) -->
+                    <div id="trial-card-correct" onclick="testQuotient(7)" class="p-5 rounded-xl border-2 border-emerald-400 bg-emerald-50/80 cursor-pointer transition-all shadow-sm hover:shadow-md relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-emerald-700"><i class="fa-solid fa-face-smile-beam mr-1"></i> 正確的做法</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-emerald-200 text-emerald-900 font-bold">商設為 7</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-3">6 × 7 = 42，剩下 3 顆草莓</p>
+                        <div class="p-2.5 bg-emerald-100 rounded-lg text-xs text-emerald-900 font-medium">
+                            <i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> 剩餘 3 顆 ＜ 6 人，<strong>成功分完！</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 試商互動動畫展演區 -->
+                <div class="p-6 bg-slate-900 text-white rounded-xl shadow-inner flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="space-y-2 text-center md:text-left">
+                        <div class="text-xs text-sky-400 font-bold uppercase tracking-wider">互動試商檢驗區：45 ÷ 6</div>
+                        <div id="trial-output-title" class="text-xl font-bold text-amber-300">請點擊上方三種做法進行比對！</div>
+                        <p id="trial-output-desc" class="text-sm text-slate-300 leading-relaxed max-w-md">
+                    <!-- 即時試商直式模擬 (位數與橫線精準對齊版) -->
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 min-w-[200px] flex flex-col items-center">
+                        <div class="text-xs text-slate-400 mb-3 font-medium">直式試算模擬</div>
+                        <div class="grid grid-cols-4 gap-x-1 gap-y-0.5 font-mono text-xl items-center justify-items-center w-36">
+                            <!-- Row 1: 商數 -->
+                            <div></div>
+                            <div></div>
+                            <div id="sim-q-ten" class="text-amber-400 font-bold w-full text-center"></div>
+                            <div id="sim-q-one" class="text-amber-400 font-bold w-full text-center">?</div>
+
+                            <!-- Row 2: 除數、除號、被除數 (頂部橫線獨立固定) -->
+                            <div class="text-slate-300 font-bold w-full text-center">6</div>
+                            <div class="text-slate-400 font-normal select-none">)</div>
+                            <div class="col-span-2 grid grid-cols-2 w-full h-full items-center border-t-2 border-slate-400">
+                                <div class="text-slate-200 font-bold w-full text-center">4</div>
+                                <div class="text-slate-200 font-bold w-full text-center">5</div>
+                            </div>
+
+                            <!-- Row 3: 積數 (底部橫線獨立固定) -->
+                            <div></div>
+                            <div></div>
+                            <div class="col-span-2 grid grid-cols-2 w-full h-full items-center border-b-2 border-slate-400">
+                                <div id="sim-p-ten" class="text-slate-300 w-full text-center">--</div>
+                                <div id="sim-p-one" class="text-slate-300 w-full text-center">--</div>
+                            </div>
+
+                            <!-- Row 4: 餘數 -->
+                            <div></div>
+                            <div></div>
+                            <div id="sim-r-ten" class="text-pink-400 font-bold w-full text-center"></div>
+                            <div id="sim-r-one" class="text-pink-400 font-bold w-full text-center">?</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 3: 歷程性小測驗 -->
+        <section id="tab-content-3" class="tab-content hidden">
+            <div class="glass-card p-6 rounded-2xl max-w-3xl mx-auto space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800 flex items-center">
+                            <i class="fa-solid fa-pen-ruler text-pink-500 mr-2.5"></i> 除法小達人歷程評量
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1">共 5 題，測試你對除法直式與觀念的理解！</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="quiz-score" class="text-2xl font-black text-indigo-600">0</span>
+                        <span class="text-xs text-slate-500 block">/ 100 分</span>
+                    </div>
+                </div>
+
+                <!-- 測驗題目容器 -->
+                <div id="quiz-container" class="space-y-6">
+                    <!-- JS 動態渲染 5 道題目 -->
+                </div>
+
+                <!-- 測驗交卷按鈕 -->
+                <div class="pt-4 text-center">
+                    <button onclick="submitQuiz()" class="shinkai-btn px-8 py-3 rounded-xl text-white font-bold text-lg shadow-lg">
+                        <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案與對解答
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        let state = {
+            dividend: 26,
+            divisor: 3,
+            currentTab: 1,
+            userAnswers: {}
+        };
+
+        // 5 題歷程性測驗資料庫
+        const quizData = [
+            {
+                id: 1,
+                question: "一條繩子長 26 公分，每 3 公分剪一段，最多可以剪成幾段？還剩下幾公分？",
+                options: [
+                    "剪成 8 段，剩下 2 公分",
+                    "剪成 7 段，剩下 5 公分",
+                    "剪成 8 段，剩下 0 公分",
+                    "剪成 9 段，不夠剪"
+                ],
+                answer: 0,
+                explanation: "26 ÷ 3 = 8 ⋯ 2，最多可剪成 8 段（3×8=24），還剩下 2 公分（26-24=2）。"
+            },
+            {
+                id: 2,
+                question: "在除法直式中，計算出餘數後，餘數和除數的大小關係應該為何？",
+                options: [
+                    "餘數必須大於除數",
+                    "餘數必須等於除數",
+                    "餘數必須小於除數",
+                    "兩者大小沒有一定限制"
+                ],
+                answer: 2,
+                explanation: "餘數必須小於除數！如果餘數大於或等於除數，代表還能再進行分裝。"
+            },
+            {
+                id: 3,
+                question: "美美在計算 45 ÷ 6 時，商寫了 6，算出餘數是 9。請問她哪裡算錯了？",
+                options: [
+                    "商設太大了，超過 45",
+                    "商設太小了，餘數 9 比除數 6 大，還可以再分",
+                    "計算過程全部正確",
+                    "乘法表記錯了"
+                ],
+                answer: 1,
+                explanation: "6 × 6 = 36，45 - 36 = 9。因為剩下的 9 顆比 6 人還要多，所以還可以再每人分 1 顆（商應該改為 7）。"
+            },
+            {
+                id: 4,
+                question: "皮皮用 35 公分的黃紙條做剪紙，每 7 公分剪一段。算式為 35 ÷ 7 = 5 ⋯ 0，這代表什麼？",
+                options: [
+                    "這叫做「整除」，剛好剪成 5 段，沒有剩下",
+                    "計算錯誤，餘數不能是 0",
+                    "最多剪成 4 段，剩下 7 公分",
+                    "紙條不夠長"
+                ],
+                answer: 0,
+                explanation: "當餘數為 0 時，我們稱為「整除」，代表剛好平分完全，沒有剩餘。"
+            },
+            {
+                id: 5,
+                question: "皮皮有 28 元，一包餅乾 9 元，最多可以買幾包？還剩下多少元？（算式：28 ÷ 9 = ?）",
+                options: [
+                    "買 2 包，剩下 10 元",
+                    "買 3 包，剩下 1 元",
+                    "買 4 包，不夠 8 元",
+                    "買 3 包，剩下 0 元"
+                ],
+                answer: 1,
+                explanation: "28 ÷ 9 = 3 ⋯ 1。9 × 3 = 27 元，28 - 27 = 1 元。最多買 3 包，剩下 1 元。"
+            }
+        ];
+
+        // 初始化載入
+        window.onload = function() {
+            updateCalculation();
+            renderQuiz();
+        };
+
+        // 切換 Tab
+        function switchTab(tabIndex) {
+            state.currentTab = tabIndex;
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.getElementById(`tab-btn-${i}`);
+                const content = document.getElementById(`tab-content-${i}`);
+                if (i === tabIndex) {
+                    btn.className = "tab-btn active px-5 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all glass-card border-sky-400 text-sky-700 shadow-lg";
+                    content.classList.remove('hidden');
+                    content.classList.add('block');
+                } else {
+                    btn.className = "tab-btn px-5 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all bg-white/30 text-white hover:bg-white/40";
+                    content.classList.remove('block');
+                    content.classList.add('hidden');
+                }
+            }
+        }
+
+        // 設定課本範例快捷鈕
+        function setPreset(d, v) {
+            document.getElementById('dividend-range').value = d;
+            document.getElementById('divisor-range').value = v;
+            updateCalculation();
+        }
+
+        // 主計算邏輯與視覺更新
+        function updateCalculation() {
+            const dividend = parseInt(document.getElementById('dividend-range').value);
+            const divisor = parseInt(document.getElementById('divisor-range').value);
+
+            state.dividend = dividend;
+            state.divisor = divisor;
+
+            const quotient = Math.floor(dividend / divisor);
+            const remainder = dividend % divisor;
+            const product = quotient * divisor;
+
+            // 更新控制介面數據
+            document.getElementById('dividend-val').innerText = dividend;
+            document.getElementById('divisor-val').innerText = divisor;
+            document.getElementById('math-dividend').innerText = dividend;
+            document.getElementById('math-divisor').innerText = divisor;
+            document.getElementById('math-quotient').innerText = quotient;
+            document.getElementById('math-remainder').innerText = remainder;
+
+            // 直式算式元件更新
+            const qTen = Math.floor(quotient / 10);
+            const qOne = quotient % 10;
+            document.getElementById('grid-q-ten').innerText = qTen > 0 ? qTen : '';
+            document.getElementById('grid-q-one').innerText = qOne;
+
+            document.getElementById('grid-divisor').innerText = divisor;
+
+            const dTen = Math.floor(dividend / 10);
+            const dOne = dividend % 10;
+            document.getElementById('grid-d-ten').innerText = dTen > 0 ? dTen : '';
+            document.getElementById('grid-d-one').innerText = dOne;
+
+            const pTen = Math.floor(product / 10);
+            const pOne = product % 10;
+            document.getElementById('grid-p-ten').innerText = (product >= 10 || dTen > 0) ? pTen : '';
+            document.getElementById('grid-p-one').innerText = pOne;
+
+            const rTen = Math.floor(remainder / 10);
+            const rOne = remainder % 10;
+            document.getElementById('grid-r-ten').innerText = rTen > 0 ? rTen : '';
+            document.getElementById('grid-r-one').innerText = rOne;
+
+            // 更新細節解說文字
+            document.getElementById('detail-quotient-desc').innerText = `${quotient} 份/段`;
+            document.getElementById('detail-product-desc').innerText = `${product} （已分完）`;
+            document.getElementById('detail-remainder-desc').innerText = `${remainder} （剩餘）`;
+
+            // 渲染實物視覺圖 (絲帶分裝)
+            renderVisualRepresentation(dividend, divisor, quotient, remainder);
+
+            // 更新餘數提示規則
+            const tipBox = document.getElementById('rule-tip-box');
+            const statusBadge = document.getElementById('rem-status-badge');
+
+            if (remainder === 0) {
+                statusBadge.className = "text-xs px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold";
+                statusBadge.innerText = "剛好整除！";
+                tipBox.className = "mt-4 p-3 rounded-lg text-sm flex items-start gap-2.5 bg-emerald-50 border border-emerald-200 text-emerald-900";
+                tipBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mt-0.5"></i>
+                                    <div><strong>特別發現：整除現象！</strong><br>餘數為 0，代表 ${dividend} 可以被 ${divisor} <strong>整除</strong>！沒有剩下任何物品。</div>`;
+            } else if (remainder < divisor) {
+                statusBadge.className = "text-xs px-2.5 py-1 rounded-full bg-sky-100 text-sky-800 font-bold";
+                statusBadge.innerText = `剩餘 ${remainder}`;
+                tipBox.className = "mt-4 p-3 rounded-lg text-sm flex items-start gap-2.5 bg-sky-50 border border-sky-200 text-sky-900";
+                tipBox.innerHTML = `<i class="fa-solid fa-circle-info text-sky-600 mt-0.5"></i>
+                                    <div><strong>檢驗規則：</strong>餘數（${remainder}）<strong>＜</strong> 除數（${divisor}）。剩下的不夠再分成一份，計算正確！</div>`;
+            }
+        }
+
+        // 動態繪製絲帶段數 SVG / HTML 圖示
+        function renderVisualRepresentation(dividend, divisor, quotient, remainder) {
+            const container = document.getElementById('visual-container');
+            container.innerHTML = '';
+
+            const wrapper = document.createElement('div');
+            wrapper.className = "space-y-3";
+
+            // 標題說明
+            const info = document.createElement('div');
+            info.className = "text-xs text-slate-500 flex justify-between";
+            info.innerHTML = `<span>總長/總量：<strong>${dividend}</strong></span> <span>每 <strong>${divisor}</strong> 為一組</span>`;
+            wrapper.appendChild(info);
+
+            // 畫布容器
+            const visualFlex = document.createElement('div');
+            visualFlex.className = "flex flex-wrap gap-2 items-center";
+
+            // 繪製完整的組 (Quotient)
+            for (let i = 0; i < quotient; i++) {
+                const group = document.createElement('div');
+                group.className = "flex items-center bg-sky-500/10 border-2 border-sky-400 p-1.5 rounded-lg text-xs font-bold text-sky-700 shadow-sm transition-all hover:scale-105";
+                
+                let icons = '';
+                for (let j = 0; j < divisor; j++) {
+                    icons += `<i class="fa-solid fa-ribbon text-sky-600 mx-0.5"></i>`;
+                }
+                group.innerHTML = `<span class="mr-1 text-[10px] bg-sky-200 text-sky-800 px-1 rounded">第 ${i+1} 段</span> ${icons}`;
+                visualFlex.appendChild(group);
+            }
+
+            // 繪製剩下的餘數 (Remainder)
+            if (remainder > 0) {
+                const remGroup = document.createElement('div');
+                remGroup.className = "flex items-center bg-pink-500/10 border-2 border-dashed border-pink-400 p-1.5 rounded-lg text-xs font-bold text-pink-700 shadow-sm";
+                
+                let icons = '';
+                for (let j = 0; j < remainder; j++) {
+                    icons += `<i class="fa-solid fa-scissors text-pink-500 mx-0.5"></i>`;
+                }
+                remGroup.innerHTML = `<span class="mr-1 text-[10px] bg-pink-200 text-pink-800 px-1 rounded">剩下</span> ${icons} (${remainder})`;
+                visualFlex.appendChild(remGroup);
+            }
+
+            wrapper.appendChild(visualFlex);
+            container.appendChild(wrapper);
+        }
+
+        // 試商互動展示
+        function testQuotient(qChoice) {
+            const title = document.getElementById('trial-output-title');
+            const desc = document.getElementById('trial-output-desc');
+            
+            const simQTen = document.getElementById('sim-q-ten');
+            const simQOne = document.getElementById('sim-q-one');
+            const simPTen = document.getElementById('sim-p-ten');
+            const simPOne = document.getElementById('sim-p-one');
+            const simRTen = document.getElementById('sim-r-ten');
+            const simROne = document.getElementById('sim-r-one');
+
+            simQTen.innerText = Math.floor(qChoice / 10) > 0 ? Math.floor(qChoice / 10) : '';
+            simQOne.innerText = qChoice % 10;
+
+            const p = 6 * qChoice;
+            simPTen.innerText = Math.floor(p / 10) > 0 ? Math.floor(p / 10) : '';
+            simPOne.innerText = p % 10;
+
+            if (qChoice === 6) {
+                title.className = "text-xl font-bold text-amber-300";
+                title.innerText = "美美的做法：商設為 6（太小了！）";
+                desc.innerText = "算出的餘數是 9，但是 9 顆草莓比 6 個人還要多，還可以每人再分 1 顆草莓！所以商設為 6 還沒分完喔。";
+                
+                simRTen.innerText = '';
+                simROne.innerText = '9';
+                simRTen.className = "text-amber-400 font-bold w-full text-center";
+                simROne.className = "text-amber-400 font-bold w-full text-center animate-pulse";
+            } else if (qChoice === 8) {
+                title.className = "text-xl font-bold text-pink-400";
+                title.innerText = "妮妮的做法：商設為 8（太大了！）";
+                desc.innerText = "6 × 8 = 48，我們只有 45 顆草莓，48 顆不夠分！所以商不可以填到 8。";
+                
+                simRTen.innerText = '不';
+                simROne.innerText = '夠';
+                simRTen.className = "text-pink-400 font-bold w-full text-center text-base";
+                simROne.className = "text-pink-400 font-bold w-full text-center text-base";
+            } else {
+                title.className = "text-xl font-bold text-emerald-300";
+                title.innerText = "正確做法：商設為 7（剛好完分！）";
+                desc.innerText = "6 × 7 = 42，45 - 42 = 3。每人分 7 顆，剩下的 3 顆比 6 個人少，無法再分了。這就是最正確的結果！";
+                
+                simRTen.innerText = '';
+                simROne.innerText = '3';
+                simRTen.className = "text-emerald-400 font-bold w-full text-center";
+                simROne.className = "text-emerald-400 font-bold w-full text-center";
+            }
+        }
+
+        // 渲染 5 題測驗
+        function renderQuiz() {
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = '';
+
+            quizData.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = "p-5 bg-white/90 rounded-xl border border-slate-200 shadow-sm space-y-3";
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, optIdx) => {
+                    optionsHtml += `
+                        <label class="flex items-center gap-3 p-2.5 rounded-lg border border-slate-200 hover:bg-sky-50/50 cursor-pointer transition">
+                            <input type="radio" name="quiz-${q.id}" value="${optIdx}" onchange="recordAnswer(${q.id}, ${optIdx})" class="w-4 h-4 text-sky-600">
+                            <span class="text-sm font-medium text-slate-700">${opt}</span>
+                        </label>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="font-bold text-slate-800 text-base">
+                        <span class="inline-block w-6 h-6 rounded-full bg-indigo-600 text-white text-xs text-center leading-6 mr-2">${idx + 1}</span>
+                        ${q.question}
+                    </div>
+                    <div class="space-y-2 pt-1">
+                        ${optionsHtml}
+                    </div>
+                    <div id="quiz-result-${q.id}" class="hidden p-3 rounded-lg text-xs mt-2"></div>
+                `;
+                quizContainer.appendChild(card);
+            });
+        }
+
+        function recordAnswer(qId, val) {
+            state.userAnswers[qId] = val;
+        }
+
+        // 提交測驗與對解答
+        function submitQuiz() {
+            let score = 0;
+            quizData.forEach((q) => {
+                const userAns = state.userAnswers[q.id];
+                const resBox = document.getElementById(`quiz-result-${q.id}`);
+                resBox.classList.remove('hidden');
+
+                if (userAns === q.answer) {
+                    score += 20;
+                    resBox.className = "p-3 rounded-lg text-xs mt-2 bg-emerald-50 border border-emerald-200 text-emerald-800 font-medium";
+                    resBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i><strong>回答正確！</strong> ${q.explanation}`;
+                } else {
+                    resBox.className = "p-3 rounded-lg text-xs mt-2 bg-pink-50 border border-pink-200 text-pink-800 font-medium";
+                    resBox.innerHTML = `<i class="fa-solid fa-circle-xmark text-pink-600 mr-1.5"></i><strong>答錯囉！</strong> ${q.explanation}`;
+                }
+            });
+
+            document.getElementById('quiz-score').innerText = score;
+        }
+    </script>
+</body>
+</html>

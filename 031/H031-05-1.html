@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>認識角 - 互動探索實驗室</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            /* 新海誠風格：絕美湛藍至暮光微粉的漸層天空背景 */
+            background: linear-gradient(135deg, #1A2639 0%, #2A4858 25%, #3B6978 50%, #84A9AC 75%, #C7B198 100%);
+            background-attachment: fixed;
+            color: #2D3748;
+            min-height: 100vh;
+        }
+
+        /* 雲朵與陽光輝光背景特效 */
+        .shinkai-bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: 
+                radial-gradient(circle at 80% 15%, rgba(255, 236, 179, 0.35) 0%, transparent 40%),
+                radial-gradient(circle at 10% 80%, rgba(255, 182, 193, 0.25) 0%, transparent 45%);
+            z-index: 0;
+        }
+
+        /* 玻璃擬態卡片 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            border-radius: 1.25rem;
+        }
+
+        /* 自訂滑桿風格 */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            background: linear-gradient(90deg, #60A5FA, #3B82F6);
+            border-radius: 5px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -7px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 0 0 3px #3B82F6;
+            transition: transform 0.1s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        /* 動畫效果 */
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .pulse-hover:hover {
+            animation: pulse-subtle 2s infinite ease-in-out;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="p-3 md:p-6 relative">
+    <div class="shinkai-bg-glow"></div>
+
+    <div class="max-w-5xl mx-auto relative z-10 space-y-5">
+        
+        <!-- 品牌標頭：閒雲數學小棧 -->
+        <div class="w-full max-w-5xl flex items-center justify-start mb-2 px-2 fade-in">
+            <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt"
+                 alt="閒雲數學小棧Logo" 
+                 class="h-9 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1"
+                 onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+            <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+        </div>
+
+        <!-- 頁面標題列 -->
+        <header class="glass-card p-5 text-center border-b-4 border-blue-400">
+            <div class="inline-flex items-center gap-3 bg-blue-100 text-blue-800 px-4 py-1 rounded-full text-xs md:text-sm font-semibold mb-2">
+                <i class="fa-solid fa-shapes"></i> 國小數學 5-1 認識角
+            </div>
+            <h1 class="text-2xl md:text-4xl font-black text-slate-800 tracking-wide">
+                ✨ 探索「角」的奇幻世界
+            </h1>
+            <p class="text-slate-600 mt-1.5 text-xs md:text-base">
+                動手滑一滑、比一比，觀察角的構成要素與大小秘密！
+            </p>
+        </header>
+
+        <!-- 三分頁切換導覽列 -->
+        <nav class="flex bg-white/40 p-1.5 rounded-2xl backdrop-blur-md border border-white/50 shadow-sm gap-2">
+            <button id="tab-btn-1" onclick="switchTab(1)" class="flex-1 py-3 px-3 rounded-xl font-bold text-xs md:text-base transition-all duration-200 bg-white text-blue-600 shadow-md flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-flask"></i> 1. 動態觀察實驗室
+            </button>
+            <button id="tab-btn-2" onclick="switchTab(2)" class="flex-1 py-3 px-3 rounded-xl font-bold text-xs md:text-base transition-all duration-200 text-slate-700 hover:bg-white/50 flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-eye"></i> 2. 火眼金睛辨認角
+            </button>
+            <button id="tab-btn-3" onclick="switchTab(3)" class="flex-1 py-3 px-3 rounded-xl font-bold text-xs md:text-base transition-all duration-200 text-slate-700 hover:bg-white/50 flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-pen-to-square"></i> 3. 隨堂自我檢測
+            </button>
+        </nav>
+
+        <!-- 第一區塊標籤頁：動態角的觀察實驗室 -->
+        <section id="tab-content-1" class="glass-card p-6 md:p-8 fade-in">
+            <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-200">
+                <h2 class="text-lg md:text-2xl font-bold text-slate-800 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center text-sm">1</span>
+                    角的動態實驗室：觀察角的大小與邊長
+                </h2>
+                <button onclick="resetLab()" class="text-xs md:text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+                    <i class="fa-solid fa-rotate-left"></i> 重置實驗
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                
+                <!-- SVG 動態畫布區 -->
+                <div class="lg:col-span-7 bg-sky-50/70 border border-sky-100 rounded-2xl p-4 flex flex-col items-center justify-center min-h-[320px] relative overflow-hidden shadow-inner">
+                    <div class="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px] opacity-10"></div>
+                    
+                    <svg id="angleSvg" width="360" height="280" viewBox="0 0 360 280" class="w-full max-w-[360px] h-auto drop-shadow-md">
+                        <!-- 角的弧度區域（開口視覺化） -->
+                        <path id="angleArc" fill="rgba(245, 158, 11, 0.25)" stroke="#F59E0B" stroke-width="2" stroke-dasharray="4" />
+                        <!-- 邊1 -->
+                        <line id="line1" x1="180" y1="180" x2="300" y2="180" stroke="#2563EB" stroke-width="6" stroke-linecap="round" />
+                        <!-- 邊2 -->
+                        <line id="line2" x1="180" y1="180" x2="60" y2="180" stroke="#2563EB" stroke-width="6" stroke-linecap="round" />
+                        <!-- 頂點點位 -->
+                        <circle id="vertexCircle" cx="180" cy="180" r="9" fill="#EF4444" stroke="#FFFFFF" stroke-width="3" />
+                        
+                        <!-- 動態標籤 -->
+                        <g id="labelsGroup">
+                            <text id="labelVertex" x="180" y="215" text-anchor="middle" fill="#EF4444" font-weight="bold" font-size="14">頂點</text>
+                            <text id="labelSide1" x="250" y="160" fill="#1D4ED8" font-weight="bold" font-size="13">邊</text>
+                            <text id="labelSide2" x="110" y="120" fill="#1D4ED8" font-weight="bold" font-size="13">邊</text>
+                            <text id="labelDegree" x="180" y="130" text-anchor="middle" fill="#D97706" font-weight="bold" font-size="16">45°</text>
+                        </g>
+                    </svg>
+
+                    <!-- 即時觀測教學指引提示 -->
+                    <div id="observationTip" class="mt-2 bg-white/90 text-slate-700 text-xs md:text-sm px-4 py-2 rounded-xl shadow border border-amber-200 text-center w-full">
+                        💡 <b>重點發現：</b>改變 <span class="text-amber-600 font-bold">開口角度</span> 會改變角的大小；改變 <span class="text-blue-600 font-bold">邊長</span> 角的大小<b>不會改變</b>！
+                    </div>
+                </div>
+
+                <!-- 控制面板區 -->
+                <div class="lg:col-span-5 space-y-5 bg-white/60 p-5 rounded-2xl border border-white">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="font-bold text-slate-700 flex items-center gap-2">
+                                <i class="fa-solid fa-compass text-amber-500"></i> 角的開口大小 (角度)
+                            </label>
+                            <span id="angleValue" class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-full">45°</span>
+                        </div>
+                        <input type="range" id="angleSlider" min="10" max="150" value="45" oninput="updateAngleExperiment()">
+                        <div class="flex justify-between text-xs text-slate-400 mt-1">
+                            <span>小角 (10°)</span>
+                            <span>大角 (150°)</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="font-bold text-slate-700 flex items-center gap-2">
+                                <i class="fa-solid fa-ruler-horizontal text-blue-500"></i> 兩條邊的長度
+                            </label>
+                            <span id="lengthValue" class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-full">標準長度</span>
+                        </div>
+                        <input type="range" id="lengthSlider" min="60" max="130" value="90" oninput="updateAngleExperiment()">
+                        <div class="flex justify-between text-xs text-slate-400 mt-1">
+                            <span>短邊</span>
+                            <span>長邊</span>
+                        </div>
+                    </div>
+
+                    <!-- 標籤切換按鈕 -->
+                    <div class="pt-2 border-t border-slate-200/80 flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-600">顯示構造名稱標籤：</span>
+                        <button id="toggleLabelBtn" onclick="toggleLabels()" class="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition">
+                            <i class="fa-solid fa-eye"></i> 已開啟標籤
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 第二區塊標籤頁：辨認「角」實戰與構造練習 -->
+        <section id="tab-content-2" class="glass-card p-6 md:p-8 hidden fade-in">
+            <div class="mb-4 pb-2 border-b border-slate-200">
+                <h2 class="text-lg md:text-2xl font-bold text-slate-800 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-teal-500 text-white flex items-center justify-center text-sm">2</span>
+                    火眼金睛：下面哪些圖形是「角」？
+                </h2>
+                <p class="text-xs md:text-sm text-slate-500 mt-1">點擊下方圖形，測試你是否能精確辨認出正確的「角」！</p>
+            </div>
+
+            <!-- 四個圖形比對卡片格 -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                
+                <!-- 圖形 甲 (是角) -->
+                <div onclick="checkShapeCard('A')" id="card-A" class="cursor-pointer bg-white/90 hover:bg-white p-4 rounded-xl border-2 border-slate-200 hover:border-blue-400 transition transform hover:-translate-y-1 text-center shadow-sm relative group">
+                    <div class="text-xs font-bold text-slate-400 mb-2">圖形 (甲)</div>
+                    <svg viewBox="0 0 100 80" class="w-24 h-20 mx-auto">
+                        <polyline points="20,20 50,60 80,30" fill="none" stroke="#334155" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div id="card-A-badge" class="mt-2 text-xs font-bold py-1 px-2 rounded-lg bg-slate-100 text-slate-600">點擊判定</div>
+                </div>
+
+                <!-- 圖形 乙 (兩線未連接 - 不是角) -->
+                <div onclick="checkShapeCard('B')" id="card-B" class="cursor-pointer bg-white/90 hover:bg-white p-4 rounded-xl border-2 border-slate-200 hover:border-blue-400 transition transform hover:-translate-y-1 text-center shadow-sm relative group">
+                    <div class="text-xs font-bold text-slate-400 mb-2">圖形 (乙)</div>
+                    <svg viewBox="0 0 100 80" class="w-24 h-20 mx-auto">
+                        <line x1="20" y1="20" x2="45" y2="60" stroke="#334155" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="55" y1="60" x2="80" y2="30" stroke="#334155" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                    <div id="card-B-badge" class="mt-2 text-xs font-bold py-1 px-2 rounded-lg bg-slate-100 text-slate-600">點擊判定</div>
+                </div>
+
+                <!-- 圖形 丙 (鈍角 - 是角) -->
+                <div onclick="checkShapeCard('C')" id="card-C" class="cursor-pointer bg-white/90 hover:bg-white p-4 rounded-xl border-2 border-slate-200 hover:border-blue-400 transition transform hover:-translate-y-1 text-center shadow-sm relative group">
+                    <div class="text-xs font-bold text-slate-400 mb-2">圖形 (丙)</div>
+                    <svg viewBox="0 0 100 80" class="w-24 h-20 mx-auto">
+                        <polyline points="15,30 50,65 90,40" fill="none" stroke="#334155" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div id="card-C-badge" class="mt-2 text-xs font-bold py-1 px-2 rounded-lg bg-slate-100 text-slate-600">點擊判定</div>
+                </div>
+
+                <!-- 圖形 丁 (有彎曲曲線 - 不是角) -->
+                <div onclick="checkShapeCard('D')" id="card-D" class="cursor-pointer bg-white/90 hover:bg-white p-4 rounded-xl border-2 border-slate-200 hover:border-blue-400 transition transform hover:-translate-y-1 text-center shadow-sm relative group">
+                    <div class="text-xs font-bold text-slate-400 mb-2">圖形 (丁)</div>
+                    <svg viewBox="0 0 100 80" class="w-24 h-20 mx-auto">
+                        <path d="M 15 25 Q 50 75 85 25" fill="none" stroke="#334155" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                    <div id="card-D-badge" class="mt-2 text-xs font-bold py-1 px-2 rounded-lg bg-slate-100 text-slate-600">點擊判定</div>
+                </div>
+
+            </div>
+
+            <!-- 分析說明框 -->
+            <div id="shapeAnalysisBox" class="mt-4 p-4 rounded-xl bg-amber-50 border border-amber-200 text-slate-700 text-sm hidden flex items-start gap-3">
+                <i class="fa-solid fa-comment-dots text-amber-500 text-xl mt-0.5"></i>
+                <div id="shapeAnalysisText">請點擊上方任意圖形觀看詳細分析...</div>
+            </div>
+        </section>
+
+        <!-- 第三區塊標籤頁：隨堂自我檢測 (5 題評量) -->
+        <section id="tab-content-3" class="glass-card p-6 md:p-8 hidden fade-in">
+            <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-200">
+                <h2 class="text-lg md:text-2xl font-bold text-slate-800 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-indigo-500 text-white flex items-center justify-center text-sm">3</span>
+                    小試身手：學習效果隨堂測驗 (共 5 題)
+                </h2>
+                <span id="quizScoreBadge" class="text-xs md:text-sm bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-full">得分：0 / 5</span>
+            </div>
+
+            <div id="quizContainer" class="space-y-6">
+                <!-- 題目將動態注入於此 -->
+            </div>
+
+            <!-- 提交與重測按鈕 -->
+            <div class="mt-8 flex flex-col md:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-200">
+                <div id="quizFeedbackMessage" class="text-sm font-bold text-slate-700"></div>
+                <div class="flex gap-3">
+                    <button onclick="resetQuiz()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm rounded-xl font-bold transition">
+                        重新測驗
+                    </button>
+                    <button onclick="submitQuiz()" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-xl font-bold shadow-md transition">
+                        提交答案 <i class="fa-solid fa-paper-plane ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // --- 標籤頁切換邏輯 ---
+        function switchTab(tabIndex) {
+            // 隱藏所有內容
+            for (let i = 1; i <= 3; i++) {
+                const content = document.getElementById(`tab-content-${i}`);
+                const btn = document.getElementById(`tab-btn-${i}`);
+                if (content && btn) {
+                    content.classList.add('hidden');
+                    btn.className = "flex-1 py-3 px-3 rounded-xl font-bold text-xs md:text-base transition-all duration-200 text-slate-700 hover:bg-white/50 flex items-center justify-center gap-1.5";
+                }
+            }
+
+            // 顯示選擇的內容並更換按鈕樣式
+            const activeContent = document.getElementById(`tab-content-${tabIndex}`);
+            const activeBtn = document.getElementById(`tab-btn-${tabIndex}`);
+            if (activeContent && activeBtn) {
+                activeContent.classList.remove('hidden');
+                activeBtn.className = "flex-1 py-3 px-3 rounded-xl font-bold text-xs md:text-base transition-all duration-200 bg-white text-blue-600 shadow-md flex items-center justify-center gap-1.5";
+            }
+        }
+
+        // --- 實驗室控制邏輯 ---
+        let labelsVisible = true;
+
+        function updateAngleExperiment() {
+            const angleDeg = parseInt(document.getElementById('angleSlider').value);
+            const edgeLen = parseInt(document.getElementById('lengthSlider').value);
+
+            // 更新顯示數值
+            document.getElementById('angleValue').innerText = angleDeg + '°';
+            document.getElementById('lengthValue').innerText = edgeLen > 100 ? '較長' : (edgeLen < 80 ? '較短' : '標準');
+
+            // 計算 SVG 角的點位 (頂點在 180, 180)
+            const originX = 180;
+            const originY = 180;
+
+            // 邊1 (保持水平向右)
+            const x1 = originX + edgeLen;
+            const y1 = originY;
+
+            // 邊2 (逆時針旋轉 angleDeg 度)
+            const rad = (angleDeg * Math.PI) / 180;
+            const x2 = originX + edgeLen * Math.cos(rad);
+            const y2 = originY - edgeLen * Math.sin(rad);
+
+            // 更新兩條線
+            const line1 = document.getElementById('line1');
+            const line2 = document.getElementById('line2');
+            line1.setAttribute('x2', x1);
+            line1.setAttribute('y2', y1);
+            line2.setAttribute('x2', x2);
+            line2.setAttribute('y2', y2);
+
+            // 更新弧線 (Angle Arc)
+            const arcRadius = Math.min(edgeLen * 0.45, 45);
+            const arcX2 = originX + arcRadius * Math.cos(rad);
+            const arcY2 = originY - arcRadius * Math.sin(rad);
+            const largeArcFlag = angleDeg > 180 ? 1 : 0;
+
+            const arcPath = `M ${originX + arcRadius} ${originY} A ${arcRadius} ${arcRadius} 0 ${largeArcFlag} 0 ${arcX2} ${arcY2} L ${originX} ${originY} Z`;
+            document.getElementById('angleArc').setAttribute('d', arcPath);
+
+            // 更新標籤位置
+            document.getElementById('labelSide1').setAttribute('x', originX + edgeLen * 0.6);
+            document.getElementById('labelSide1').setAttribute('y', originY + 20);
+
+            document.getElementById('labelSide2').setAttribute('x', originX + (edgeLen * 0.6) * Math.cos(rad) - 20);
+            document.getElementById('labelSide2').setAttribute('y', originY - (edgeLen * 0.6) * Math.sin(rad) - 10);
+
+            document.getElementById('labelDegree').setAttribute('x', originX + (arcRadius + 22) * Math.cos(rad/2));
+            document.getElementById('labelDegree').setAttribute('y', originY - (arcRadius + 22) * Math.sin(rad/2) + 5);
+            document.getElementById('labelDegree').textContent = angleDeg + '°';
+        }
+
+        function toggleLabels() {
+            labelsVisible = !labelsVisible;
+            const labelsGroup = document.getElementById('labelsGroup');
+            const btn = document.getElementById('toggleLabelBtn');
+            
+            if (labelsVisible) {
+                labelsGroup.style.display = 'block';
+                btn.innerHTML = '<i class="fa-solid fa-eye"></i> 已開啟標籤';
+                btn.className = 'bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition';
+            } else {
+                labelsGroup.style.display = 'none';
+                btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> 已隱藏標籤';
+                btn.className = 'bg-slate-500 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-slate-600 transition';
+            }
+        }
+
+        function resetLab() {
+            document.getElementById('angleSlider').value = 45;
+            document.getElementById('lengthSlider').value = 90;
+            if(!labelsVisible) toggleLabels();
+            updateAngleExperiment();
+        }
+
+        // --- 第二區塊：圖形判定邏輯 ---
+        const shapeInfo = {
+            'A': { isAngle: true, title: '圖形(甲)：是角！', desc: '✅ 由 1 個頂點與 2 條直直的邊相連而成，是一個標準的角。' },
+            'B': { isAngle: false, title: '圖形(乙)：不是角！', desc: '❌ 兩條直線沒有在頂點處相接在一起，因此不是角。' },
+            'C': { isAngle: true, title: '圖形(丙)：是角！', desc: '✅ 雖然張開角度較大，但依然滿足 1 個頂點與 2 條直線邊的條件。' },
+            'D': { isAngle: false, title: '圖形(丁)：不是角！', desc: '❌ 邊是彎曲的曲線！角的兩條邊必須要是「直線」。' }
+        };
+
+        function checkShapeCard(key) {
+            const info = shapeInfo[key];
+            const badge = document.getElementById(`card-${key}-badge`);
+            const card = document.getElementById(`card-${key}`);
+            const box = document.getElementById('shapeAnalysisBox');
+            const text = document.getElementById('shapeAnalysisText');
+
+            // 清除其它卡片選取狀態
+            ['A','B','C','D'].forEach(k => {
+                document.getElementById(`card-${k}`).classList.remove('ring-4', 'ring-blue-400');
+            });
+
+            card.classList.add('ring-4', 'ring-blue-400');
+
+            if (info.isAngle) {
+                badge.className = "mt-2 text-xs font-bold py-1 px-2 rounded-lg bg-emerald-100 text-emerald-700";
+                badge.innerHTML = '⭕ 是角';
+            } else {
+                badge.className = "mt-2 text-xs font-bold py-1 px-2 rounded-lg bg-rose-100 text-rose-700";
+                badge.innerHTML = '❌ 不是角';
+            }
+
+            box.classList.remove('hidden');
+            text.innerHTML = `<span class="font-bold text-slate-800">${info.title}</span><br>${info.desc}`;
+        }
+
+        // --- 第三區塊：隨堂測驗題目資料 ---
+        const quizData = [
+            {
+                id: 1,
+                question: "1. 一個標準的「角」，是由幾個頂點和幾條邊構成的？",
+                options: [
+                    "1 個頂點，1 條邊",
+                    "1 個頂點，2 條邊",
+                    "2 個頂點，1 條邊",
+                    "2 個頂點，2 條邊"
+                ],
+                answer: 1,
+                explanation: "角由 1 個頂點以及從頂點發出的 2 條直線邊組成。"
+            },
+            {
+                id: 2,
+                question: "2. 當我們把一個角的兩條邊拉長時，角的大小會發生什麼變化？",
+                options: [
+                    "角會變大",
+                    "角會變小",
+                    "角的大小保持不變",
+                    "不一定，看顏色決定"
+                ],
+                answer: 2,
+                explanation: "角的大小只與「兩邊張開的程度」有關，邊長變長或變短不會影響角的大小。"
+            },
+            {
+                id: 3,
+                question: "3. 關於「角」的邊，下列何者敘述是正確的？",
+                options: [
+                    "角的邊可以是彎曲的曲線",
+                    "角的邊必須是直直的直線",
+                    "角的兩條邊一定要一樣長才可以",
+                    "角不需要頂點"
+                ],
+                answer: 1,
+                explanation: "角的兩條邊必須都是「直線」。如果有曲線就不能稱為角。"
+            },
+            {
+                id: 4,
+                question: "4. 下列哪一個選項是決定「角的大小的關鍵因素」？",
+                options: [
+                    "邊長的長短",
+                    "兩條邊張開的程度",
+                    "頂點的大小",
+                    "畫在紙上的位置"
+                ],
+                answer: 1,
+                explanation: "兩條邊張開得越大，角就越大；張開得越小，角就越小。"
+            },
+            {
+                id: 5,
+                question: "5. 用三角板描下來的角，它有幾個頂點？",
+                options: [
+                    "1 個",
+                    "2 個",
+                    "3 個",
+                    "沒有頂點"
+                ],
+                answer: 0,
+                explanation: "無論用何種三角板描下來的「一個角」，都同樣擁有 1 個頂點與 2 條邊。"
+            }
+        ];
+
+        // 渲染測驗題目
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+
+            quizData.forEach((q, index) => {
+                const qEl = document.createElement('div');
+                qEl.className = 'bg-white/80 p-4 rounded-xl border border-slate-200 shadow-sm';
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="flex items-center gap-3 p-2.5 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition text-xs md:text-sm">
+                            <input type="radio" name="q${q.id}" value="${optIndex}" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                            <span>${opt}</span>
+                        </label>
+                    `;
+                });
+
+                qEl.innerHTML = `
+                    <div class="font-bold text-slate-800 text-sm md:text-base mb-3">${q.question}</div>
+                    <div class="space-y-2">${optionsHtml}</div>
+                    <div id="q${q.id}-feedback" class="mt-3 text-xs md:text-sm font-semibold hidden p-2 rounded-lg"></div>
+                `;
+                container.appendChild(qEl);
+            });
+        }
+
+        // 提交測驗與計算成績
+        function submitQuiz() {
+            let score = 0;
+            
+            quizData.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+                const feedbackEl = document.getElementById(`q${q.id}-feedback`);
+                
+                feedbackEl.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+
+                if (selected) {
+                    const userAns = parseInt(selected.value);
+                    if (userAns === q.answer) {
+                        score++;
+                        feedbackEl.classList.add('bg-emerald-100', 'text-emerald-800');
+                        feedbackEl.innerHTML = `⭕ 正確！${q.explanation}`;
+                    } else {
+                        feedbackEl.classList.add('bg-rose-100', 'text-rose-800');
+                        feedbackEl.innerHTML = `❌ 答錯囉！解析：${q.explanation}`;
+                    }
+                } else {
+                    feedbackEl.classList.add('bg-rose-100', 'text-rose-800');
+                    feedbackEl.innerHTML = `⚠️ 請選擇答案！解析：${q.explanation}`;
+                }
+            });
+
+            // 更新總分數
+            const scoreBadge = document.getElementById('quizScoreBadge');
+            const msgEl = document.getElementById('quizFeedbackMessage');
+            scoreBadge.innerText = `得分：${score} / ${quizData.length}`;
+
+            if (score === 5) {
+                msgEl.className = "text-sm font-bold text-emerald-600";
+                msgEl.innerText = "🎉 太棒了！全對！你已經完全掌握「角」的特徵囉！";
+            } else if (score >= 3) {
+                msgEl.className = "text-sm font-bold text-amber-600";
+                msgEl.innerText = "👍 表現不錯！複習一下錯題解析會更厲害！";
+            } else {
+                msgEl.className = "text-sm font-bold text-rose-600";
+                msgEl.innerText = "💪 別氣餒，試著回到第 1 區實驗室動手操作看看！";
+            }
+        }
+
+        function resetQuiz() {
+            document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+            quizData.forEach(q => {
+                const feedbackEl = document.getElementById(`q${q.id}-feedback`);
+                feedbackEl.classList.add('hidden');
+            });
+            document.getElementById('quizScoreBadge').innerText = `得分：0 / ${quizData.length}`;
+            document.getElementById('quizFeedbackMessage').innerText = "";
+        }
+
+        window.onload = function() {
+            updateAngleExperiment();
+            renderQuiz();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小學數學：重量的計算與單位換算</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;800&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 25%, #312e81 50%, #701a75 75%, #431407 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card-hover {
+            transition: all 0.3s ease;
+        }
+        .glass-card-hover:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.45);
+            box-shadow: 0 12px 40px 0 rgba(236, 72, 153, 0.3);
+        }
+
+        /* Shinkai Sky Glow and Particle Effects */
+        .shinkai-glow {
+            text-shadow: 0 0 15px rgba(244, 114, 182, 0.6), 0 0 30px rgba(129, 140, 248, 0.6);
+        }
+
+        /* Custom Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            height: 8px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 22px;
+            width: 22px;
+            border-radius: 50%;
+            background: #f43f5e;
+            box-shadow: 0 0 10px #fb7185, 0 0 20px #fda4af;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Animated Pointer Dial */
+        .dial-pointer {
+            transform-origin: 100px 100px;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Floating Stars Background Animation */
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 relative">
+
+    <!-- Background Animated Stars -->
+    <div id="stars-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <div class="max-w-6xl mx-auto relative z-10 space-y-8">
+
+        <!-- 閒雲數學小棧 Logo 品牌頭部 -->
+        <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
+            <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+            <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+        </div>
+
+        <!-- Header Banner -->
+        <header class="glass-card rounded-3xl p-6 md:p-8 text-center relative overflow-hidden">
+            <div class="absolute -top-10 -left-10 w-40 h-40 bg-pink-500/20 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-3xl"></div>
+            
+            <div class="inline-block px-4 py-1.5 rounded-full bg-pink-500/20 border border-pink-300/30 text-pink-200 text-sm font-semibold mb-3 backdrop-blur-md">
+                <i class="fa-solid fa-cloud-sun mr-2"></i>國小數學 7-5 探究實驗室
+            </div>
+            <h1 class="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-200 via-sky-200 to-indigo-200 shinkai-glow tracking-wide">
+                重量的計算與單位換算
+            </h1>
+            <p class="mt-3 text-slate-300 text-sm md:text-base max-w-2xl mx-auto">
+                透過分頁互動探索「公斤與公克」直式計算、單位換算以及扣除箱重等數學概念！
+            </p>
+        </header>
+
+        <!-- Three Page Navigation Tabs -->
+        <nav class="flex flex-wrap justify-center gap-2 md:gap-4 my-4">
+            <button id="tab-btn-1" onclick="switchPage(1)" class="px-5 py-3 rounded-2xl font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-gradient-to-r from-pink-500 to-indigo-600 text-white shadow-lg border border-pink-400/30">
+                <i class="fa-solid fa-scale-balanced"></i> 第一頁：磅秤與直式計算
+            </button>
+            <button id="tab-btn-2" onclick="switchPage(2)" class="px-5 py-3 rounded-2xl font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-slate-800/60 text-slate-300 hover:bg-slate-700/60 border border-white/10">
+                <i class="fa-solid fa-box-open"></i> 第二頁：扣除箱重實驗室
+            </button>
+            <button id="tab-btn-3" onclick="switchPage(3)" class="px-5 py-3 rounded-2xl font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-slate-800/60 text-slate-300 hover:bg-slate-700/60 border border-white/10">
+                <i class="fa-solid fa-clipboard-question"></i> 第三頁：觀念自我檢測
+            </button>
+        </nav>
+
+        <!-- Main Pages Container -->
+        <div>
+
+            <!-- PAGE 1: Dynamic Weighing Scale & Column Calculation -->
+            <section id="page-1" class="page-content glass-card rounded-3xl p-6 md:p-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-bold text-sky-200 flex items-center gap-2">
+                                <i class="fa-solid fa-scale-balanced text-pink-400"></i>
+                                模組一：公斤公克直式與磅秤模擬
+                            </h2>
+                            <span class="text-xs bg-sky-500/20 text-sky-300 border border-sky-400/30 px-2.5 py-1 rounded-full">動態觀察</span>
+                        </div>
+
+                        <!-- Interactive Controls -->
+                        <div class="space-y-4 bg-slate-900/40 p-4 rounded-2xl border border-white/10">
+                            <!-- Weight Item 1 -->
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-pink-300 font-semibold"><i class="fa-solid fa-apple-whole mr-1"></i>物品 A (被減數 / 加數 A):</span>
+                                    <span class="font-mono text-pink-200" id="valA-display">3 公斤 240 公克</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="text-xs text-slate-400">公斤 (kg): <span id="kga-txt">3</span></label>
+                                        <input type="range" id="kgA" min="0" max="5" value="3" class="w-full">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-slate-400">公克 (g): <span id="ga-txt">240</span></label>
+                                        <input type="range" id="gA" min="0" max="990" step="10" value="240" class="w-full">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Operation Mode Selector -->
+                            <div class="flex justify-center items-center gap-6 py-2 bg-slate-800/50 rounded-xl border border-white/5">
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="op" value="add" checked class="text-pink-500 focus:ring-0">
+                                    <span class="ml-2 text-sm font-bold text-emerald-300"><i class="fa-solid fa-plus mr-1"></i>加法 (+)</span>
+                                </label>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="op" value="sub" class="text-pink-500 focus:ring-0">
+                                    <span class="ml-2 text-sm font-bold text-amber-300"><i class="fa-solid fa-minus mr-1"></i>減法 (-)</span>
+                                </label>
+                            </div>
+
+                            <!-- Weight Item 2 -->
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-indigo-300 font-semibold"><i class="fa-solid fa-seedling mr-1"></i>物品 B (減數 / 加數 B):</span>
+                                    <span class="font-mono text-indigo-200" id="valB-display">2 公斤 576 公克</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="text-xs text-slate-400">公斤 (kg): <span id="kgb-txt">2</span></label>
+                                        <input type="range" id="kgB" min="0" max="5" value="2" class="w-full">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-slate-400">公克 (g): <span id="gb-txt">576</span></label>
+                                        <input type="range" id="gB" min="0" max="990" step="10" value="576" class="w-full">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column Calculation Visual Representation -->
+                        <div class="mt-5 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20">
+                            <h3 class="text-xs font-semibold text-slate-300 mb-2 border-b border-white/10 pb-1">直式計算解析表</h3>
+                            <div class="max-w-xs mx-auto text-center font-mono">
+                                <div class="grid grid-cols-3 gap-2 font-bold text-slate-400 border-b border-slate-600 pb-1 text-sm">
+                                    <span>單位</span>
+                                    <span class="text-pink-300">公斤 (kg)</span>
+                                    <span class="text-sky-300">公克 (g)</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 my-1 text-lg">
+                                    <span>物品 A</span>
+                                    <span id="col-kgA">3</span>
+                                    <span id="col-gA">240</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 my-1 text-lg border-b-2 border-amber-400/80 pb-1">
+                                    <span id="col-op-symbol" class="text-amber-400 font-bold">+</span>
+                                    <span id="col-kgB">2</span>
+                                    <span id="col-gB">576</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 font-extrabold text-xl text-emerald-300 pt-1">
+                                    <span>結果</span>
+                                    <span id="col-res-kg">5</span>
+                                    <span id="col-res-g">816</span>
+                                </div>
+                            </div>
+                            <div id="carry-explain" class="text-center text-xs text-amber-200 mt-2 bg-amber-500/20 p-1.5 rounded-lg border border-amber-400/30 hidden">
+                                <i class="fa-solid fa-lightbulb mr-1"></i>滿 1000 公克自動進位為 1 公斤！
+                            </div>
+                            <div id="sub-limit-hint" class="text-center text-xs text-amber-200 mt-2 bg-amber-500/20 p-1.5 rounded-lg border border-amber-400/30 hidden">
+                                <i class="fa-solid fa-shield-halved mr-1"></i>減法模式下，物品 B 的重量自動限制為小於或等於物品 A！
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SVG Dial Pointer Scale -->
+                    <div class="flex flex-col items-center justify-center">
+                        <svg width="220" height="160" viewBox="0 0 200 130" class="drop-shadow-lg">
+                            <!-- Dial Outer Circle -->
+                            <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="16" stroke-linecap="round"/>
+                            <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="url(#scaleGrad)" stroke-width="8" stroke-linecap="round"/>
+                            
+                            <!-- Dial Gradient Definition -->
+                            <defs>
+                                <linearGradient id="scaleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#38bdf8" />
+                                    <stop offset="50%" stop-color="#f43f5e" />
+                                    <stop offset="100%" stop-color="#a855f7" />
+                                </linearGradient>
+                            </defs>
+
+                            <!-- Dial Marks -->
+                            <circle cx="100" cy="110" r="4" fill="#fff" />
+                            <text x="15" y="125" fill="#cbd5e1" font-size="10">0kg</text>
+                            <text x="92" y="22" fill="#cbd5e1" font-size="10">5kg</text>
+                            <text x="170" y="125" fill="#cbd5e1" font-size="10">10kg</text>
+
+                            <!-- Rotating Pointer Needle -->
+                            <g id="dial-needle" class="dial-pointer">
+                                <line x1="100" y1="110" x2="100" y2="35" stroke="#f43f5e" stroke-width="4" stroke-linecap="round" />
+                                <circle cx="100" cy="110" r="7" fill="#fb7185" />
+                            </g>
+                        </svg>
+                        <div class="text-center mt-2">
+                            <span class="text-xs text-slate-300">磅秤總讀數：</span>
+                            <span id="total-weight-display" class="font-bold text-lg text-amber-300 font-mono">5 公斤 816 公克</span>
+                            <div class="text-xs text-slate-400 font-mono" id="total-grams-display">(相當於 5816 公克)</div>
+                        </div>
+
+                        <div class="mt-6">
+                            <button onclick="switchPage(2)" class="px-6 py-2.5 bg-sky-500/20 hover:bg-sky-500/30 text-sky-200 border border-sky-400/30 rounded-xl text-sm font-semibold transition flex items-center gap-2">
+                                下一頁：扣除箱重實驗室 <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 2: Deduct Box Tare Weight Lab -->
+            <section id="page-2" class="page-content glass-card rounded-3xl p-6 md:p-8 hidden">
+                <div class="max-w-3xl mx-auto space-y-6">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-2xl font-bold text-sky-200 flex items-center gap-2">
+                            <i class="fa-solid fa-box-open text-amber-400"></i>
+                            模組二：水果扣除箱重實驗室
+                        </h2>
+                        <span class="text-xs bg-amber-500/20 text-amber-300 border border-amber-400/30 px-2.5 py-1 rounded-full">情境探究</span>
+                    </div>
+
+                    <p class="text-sm text-slate-300">
+                        把水果連同紙箱放在磅秤上，秤出來的是<strong class="text-amber-300">「總重量」</strong>。如何算出水果真正的<strong class="text-emerald-300">「淨重」</strong>呢？
+                    </p>
+
+                    <!-- Interactive Controls for Net Weight -->
+                    <div class="space-y-4 bg-slate-900/40 p-5 rounded-2xl border border-white/10">
+                        <!-- Gross Weight (Fruit + Box) -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-amber-300 font-semibold"><i class="fa-solid fa-scale-balanced mr-1"></i>磅秤總重量 (總重):</span>
+                                <span class="font-mono text-amber-200" id="gross-display">1 公斤 800 公克</span>
+                            </div>
+                            <input type="range" id="gross-slider" min="200" max="5000" step="50" value="1800" class="w-full">
+                        </div>
+
+                        <!-- Tare Weight (Empty Box - Gray Theme) -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-300 font-semibold"><i class="fa-solid fa-box mr-1"></i>空箱重 (灰色):</span>
+                                <span class="font-mono text-slate-300" id="tare-display">200 公克</span>
+                            </div>
+                            <input type="range" id="tare-slider" min="50" max="1000" step="50" value="200" class="w-full">
+                        </div>
+                    </div>
+
+                    <!-- Visual Illustration -->
+                    <div class="text-center space-y-4">
+                        <div class="flex justify-center items-center gap-2 md:gap-4 flex-wrap">
+                            <div class="bg-amber-500/20 p-4 rounded-xl border border-amber-400/30 text-center flex-1 min-w-[120px]">
+                                <i class="fa-solid fa-scale-unbalanced text-amber-300 text-3xl"></i>
+                                <div class="text-xs text-slate-300 mt-1">磅秤讀數 (總重)</div>
+                                <div id="lab-gross-display" class="font-bold text-amber-200 font-mono text-base">1公斤 800公克</div>
+                            </div>
+                            <div class="text-2xl font-bold text-slate-400">-</div>
+                            <div class="bg-slate-700/40 p-4 rounded-xl border border-white/10 text-center flex-1 min-w-[120px]">
+                                <i class="fa-solid fa-box text-slate-300 text-3xl"></i>
+                                <div class="text-xs text-slate-300 mt-1">空箱重</div>
+                                <div id="lab-tare-display" class="font-bold text-slate-200 font-mono text-base">200公克</div>
+                            </div>
+                            <div class="text-2xl font-bold text-slate-400">=</div>
+                            <div class="bg-emerald-500/20 p-4 rounded-xl border border-emerald-400/30 text-center flex-1 min-w-[120px]">
+                                <i class="fa-solid fa-apple-whole text-emerald-300 text-3xl"></i>
+                                <div class="text-xs text-slate-300 mt-1">橘子淨重</div>
+                                <div id="lab-net-display" class="font-bold text-emerald-300 font-mono text-base">1公斤 600公克</div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Formula Calculation Explanation -->
+                        <div class="bg-indigo-950/60 p-4 rounded-xl border border-indigo-400/30 text-sm text-left leading-relaxed text-indigo-100">
+                            <i class="fa-solid fa-circle-info text-sky-400 mr-1"></i>
+                            <strong>觀念推導：</strong>
+                            當我們看到磅秤顯示 <span id="formula-gross" class="text-amber-300 font-semibold">1公斤 800公克</span>，這是包含了箱子重。扣掉箱重 <span id="formula-tare" class="text-slate-300 font-semibold">200公克</span> 後：<br>
+                            <span class="font-mono bg-black/30 px-3 py-1.5 rounded-lg inline-block mt-2 text-emerald-200 text-base" id="formula-full">
+                                1公斤800公克 - 200公克 = 1公斤600公克
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-4">
+                        <button onclick="switchPage(1)" class="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-slate-200 rounded-xl text-sm font-semibold transition flex items-center gap-2">
+                            <i class="fa-solid fa-arrow-left"></i> 上一頁
+                        </button>
+                        <button onclick="switchPage(3)" class="px-6 py-2.5 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 font-bold rounded-xl text-white shadow-lg transition flex items-center gap-2">
+                            前往 5 題觀念測驗 <i class="fa-solid fa-pen-ruler"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 3: Formative Assessment (5 Questions) -->
+            <section id="page-3" class="page-content glass-card rounded-3xl p-6 md:p-8 space-y-6 hidden">
+                <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-white/10 pb-4 gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-pink-200 flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-question text-sky-300"></i>
+                            第三頁：觀念自我檢測 (共 5 題)
+                        </h2>
+                        <p class="text-xs text-slate-300 mt-1">即時對錯回饋與詳細解題步驟解析，協助釐清計算觀念。</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-slate-900/60 px-4 py-2 rounded-xl border border-white/10 text-sm">
+                            得分：<span id="quiz-score" class="font-extrabold text-pink-400 text-lg">0</span> / 100
+                        </div>
+                        <button onclick="resetQuiz()" class="px-3 py-2 bg-white/10 hover:bg-white/20 text-xs rounded-xl transition border border-white/20">
+                            <i class="fa-solid fa-rotate-right mr-1"></i>重設
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Questions Container -->
+                <div id="quiz-container" class="space-y-6">
+                    <!-- Question Cards populated dynamically by JS -->
+                </div>
+
+                <div class="flex justify-start items-center pt-4 border-t border-white/10">
+                    <button onclick="switchPage(2)" class="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-slate-200 rounded-xl text-sm font-semibold transition flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i> 上一頁 (實驗室)
+                    </button>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-xs text-slate-400 py-4">
+        </footer>
+
+    </div>
+
+    <script>
+        // --- PAGE NAVIGATION ---
+        function switchPage(pageNum) {
+            for (let i = 1; i <= 3; i++) {
+                const page = document.getElementById(`page-${i}`);
+                const btn = document.getElementById(`tab-btn-${i}`);
+                if (page) {
+                    if (i === pageNum) {
+                        page.classList.remove('hidden');
+                    } else {
+                        page.classList.add('hidden');
+                    }
+                }
+                if (btn) {
+                    if (i === pageNum) {
+                        btn.className = "px-5 py-3 rounded-2xl font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-gradient-to-r from-pink-500 to-indigo-600 text-white shadow-lg border border-pink-400/30";
+                    } else {
+                        btn.className = "px-5 py-3 rounded-2xl font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-slate-800/60 text-slate-300 hover:bg-slate-700/60 border border-white/10";
+                    }
+                }
+            }
+        }
+
+        // --- STARS GENERATOR FOR SHINKAI SKY ---
+        function createStars() {
+            const container = document.getElementById('stars-container');
+            if (!container) return;
+            container.innerHTML = '';
+            for (let i = 0; i < 45; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = `${Math.random() * 3 + 1}px`;
+                star.style.height = star.style.width;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+                container.appendChild(star);
+            }
+        }
+
+        // --- MODULE 1: Subtraction Mode Reset & Value Constraint ---
+        function handleOpChange() {
+            const op = document.querySelector('input[name="op"]:checked').value;
+            if (op === 'sub') {
+                // When selecting subtraction, reset Item B values to 0
+                document.getElementById('kgB').value = 0;
+                document.getElementById('gB').value = 0;
+            }
+            updateModule1();
+        }
+
+        function updateModule1() {
+            let kgA = parseInt(document.getElementById('kgA').value);
+            let gA = parseInt(document.getElementById('gA').value);
+            let kgB = parseInt(document.getElementById('kgB').value);
+            let gB = parseInt(document.getElementById('gB').value);
+            const op = document.querySelector('input[name="op"]:checked').value;
+
+            let totalGramsA = kgA * 1000 + gA;
+            let totalGramsB = kgB * 1000 + gB;
+
+            const subLimitHint = document.getElementById('sub-limit-hint');
+
+            // Subtraction logic constraint: Ensure Weight B <= Weight A
+            if (op === 'sub') {
+                subLimitHint.classList.remove('hidden');
+                if (totalGramsB > totalGramsA) {
+                    totalGramsB = totalGramsA;
+                    kgB = Math.floor(totalGramsB / 1000);
+                    gB = totalGramsB % 1000;
+                    gB = Math.floor(gB / 10) * 10;
+
+                    document.getElementById('kgB').value = kgB;
+                    document.getElementById('gB').value = gB;
+                }
+            } else {
+                subLimitHint.classList.add('hidden');
+            }
+
+            // Update Input Labels
+            document.getElementById('kga-txt').innerText = kgA;
+            document.getElementById('ga-txt').innerText = gA;
+            document.getElementById('kgb-txt').innerText = kgB;
+            document.getElementById('gb-txt').innerText = gB;
+
+            document.getElementById('valA-display').innerText = `${kgA} 公斤 ${gA} 公克`;
+            document.getElementById('valB-display').innerText = `${kgB} 公斤 ${gB} 公克`;
+
+            // Column update
+            document.getElementById('col-kgA').innerText = kgA;
+            document.getElementById('col-gA').innerText = gA;
+            document.getElementById('col-kgB').innerText = kgB;
+            document.getElementById('col-gB').innerText = gB;
+
+            let resultGrams = 0;
+
+            if (op === 'add') {
+                document.getElementById('col-op-symbol').innerText = '+';
+                resultGrams = totalGramsA + totalGramsB;
+            } else {
+                document.getElementById('col-op-symbol').innerText = '-';
+                resultGrams = Math.max(0, totalGramsA - totalGramsB);
+            }
+
+            const resKg = Math.floor(resultGrams / 1000);
+            const resG = resultGrams % 1000;
+
+            document.getElementById('col-res-kg').innerText = resKg;
+            document.getElementById('col-res-g').innerText = resG;
+
+            // Show carry warning if grams overflow 1000 in addition
+            const carryExplain = document.getElementById('carry-explain');
+            if (op === 'add' && (gA + gB) >= 1000) {
+                carryExplain.classList.remove('hidden');
+            } else {
+                carryExplain.classList.add('hidden');
+            }
+
+            // Update Needle Scale Display
+            document.getElementById('total-weight-display').innerText = `${resKg} 公斤 ${resG} 公克`;
+            document.getElementById('total-grams-display').innerText = `(相當於 ${resultGrams} 公克)`;
+
+            const maxCap = 10000; // 10kg max
+            const ratio = Math.min(1, resultGrams / maxCap);
+            const angle = -90 + (ratio * 180);
+            document.getElementById('dial-needle').style.transform = `rotate(${angle}deg)`;
+        }
+
+        // --- MODULE 2: Net Weight / Tare Logic ---
+        function updateModule2() {
+            const grossEl = document.getElementById('gross-slider');
+            const tareEl = document.getElementById('tare-slider');
+            if (!grossEl || !tareEl) return;
+
+            let gross = parseInt(grossEl.value) || 0;
+            let tare = parseInt(tareEl.value) || 0;
+
+            // Ensure empty box tare weight does not exceed total gross weight
+            if (tare > gross) {
+                tare = gross;
+                tareEl.value = tare;
+            }
+
+            const netGrams = gross - tare;
+
+            // Format Gross Weight
+            const grossKg = Math.floor(gross / 1000);
+            const grossG = gross % 1000;
+            const grossStr = grossKg > 0 ? `${grossKg} 公斤 ${grossG} 公克` : `${grossG} 公克`;
+            document.getElementById('gross-display').innerText = grossStr;
+
+            // Format Tare Weight
+            const tareKg = Math.floor(tare / 1000);
+            const tareG = tare % 1000;
+            const tareStr = tareKg > 0 ? `${tareKg} 公斤 ${tareG} 公克` : `${tareG} 公克`;
+            document.getElementById('tare-display').innerText = tareStr;
+
+            // Format Net Weight
+            const netKg = Math.floor(netGrams / 1000);
+            const netG = netGrams % 1000;
+            const netStr = netKg > 0 ? `${netKg} 公斤 ${netG} 公克` : `${netG} 公克`;
+
+            // Display in result cards
+            document.getElementById('lab-gross-display').innerText = grossStr;
+            document.getElementById('lab-tare-display').innerText = tareStr;
+            document.getElementById('lab-net-display').innerText = netStr;
+
+            // Formula explanation
+            document.getElementById('formula-gross').innerText = grossStr;
+            document.getElementById('formula-tare').innerText = tareStr;
+            document.getElementById('formula-full').innerText = `${grossStr} - ${tareStr} = ${netStr}`;
+        }
+
+        // --- MODULE 3: Quiz Assessment System Data & Functions ---
+        const quizData = [
+            {
+                id: 1,
+                question: "雜糧店老闆將 526 公克的綠豆和 374 公克的薏仁裝成一包，這包雜糧共重多少公克？",
+                options: ["800 公克", "900 公克", "950 公克", "1000 公克"],
+                answer: 1,
+                explanation: "直式加法計算：526 + 374 = 900 公克。"
+            },
+            {
+                id: 2,
+                question: "媽媽買了 728 公克的紅豆和 549 公克的燕麥，紅豆比燕麥重多少公克？",
+                options: ["179 公克", "221 公克", "189 公克", "1279 公克"],
+                answer: 0,
+                explanation: "直式減法計算：728 - 549 = 179 公克。"
+            },
+            {
+                id: 3,
+                question: "一包花生重 450 公克，婆婆買了 8 包要煮花生湯，8 包花生一共是多少公斤多少公克？",
+                options: ["3 公斤 200 公克", "3600 公克 (無公斤)", "3 公斤 600 公克", "4 公斤 500 公克"],
+                answer: 2,
+                explanation: "450 × 8 = 3600 公克。因為 1000 公克 = 1 公斤，3600 公克可換算為 3 公斤 600 公克。"
+            },
+            {
+                id: 4,
+                question: "爸爸用 3 公斤 240 公克的豬肉和 2 公斤 576 公克的韭菜做水餃餡，餡料總共重多少？",
+                options: ["5 公斤 816 公克", "5 公斤 716 公克", "6 公斤 16 公克", "5816 公斤"],
+                answer: 0,
+                explanation: "公斤與公斤相加：3 + 2 = 5 公斤；公克與公克相加：240 + 576 = 816 公克。合起來是 5 公斤 816 公克。"
+            },
+            {
+                id: 5,
+                question: "一個空紙箱重 200 公克，裡面裝了橘子後放在磅秤上，秤出總重量為 1 公斤 800 公克。請問橘子淨重多少？",
+                options: ["1 公斤 800 公克", "2 公斤 000 公克", "1 公斤 600 公克", "600 公克"],
+                answer: 2,
+                explanation: "淨重 = 總重量 - 箱重。 1 公斤 800 公克 - 200 公克 = 1 公斤 600 公克。"
+            }
+        ];
+
+        let userAnswers = {};
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            quizData.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = 'bg-slate-900/50 p-5 rounded-2xl border border-white/10 space-y-3';
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, optIdx) => {
+                    optionsHtml += `
+                        <label class="flex items-center p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 cursor-pointer transition">
+                            <input type="radio" name="q_${q.id}" value="${optIdx}" onchange="selectAnswer(${q.id}, ${optIdx})" class="text-pink-500 focus:ring-0">
+                            <span class="ml-3 text-sm text-slate-200">${opt}</span>
+                        </label>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <span class="bg-pink-500/20 text-pink-300 border border-pink-400/30 font-extrabold text-xs px-2.5 py-1 rounded-lg">第 ${idx + 1} 題</span>
+                        <h3 class="text-base font-semibold text-slate-100 flex-1">${q.question}</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pt-2">
+                        ${optionsHtml}
+                    </div>
+                    <div id="feedback-${q.id}" class="mt-3 p-3 rounded-xl text-xs hidden"></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectAnswer(qId, optionIdx) {
+            userAnswers[qId] = optionIdx;
+            const q = quizData.find(item => item.id === qId);
+            const feedbackEl = document.getElementById(`feedback-${qId}`);
+            if (!feedbackEl) return;
+
+            feedbackEl.classList.remove('hidden', 'bg-emerald-500/20', 'border-emerald-400/30', 'text-emerald-200', 'bg-rose-500/20', 'border-rose-400/30', 'text-rose-200');
+
+            if (optionIdx === q.answer) {
+                feedbackEl.classList.add('bg-emerald-500/20', 'border', 'border-emerald-400/30', 'text-emerald-200');
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 mr-1.5"></i><strong>答對了！</strong> ${q.explanation}`;
+            } else {
+                feedbackEl.classList.add('bg-rose-500/20', 'border', 'border-rose-400/30', 'text-rose-200');
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-400 mr-1.5"></i><strong>再試試看！</strong> ${q.explanation}`;
+            }
+
+            calculateScore();
+        }
+
+        function calculateScore() {
+            let correctCount = 0;
+            quizData.forEach(q => {
+                if (userAnswers[q.id] === q.answer) {
+                    correctCount++;
+                }
+            });
+            const score = Math.round((correctCount / quizData.length) * 100);
+            document.getElementById('quiz-score').innerText = score;
+        }
+
+        function resetQuiz() {
+            userAnswers = {};
+            document.getElementById('quiz-score').innerText = '0';
+            renderQuiz();
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            createStars();
+            
+            // Attach event listeners for Module 1
+            ['kgA', 'gA', 'kgB', 'gB'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', updateModule1);
+            });
+            document.querySelectorAll('input[name="op"]').forEach(radio => {
+                radio.addEventListener('change', handleOpChange);
+            });
+
+            // Attach event listeners for Module 2
+            ['gross-slider', 'tare-slider'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', updateModule2);
+            });
+
+            // Initial renders
+            updateModule1();
+            updateModule2();
+            renderQuiz();
+        };
+    </script>
+</body>
+</html>

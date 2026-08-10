@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圖案的規律 - 夢幻互動學習教室</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans TC', 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 35%, #e0c3fc 70%, #8ec5fc 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 新海誠風格動態雲朵背景 */
+        .sky-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 100px;
+            filter: blur(10px);
+            animation: floatCloud 25s infinite linear;
+        }
+
+        @keyframes floatCloud {
+            0% { transform: translateX(-200px); }
+            100% { transform: translateX(100vw); }
+        }
+
+        /* 玻璃擬態卡片 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 10px 30px rgba(71, 95, 122, 0.12);
+        }
+
+        /* 互動按鈕夢幻漸層 */
+        .btn-shinkai {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            box-shadow: 0 4px 15px rgba(37, 117, 252, 0.35);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-shinkai:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 7px 20px rgba(37, 117, 252, 0.45);
+        }
+
+        .btn-shinkai:active {
+            transform: translateY(1px);
+        }
+
+        /* 可拖曳/選擇的圖案卡片 */
+        .pattern-item {
+            transition: all 0.25s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .pattern-item:hover {
+            transform: scale(1.1) rotate(3deg);
+        }
+
+        /* 懸浮動畫 */
+        @keyframes gentlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        .pulse-gentle {
+            animation: gentlePulse 2.5s infinite ease-in-out;
+        }
+
+        /* 掛繩風格 */
+        .garland-rope {
+            position: relative;
+        }
+        .garland-rope::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 2%;
+            width: 96%;
+            height: 4px;
+            background: rgba(180, 140, 100, 0.6);
+            border-radius: 2px;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="p-3 md:p-6 text-slate-800 relative">
+
+    <!-- 動態背景雲朵 -->
+    <div class="sky-bg">
+        <div class="cloud" style="top: 10%; width: 220px; height: 70px; animation-delay: 0s;"></div>
+        <div class="cloud" style="top: 35%; width: 320px; height: 90px; animation-delay: -10s;"></div>
+        <div class="cloud" style="top: 65%; width: 180px; height: 60px; animation-delay: -5s;"></div>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="max-w-5xl mx-auto relative z-10">
+
+        <!-- 閒雲數學小棧 Logo 與標題 -->
+        <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
+            <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+            <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+        </div>
+
+        <!-- 頁頭資訊列 -->
+        <header class="glass-card rounded-3xl p-6 mb-6 text-center border border-white/80 relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-pink-300/30 rounded-full blur-2xl"></div>
+            <div class="absolute -left-10 -top-10 w-40 h-40 bg-blue-300/30 rounded-full blur-2xl"></div>
+            
+            <span class="inline-block px-4 py-1.5 bg-blue-500/10 text-blue-700 font-bold rounded-full text-xs md:text-sm mb-2 backdrop-blur-md">
+                ✨ 國小數學 9-3 互動探究單元
+            </span>
+            <h1 class="text-2xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-500 mb-2">
+                探究圖案的規律世界
+            </h1>
+            <p class="text-slate-600 text-sm md:text-base max-w-2xl mx-auto">
+                觀察排列的週期與變化，透過動態滑桿與互動小工具，一起發現圖案隱藏的秘密規律吧！
+            </p>
+
+            <!-- 頁籤切換按鈕 -->
+            <div class="flex justify-center gap-3 mt-5">
+                <button id="tab-lab-btn" onclick="switchTab('lab')" class="px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 btn-shinkai text-white flex items-center gap-2">
+                    <i class="fa-solid fa-flask"></i> 規律動態實驗室
+                </button>
+                <button id="tab-quiz-btn" onclick="switchTab('quiz')" class="px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 bg-white/80 hover:bg-white text-slate-700 flex items-center gap-2 border border-slate-200">
+                    <i class="fa-solid fa-gamepad"></i> 規律小挑戰 (7題)
+                </button>
+            </div>
+        </header>
+
+        <!-- 分頁 1: 動態互動實驗室 -->
+        <main id="tab-lab" class="space-y-6">
+            
+            <!-- 控制與設定區 -->
+            <div class="glass-card rounded-3xl p-6 border border-white/80">
+                <h2 class="text-xl font-bold text-indigo-900 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-blue-500"></i> 1. 自訂規律與長度實驗
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                    <!-- 選擇規律模式 -->
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">選擇重複的圖案組合 (規律單元)：</label>
+                        <div class="grid grid-cols-2 gap-2" id="pattern-type-selector">
+                            <button onclick="setPatternMode('socks')" class="pattern-type-btn border-2 border-blue-500 bg-blue-50/80 p-3 rounded-xl font-bold text-sm text-blue-700 text-left transition-all">
+                                🧦 兩樣重複 (A-B)
+                                <div class="text-xs font-normal text-slate-500 mt-0.5">紅襪、綠襪...</div>
+                            </button>
+                            <button onclick="setPatternMode('party')" class="pattern-type-btn border-2 border-transparent bg-white/70 p-3 rounded-xl font-bold text-sm text-slate-700 text-left hover:bg-white transition-all">
+                                ☃️ 三樣重複 (A-B-C)
+                                <div class="text-xs font-normal text-slate-500 mt-0.5">雪人、星星、聖誕樹</div>
+                            </button>
+                            <button onclick="setPatternMode('gifts4')" class="pattern-type-btn border-2 border-transparent bg-white/70 p-3 rounded-xl font-bold text-sm text-slate-700 text-left hover:bg-white transition-all">
+                                🎁 四樣節慶 (A-B-C-D)
+                                <div class="text-xs font-normal text-slate-500 mt-0.5">禮物、花圈、水晶球、鈴鐺</div>
+                            </button>
+                            <button onclick="setPatternMode('pie3')" class="pattern-type-btn border-2 border-transparent bg-white/70 p-3 rounded-xl font-bold text-sm text-slate-700 text-left hover:bg-white transition-all">
+                                🍕 圓形扇形旋轉 (1-2-3)
+                                <div class="text-xs font-normal text-slate-500 mt-0.5">三分圓著色區旋轉</div>
+                            </button>
+                            <button onclick="setPatternMode('rotate')" class="pattern-type-btn border-2 border-transparent bg-white/70 p-3 rounded-xl font-bold text-sm text-slate-700 text-left hover:bg-white transition-all">
+                                🧩 順時針旋轉 (1-2-3-4)
+                                <div class="text-xs font-normal text-slate-500 mt-0.5">色塊順時針繞圈</div>
+                            </button>
+                            <button onclick="setPatternMode('dice')" class="pattern-type-btn border-2 border-transparent bg-white/70 p-3 rounded-xl font-bold text-sm text-slate-700 text-left hover:bg-white transition-all">
+                                🎲 點數循環 (1-2-2-1)
+                                <div class="text-xs font-normal text-slate-500 mt-0.5">1點、2點、2點、1點</div>
+                            </button>
+                            <!-- 新增兩種課本規律練習 -->
+                            <button onclick="setPatternMode('shapes3')" class="pattern-type-btn border-2 border-transparent bg-white/70 p-3 rounded-xl font-bold text-sm text-slate-700 text-left hover:bg-white transition-all">
+                                📐 幾何圖形 (方-角-星)
+                                <div class="text-xs font-normal text-slate-500 mt-0.5">正方形、三角形、星星</div>
+                            </button>
+                            <button onclick="setPatternMode('xmas4')" class="pattern-type-btn border-2 border-transparent bg-white/70 p-3 rounded-xl font-bold text-sm text-slate-700 text-left hover:bg-white transition-all">
+                                🐦 節慶四寶 (葉-餅-星-鳥)
+                                <div class="text-xs font-normal text-slate-500 mt-0.5">聖誕葉、薑餅人、星星、小鳥</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 動態滑桿控制數量 -->
+                    <div class="flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label for="length-slider" class="text-sm font-bold text-slate-700">調整展示圖案總數量：</label>
+                                <span id="slider-val" class="px-3 py-1 bg-indigo-600 text-white font-black rounded-lg text-sm">9 個</span>
+                            </div>
+                            <input type="range" id="length-slider" min="3" max="12" value="9" oninput="updateLabDisplay()" class="w-full h-3 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            <p class="text-xs text-slate-500 mt-2">拖動滑桿，觀察圖案如何依照「幾個一組」不斷重複出現！</p>
+                        </div>
+
+                        <!-- 隱藏模式關卡切換 -->
+                        <div class="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-between">
+                            <span class="text-sm font-bold text-slate-700">調皮小貓遮住遊戲：</span>
+                            <button onclick="toggleCatHide()" id="cat-toggle-btn" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5">
+                                🐱 <span id="cat-btn-text">遮住最後幾個圖案</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 圖案即時動態展示牆 -->
+            <div class="glass-card rounded-3xl p-6 border border-white/80">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-indigo-900 flex items-center gap-2">
+                        <i class="fa-solid fa-eye text-indigo-500"></i> 2. 圖案觀察牆
+                    </h2>
+                    <div id="unit-tag" class="text-xs font-bold px-3 py-1.5 bg-pink-100 text-pink-700 rounded-full border border-pink-200">
+                        週期規律：2 個一組重複
+                    </div>
+                </div>
+
+                <!-- 掛飾與圖案展示區 -->
+                <div class="garland-rope py-8 px-4 bg-gradient-to-r from-blue-50/60 via-white/80 to-purple-50/60 rounded-2xl border border-white flex flex-wrap justify-center items-center gap-3 md:gap-5 min-h-[180px] transition-all" id="garland-container">
+                    <!-- Dynamic rendering here -->
+                </div>
+
+                <!-- 提示說明區 -->
+                <div id="lab-explanation" class="mt-4 p-4 bg-blue-50/80 rounded-xl border border-blue-100 text-sm text-slate-700 flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info text-blue-500 text-lg mt-0.5"></i>
+                    <div>
+                        <span class="font-bold text-blue-900" id="exp-title">觀察重點：</span>
+                        <span id="exp-text">圖案是依照「紅襪、綠襪」2 個為一組，一直重複排下去的喔！</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 互動填充學習區 (互動填空卡片) -->
+            <div class="glass-card rounded-3xl p-6 border border-white/80">
+                <h2 class="text-xl font-bold text-indigo-900 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-puzzle-piece text-amber-500"></i> 3. 填填看：下一個圖案是什麼？
+                </h2>
+                <p class="text-sm text-slate-600 mb-4">請觀察上方的排列規律，點擊下方正確的圖案來完成序列：</p>
+                
+                <div class="flex flex-wrap justify-center gap-4" id="lab-options-container">
+                    <!-- Interactive choices rendered here -->
+                </div>
+                <div id="interactive-feedback" class="mt-4 text-center text-sm font-bold hidden py-2 rounded-xl"></div>
+            </div>
+
+        </main>
+
+        <!-- 分頁 2: 歷程性評量測驗 (5大題) -->
+        <main id="tab-quiz" class="space-y-6 hidden">
+            
+            <!-- 測驗進度與得分 -->
+            <div class="glass-card rounded-2xl p-4 border border-white/80 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <span class="text-lg font-black text-indigo-900">規律大挑戰</span>
+                    <span id="quiz-progress-badge" class="px-3 py-1 bg-blue-100 text-blue-700 font-bold text-xs rounded-full">
+                        第 1 / 5 題
+                    </span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-bold text-slate-600">獲得星星：</span>
+                    <span id="score-stars" class="text-amber-500 font-bold text-lg">⭐ 0</span>
+                </div>
+            </div>
+
+            <!-- 測驗題目卡片 -->
+            <div id="quiz-card-container" class="glass-card rounded-3xl p-6 md:p-8 border border-white/80">
+                <!-- Dynamically injected quiz content -->
+            </div>
+
+            <!-- 測驗完成結果 Modal / View -->
+            <div id="quiz-result-view" class="glass-card rounded-3xl p-8 border border-white/80 text-center hidden">
+                <div class="text-5xl mb-4">🎉</div>
+                <h2 class="text-2xl md:text-3xl font-black text-indigo-900 mb-2">太棒了！挑戰完成！</h2>
+                <p class="text-slate-600 mb-6" id="final-score-text">你總共答對了 5/5 題，獲得了 5 顆寶貴星星！</p>
+                <button onclick="restartQuiz()" class="btn-shinkai px-6 py-3 text-white rounded-2xl font-bold text-base">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> 再挑戰一次
+                </button>
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        // Web Audio API 音效合成器 (免外連音檔)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'pop') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.08);
+            } else if (type === 'success') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.35);
+            } else if (type === 'error') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(180, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.25);
+            }
+        }
+
+        // 全域狀態管理
+        let currentMode = 'socks'; // socks, party, rotate, dice
+        let isCatHiding = false;
+
+        // 專屬紅襪與綠襪 SVG 圖案
+        const redSockSVG = '<svg viewBox="0 0 40 40" class="w-8 h-8 md:w-9 md:h-9 inline-block drop-shadow-sm"><path d="M 14 10 L 26 10 L 26 23 C 26 26 29 27 33 30 C 35 32 34 36 29 36 L 19 36 C 14 36 13 32 13 28 L 14 10 Z" fill="#e11d48" stroke="#9f1239" stroke-width="1.5" stroke-linejoin="round"/><rect x="12" y="4" width="16" height="7" rx="3.5" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/><path d="M 13 24 C 13 29 17 31 19 31 C 17 28 16 25 18 22 L 14 22 C 13 22 13 23 13 24 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/><path d="M 33 30 C 35 32 34 36 29 36 C 32 35 33 33 32 30 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/></svg>';
+        const greenSockSVG = '<svg viewBox="0 0 40 40" class="w-8 h-8 md:w-9 md:h-9 inline-block drop-shadow-sm"><path d="M 14 10 L 26 10 L 26 23 C 26 26 29 27 33 30 C 35 32 34 36 29 36 L 19 36 C 14 36 13 32 13 28 L 14 10 Z" fill="#059669" stroke="#047857" stroke-width="1.5" stroke-linejoin="round"/><rect x="12" y="4" width="16" height="7" rx="3.5" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/><path d="M 13 24 C 13 29 17 31 19 31 C 17 28 16 25 18 22 L 14 22 C 13 22 13 23 13 24 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/><path d="M 33 30 C 35 32 34 36 29 36 C 32 35 33 33 32 30 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/></svg>';
+
+        // 圖案資料集
+        const patternPresets = {
+            socks: {
+                name: "聖誕襪襪 (A-B)",
+                unitSize: 2,
+                items: [
+                    { name: '紅襪子', html: redSockSVG, color: 'bg-red-100 border-red-300' },
+                    { name: '綠襪子', html: greenSockSVG, color: 'bg-emerald-100 border-emerald-300' }
+                ],
+                expTitle: "兩樣重複規律：",
+                expText: "圖案按照「紅襪子、綠襪子」每 2 個一組一直重複出現喔！"
+            },
+            party: {
+                name: "派對吊飾 (A-B-C)",
+                unitSize: 3,
+                items: [
+                    { name: '雪人', html: '<div class="text-3xl md:text-4xl">☃️</div>', color: 'bg-sky-100 border-sky-300' },
+                    { name: '星星', html: '<div class="text-3xl md:text-4xl">⭐</div>', color: 'bg-amber-100 border-amber-300' },
+                    { name: '聖誕樹', html: '<div class="text-3xl md:text-4xl">🎄</div>', color: 'bg-green-100 border-green-300' }
+                ],
+                expTitle: "三樣重複規律：",
+                expText: "這是一組由「雪人、星星、聖誕樹」3 個圖案構成的循環規律！"
+            },
+            gifts4: {
+                name: "四樣節慶飾品 (A-B-C-D)",
+                unitSize: 4,
+                items: [
+                    { name: '禮物盒', html: '<div class="text-3xl md:text-4xl">🎁</div>', color: 'bg-indigo-100 border-indigo-300' },
+                    { name: '聖誕花圈', html: '<div class="text-3xl md:text-4xl">🌿</div>', color: 'bg-emerald-100 border-emerald-300' },
+                    { name: '水晶球', html: '<div class="text-3xl md:text-4xl">🔮</div>', color: 'bg-purple-100 border-purple-300' },
+                    { name: '金黃鈴鐺', html: '<div class="text-3xl md:text-4xl">🔔</div>', color: 'bg-amber-100 border-amber-300' }
+                ],
+                expTitle: "四樣重複規律：",
+                expText: "這是一組由「禮物盒、聖誕花圈、水晶球、金黃鈴鐺」4 個圖案構成的循環規律！"
+            },
+            pie3: {
+                name: "圓形三分旋轉 (1-2-3)",
+                unitSize: 3,
+                items: [
+                    { 
+                        name: '左側扇形', 
+                        html: '<svg viewBox="0 0 40 40" class="w-9 h-9"><circle cx="20" cy="20" r="18" fill="white" stroke="#334155" stroke-width="2"/><path d="M 20 20 L 20 38 A 18 18 0 0 1 4.4 11 Z" fill="#38bdf8"/><path d="M 20 20 L 20 38 M 20 20 L 4.4 11 M 20 20 L 35.6 11" stroke="#334155" stroke-width="1.5"/></svg>', 
+                        color: 'bg-sky-50 border-sky-200' 
+                    },
+                    { 
+                        name: '上側扇形', 
+                        html: '<svg viewBox="0 0 40 40" class="w-9 h-9"><circle cx="20" cy="20" r="18" fill="white" stroke="#334155" stroke-width="2"/><path d="M 20 20 L 4.4 11 A 18 18 0 0 1 35.6 11 Z" fill="#38bdf8"/><path d="M 20 20 L 20 38 M 20 20 L 4.4 11 M 20 20 L 35.6 11" stroke="#334155" stroke-width="1.5"/></svg>', 
+                        color: 'bg-sky-50 border-sky-200' 
+                    },
+                    { 
+                        name: '右下扇形', 
+                        html: '<svg viewBox="0 0 40 40" class="w-9 h-9"><circle cx="20" cy="20" r="18" fill="white" stroke="#334155" stroke-width="2"/><path d="M 20 20 L 35.6 11 A 18 18 0 0 1 20 38 Z" fill="#38bdf8"/><path d="M 20 20 L 20 38 M 20 20 L 4.4 11 M 20 20 L 35.6 11" stroke="#334155" stroke-width="1.5"/></svg>', 
+                        color: 'bg-sky-50 border-sky-200' 
+                    }
+                ],
+                expTitle: "三分圓旋轉規律：",
+                expText: "觀察圓形內的藍色區域，它是依照「左側 ➔ 上側 ➔ 右下側」順時針方向旋轉著色的喔！"
+            },
+            rotate: {
+                name: "順時針旋轉 (1-2-3-4)",
+                unitSize: 4,
+                items: [
+                    { name: '左上角', html: '<div class="w-8 h-8 grid grid-cols-2 gap-0.5 bg-slate-200 p-0.5 rounded-md"><div class="bg-indigo-500 rounded-sm"></div><div></div><div></div><div></div></div>', color: 'bg-indigo-50 border-indigo-200' },
+                    { name: '右上角', html: '<div class="w-8 h-8 grid grid-cols-2 gap-0.5 bg-slate-200 p-0.5 rounded-md"><div></div><div class="bg-indigo-500 rounded-sm"></div><div></div><div></div></div>', color: 'bg-indigo-50 border-indigo-200' },
+                    { name: '右下角', html: '<div class="w-8 h-8 grid grid-cols-2 gap-0.5 bg-slate-200 p-0.5 rounded-md"><div></div><div></div><div></div><div class="bg-indigo-500 rounded-sm"></div></div>', color: 'bg-indigo-50 border-indigo-200' },
+                    { name: '左下角', html: '<div class="w-8 h-8 grid grid-cols-2 gap-0.5 bg-slate-200 p-0.5 rounded-md"><div></div><div></div><div class="bg-indigo-500 rounded-sm"></div><div></div></div>', color: 'bg-indigo-50 border-indigo-200' }
+                ],
+                expTitle: "方位旋轉規律：",
+                expText: "觀察紫色的方塊，它是順著「左上 ➔ 右上 ➔ 右下 ➔ 左下」順時針方向旋轉移動的喔！"
+            },
+            dice: {
+                name: "骰子點數 (1-2-2-1)",
+                unitSize: 4,
+                items: [
+                    { name: '1 點', html: '<div class="w-8 h-8 md:w-10 md:h-10 bg-white border-2 border-slate-300 rounded-lg flex items-center justify-center"><div class="w-3.5 h-3.5 md:w-4 md:h-4 rounded-full bg-rose-500"></div></div>', color: 'bg-rose-50 border-rose-200' },
+                    { name: '2 點', html: '<div class="w-8 h-8 md:w-10 md:h-10 bg-white border-2 border-slate-300 rounded-lg p-1 flex justify-between"><div class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-slate-800 self-start"></div><div class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-slate-800 self-end"></div></div>', color: 'bg-slate-100 border-slate-300' },
+                    { name: '2 點', html: '<div class="w-8 h-8 md:w-10 md:h-10 bg-white border-2 border-slate-300 rounded-lg p-1 flex justify-between"><div class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-slate-800 self-start"></div><div class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-slate-800 self-end"></div></div>', color: 'bg-slate-100 border-slate-300' },
+                    { name: '1 點', html: '<div class="w-8 h-8 md:w-10 md:h-10 bg-white border-2 border-slate-300 rounded-lg flex items-center justify-center"><div class="w-3.5 h-3.5 md:w-4 md:h-4 rounded-full bg-rose-500"></div></div>', color: 'bg-rose-50 border-rose-200' }
+                ],
+                expTitle: "點數規律：",
+                expText: "點數是按照「1點、2點、2點、1點」每 4 個圖案為一組一直重複出現的！"
+            },
+            shapes3: {
+                name: "幾何圖形 (正方形-三角形-星星)",
+                unitSize: 3,
+                items: [
+                    { name: '紅正方形', html: '<div class="w-8 h-8 md:w-10 md:h-10 bg-amber-700 rounded-md flex items-center justify-center text-white text-xl">🟫</div>', color: 'bg-amber-50 border-amber-200' },
+                    { name: '藍三角形', html: '<div class="text-3xl md:text-4xl">🔺</div>', color: 'bg-sky-50 border-sky-200' },
+                    { name: '黃色星星', html: '<div class="text-3xl md:text-4xl">⭐</div>', color: 'bg-amber-50 border-amber-200' }
+                ],
+                expTitle: "幾何圖形規律：",
+                expText: "圖案是按照「紅正方形 ➔ 藍三角形 ➔ 黃星星」每 3 個一組重複排下去的！"
+            },
+            xmas4: {
+                name: "節慶四寶 (葉-餅-星-鳥)",
+                unitSize: 4,
+                items: [
+                    { name: '聖誕葉', html: '<div class="text-3xl md:text-4xl">🌿</div>', color: 'bg-emerald-50 border-emerald-200' },
+                    { name: '薑餅人', html: '<div class="text-3xl md:text-4xl">🍪</div>', color: 'bg-amber-50 border-amber-200' },
+                    { name: '閃亮星星', html: '<div class="text-3xl md:text-4xl">🌟</div>', color: 'bg-yellow-50 border-yellow-200' },
+                    { name: '小紅鳥', html: '<div class="text-3xl md:text-4xl">🐦</div>', color: 'bg-rose-50 border-rose-200' }
+                ],
+                expTitle: "節慶四寶規律：",
+                expText: "按「聖誕葉 ➔ 薑餅人 ➔ 閃亮星星 ➔ 小紅鳥」4 個圖案為一組循環重複！"
+            }
+        };
+
+        // 頁籤切換
+        function switchTab(tab) {
+            playSound('pop');
+            const labTab = document.getElementById('tab-lab');
+            const quizTab = document.getElementById('tab-quiz');
+            const labBtn = document.getElementById('tab-lab-btn');
+            const quizBtn = document.getElementById('tab-quiz-btn');
+
+            if (tab === 'lab') {
+                labTab.classList.remove('hidden');
+                quizTab.classList.add('hidden');
+                labBtn.className = "px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 btn-shinkai text-white flex items-center gap-2";
+                quizBtn.className = "px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 bg-white/80 hover:bg-white text-slate-700 flex items-center gap-2 border border-slate-200";
+            } else {
+                labTab.classList.add('hidden');
+                quizTab.classList.remove('hidden');
+                quizBtn.className = "px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 btn-shinkai text-white flex items-center gap-2";
+                labBtn.className = "px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 bg-white/80 hover:bg-white text-slate-700 flex items-center gap-2 border border-slate-200";
+                loadQuizQuestion();
+            }
+        }
+
+        // 切換規律模式
+        function setPatternMode(mode) {
+            playSound('pop');
+            currentMode = mode;
+            
+            const buttons = document.querySelectorAll('.pattern-type-btn');
+            const modeKeys = ['socks', 'party', 'gifts4', 'pie3', 'rotate', 'dice', 'shapes3', 'xmas4'];
+            
+            buttons.forEach((btn, index) => {
+                if (modeKeys[index] === mode) {
+                    btn.className = "pattern-type-btn border-2 border-blue-500 bg-blue-50/80 p-3 rounded-xl font-bold text-sm text-blue-700 text-left transition-all shadow-sm";
+                } else {
+                    btn.className = "pattern-type-btn border-2 border-transparent bg-white/70 p-3 rounded-xl font-bold text-sm text-slate-700 text-left hover:bg-white transition-all";
+                }
+            });
+
+            updateLabDisplay();
+        }
+
+        // 開關小貓遮擋效果
+        function toggleCatHide() {
+            playSound('pop');
+            isCatHiding = !isCatHiding;
+            const btnText = document.getElementById('cat-btn-text');
+            if (isCatHiding) {
+                btnText.innerText = "顯示隱藏圖案";
+            } else {
+                btnText.innerText = "遮住最後幾個圖案";
+            }
+            updateLabDisplay();
+        }
+
+        // 即時更新動態展示區
+        function updateLabDisplay() {
+            const count = parseInt(document.getElementById('length-slider').value);
+            document.getElementById('slider-val').innerText = `${count} 個`;
+            
+            const preset = patternPresets[currentMode];
+            document.getElementById('unit-tag').innerText = `週期規律：${preset.unitSize} 個一組重複`;
+            document.getElementById('exp-title').innerText = preset.expTitle;
+            document.getElementById('exp-text').innerText = preset.expText;
+
+            const garlandContainer = document.getElementById('garland-container');
+            let itemsHTML = '';
+
+            for (let i = 0; i < count; i++) {
+                const itemIndex = i % preset.items.length;
+                const item = preset.items[itemIndex];
+                
+                // 判斷是否被小貓遮住 (若開啟遮住且是最後 2 個)
+                const isHiddenByCat = isCatHiding && (i >= count - 2);
+
+                if (isHiddenByCat) {
+                    itemsHTML += `
+                        <div class="relative flex flex-col items-center justify-center w-16 h-20 md:w-20 md:h-24 rounded-2xl bg-amber-100/90 border-2 border-dashed border-amber-400 shadow-md transform hover:scale-105 transition-all animate-bounce">
+                            <span class="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center shadow">${i + 1}</span>
+                            <div class="text-2xl md:text-3xl">🐾</div>
+                            <span class="text-[10px] font-bold text-amber-800 mt-1">被貓遮住</span>
+                        </div>
+                    `;
+                } else {
+                    itemsHTML += `
+                        <div class="relative flex flex-col items-center justify-center w-16 h-20 md:w-20 md:h-24 rounded-2xl ${item.color} border-2 shadow-sm transform hover:scale-105 transition-all">
+                            <span class="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow">${i + 1}</span>
+                            ${item.html}
+                            <span class="text-[10px] font-bold text-slate-600 mt-1 truncate max-w-[60px]">${item.name}</span>
+                        </div>
+                    `;
+                }
+            }
+
+            garlandContainer.innerHTML = itemsHTML;
+
+            // 更新填空選項區
+            renderLabOptions();
+        }
+
+        // 渲染實驗室互動填空選項
+        function renderLabOptions() {
+            const preset = patternPresets[currentMode];
+            const optionsContainer = document.getElementById('lab-options-container');
+
+            let optionsToRender = preset.items;
+
+            // 骰子模式只顯示「1點」與「2點」兩個不重複選項
+            if (currentMode === 'dice') {
+                optionsToRender = [preset.items[0], preset.items[1]];
+            }
+
+            let html = optionsToRender.map((item, idx) => `
+                <button onclick="selectLabOption(${idx})" class="pattern-item flex flex-col items-center p-3 rounded-2xl bg-white/90 hover:bg-blue-50 border-2 border-slate-200 hover:border-blue-400 shadow-sm min-w-[80px]">
+                    ${item.html}
+                    <span class="text-xs font-bold text-slate-700 mt-1">${item.name}</span>
+                </button>
+            `).join('');
+
+            optionsContainer.innerHTML = html;
+            
+            // 重置反饋訊息
+            const feedback = document.getElementById('interactive-feedback');
+            feedback.className = "mt-4 text-center text-sm font-bold hidden py-2 px-4 rounded-xl";
+            feedback.innerText = "";
+        }
+
+        // 檢查填空答案
+        function selectLabOption(selectedIndex) {
+            const count = parseInt(document.getElementById('length-slider').value);
+            const preset = patternPresets[currentMode];
+            const feedback = document.getElementById('interactive-feedback');
+
+            feedback.classList.remove('hidden');
+
+            let isCorrect = false;
+            let correctName = "";
+
+            if (currentMode === 'dice') {
+                const correctItem = preset.items[count % preset.items.length];
+                correctName = correctItem.name; // "1 點" 或 "2 點"
+                const selectedName = selectedIndex === 0 ? "1 點" : "2 點";
+                isCorrect = (selectedName === correctName);
+            } else {
+                const correctIndex = count % preset.items.length;
+                correctName = preset.items[correctIndex].name;
+                isCorrect = (selectedIndex === correctIndex);
+            }
+
+            if (isCorrect) {
+                playSound('success');
+                feedback.className = "mt-4 text-center text-sm font-bold py-2 px-4 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300 block";
+                feedback.innerHTML = `✨ 答對了！第 ${count + 1} 個圖案正是「${correctName}」！棒極了！`;
+            } else {
+                playSound('error');
+                feedback.className = "mt-4 text-center text-sm font-bold py-2 px-4 rounded-xl bg-rose-100 text-rose-800 border border-rose-300 block";
+                feedback.innerHTML = `❌ 再觀察看看喔！順著規律數下去，第 ${count + 1} 個應該是「${correctName}」喔！`;
+            }
+        }
+
+        // 7 題歷程性評量題目資料
+        const quizQuestions = [
+            {
+                title: "第 1 題：聖誕襪掛飾的規律",
+                prompt: "請觀察襪子掛飾的排列規律：<br>紅襪子 ➔ 綠襪子 ➔ 紅襪子 ➔ 綠襪子 ➔ ？<br>請問問號（？）的地方應該掛上什麼圖案？",
+                itemsDisplay: [
+                    { html: redSockSVG, label: '紅襪', color: 'bg-red-100 border-red-300' },
+                    { html: greenSockSVG, label: '綠襪', color: 'bg-emerald-100 border-emerald-300' },
+                    { html: redSockSVG, label: '紅襪', color: 'bg-red-100 border-red-300' },
+                    { html: greenSockSVG, label: '綠襪', color: 'bg-emerald-100 border-emerald-300' },
+                    { html: '❓', label: '？', color: 'bg-amber-100 border-amber-300' }
+                ],
+                options: [
+                    { 
+                        html: `<div class="w-8 h-8 rounded-lg bg-red-100 border border-red-300 flex items-center justify-center">${redSockSVG}</div>`, 
+                        text: '紅襪子', 
+                        isCorrect: true, 
+                        explain: '正確！這是一紅一綠（2個一組）重複排下去的規律，綠襪子後面正是紅襪子！' 
+                    },
+                    { 
+                        html: `<div class="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-300 flex items-center justify-center">${greenSockSVG}</div>`, 
+                        text: '綠襪子', 
+                        isCorrect: false, 
+                        explain: '不太對喔！綠襪子剛掛過，按照一紅一綠的規律，綠襪子後面應該接紅襪子喔！' 
+                    }
+                ]
+            },
+            {
+                title: "第 2 題：三樣物品重複規律",
+                prompt: "請觀察派對裝飾：雪人 ➔ 星星 ➔ 聖誕樹 ➔ 雪人 ➔ 星星 ➔ 聖誕樹 ➔ 雪人 ➔ ？<br>問號（？）的地方應該填入什麼？",
+                itemsDisplay: [
+                    { html: '☃️' }, { html: '⭐' }, { html: '🎄' },
+                    { html: '☃️' }, { html: '⭐' }, { html: '🎄' },
+                    { html: '☃️' }, { html: '❓' }
+                ],
+                options: [
+                    { text: '雪人 ☃️', isCorrect: false, explain: '不對喔！這串圖案是「雪人、星星、聖誕樹」三個一組，雪人後面應該接...？' },
+                    { text: '星星 ⭐', isCorrect: true, explain: '讚啦！「雪人、星星、聖誕樹」為 3 個一組循環，雪人後面就是接星星！' },
+                    { text: '聖誕樹 🎄', isCorrect: false, explain: '差一點點！聖誕樹是在星星的後面喔！' }
+                ]
+            },
+            {
+                title: "第 3 題：四樣節慶飾品循環",
+                prompt: "請觀察飾品的排列：禮物盒 ➔ 聖誕花圈 ➔ 水晶球 ➔ 金黃鈴鐺 ➔ 禮物盒 ➔ 聖誕花圈 ➔ 水晶球 ➔ 金黃鈴鐺 ➔ 禮物盒 ➔ 聖誕花圈 ➔ ？<br>請問問號（？）的地方應該補上什麼？",
+                itemsDisplay: [
+                    { html: '🎁' }, { html: '🌿' }, { html: '🔮' }, { html: '🔔' },
+                    { html: '🎁' }, { html: '🌿' }, { html: '🔮' }, { html: '🔔' },
+                    { html: '🎁' }, { html: '🌿' }, { html: '❓' }
+                ],
+                options: [
+                    { text: '禮物盒 🎁', isCorrect: false, explain: '不太對喔！這是一組 4 個圖案（禮物盒➔花圈➔水晶球➔鈴鐺）循環，花圈後面應該接水晶球！' },
+                    { text: '聖誕花圈 🌿', isCorrect: false, explain: '花圈已經排在前面了喔！' },
+                    { text: '水晶球 🔮', isCorrect: true, explain: '完全正確！依照「禮物盒 ➔ 花圈 ➔ 水晶球 ➔ 鈴鐺」4 個一組重複，花圈後面正是水晶球！' },
+                    { text: '金黃鈴鐺 🔔', isCorrect: false, explain: '鈴鐺是在水晶球的後面喔！' }
+                ]
+            },
+            {
+                title: "第 4 題：圓形三分扇形旋轉",
+                prompt: "請觀察圓形扇形藍色區域的變化：【左側】➔【上側】➔【右下側】➔【左側】➔【上側】➔ ？<br>請問下一個圓形應該是哪個區域填上顏色？",
+                itemsDisplay: [
+                    { html: '<svg viewBox="0 0 40 40" class="w-8 h-8"><circle cx="20" cy="20" r="18" fill="white" stroke="#334155" stroke-width="2"/><path d="M 20 20 L 20 38 A 18 18 0 0 1 4.4 11 Z" fill="#38bdf8"/><path d="M 20 20 L 20 38 M 20 20 L 4.4 11 M 20 20 L 35.6 11" stroke="#334155" stroke-width="1.5"/></svg>' },
+                    { html: '<svg viewBox="0 0 40 40" class="w-8 h-8"><circle cx="20" cy="20" r="18" fill="white" stroke="#334155" stroke-width="2"/><path d="M 20 20 L 4.4 11 A 18 18 0 0 1 35.6 11 Z" fill="#38bdf8"/><path d="M 20 20 L 20 38 M 20 20 L 4.4 11 M 20 20 L 35.6 11" stroke="#334155" stroke-width="1.5"/></svg>' },
+                    { html: '<svg viewBox="0 0 40 40" class="w-8 h-8"><circle cx="20" cy="20" r="18" fill="white" stroke="#334155" stroke-width="2"/><path d="M 20 20 L 35.6 11 A 18 18 0 0 1 20 38 Z" fill="#38bdf8"/><path d="M 20 20 L 20 38 M 20 20 L 4.4 11 M 20 20 L 35.6 11" stroke="#334155" stroke-width="1.5"/></svg>' },
+                    { html: '<svg viewBox="0 0 40 40" class="w-8 h-8"><circle cx="20" cy="20" r="18" fill="white" stroke="#334155" stroke-width="2"/><path d="M 20 20 L 20 38 A 18 18 0 0 1 4.4 11 Z" fill="#38bdf8"/><path d="M 20 20 L 20 38 M 20 20 L 4.4 11 M 20 20 L 35.6 11" stroke="#334155" stroke-width="1.5"/></svg>' },
+                    { html: '<svg viewBox="0 0 40 40" class="w-8 h-8"><circle cx="20" cy="20" r="18" fill="white" stroke="#334155" stroke-width="2"/><path d="M 20 20 L 4.4 11 A 18 18 0 0 1 35.6 11 Z" fill="#38bdf8"/><path d="M 20 20 L 20 38 M 20 20 L 4.4 11 M 20 20 L 35.6 11" stroke="#334155" stroke-width="1.5"/></svg>' },
+                    { html: '❓' }
+                ],
+                options: [
+                    { 
+                        html: '<svg viewBox="0 0 40 40" class="w-8 h-8"><circle cx="20" cy="20" r="18" fill="white" stroke="#334155" stroke-width="2"/><path d="M 20 20 L 20 38 A 18 18 0 0 1 4.4 11 Z" fill="#38bdf8"/><path d="M 20 20 L 20 38 M 20 20 L 4.4 11 M 20 20 L 35.6 11" stroke="#334155" stroke-width="1.5"/></svg>',
+                        text: '左側扇形着色', 
+                        isCorrect: false, 
+                        explain: '不對喔，這是在進行 3 個方向的旋轉循環，【上側】後面應該輪到哪裡呢？' 
+                    },
+                    { 
+                        html: '<svg viewBox="0 0 40 40" class="w-8 h-8"><circle cx="20" cy="20" r="18" fill="white" stroke="#334155" stroke-width="2"/><path d="M 20 20 L 4.4 11 A 18 18 0 0 1 35.6 11 Z" fill="#38bdf8"/><path d="M 20 20 L 20 38 M 20 20 L 4.4 11 M 20 20 L 35.6 11" stroke="#334155" stroke-width="1.5"/></svg>',
+                        text: '上側扇形着色', 
+                        isCorrect: false, 
+                        explain: '上側已經出現過了喔！按順序下一個應該接【右下扇形】！' 
+                    },
+                    { 
+                        html: '<svg viewBox="0 0 40 40" class="w-8 h-8"><circle cx="20" cy="20" r="18" fill="white" stroke="#334155" stroke-width="2"/><path d="M 20 20 L 35.6 11 A 18 18 0 0 1 20 38 Z" fill="#38bdf8"/><path d="M 20 20 L 20 38 M 20 20 L 4.4 11 M 20 20 L 35.6 11" stroke="#334155" stroke-width="1.5"/></svg>',
+                        text: '右下扇形着色', 
+                        isCorrect: true, 
+                        explain: '太棒了！這是「左側 ➔ 上側 ➔ 右下側」3 個一組順時針旋轉循環，【上側】後面正是「右下扇形」！' 
+                    }
+                ]
+            },
+            {
+                title: "第 5 題：旋轉方格觀察",
+                prompt: "紫色小方塊正在九宮格內旋轉：【左上】➔【右上】➔【右下】➔【左下】➔【？】<br>請推理下一個位置在哪裡？",
+                itemsDisplay: [
+                    { html: '<div class="w-8 h-8 grid grid-cols-2 gap-0.5 bg-slate-200 p-0.5 rounded"><div class="bg-indigo-600 rounded-sm"></div><div></div><div></div><div></div></div>' },
+                    { html: '<div class="w-8 h-8 grid grid-cols-2 gap-0.5 bg-slate-200 p-0.5 rounded"><div></div><div class="bg-indigo-600 rounded-sm"></div><div></div><div></div></div>' },
+                    { html: '<div class="w-8 h-8 grid grid-cols-2 gap-0.5 bg-slate-200 p-0.5 rounded"><div></div><div></div><div></div><div class="bg-indigo-600 rounded-sm"></div></div>' },
+                    { html: '<div class="w-8 h-8 grid grid-cols-2 gap-0.5 bg-slate-200 p-0.5 rounded"><div></div><div></div><div class="bg-indigo-600 rounded-sm"></div><div></div></div>' },
+                    { html: '❓' }
+                ],
+                options: [
+                    { 
+                        html: '<div class="w-8 h-8 grid grid-cols-2 gap-0.5 bg-slate-200 p-0.5 rounded"><div class="bg-indigo-600 rounded-sm"></div><div></div><div></div><div></div></div>',
+                        text: '', 
+                        isCorrect: true, 
+                        explain: '答對了！方塊是順時針繞一圈，繞完左下角後就會回到「左上角」！' 
+                    },
+                    { 
+                        html: '<div class="w-8 h-8 grid grid-cols-2 gap-0.5 bg-slate-200 p-0.5 rounded"><div></div><div class="bg-indigo-600 rounded-sm"></div><div></div><div></div></div>',
+                        text: '', 
+                        isCorrect: false, 
+                        explain: '再想一下喔，這是第 2 個出現的位置！' 
+                    },
+                    { 
+                        html: '<div class="w-8 h-8 grid grid-cols-2 gap-0.5 bg-slate-200 p-0.5 rounded"><div></div><div></div><div></div><div class="bg-indigo-600 rounded-sm"></div></div>',
+                        text: '', 
+                        isCorrect: false, 
+                        explain: '想想看，已經繞到左下角了，再來會回到哪裡呢？' 
+                    },
+                    { 
+                        html: '<div class="w-8 h-8 grid grid-cols-2 gap-0.5 bg-slate-200 p-0.5 rounded"><div></div><div></div><div class="bg-indigo-600 rounded-sm"></div><div></div></div>',
+                        text: '', 
+                        isCorrect: false, 
+                        explain: '左下角剛好是前一個位置喔！' 
+                    }
+                ]
+            },
+            {
+                title: "第 6 題：被頑皮小貓遮住的項鍊",
+                prompt: "小貓踩住了項鍊的一部分！<br>排列為：星星 ➔ 愛心 ➔ 星星 ➔ 🐾 ➔ 星星 ➔ 愛心...<br>請問被小貓腳印（🐾）遮住的是什麼？",
+                itemsDisplay: [
+                    { html: '⭐' }, { html: '💛' }, { html: '⭐' }, { html: '🐾' }, { html: '⭐' }, { html: '💛' }
+                ],
+                options: [
+                    { text: '星星 ⭐', isCorrect: false, explain: '不對喔，這條項鍊是「星星、愛心」兩兩交替重複，星星中間隔著愛心喔！' },
+                    { text: '愛心 💛', isCorrect: true, explain: '太聰明了！「星星、愛心」交替排列，所以被小貓腳印遮住的就是愛心！' }
+                ]
+            },
+            {
+                title: "第 7 題：彩色珠子規律",
+                prompt: "請觀察圖案規律：綠珠 ➔ 白珠 ➔ 紅珠 ➔ 綠珠 ➔ 白珠 ➔ ？<br>請問下一個應該補上什麼？",
+                itemsDisplay: [
+                    { html: '🟢' }, { html: '⚪' }, { html: '🔴' }, { html: '🟢' }, { html: '⚪' }, { html: '❓' }
+                ],
+                options: [
+                    { text: '綠珠 🟢', isCorrect: false, explain: '再想一下下！排列是綠➔白➔紅，白珠後面應該接...？' },
+                    { text: '白珠 ⚪', isCorrect: false, explain: '白珠剛剛出現過了喔！排列是「綠珠、白珠、紅珠」循環！' },
+                    { text: '紅珠 🔴', isCorrect: true, explain: '太棒了！這是「綠珠、白珠、紅珠」3 個一組重複出現，白珠後面正是紅珠！' }
+                ]
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let scoreStars = 0;
+
+        // 載入測驗題目
+        function loadQuizQuestion() {
+            const container = document.getElementById('quiz-card-container');
+            const resultView = document.getElementById('quiz-result-view');
+            
+            if (currentQuizIndex >= quizQuestions.length) {
+                container.classList.add('hidden');
+                resultView.classList.remove('hidden');
+                document.getElementById('final-score-text').innerText = `你總共答對了 ${scoreStars} / ${quizQuestions.length} 題，獲得了 ${scoreStars} 顆寶貴星星！🌟`;
+                return;
+            }
+
+            container.classList.remove('hidden');
+            resultView.classList.add('hidden');
+
+            const q = quizQuestions[currentQuizIndex];
+            document.getElementById('quiz-progress-badge').innerText = `第 ${currentQuizIndex + 1} / ${quizQuestions.length} 題`;
+
+            // 建立題目畫面
+            let itemsHTML = q.itemsDisplay.map(item => `
+                <div class="flex flex-col items-center justify-center w-12 h-14 md:w-16 md:h-16 rounded-xl ${item.color || 'bg-white/90 border-slate-200'} border shadow-sm text-2xl md:text-3xl">
+                    ${item.html}
+                </div>
+            `).join('');
+
+            let optionsHTML = q.options.map((opt, idx) => `
+                <button onclick="checkQuizAnswer(${idx})" class="w-full text-left p-4 rounded-2xl border-2 border-slate-200 bg-white/80 hover:bg-blue-50/80 hover:border-blue-400 font-bold text-slate-700 transition-all flex justify-between items-center group">
+                    <span class="flex items-center gap-3">${opt.html || ''} ${opt.text}</span>
+                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-blue-500"></i>
+                </button>
+            `).join('');
+
+            container.innerHTML = `
+                <h3 class="text-xl md:text-2xl font-black text-indigo-900 mb-2">${q.title}</h3>
+                <p class="text-slate-700 text-sm md:text-base mb-6 leading-relaxed">${q.prompt}</p>
+                
+                <div class="flex flex-wrap justify-center gap-2 md:gap-3 p-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-2xl border border-white mb-6">
+                    ${itemsHTML}
+                </div>
+
+                <div class="space-y-3" id="quiz-options-box">
+                    ${optionsHTML}
+                </div>
+
+                <div id="quiz-feedback-box" class="mt-5 p-4 rounded-2xl hidden transition-all"></div>
+            `;
+        }
+
+        // 檢查測驗答案
+        function checkQuizAnswer(optionIndex) {
+            const q = quizQuestions[currentQuizIndex];
+            const selectedOpt = q.options[optionIndex];
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+
+            if (selectedOpt.isCorrect) {
+                playSound('success');
+                scoreStars++;
+                document.getElementById('score-stars').innerText = `⭐ ${scoreStars}`;
+
+                feedbackBox.className = "mt-5 p-4 rounded-2xl bg-emerald-100/90 border border-emerald-300 text-emerald-900";
+                feedbackBox.innerHTML = `
+                    <div class="font-black text-base mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check text-emerald-600"></i> 答對了！太厲害了！
+                    </div>
+                    <div class="text-sm mb-3">${selectedOpt.explain}</div>
+                    <button onclick="nextQuestion()" class="btn-shinkai px-5 py-2 text-white text-xs font-bold rounded-xl">
+                        下一題 ➔
+                    </button>
+                `;
+            } else {
+                playSound('error');
+                feedbackBox.className = "mt-5 p-4 rounded-2xl bg-rose-100/90 border border-rose-300 text-rose-900";
+                feedbackBox.innerHTML = `
+                    <div class="font-black text-base mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-xmark text-rose-600"></i> 再想想看喔！
+                    </div>
+                    <div class="text-sm mb-3">${selectedOpt.explain}</div>
+                    <button onclick="loadQuizQuestion()" class="px-4 py-1.5 bg-white border border-rose-300 text-rose-700 text-xs font-bold rounded-xl hover:bg-rose-50">
+                        重試一次 🔄
+                    </button>
+                `;
+            }
+
+            feedbackBox.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuizIndex++;
+            loadQuizQuestion();
+        }
+
+        function restartQuiz() {
+            currentQuizIndex = 0;
+            scoreStars = 0;
+            document.getElementById('score-stars').innerText = `⭐ 0`;
+            loadQuizQuestion();
+        }
+
+        // 頁面初次載入啟動
+        window.onload = function() {
+            updateLabDisplay();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>9-4 數與圖形的規律 - 新海誠風格互動探究網頁</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+
+        body {
+            font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 25%, #311b92 50%, #6b21a8 75%, #9d174d 100%);
+            background-attachment: fixed;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        /* Shinkai style ambient clouds & stars effect */
+        .shinkai-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25), 0 0 20px rgba(125, 211, 252, 0.3);
+            border-radius: 1.5rem;
+        }
+
+        .glass-header {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Custom Range Slider Shinkai Style */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 12px;
+            cursor: pointer;
+            background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 28px;
+            width: 28px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -8px;
+            box-shadow: 0 0 15px #38bdf8, 0 0 2px #000;
+            border: 3px solid #38bdf8;
+            transition: transform 0.1s ease;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+        }
+
+        .shinkai-btn {
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .shinkai-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+        }
+
+        .matchstick {
+            stroke-linecap: round;
+            transition: all 0.4s ease;
+        }
+
+        /* Custom animations */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: floatSlow 4s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen text-slate-800 pb-16">
+
+    <!-- Background Stars & Atmosphere -->
+    <div class="shinkai-bg" id="starBg"></div>
+
+    <!-- Header Section -->
+    <header class="glass-header sticky top-0 z-50 text-white py-4 px-6 mb-8 shadow-lg">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- 修改：使用轉換後的 Google Drive 直接連結，置於原標題上方 -->
+            <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
+                <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+                <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-3 bg-gradient-to-tr from-cyan-400 to-indigo-500 rounded-2xl shadow-md animate-float">
+                        <i class="fa-solid fa-shapes text-2xl text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-black tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-cyan-200 via-sky-100 to-indigo-200">
+                            9-4 數與圖形的規律
+                        </h1>
+                        <!-- 副標題文字已移除 -->
+                    </div>
+                </div>
+
+                <!-- Tab Navigation Buttons -->
+                <div class="flex bg-slate-900/60 p-1.5 rounded-2xl border border-white/20">
+                    <button onclick="switchTab('lab')" id="tab-lab" class="tab-btn active px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-flask"></i> 觀念探索實驗室
+                    </button>
+                    <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn px-5 py-2.5 rounded-xl font-bold text-sm text-cyan-100 hover:text-white transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-pen-ruler"></i> 課本類題實作測驗
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+
+        <!-- ================= SECTION 1: EXPLORATION LAB ================= -->
+        <div id="section-lab" class="space-y-8">
+            
+            <!-- Lab Sub-Tabs Navigation -->
+            <div class="flex flex-wrap gap-3 justify-center bg-slate-900/60 p-3 rounded-2xl backdrop-blur-md border border-white/20 shadow-lg">
+                <button onclick="switchLabTab('lab-mod-1')" id="btn-lab-mod-1" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-sky-500 text-white shadow-[0_0_15px_rgba(14,165,233,0.5)] transition-all flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-md bg-white/20 flex items-center justify-center text-xs">1</span> 奇偶數規律
+                </button>
+                <button onclick="switchLabTab('lab-mod-2')" id="btn-lab-mod-2" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-slate-800/60 text-slate-300 hover:text-white hover:bg-indigo-500/50 transition-all flex items-center gap-2 border border-slate-600/50">
+                    <span class="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center text-xs">2</span> 圖形點陣規律
+                </button>
+                <button onclick="switchLabTab('lab-mod-3')" id="btn-lab-mod-3" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-slate-800/60 text-slate-300 hover:text-white hover:bg-pink-500/50 transition-all flex items-center gap-2 border border-slate-600/50">
+                    <span class="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center text-xs">3</span> 旋轉週期規律
+                </button>
+            </div>
+
+            <!-- Module 1: Even/Odd & Remainder Visualizer -->
+            <div id="lab-mod-1" class="glass-card p-6 md:p-8">
+                <div class="flex items-center justify-between border-b border-slate-200/60 pb-4 mb-6">
+                    <h2 class="text-xl md:text-2xl font-black text-slate-800 flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-sky-500 text-white flex items-center justify-center text-sm">1</span>
+                        除以 2 的餘數與奇偶數規律
+                    </h2>
+                    <span class="px-3 py-1 bg-sky-100 text-sky-700 text-xs font-bold rounded-full">動態觀察器</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-5 space-y-6">
+                        <div class="bg-gradient-to-r from-sky-50 to-indigo-50 p-5 rounded-2xl border border-sky-100">
+                            <label class="flex justify-between font-bold text-slate-700 mb-2">
+                                <span>拉動滑桿選擇被除數 (被除數)：</span>
+                                <span id="num-display" class="text-2xl font-black text-sky-600">13</span>
+                            </label>
+                            <input type="range" id="num-slider" min="1" max="25" value="13" oninput="updateEvenOddModule(this.value)">
+                            <div class="flex justify-between text-xs text-slate-400 mt-1 font-bold">
+                                <span>1</span>
+                                <span>10</span>
+                                <span>20</span>
+                                <span>25</span>
+                            </div>
+                        </div>
+
+                        <!-- Calculation Formula Box -->
+                        <div class="p-5 bg-white/80 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                            <div class="text-sm font-bold text-slate-500">除法計算算式：</div>
+                            <div class="text-2xl font-black text-slate-800 flex items-center justify-center gap-2 bg-slate-50 py-3 rounded-xl border border-slate-200">
+                                <span id="calc-dividend" class="text-sky-600">13</span> 
+                                <span>÷ 2 =</span> 
+                                <span id="calc-quotient" class="text-indigo-600">6</span> 
+                                <span class="text-slate-400">⋯</span> 
+                                <span id="calc-remainder" class="text-pink-500 font-extrabold">1</span>
+                            </div>
+                            <div id="even-odd-badge" class="text-center py-2 px-4 rounded-xl font-black text-lg transition-all">
+                                奇數（餘數為 1）
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Dot Grouping Canvas -->
+                    <div class="lg:col-span-7 bg-slate-900/90 p-6 rounded-2xl text-white shadow-inner relative overflow-hidden">
+                        <div class="text-xs font-bold text-cyan-300 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-nodes"></i> 每 2 個一圈（成對分組觀察）：
+                        </div>
+                        <div id="dot-group-container" class="flex flex-wrap gap-4 min-h-[160px] items-center justify-start p-2">
+                            <!-- Dynamic Dots inserted via JS -->
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-700 text-xs text-slate-300 flex justify-between">
+                            <span>偶數個個位數：<strong class="text-cyan-300">0, 2, 4, 6, 8</strong></span>
+                            <span>奇數個個位數：<strong class="text-pink-300">1, 3, 5, 7, 9</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 2: Matchstick & Shape Growth Visualizer -->
+            <div id="lab-mod-2" class="glass-card p-6 md:p-8 hidden">
+                <div class="flex items-center justify-between border-b border-slate-200/60 pb-4 mb-6">
+                    <h2 class="text-xl md:text-2xl font-black text-slate-800 flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-indigo-500 text-white flex items-center justify-center text-sm">2</span>
+                        圖形排列與火柴棒/方塊/點陣規律
+                    </h2>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="setShapeMode('triangle')" id="btn-mode-triangle" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow">火柴棒三角形</button>
+                        <button onclick="setShapeMode('bluedots')" id="btn-mode-bluedots" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 text-slate-700 hover:bg-slate-300">藍點矩陣(3的倍數)</button>
+                        <button onclick="setShapeMode('staircase')" id="btn-mode-staircase" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 text-slate-700 hover:bg-slate-300">正方形階梯</button>
+                        <button onclick="setShapeMode('square')" id="btn-mode-square" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 text-slate-700 hover:bg-slate-300">棋子正方形</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-4 space-y-6">
+                        <div class="bg-indigo-50/70 p-5 rounded-2xl border border-indigo-100">
+                            <label class="flex justify-between font-bold text-slate-700 mb-2">
+                                <span>圖形編號 (圖 N)：</span>
+                                <span id="shape-step-display" class="text-2xl font-black text-indigo-600">圖 3</span>
+                            </label>
+                            <input type="range" id="shape-slider" min="1" max="6" value="3" oninput="updateShapeModule(this.value)">
+                            <div class="flex justify-between text-xs text-slate-400 mt-1 font-bold">
+                                <span>圖 1</span>
+                                <span>圖 3</span>
+                                <span>圖 6</span>
+                            </div>
+                        </div>
+
+                        <!-- Rule Formula Card -->
+                        <div class="bg-white/90 p-5 rounded-2xl border border-indigo-100 shadow-sm space-y-3">
+                            <h3 id="shape-title" class="font-bold text-slate-800">連續三角形火柴棒</h3>
+                            <div id="shape-formula-box" class="p-3 bg-indigo-900 text-cyan-200 rounded-xl font-mono text-center text-sm font-bold">
+                                數量 = 3 + (N - 1) × 2
+                            </div>
+                            <div class="text-sm text-slate-600 space-y-1">
+                                <p id="shape-explanation">後一個圖比前一個圖多用 <strong>2 根火柴棒</strong>。</p>
+                                <p class="text-indigo-600 font-bold" id="shape-count-result">圖 3 共有 7 根火柴棒</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Dynamic Render SVG Area -->
+                    <div class="lg:col-span-8 bg-slate-900/90 rounded-2xl p-6 flex flex-col items-center justify-center min-h-[260px] relative">
+                        <svg id="shape-svg" class="w-full h-56 max-w-lg" viewBox="0 0 500 200">
+                            <!-- SVG stick graphics dynamically generated -->
+                        </svg>
+                        <div class="absolute bottom-3 right-4 text-xs text-slate-400 font-bold">
+                            <i class="fa-regular fa-lightbulb text-yellow-400"></i> 動態隨圖號遞增繪製
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 3: Pattern Rotation & Cycle Explorer -->
+            <div id="lab-mod-3" class="glass-card p-6 md:p-8 hidden">
+                <div class="flex items-center justify-between border-b border-slate-200/60 pb-4 mb-6">
+                    <h2 class="text-xl md:text-2xl font-black text-slate-800 flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-pink-500 text-white flex items-center justify-center text-sm">3</span>
+                        圖案旋轉與週期重複規律
+                    </h2>
+                    <span class="px-3 py-1 bg-pink-100 text-pink-700 text-xs font-bold rounded-full">旋轉動畫</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-4">
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            觀察三角形每次順時針旋轉 90° 的週期規律（每 4 次完成一個完整循環）：
+                        </p>
+                        <div class="flex gap-4 items-center flex-wrap">
+                            <button onclick="rotateNext()" id="btn-rotate" class="shinkai-btn text-white font-bold px-6 py-3 rounded-xl shadow-md flex items-center gap-2">
+                                <i class="fa-solid fa-rotate-right"></i> 下一個旋轉狀態 (順時針 90°)
+                            </button>
+                            <button onclick="resetRotate()" class="px-4 py-3 bg-slate-200 text-slate-700 rounded-xl font-bold text-sm hover:bg-slate-300 transition-all">
+                                <i class="fa-solid fa-rotate-left"></i> 重置旋轉
+                            </button>
+                            <span class="text-sm font-bold text-slate-500">當前次數：<strong id="rotate-count" class="text-pink-600 text-lg">1</strong></span>
+                        </div>
+                        <div class="p-4 bg-pink-50 rounded-xl border border-pink-100 text-xs text-pink-800 font-bold">
+                            💡 提示：第 1 個與第 5 個圖案方向相同；第 N 個圖案方向 = N 除以 4 的餘數！
+                        </div>
+                    </div>
+
+                    <!-- Interactive Rotating Triangle Container -->
+                    <div class="bg-slate-900/90 rounded-2xl p-6 flex items-center justify-center gap-6">
+                        <div class="text-center">
+                            <div class="text-xs text-cyan-300 mb-2 font-bold">目前圖形姿態</div>
+                            <div class="w-28 h-28 bg-white/10 border-2 border-cyan-400/50 rounded-2xl flex items-center justify-center p-2">
+                                <svg id="rotating-triangle-svg" class="w-20 h-20 transition-transform duration-500 ease-out" viewBox="0 0 100 100">
+                                    <rect x="5" y="5" width="90" height="90" fill="none" stroke="#fff" stroke-width="4" rx="10"/>
+                                    <polygon points="50,15 85,80 15,80" fill="#ec4899" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="text-cyan-200 text-2xl font-bold">→</div>
+                        <div class="text-center">
+                            <div class="text-xs text-slate-400 mb-2 font-bold">預測下一個</div>
+                            <div class="w-28 h-28 bg-white/5 border-2 border-dashed border-slate-600 rounded-2xl flex items-center justify-center p-2 opacity-70">
+                                <svg id="next-triangle-svg" class="w-20 h-20 transition-transform duration-300" viewBox="0 0 100 100">
+                                    <rect x="5" y="5" width="90" height="90" fill="none" stroke="#94a3b8" stroke-width="4" rx="10"/>
+                                    <polygon points="50,15 85,80 15,80" fill="#94a3b8" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sequence History Container at Bottom -->
+                <div class="mt-6 pt-6 border-t border-slate-200/80">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                            <i class="fa-solid fa-list-ol text-pink-500"></i> 圖形姿態排列歷程（最多 8 個）：
+                        </h3>
+                        <span id="sequence-count-badge" class="text-xs px-2.5 py-1 bg-pink-100 text-pink-700 font-bold rounded-md">已收集 1 / 8</span>
+                    </div>
+                    <div id="rotate-sequence-container" class="grid grid-cols-4 sm:grid-cols-8 gap-2 bg-slate-900/90 p-3 rounded-2xl min-h-[100px] items-center justify-items-center">
+                        <!-- Dynamic SVG thumbnails inserted via JS -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= SECTION 2: CLASSROOM EXERCISES (QUIZ) ================= -->
+        <div id="section-quiz" class="hidden space-y-8">
+            <div class="glass-card p-6 md:p-8">
+                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b border-slate-200/60 pb-6 mb-8">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-black text-slate-800 flex items-center gap-3">
+                            <i class="fa-solid fa-square-check text-indigo-600"></i> 課本類題與素養歷程性評量
+                        </h2>
+                        <p class="text-sm text-slate-500 mt-1">涵蓋圖片中的全部「類題 1~4」與「素養評量」題目，請作答後提交觀看即時回饋。</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="score-badge" class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-xl font-black text-lg">
+                            總得分: <span id="current-score">0</span> / 100
+                        </span>
+                    </div>
+                </div>
+
+                <form id="quiz-form" onsubmit="event.preventDefault(); submitQuiz();" class="space-y-8">
+
+                    <!-- Question 1: Page 1 Similar Practice 1 (數的變化) -->
+                    <div class="p-6 bg-white/80 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center gap-2 text-indigo-600 font-extrabold text-sm">
+                            <span class="px-2.5 py-0.5 bg-indigo-100 rounded-md">圖片 1 類題 1</span> 觀察數的變化，填入下一個數
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm font-bold">
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                                <p class="text-slate-700 flex items-center gap-2">
+                                    <i class="fa-solid fa-arrow-trend-down text-sky-500"></i>
+                                    (1) 31, 29, 27, 25, 23, 21, ( ? )
+                                </p>
+                                <input type="number" id="q1-1" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none" placeholder="輸入數字">
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                                <p class="text-slate-700 flex items-center gap-2">
+                                    <i class="fa-solid fa-arrow-trend-up text-indigo-500"></i>
+                                    (2) 103, 105, 107, 109, ( ? )
+                                </p>
+                                <input type="number" id="q1-2" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none" placeholder="輸入數字">
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                                <p class="text-slate-700 flex items-center gap-2">
+                                    <i class="fa-solid fa-layer-group text-purple-500"></i>
+                                    (3) 11, 22, 33, 44, ( ? )
+                                </p>
+                                <input type="number" id="q1-3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none" placeholder="輸入數字">
+                            </div>
+                        </div>
+                        <div id="feedback-q1" class="hidden text-sm p-3 rounded-xl font-bold"></div>
+                    </div>
+
+                    <!-- Question 2: Page 1 Similar Practice 2 (奇偶數判定) -->
+                    <div class="p-6 bg-white/80 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center gap-2 text-indigo-600 font-extrabold text-sm">
+                            <span class="px-2.5 py-0.5 bg-indigo-100 rounded-md">圖片 1 類題 2</span> 奇數劃○，偶數劃△
+                        </div>
+                        <p class="text-slate-600 text-sm font-medium">請點擊以下數字按鈕切換標籤（無標籤 ➔ 偶數 <span class="text-indigo-600 font-bold">△</span> ➔ 奇數 <span class="text-pink-600 font-bold">○</span>）：</p>
+                        <div class="flex flex-wrap gap-4">
+                            <button type="button" onclick="toggleNumTag(this, 16)" class="q2-btn px-5 py-3 bg-slate-100 rounded-xl font-bold border border-slate-300 hover:bg-slate-200" data-val="16" data-tag="none">
+                                16 <span class="tag-icon text-indigo-600 ml-1">(-)</span>
+                            </button>
+                            <button type="button" onclick="toggleNumTag(this, 18)" class="q2-btn px-5 py-3 bg-slate-100 rounded-xl font-bold border border-slate-300 hover:bg-slate-200" data-val="18" data-tag="none">
+                                18 <span class="tag-icon text-indigo-600 ml-1">(-)</span>
+                            </button>
+                            <button type="button" onclick="toggleNumTag(this, 37)" class="q2-btn px-5 py-3 bg-slate-100 rounded-xl font-bold border border-slate-300 hover:bg-slate-200" data-val="37" data-tag="none">
+                                37 <span class="tag-icon text-indigo-600 ml-1">(-)</span>
+                            </button>
+                            <button type="button" onclick="toggleNumTag(this, 45)" class="q2-btn px-5 py-3 bg-slate-100 rounded-xl font-bold border border-slate-300 hover:bg-slate-200" data-val="45" data-tag="none">
+                                45 <span class="tag-icon text-indigo-600 ml-1">(-)</span>
+                            </button>
+                            <button type="button" onclick="toggleNumTag(this, 52)" class="q2-btn px-5 py-3 bg-slate-100 rounded-xl font-bold border border-slate-300 hover:bg-slate-200" data-val="52" data-tag="none">
+                                52 <span class="tag-icon text-indigo-600 ml-1">(-)</span>
+                            </button>
+                            <button type="button" onclick="toggleNumTag(this, 63)" class="q2-btn px-5 py-3 bg-slate-100 rounded-xl font-bold border border-slate-300 hover:bg-slate-200" data-val="63" data-tag="none">
+                                63 <span class="tag-icon text-indigo-600 ml-1">(-)</span>
+                            </button>
+                        </div>
+                        <div id="feedback-q2" class="hidden text-sm p-3 rounded-xl font-bold"></div>
+                    </div>
+
+                    <!-- Question 3: Page 2 Similar Practice 3 (鋸齒平行四邊形堆疊規律) -->
+                    <div class="p-6 bg-white/80 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center gap-2 text-indigo-600 font-extrabold text-sm">
+                            <span class="px-2.5 py-0.5 bg-indigo-100 rounded-md">圖片 2 類題 3</span> 圖案排列規律選擇
+                        </div>
+                        <p class="text-slate-700 text-sm font-bold">觀察圖1(1個)、圖2(3個)、圖3(5個)的雙排平行四邊形規律，請問【圖 4】應該有幾個平行四邊形？</p>
+                        
+                        <!-- Visual SVG Diagram for Q3 -->
+                        <div class="p-4 bg-slate-900/90 rounded-xl flex flex-wrap items-center justify-around gap-4 text-white text-xs text-center">
+                            <div>
+                                <span class="text-cyan-300 block mb-1">圖 1 (1個)</span>
+                                <svg class="w-16 h-12" viewBox="0 0 60 40">
+                                    <polygon points="10,30 25,10 40,10 25,30" fill="none" stroke="#38bdf8" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="text-cyan-300 block mb-1">圖 2 (3個)</span>
+                                <svg class="w-24 h-12" viewBox="0 0 90 40">
+                                    <polygon points="5,30 20,10 35,10 20,30" fill="none" stroke="#38bdf8" stroke-width="2"/>
+                                    <polygon points="20,30 35,10 50,10 35,30" fill="none" stroke="#38bdf8" stroke-width="2"/>
+                                    <polygon points="35,30 50,10 65,10 50,30" fill="none" stroke="#38bdf8" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="text-cyan-300 block mb-1">圖 3 (5個)</span>
+                                <svg class="w-32 h-12" viewBox="0 0 120 40">
+                                    <path d="M 5,30 L 20,10 L 35,10 L 20,30 Z M 20,30 L 35,10 L 50,10 L 35,30 Z M 35,30 L 50,10 L 65,10 L 50,30 Z M 50,30 L 65,10 L 80,10 L 65,30 Z M 65,30 L 80,10 L 95,10 L 80,30 Z" fill="none" stroke="#38bdf8" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="text-yellow-300 block mb-1 font-bold">圖 4 ( ? 個)</span>
+                                <div class="w-16 h-10 border-2 border-dashed border-yellow-400 rounded flex items-center justify-center text-yellow-300 font-bold text-lg">?</div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-indigo-50">
+                                <input type="radio" name="q3" value="6" class="w-4 h-4 text-indigo-600">
+                                <span class="font-bold text-slate-700">6 個</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-indigo-50">
+                                <input type="radio" name="q3" value="7" class="w-4 h-4 text-indigo-600">
+                                <span class="font-bold text-slate-700">7 個</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-indigo-50">
+                                <input type="radio" name="q3" value="8" class="w-4 h-4 text-indigo-600">
+                                <span class="font-bold text-slate-700">8 個</span>
+                            </label>
+                        </div>
+                        <div id="feedback-q3" class="hidden text-sm p-3 rounded-xl font-bold"></div>
+                    </div>
+
+                    <!-- Question 4: Page 3 Similar Practice 4 (藍點倍數規律) -->
+                    <div class="p-6 bg-white/80 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center gap-2 text-indigo-600 font-extrabold text-sm">
+                            <span class="px-2.5 py-0.5 bg-indigo-100 rounded-md">圖片 3 類題 4</span> 觀察藍色圓點陣列數量變化
+                        </div>
+                        <p class="text-slate-700 text-sm font-bold">觀察下圖藍點變化：圖1有 3 個點，圖2有 6 個點，圖3有 9 個點。請問【圖 4】應該有幾個點？</p>
+                        
+                        <!-- Visual Diagram for Q4 (Matching Image 4) -->
+                        <div class="p-4 bg-slate-900/90 rounded-xl flex flex-wrap items-center justify-around gap-4 text-white text-xs text-center">
+                            <div>
+                                <span class="text-cyan-300 block mb-1">圖 1 (3個)</span>
+                                <svg class="w-16 h-12" viewBox="0 0 60 30">
+                                    <circle cx="10" cy="15" r="5" fill="#38bdf8"/>
+                                    <circle cx="25" cy="15" r="5" fill="#38bdf8"/>
+                                    <circle cx="40" cy="15" r="5" fill="#38bdf8"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="text-cyan-300 block mb-1">圖 2 (6個)</span>
+                                <svg class="w-16 h-12" viewBox="0 0 60 40">
+                                    <circle cx="10" cy="10" r="5" fill="#38bdf8"/><circle cx="25" cy="10" r="5" fill="#38bdf8"/><circle cx="40" cy="10" r="5" fill="#38bdf8"/>
+                                    <circle cx="10" cy="28" r="5" fill="#38bdf8"/><circle cx="25" cy="28" r="5" fill="#38bdf8"/><circle cx="40" cy="28" r="5" fill="#38bdf8"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="text-cyan-300 block mb-1">圖 3 (9個)</span>
+                                <svg class="w-16 h-12" viewBox="0 0 60 50">
+                                    <circle cx="10" cy="8" r="4" fill="#38bdf8"/><circle cx="25" cy="8" r="4" fill="#38bdf8"/><circle cx="40" cy="8" r="4" fill="#38bdf8"/>
+                                    <circle cx="10" cy="22" r="4" fill="#38bdf8"/><circle cx="25" cy="22" r="4" fill="#38bdf8"/><circle cx="40" cy="22" r="4" fill="#38bdf8"/>
+                                    <circle cx="10" cy="36" r="4" fill="#38bdf8"/><circle cx="25" cy="36" r="4" fill="#38bdf8"/><circle cx="40" cy="36" r="4" fill="#38bdf8"/>
+                                </svg>
+                            </div>
+                            <div class="border-2 border-pink-500 p-2 rounded-xl bg-pink-500/10">
+                                <span class="text-pink-300 block mb-1 font-bold">圖 4 ( 圈選處 ? 個 )</span>
+                                <svg class="w-20 h-16" viewBox="0 0 70 60">
+                                    <circle cx="10" cy="8" r="4" fill="#38bdf8"/><circle cx="25" cy="8" r="4" fill="#38bdf8"/><circle cx="40" cy="8" r="4" fill="#38bdf8"/><circle cx="55" cy="8" r="4" fill="#ec4899"/>
+                                    <circle cx="10" cy="22" r="4" fill="#38bdf8"/><circle cx="25" cy="22" r="4" fill="#38bdf8"/><circle cx="40" cy="22" r="4" fill="#38bdf8"/><circle cx="55" cy="22" r="4" fill="#ec4899"/>
+                                    <circle cx="10" cy="36" r="4" fill="#38bdf8"/><circle cx="25" cy="36" r="4" fill="#38bdf8"/><circle cx="40" cy="36" r="4" fill="#38bdf8"/><circle cx="55" cy="36" r="4" fill="#ec4899"/>
+                                    <circle cx="10" cy="50" r="4" fill="#38bdf8"/><circle cx="25" cy="50" r="4" fill="#38bdf8"/><circle cx="40" cy="50" r="4" fill="#38bdf8"/><circle cx="55" cy="50" r="4" fill="#ec4899"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <input type="number" id="q4" class="w-48 px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none font-bold" placeholder="請輸入總數量">
+                            <span class="text-sm font-bold text-slate-500">（提示：3 的倍數）</span>
+                        </div>
+                        <div id="feedback-q4" class="hidden text-sm p-3 rounded-xl font-bold"></div>
+                    </div>
+
+                    <!-- Question 5: Page 4 Competency Assessment (棋子正方形數規律) -->
+                    <div class="p-6 bg-white/80 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center gap-2 text-indigo-600 font-extrabold text-sm">
+                            <span class="px-2.5 py-0.5 bg-indigo-100 rounded-md">圖片 4 素養評量</span> 棋子排成正方形
+                        </div>
+                        <p class="text-slate-700 text-sm font-bold">美美用棋子排正方形：圖1(1×1=1個)、圖2(2×2=4個)、圖3(3×3=9個)、圖4(4×4=16個)。如果要排第 5 個圖，應該需要幾個棋子？</p>
+                        
+                        <!-- Visual Go/Chess Dots for Q5 -->
+                        <div class="p-4 bg-slate-900/90 rounded-xl flex flex-wrap items-center justify-around gap-4 text-white text-xs text-center">
+                            <div>
+                                <span class="text-pink-300 block mb-1">圖 1 (1×1)</span>
+                                <div class="w-6 h-6 rounded-full bg-pink-500 mx-auto"></div>
+                            </div>
+                            <div>
+                                <span class="text-pink-300 block mb-1">圖 2 (2×2)</span>
+                                <div class="grid grid-cols-2 gap-1 w-8 mx-auto">
+                                    <div class="w-3 h-3 rounded-full bg-pink-500"></div><div class="w-3 h-3 rounded-full bg-pink-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-pink-500"></div><div class="w-3 h-3 rounded-full bg-pink-500"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-pink-300 block mb-1">圖 3 (3×3)</span>
+                                <div class="grid grid-cols-3 gap-1 w-12 mx-auto">
+                                    <div class="w-3 h-3 rounded-full bg-pink-500"></div><div class="w-3 h-3 rounded-full bg-pink-500"></div><div class="w-3 h-3 rounded-full bg-pink-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-pink-500"></div><div class="w-3 h-3 rounded-full bg-pink-500"></div><div class="w-3 h-3 rounded-full bg-pink-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-pink-500"></div><div class="w-3 h-3 rounded-full bg-pink-500"></div><div class="w-3 h-3 rounded-full bg-pink-500"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-yellow-300 block mb-1 font-bold">圖 5 (5×5 = ?)</span>
+                                <div class="w-16 h-12 border border-dashed border-yellow-400 rounded flex items-center justify-center text-yellow-300 font-bold">?</div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-indigo-50">
+                                <input type="radio" name="q5" value="20" class="w-4 h-4 text-indigo-600">
+                                <span class="font-bold text-slate-700">20 個 (5×4)</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-indigo-50">
+                                <input type="radio" name="q5" value="25" class="w-4 h-4 text-indigo-600">
+                                <span class="font-bold text-slate-700">25 個 (5×5)</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-indigo-50">
+                                <input type="radio" name="q5" value="30" class="w-4 h-4 text-indigo-600">
+                                <span class="font-bold text-slate-700">30 個 (6×5)</span>
+                            </label>
+                        </div>
+                        <div id="feedback-q5" class="hidden text-sm p-3 rounded-xl font-bold"></div>
+                    </div>
+
+                    <!-- Question 6: Page 5 Rotating Pattern Quiz -->
+                    <div class="p-6 bg-white/80 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex items-center gap-2 text-indigo-600 font-extrabold text-sm">
+                            <span class="px-2.5 py-0.5 bg-indigo-100 rounded-md">圖片 5 旋轉圖案規律</span> 三角形旋轉方向預測
+                        </div>
+                        <p class="text-slate-700 text-sm font-bold">三角形依序旋轉為：第1個朝上 ▲, 第2個朝右 ▶, 第3個朝下 ▼, 第4個朝左 ◀。請問【第 9 個圖案】會朝向哪裡？</p>
+                        
+                        <!-- Visual Rotation Diagram Q6 -->
+                        <div class="p-3 bg-slate-900/90 rounded-xl flex items-center justify-around text-white text-xs text-center">
+                            <div><span class="text-cyan-300 block mb-1">1. 朝上</span><span class="text-2xl">▲</span></div>
+                            <div><span class="text-cyan-300 block mb-1">2. 朝右</span><span class="text-2xl">▶</span></div>
+                            <div><span class="text-cyan-300 block mb-1">3. 朝下</span><span class="text-2xl">▼</span></div>
+                            <div><span class="text-cyan-300 block mb-1">4. 朝左</span><span class="text-2xl">◀</span></div>
+                            <div class="text-yellow-300 font-bold"><span class="block mb-1">⋯ 9. ( ? )</span><span class="text-2xl">?</span></div>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <label class="flex items-center justify-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-indigo-50">
+                                <input type="radio" name="q6" value="up" class="w-4 h-4 text-indigo-600">
+                                <span class="font-bold text-slate-700">朝上 ▲</span>
+                            </label>
+                            <label class="flex items-center justify-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-indigo-50">
+                                <input type="radio" name="q6" value="right" class="w-4 h-4 text-indigo-600">
+                                <span class="font-bold text-slate-700">朝右 ▶</span>
+                            </label>
+                            <label class="flex items-center justify-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-indigo-50">
+                                <input type="radio" name="q6" value="down" class="w-4 h-4 text-indigo-600">
+                                <span class="font-bold text-slate-700">朝下 ▼</span>
+                            </label>
+                            <label class="flex items-center justify-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-indigo-50">
+                                <input type="radio" name="q6" value="left" class="w-4 h-4 text-indigo-600">
+                                <span class="font-bold text-slate-700">朝左 ◀</span>
+                            </label>
+                        </div>
+                        <div id="feedback-q6" class="hidden text-sm p-3 rounded-xl font-bold"></div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-center pt-4">
+                        <button type="submit" class="shinkai-btn text-white text-lg font-black px-10 py-4 rounded-2xl shadow-xl hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-paper-plane mr-2"></i> 提交全部測驗解答
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        /* Generate background stars for Shinkai aesthetic */
+        function initStars() {
+            const container = document.getElementById('starBg');
+            const starCount = 50;
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+                container.appendChild(star);
+            }
+        }
+
+        /* Tab Switcher Logic */
+        function switchTab(tab) {
+            document.getElementById('section-lab').classList.add('hidden');
+            document.getElementById('section-quiz').classList.add('hidden');
+            document.getElementById('tab-lab').classList.remove('active');
+            document.getElementById('tab-quiz').classList.remove('active');
+
+            if (tab === 'lab') {
+                document.getElementById('section-lab').classList.remove('hidden');
+                document.getElementById('tab-lab').classList.add('active');
+            } else {
+                document.getElementById('section-quiz').classList.remove('hidden');
+                document.getElementById('tab-quiz').classList.add('active');
+            }
+        }
+
+        /* Lab Sub-Tab Switcher Logic */
+        function switchLabTab(modId) {
+            // Hide all modules
+            document.getElementById('lab-mod-1').classList.add('hidden');
+            document.getElementById('lab-mod-2').classList.add('hidden');
+            document.getElementById('lab-mod-3').classList.add('hidden');
+
+            // Reset all buttons
+            const btn1 = document.getElementById('btn-lab-mod-1');
+            const btn2 = document.getElementById('btn-lab-mod-2');
+            const btn3 = document.getElementById('btn-lab-mod-3');
+            
+            const inactiveClass = "px-5 py-2.5 rounded-xl font-bold text-sm bg-slate-800/60 text-slate-300 hover:text-white transition-all flex items-center gap-2 border border-slate-600/50";
+            btn1.className = inactiveClass + " hover:bg-sky-500/50";
+            btn2.className = inactiveClass + " hover:bg-indigo-500/50";
+            btn3.className = inactiveClass + " hover:bg-pink-500/50";
+
+            // Show selected module and highlight button
+            document.getElementById(modId).classList.remove('hidden');
+            
+            if (modId === 'lab-mod-1') {
+                btn1.className = "px-5 py-2.5 rounded-xl font-bold text-sm bg-sky-500 text-white shadow-[0_0_15px_rgba(14,165,233,0.5)] transition-all flex items-center gap-2";
+            } else if (modId === 'lab-mod-2') {
+                btn2.className = "px-5 py-2.5 rounded-xl font-bold text-sm bg-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.5)] transition-all flex items-center gap-2";
+            } else if (modId === 'lab-mod-3') {
+                btn3.className = "px-5 py-2.5 rounded-xl font-bold text-sm bg-pink-500 text-white shadow-[0_0_15px_rgba(236,72,153,0.5)] transition-all flex items-center gap-2";
+            }
+        }
+
+        /* Module 1: Even/Odd Logic */
+        function updateEvenOddModule(val) {
+            const num = parseInt(val);
+            document.getElementById('num-display').innerText = num;
+            document.getElementById('calc-dividend').innerText = num;
+            
+            const quotient = Math.floor(num / 2);
+            const remainder = num % 2;
+
+            document.getElementById('calc-quotient').innerText = quotient;
+            document.getElementById('calc-remainder').innerText = remainder;
+
+            const badge = document.getElementById('even-odd-badge');
+            if (remainder === 0) {
+                badge.innerText = "偶數（餘數為 0）";
+                badge.className = "text-center py-2 px-4 rounded-xl font-black text-lg transition-all bg-emerald-100 text-emerald-700 border border-emerald-300";
+            } else {
+                badge.innerText = "奇數（餘數為 1）";
+                badge.className = "text-center py-2 px-4 rounded-xl font-black text-lg transition-all bg-pink-100 text-pink-700 border border-pink-300";
+            }
+
+            // Render Dot Groups
+            const container = document.getElementById('dot-group-container');
+            container.innerHTML = '';
+
+            for (let i = 0; i < quotient; i++) {
+                const pair = document.createElement('div');
+                pair.className = 'flex items-center gap-1.5 p-2 bg-cyan-900/60 border border-cyan-400/40 rounded-xl';
+                pair.innerHTML = `
+                    <div class="w-5 h-5 bg-cyan-400 rounded-full shadow-[0_0_8px_#22d3ee]"></div>
+                    <div class="w-5 h-5 bg-cyan-400 rounded-full shadow-[0_0_8px_#22d3ee]"></div>
+                `;
+                container.appendChild(pair);
+            }
+
+            if (remainder === 1) {
+                const single = document.createElement('div');
+                single.className = 'flex items-center p-2 bg-pink-900/60 border border-pink-400/40 rounded-xl animate-bounce';
+                single.innerHTML = `<div class="w-5 h-5 bg-pink-500 rounded-full shadow-[0_0_8px_#ec4899]"></div>`;
+                container.appendChild(single);
+            }
+        }
+
+        /* Module 2: Shape Growth Logic */
+        let currentShapeMode = 'triangle';
+
+        function setShapeMode(mode) {
+            currentShapeMode = mode;
+            document.getElementById('btn-mode-triangle').className = mode === 'triangle' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 text-slate-700 hover:bg-slate-300';
+            document.getElementById('btn-mode-bluedots').className = mode === 'bluedots' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 text-slate-700 hover:bg-slate-300';
+            document.getElementById('btn-mode-staircase').className = mode === 'staircase' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 text-slate-700 hover:bg-slate-300';
+            document.getElementById('btn-mode-square').className = mode === 'square' ? 'px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow' : 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 text-slate-700 hover:bg-slate-300';
+
+            const sliderVal = document.getElementById('shape-slider').value;
+            updateShapeModule(sliderVal);
+        }
+
+        function updateShapeModule(val) {
+            const n = parseInt(val);
+            document.getElementById('shape-step-display').innerText = `圖 ${n}`;
+            const svg = document.getElementById('shape-svg');
+            svg.innerHTML = '';
+
+            if (currentShapeMode === 'triangle') {
+                document.getElementById('shape-title').innerText = "連續三角形火柴棒數量";
+                document.getElementById('shape-formula-box').innerText = "火柴棒數量 = 3 + (N - 1) × 2 = 2N + 1";
+                const totalSticks = 2 * n + 1;
+                document.getElementById('shape-explanation').innerHTML = `後一個圖比前一個圖多用 <strong>2 根火柴棒</strong>。`;
+                document.getElementById('shape-count-result').innerText = `圖 ${n} 共有 ${totalSticks} 根火柴棒`;
+
+                // Render matchstick triangles in SVG
+                const startX = 30;
+                const stickLen = 45;
+                for (let i = 0; i < n; i++) {
+                    const x1 = startX + i * stickLen;
+                    const x2 = x1 + stickLen;
+                    const xMid = x1 + stickLen / 2;
+                    const yBase = 150;
+                    const yTop = yBase - Math.sin(Math.PI / 3) * stickLen;
+
+                    // Base stick
+                    appendStick(svg, x1, yBase, x2, yBase);
+                    // Left diagonal
+                    appendStick(svg, x1, yBase, xMid, yTop);
+                    // Right diagonal
+                    appendStick(svg, xMid, yTop, x2, yBase);
+                }
+            } else if (currentShapeMode === 'bluedots') {
+                document.getElementById('shape-title').innerText = "藍點矩陣陣列 (3 的倍數)";
+                document.getElementById('shape-formula-box').innerText = "藍點總數量 = N × 3";
+                const totalDots = n * 3;
+                document.getElementById('shape-explanation').innerHTML = `每增加 1 個圖，就多一排 <strong>3 個藍點</strong>。`;
+                document.getElementById('shape-count-result').innerText = `圖 ${n} 共有 ${totalDots} 個藍點`;
+
+                const colSpacing = 32;
+                const rowSpacing = 28;
+                const startX = 200;
+                const startY = 40;
+
+                for (let r = 0; r < n; r++) {
+                    for (let c = 0; c < 3; c++) {
+                        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        circle.setAttribute("cx", startX + c * colSpacing);
+                        circle.setAttribute("cy", startY + r * rowSpacing);
+                        circle.setAttribute("r", "9");
+                        circle.setAttribute("fill", "#38bdf8");
+                        circle.setAttribute("stroke", "#ffffff");
+                        circle.setAttribute("stroke-width", "2");
+                        svg.appendChild(circle);
+                    }
+                }
+            } else if (currentShapeMode === 'staircase') {
+                document.getElementById('shape-title').innerText = "階梯正方形方塊總數";
+                document.getElementById('shape-formula-box').innerText = "方塊數 = 1 + 2 + ⋯ + N = N×(N+1) ÷ 2";
+                const totalBlocks = (n * (n + 1)) / 2;
+                document.getElementById('shape-explanation').innerHTML = `後一個圖比前一個圖多 <strong>${n} 個正方形</strong>。`;
+                document.getElementById('shape-count-result').innerText = `圖 ${n} 共有 ${totalBlocks} 個正方形`;
+
+                const size = 25;
+                for (let col = 0; col < n; col++) {
+                    for (let row = 0; row <= col; row++) {
+                        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                        rect.setAttribute("x", 50 + col * (size + 4));
+                        rect.setAttribute("y", 160 - row * (size + 4));
+                        rect.setAttribute("width", size);
+                        rect.setAttribute("height", size);
+                        rect.setAttribute("fill", "#38bdf8");
+                        rect.setAttribute("stroke", "#ffffff");
+                        rect.setAttribute("stroke-width", "2");
+                        rect.setAttribute("rx", "4");
+                        svg.appendChild(rect);
+                    }
+                }
+            } else {
+                document.getElementById('shape-title').innerText = "棋子正方形點陣數量";
+                document.getElementById('shape-formula-box').innerText = "棋子數量 = N × N = N²";
+                const totalDots = n * n;
+                document.getElementById('shape-explanation').innerHTML = `每邊多 1 個棋子，總數為邊長的<strong>平方數</strong>。`;
+                document.getElementById('shape-count-result').innerText = `圖 ${n} 共有 ${totalDots} 個棋子`;
+
+                const spacing = 26;
+                for (let r = 0; r < n; r++) {
+                    for (let c = 0; c < n; c++) {
+                        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        circle.setAttribute("cx", 100 + c * spacing);
+                        circle.setAttribute("cy", 50 + r * spacing);
+                        circle.setAttribute("r", "9");
+                        circle.setAttribute("fill", "#f43f5e");
+                        circle.setAttribute("stroke", "#ffffff");
+                        circle.setAttribute("stroke-width", "2");
+                        svg.appendChild(circle);
+                    }
+                }
+            }
+        }
+
+        function appendStick(svg, x1, y1, x2, y2) {
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", x1);
+            line.setAttribute("y1", y1);
+            line.setAttribute("x2", x2);
+            line.setAttribute("y2", y2);
+            line.setAttribute("stroke", "#f59e0b");
+            line.setAttribute("stroke-width", "6");
+            line.setAttribute("stroke-linecap", "round");
+            svg.appendChild(line);
+
+            // Match head
+            const head = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            head.setAttribute("cx", x1);
+            head.setAttribute("cy", y1);
+            head.setAttribute("r", "4");
+            head.setAttribute("fill", "#ef4444");
+            svg.appendChild(head);
+        }
+
+        /* Module 3: Pattern Rotation Logic */
+        let currentAngle = 0;
+        let rotateStep = 1;
+        let rotateSequence = [0];
+
+        function updateRotateSequenceDisplay() {
+            const container = document.getElementById('rotate-sequence-container');
+            const badge = document.getElementById('sequence-count-badge');
+            if (!container || !badge) return;
+
+            container.innerHTML = '';
+            badge.innerText = `已收集 ${rotateSequence.length} / 8`;
+
+            rotateSequence.forEach((angle, idx) => {
+                const item = document.createElement('div');
+                item.className = 'flex flex-col items-center bg-white/10 p-2 rounded-xl border border-white/20 w-full animate-fadeIn';
+                
+                const mod = ((angle / 90) % 4 + 4) % 4;
+                const arrows = ['▲', '▶', '▼', '◀'];
+                
+                item.innerHTML = `
+                    <span class="text-[10px] text-cyan-300 font-bold mb-1">第 ${idx + 1} 個</span>
+                    <svg class="w-10 h-10 transition-transform duration-300" style="transform: rotate(${angle}deg)" viewBox="0 0 100 100">
+                        <rect x="5" y="5" width="90" height="90" fill="none" stroke="#fff" stroke-width="4" rx="10"/>
+                        <polygon points="50,15 85,80 15,80" fill="#ec4899" />
+                    </svg>
+                    <span class="text-[10px] text-pink-200 font-bold mt-1">${arrows[mod]}</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function rotateNext() {
+            if (rotateSequence.length >= 8) return;
+
+            currentAngle += 90;
+            rotateStep++;
+            rotateSequence.push(currentAngle);
+
+            document.getElementById('rotate-count').innerText = rotateStep;
+
+            const triangleSvg = document.getElementById('rotating-triangle-svg');
+            if (triangleSvg) triangleSvg.style.transform = `rotate(${currentAngle}deg)`;
+
+            const nextSvg = document.getElementById('next-triangle-svg');
+            if (nextSvg) nextSvg.style.transform = `rotate(${currentAngle + 90}deg)`;
+
+            updateRotateSequenceDisplay();
+
+            const btn = document.getElementById('btn-rotate');
+            if (btn && rotateSequence.length >= 8) {
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function resetRotate() {
+            currentAngle = 0;
+            rotateStep = 1;
+            rotateSequence = [0];
+
+            document.getElementById('rotate-count').innerText = 1;
+
+            const triangleSvg = document.getElementById('rotating-triangle-svg');
+            if (triangleSvg) triangleSvg.style.transform = `rotate(0deg)`;
+
+            const nextSvg = document.getElementById('next-triangle-svg');
+            if (nextSvg) nextSvg.style.transform = `rotate(90deg)`;
+
+            const btn = document.getElementById('btn-rotate');
+            if (btn) btn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            updateRotateSequenceDisplay();
+        }
+
+        /* Quiz Toggle button for Q2 */
+        function toggleNumTag(btn, val) {
+            const currentTag = btn.getAttribute('data-tag');
+            const iconSpan = btn.querySelector('.tag-icon');
+
+            if (currentTag === 'none') {
+                btn.setAttribute('data-tag', 'even');
+                btn.className = "q2-btn px-5 py-3 bg-blue-100 text-blue-800 rounded-xl font-bold border-2 border-blue-400";
+                iconSpan.innerText = "(偶數 △)";
+            } else if (currentTag === 'even') {
+                btn.setAttribute('data-tag', 'odd');
+                btn.className = "q2-btn px-5 py-3 bg-pink-100 text-pink-800 rounded-xl font-bold border-2 border-pink-400";
+                iconSpan.innerText = "(奇數 ○)";
+            } else {
+                btn.setAttribute('data-tag', 'none');
+                btn.className = "q2-btn px-5 py-3 bg-slate-100 rounded-xl font-bold border border-slate-300 hover:bg-slate-200";
+                iconSpan.innerText = "(-)";
+            }
+        }
+
+        /* Quiz Validation & Scoring */
+        function submitQuiz() {
+            let score = 0;
+
+            // Q1 Validation (19, 111, 55)
+            const q1_1 = parseInt(document.getElementById('q1-1').value);
+            const q1_2 = parseInt(document.getElementById('q1-2').value);
+            const q1_3 = parseInt(document.getElementById('q1-3').value);
+            const fb1 = document.getElementById('feedback-q1');
+            fb1.classList.remove('hidden');
+
+            if (q1_1 === 19 && q1_2 === 111 && q1_3 === 55) {
+                score += 20;
+                fb1.className = "text-sm p-3 rounded-xl font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                fb1.innerHTML = "✅ 完全正確！(1)每次少2 ➔ 19  (2)每次多2 ➔ 111  (3)每次多11 ➔ 55";
+            } else {
+                fb1.className = "text-sm p-3 rounded-xl font-bold bg-rose-100 text-rose-800 border border-rose-300";
+                fb1.innerHTML = "❌ 答錯囉！提示：(1)遞減2  (2)遞增2  (3)11的倍數。正確答案為 19, 111, 55。";
+            }
+
+            // Q2 Validation (16,18,52 -> even; 37,45,63 -> odd)
+            const buttons = document.querySelectorAll('.q2-btn');
+            let q2Correct = true;
+            buttons.forEach(btn => {
+                const val = parseInt(btn.getAttribute('data-val'));
+                const tag = btn.getAttribute('data-tag');
+                if ((val === 16 || val === 18 || val === 52) && tag !== 'even') q2Correct = false;
+                if ((val === 37 || val === 45 || val === 63) && tag !== 'odd') q2Correct = false;
+            });
+
+            const fb2 = document.getElementById('feedback-q2');
+            fb2.classList.remove('hidden');
+            if (q2Correct) {
+                score += 20;
+                fb2.className = "text-sm p-3 rounded-xl font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                fb2.innerHTML = "✅ 完全正確！16, 18, 52為偶數(△)；37, 45, 63為奇數(○)。";
+            } else {
+                fb2.className = "text-sm p-3 rounded-xl font-bold bg-rose-100 text-rose-800 border border-rose-300";
+                fb2.innerHTML = "❌ 標籤有誤喔！請檢查個位數：0,2,4,6,8為偶數(△)；1,3,5,7,9為奇數(○)。";
+            }
+
+            // Q3 Validation (7)
+            const q3Selected = document.querySelector('input[name="q3"]:checked');
+            const fb3 = document.getElementById('feedback-q3');
+            fb3.classList.remove('hidden');
+            if (q3Selected && q3Selected.value === "7") {
+                score += 15;
+                fb3.className = "text-sm p-3 rounded-xl font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                fb3.innerHTML = "✅ 正確！每次增加 2 個平行四邊形 (1 ➔ 3 ➔ 5 ➔ 7)。";
+            } else {
+                fb3.className = "text-sm p-3 rounded-xl font-bold bg-rose-100 text-rose-800 border border-rose-300";
+                fb3.innerHTML = "❌ 答錯囉！後一個圖比前一個圖多 2 個，5 + 2 = 7 個。";
+            }
+
+            // Q4 Validation (12)
+            const q4Val = parseInt(document.getElementById('q4').value);
+            const fb4 = document.getElementById('feedback-q4');
+            fb4.classList.remove('hidden');
+            if (q4Val === 12) {
+                score += 15;
+                fb4.className = "text-sm p-3 rounded-xl font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                fb4.innerHTML = "✅ 正確！圓點數為 3 的倍數 (3×4 = 12 個)。";
+            } else {
+                fb4.className = "text-sm p-3 rounded-xl font-bold bg-rose-100 text-rose-800 border border-rose-300";
+                fb4.innerHTML = "❌ 答錯囉！圖4 的圓點數量是 3 × 4 = 12 個。";
+            }
+
+            // Q5 Validation (25)
+            const q5Selected = document.querySelector('input[name="q5"]:checked');
+            const fb5 = document.getElementById('feedback-q5');
+            fb5.classList.remove('hidden');
+            if (q5Selected && q5Selected.value === "25") {
+                score += 15;
+                fb5.className = "text-sm p-3 rounded-xl font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                fb5.innerHTML = "✅ 正確！圖 5 為 5×5 = 25 個棋子。";
+            } else {
+                fb5.className = "text-sm p-3 rounded-xl font-bold bg-rose-100 text-rose-800 border border-rose-300";
+                fb5.innerHTML = "❌ 答錯囉！正方形棋子排列邊長為5，總數為 5×5 = 25。";
+            }
+
+            // Q6 Validation ("up")
+            const q6Selected = document.querySelector('input[name="q6"]:checked');
+            const fb6 = document.getElementById('feedback-q6');
+            fb6.classList.remove('hidden');
+            if (q6Selected && q6Selected.value === "up") {
+                score += 15;
+                fb6.className = "text-sm p-3 rounded-xl font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                fb6.innerHTML = "✅ 正確！9 ÷ 4 = 2⋯1 (餘數為1)，與第 1 個圖案相同（朝上 ▲）。";
+            } else {
+                fb6.className = "text-sm p-3 rounded-xl font-bold bg-rose-100 text-rose-800 border border-rose-300";
+                fb6.innerHTML = "❌ 答錯囉！週期為 4，9 除以 4 餘數是 1，所以方向與第 1 個圖案相同（朝上 ▲）。";
+            }
+
+            // Update Total Score Display
+            document.getElementById('current-score').innerText = score;
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        // Initialize on window load
+        window.onload = function() {
+            initStars();
+            updateEvenOddModule(13);
+            updateShapeModule(3);
+            resetRotate();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分數的大小比較與合成 - 互動探究學習網</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        shinkai: {
+                            sky: '#2b5876',
+                            dusk: '#4e4376',
+                            sunset: '#ff7e5f',
+                            peach: '#feb47b',
+                            cloud: '#f8fafc',
+                            accent: '#38ef7d'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 新海誠動漫風格光影背景 */
+        body {
+            background: linear-gradient(160deg, #1a2a6c 0%, #275d8b 30%, #6e457e 65%, #c56181 85%, #fed1a2 100%);
+            background-attachment: fixed;
+            font-family: 'Noto Sans TC', sans-serif;
+            color: #2d3748;
+            min-height: 100vh;
+        }
+
+        /* 夢幻雲朵與光芒裝飾 */
+        .shinkai-glow {
+            box-shadow: 0 10px 30px -5px rgba(255, 255, 255, 0.3), 0 0 20px rgba(255, 200, 150, 0.2);
+        }
+
+        /* 玻璃擬物化面板 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .glass-card-dark {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* 自訂滑桿樣式 */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 5px;
+            border: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -7px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        /* 分數數學符號直式樣式 */
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            padding: 0 4px;
+            font-weight: bold;
+        }
+        .fraction .numerator {
+            border-bottom: 2px solid currentColor;
+            padding-bottom: 1px;
+        }
+        .fraction .denominator {
+            padding-top: 1px;
+        }
+
+        /* 動畫效果 */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.03); }
+        }
+        .animate-pulse-glow {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="p-3 md:p-6 text-slate-800">
+
+    <!-- 閒雲數學小棧 Logo 與標頭 -->
+    <div class="w-full max-w-5xl mx-auto flex items-center justify-start mb-4 px-2 fade-in">
+        <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+        <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+    </div>
+
+    <!-- 頂部標題區 -->
+    <header class="max-w-5xl mx-auto mb-6 text-center text-white relative">
+        <h1 class="text-3xl md:text-4xl font-black tracking-wide drop-shadow-md bg-clip-text text-transparent bg-gradient-to-r from-amber-200 via-white to-sky-200">
+            8-3 分數的大小比較與合成
+        </h1>
+        <p class="text-xs md:text-sm text-sky-100 mt-2 font-light max-w-xl mx-auto drop-shadow">
+            滑動控制項觀察蛋糕與披薩的等分變化，發現同分母與異分母比較的小秘密！
+        </p>
+    </header>
+
+    <!-- 主要內容區 -->
+    <main class="max-w-5xl mx-auto space-y-8">
+
+        <!-- 導覽頁籤 -->
+        <div class="flex justify-center space-x-2 md:space-x-4 bg-black/20 p-1.5 rounded-2xl backdrop-blur-md max-w-xl mx-auto">
+            <button id="tab1-btn" onclick="switchTab(1)" class="flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 bg-white text-slate-800 shadow-md">
+                <i class="fa-solid fa-cookie-bite mr-1 text-amber-500"></i> 單元 1：同分母蛋糕比較
+            </button>
+            <button id="tab2-btn" onclick="switchTab(2)" class="flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 text-white hover:bg-white/10">
+                <i class="fa-solid fa-pizza-slice mr-1 text-red-400"></i> 單元 2：披薩分割探究
+            </button>
+            <button id="tab3-btn" onclick="switchTab(3)" class="flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 text-white hover:bg-white/10">
+                <i class="fa-solid fa-pen-to-square mr-1 text-emerald-400"></i> 隨堂測驗 (5題)
+            </button>
+        </div>
+
+        <!-- 單元 1：連續量同分母比較（蛋糕條） -->
+        <section id="section1" class="glass-card rounded-3xl p-5 md:p-8 shadow-2xl transition-all duration-500">
+            <div class="flex items-center space-x-3 mb-6 border-b border-slate-200/80 pb-4">
+                <div class="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-black text-xl shadow-lg">1</div>
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold text-slate-800">同分母分數比較（瑞士卷蛋糕）</h2>
+                    <p class="text-xs text-slate-500">分母相同時，分子越大，代表拿到的單位分數越「多」，分數就越「大」。</p>
+                </div>
+            </div>
+
+            <!-- 控制面板區 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- 皮皮的蛋糕 -->
+                <div class="bg-gradient-to-br from-orange-50 to-amber-50 p-5 rounded-2xl border border-amber-200/60 shadow-sm">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="font-bold text-slate-700 flex items-center text-base">
+                            <i class="fa-solid fa-face-smile text-amber-500 mr-2 text-xl"></i> 皮皮吃的蛋糕
+                        </span>
+                        <div class="text-xl font-black text-amber-600">
+                            <span class="fraction"><span class="numerator" id="pipi-num-text">4</span><span class="denominator" id="pipi-den-text">6</span></span> 條
+                        </div>
+                    </div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">調整皮皮吃的塊數（分子）：</label>
+                    <input type="range" id="pipi-slider" min="0" max="6" value="4" oninput="updateCakeComparison()">
+                    <div class="text-xs text-slate-500 mt-2 bg-white/80 p-2 rounded-lg border border-amber-100">
+                        相當於 <span id="pipi-count-text" class="font-bold text-amber-600">4</span> 個 
+                        <span class="fraction text-xs"><span class="numerator">1</span><span class="denominator" id="pipi-unit-den">6</span></span> 條蛋糕
+                    </div>
+                </div>
+
+                <!-- 丹丹的蛋糕 -->
+                <div class="bg-gradient-to-br from-sky-50 to-blue-50 p-5 rounded-2xl border border-sky-200/60 shadow-sm">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="font-bold text-slate-700 flex items-center text-base">
+                            <i class="fa-solid fa-face-laugh-beam text-sky-500 mr-2 text-xl"></i> 丹丹吃的蛋糕
+                        </span>
+                        <div class="text-xl font-black text-sky-600">
+                            <span class="fraction"><span class="numerator" id="dandan-num-text">2</span><span class="denominator" id="dandan-den-text">6</span></span> 條
+                        </div>
+                    </div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">調整丹丹吃的塊數（分子）：</label>
+                    <input type="range" id="dandan-slider" min="0" max="6" value="2" oninput="updateCakeComparison()">
+                    <div class="text-xs text-slate-500 mt-2 bg-white/80 p-2 rounded-lg border border-sky-100">
+                        相當於 <span id="dandan-count-text" class="font-bold text-sky-600">2</span> 個 
+                        <span class="fraction text-xs"><span class="numerator">1</span><span class="denominator" id="dandan-unit-den">6</span></span> 條蛋糕
+                    </div>
+                </div>
+            </div>
+
+            <!-- 全局分母控制 -->
+            <div class="bg-slate-100/80 p-4 rounded-2xl mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <span class="font-bold text-xs md:text-sm text-slate-700 flex items-center">
+                    <i class="fa-solid fa-sliders text-indigo-500 mr-2"></i> 設定蛋糕平分成幾等份（分母）：
+                </span>
+                <div class="flex items-center space-x-3 w-full md:w-1/2">
+                    <span class="text-xs font-bold text-slate-500">2</span>
+                    <input type="range" id="cake-den-slider" min="2" max="12" value="6" oninput="changeCakeDenominator()">
+                    <span class="text-xs font-bold text-slate-500">12</span>
+                    <span id="cake-den-val" class="font-black text-indigo-600 bg-white px-3 py-1 rounded-lg border shadow-sm">6 等份</span>
+                </div>
+            </div>
+
+            <!-- 動態 SVG 蛋糕展示區域 -->
+            <div class="space-y-6 bg-white/90 p-6 rounded-2xl border border-slate-100 shadow-inner">
+                <div>
+                    <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                        <span>皮皮的瑞士卷：</span>
+                        <span id="pipi-svg-label">4 / 6</span>
+                    </div>
+                    <div id="pipi-cake-container" class="w-full h-16 bg-slate-100 rounded-xl overflow-hidden shadow-inner flex p-1 gap-1 border border-amber-200">
+                        <!-- SVG / HTML 蛋糕塊動態渲染 -->
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                        <span>丹丹的瑞士卷：</span>
+                        <span id="dandan-svg-label">2 / 6</span>
+                    </div>
+                    <div id="dandan-cake-container" class="w-full h-16 bg-slate-100 rounded-xl overflow-hidden shadow-inner flex p-1 gap-1 border border-sky-200">
+                        <!-- SVG / HTML 蛋糕塊動態渲染 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 即時比較結果卡片 -->
+            <div id="cake-result-card" class="mt-6 p-5 rounded-2xl bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-4">
+                    <div id="result-icon" class="text-4xl bg-white/20 p-3 rounded-2xl backdrop-blur-md">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs text-amber-100 uppercase font-semibold">即時探究結論</div>
+                        <div id="cake-result-text" class="text-lg md:text-xl font-black">
+                            皮皮吃的蛋糕比較多！
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white/20 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/30 text-center">
+                    <span class="text-xs block text-slate-100 mb-0.5">數學算式記錄</span>
+                    <span id="cake-math-expr" class="text-2xl font-black tracking-widest">
+                        <span class="fraction"><span class="numerator">4</span><span class="denominator">6</span></span> 
+                        &gt; 
+                        <span class="fraction"><span class="numerator">2</span><span class="denominator">6</span></span>
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 單元 2：同分子異分母比較（披薩分割） -->
+        <section id="section2" class="glass-card rounded-3xl p-5 md:p-8 shadow-2xl hidden transition-all duration-500">
+            <div class="flex items-center space-x-3 mb-6 border-b border-slate-200/80 pb-4">
+                <div class="w-10 h-10 rounded-2xl bg-rose-500 text-white flex items-center justify-center font-black text-xl shadow-lg">2</div>
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold text-slate-800">同分子異分母比較（披薩切切看）</h2>
+                    <p class="text-xs text-slate-500">同一個披薩，平分成越少塊（分母越小），每一塊就「越大」！</p>
+                </div>
+            </div>
+
+            <!-- 控制列：吃了幾塊（同分子） -->
+            <div class="bg-gradient-to-r from-rose-500 to-orange-500 text-white p-5 rounded-2xl mb-8 shadow-lg">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div>
+                        <div class="text-xs text-rose-100 font-bold uppercase">固定吃的塊數（分子相同）</div>
+                        <div class="text-xl font-black">大家人都吃了 <span id="shared-num-val" class="text-3xl text-yellow-300 mx-1">3</span> 塊披薩</div>
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-xs font-semibold mb-1">拉動調整大家吃了幾塊：</label>
+                        <input type="range" id="shared-num-slider" min="1" max="4" value="3" oninput="updatePizzaComparison()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 兩張披薩比較面板 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- 披薩 A -->
+                <div class="bg-white/80 p-5 rounded-2xl border border-rose-100 shadow-md flex flex-col items-center">
+                    <div class="w-full flex justify-between items-center mb-4">
+                        <span class="font-bold text-slate-700"><i class="fa-solid fa-pizza-slice text-rose-500 mr-1"></i> 美美（切成 4 等份）</span>
+                        <span class="text-lg font-black text-rose-600">
+                            <span class="fraction"><span class="numerator" id="pizzaA-num">3</span><span class="denominator" id="pizzaA-den">4</span></span> 個
+                        </span>
+                    </div>
+                    <!-- SVG 披薩 A -->
+                    <div class="relative my-2">
+                        <svg id="pizzaA-svg" width="200" height="200" viewBox="0 0 200 200" class="drop-shadow-md"></svg>
+                    </div>
+                    <div class="w-full mt-4 bg-rose-50 p-3 rounded-xl text-xs text-slate-600 space-y-1">
+                        <div>• 每一等份是：<span class="fraction font-bold text-rose-600"><span class="numerator">1</span><span class="denominator" id="pizzaA-unit-den">4</span></span> 個披薩</div>
+                        <div>• 每一塊的大小：<span class="font-bold text-rose-600">較大 🍕</span></div>
+                    </div>
+                </div>
+
+                <!-- 披薩 B -->
+                <div class="bg-white/80 p-5 rounded-2xl border border-indigo-100 shadow-md flex flex-col items-center">
+                    <div class="w-full flex justify-between items-center mb-4">
+                        <span class="font-bold text-slate-700"><i class="fa-solid fa-pizza-slice text-indigo-500 mr-1"></i> 多多（切成 8 等份）</span>
+                        <span class="text-lg font-black text-indigo-600">
+                            <span class="fraction"><span class="numerator" id="pizzaB-num">3</span><span class="denominator" id="pizzaB-den">8</span></span> 個
+                        </span>
+                    </div>
+                    <!-- SVG 披薩 B -->
+                    <div class="relative my-2">
+                        <svg id="pizzaB-svg" width="200" height="200" viewBox="0 0 200 200" class="drop-shadow-md"></svg>
+                    </div>
+                    <div class="w-full mt-4 bg-indigo-50 p-3 rounded-xl text-xs text-slate-600 space-y-1">
+                        <div>• 每一等份是：<span class="fraction font-bold text-indigo-600"><span class="numerator">1</span><span class="denominator" id="pizzaB-unit-den">8</span></span> 個披薩</div>
+                        <div>• 每一塊的大小：<span class="font-bold text-indigo-600">較小 🍕</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 動態結論提示 -->
+            <div class="bg-gradient-to-br from-indigo-900 to-purple-900 text-white p-6 rounded-2xl shadow-xl">
+                <div class="flex items-start space-x-4">
+                    <div class="text-3xl text-amber-300 mt-1"><i class="fa-solid fa-lightbulb"></i></div>
+                    <div>
+                        <h3 class="text-lg font-bold text-amber-200 mb-1">觀察與觀念歸納：</h3>
+                        <p id="pizza-summary-text" class="text-sm text-slate-200 leading-relaxed">
+                            美美和多多都吃了 3 等份，但是美美的披薩只切成 4 塊，多多的披薩切成了 8 塊。<br>
+                            因為 <span class="fraction"><span class="numerator">1</span><span class="denominator">4</span></span> &gt; <span class="fraction"><span class="numerator">1</span><span class="denominator">8</span></span>，所以美美吃的披薩比較多！
+                        </p>
+                        <div class="mt-4 pt-3 border-t border-white/20 text-xl font-black text-center text-amber-300">
+                            <span class="fraction"><span class="numerator" id="summary-num1">3</span><span class="denominator">4</span></span> 
+                            &gt; 
+                            <span class="fraction"><span class="numerator" id="summary-num2">3</span><span class="denominator">8</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 單元 3：歷程性評量測驗 (5 題) -->
+        <section id="section3" class="glass-card rounded-3xl p-5 md:p-8 shadow-2xl hidden transition-all duration-500">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-200/80 pb-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-black text-xl shadow-lg">3</div>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-800">觀念小挑戰 (歷程評量)</h2>
+                        <p class="text-xs text-slate-500">回答 5 道題目，立即檢視學習成效！</p>
+                    </div>
+                </div>
+                <!-- 得分顯示 -->
+                <div class="bg-emerald-100 text-emerald-800 px-4 py-2 rounded-2xl font-black text-sm flex items-center shadow-sm">
+                    <i class="fa-solid fa-star text-amber-500 mr-2"></i> 得分：<span id="quiz-score" class="text-xl ml-1">0</span> / 100
+                </div>
+            </div>
+
+            <!-- 測驗題目容器 -->
+            <div id="quiz-container" class="space-y-6">
+                <!-- 由 JavaScript 自動產生題目卡片 -->
+            </div>
+
+            <!-- 測驗完成獎勵 Modal / Panel -->
+            <div id="quiz-complete-panel" class="hidden mt-8 p-6 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-center shadow-2xl animate-pulse-glow">
+                <i class="fa-solid fa-trophy text-5xl text-yellow-300 mb-3"></i>
+                <h3 class="text-2xl font-black mb-2">太棒了！完成評量挑戰！</h3>
+                <p id="quiz-final-eval" class="text-sm text-emerald-100 mb-4">你已經順利掌握同分母與異分母分數大小比較的觀念囉！</p>
+                <button onclick="resetQuiz()" class="bg-white text-teal-800 font-bold px-6 py-2.5 rounded-xl shadow-md hover:bg-emerald-50 transition">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> 再挑戰一次
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 頁尾 -->
+    <footer class="max-w-5xl mx-auto mt-12 text-center text-xs text-white/70 pb-8">
+    </footer>
+
+    <script>
+        /* ----------------------------------------------------
+           1. 頁籤切換邏輯
+        ---------------------------------------------------- */
+        function switchTab(tabIndex) {
+            const tabs = [1, 2, 3];
+            tabs.forEach(i => {
+                const sec = document.getElementById(`section${i}`);
+                const btn = document.getElementById(`tab${i}-btn`);
+                if (i === tabIndex) {
+                    sec.classList.remove('hidden');
+                    btn.className = "flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 bg-white text-slate-800 shadow-md";
+                } else {
+                    sec.classList.add('hidden');
+                    btn.className = "flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 text-white hover:bg-white/10";
+                }
+            });
+        }
+
+        /* ----------------------------------------------------
+           2. 單元 1：蛋糕比較邏輯 (Cake Comparison)
+        ---------------------------------------------------- */
+        let cakeDen = 6;
+
+        function changeCakeDenominator() {
+            cakeDen = parseInt(document.getElementById('cake-den-slider').value);
+            document.getElementById('cake-den-val').innerText = `${cakeDen} 等份`;
+
+            // 更新皮皮與丹丹滑桿最大值
+            const pipiSlider = document.getElementById('pipi-slider');
+            const dandanSlider = document.getElementById('dandan-slider');
+            pipiSlider.max = cakeDen;
+            dandanSlider.max = cakeDen;
+
+            if (parseInt(pipiSlider.value) > cakeDen) pipiSlider.value = cakeDen;
+            if (parseInt(dandanSlider.value) > cakeDen) dandanSlider.value = cakeDen;
+
+            updateCakeComparison();
+        }
+
+        function updateCakeComparison() {
+            const pipiVal = parseInt(document.getElementById('pipi-slider').value);
+            const dandanVal = parseInt(document.getElementById('dandan-slider').value);
+
+            // 更新文字顯示
+            document.getElementById('pipi-num-text').innerText = pipiVal;
+            document.getElementById('pipi-den-text').innerText = cakeDen;
+            document.getElementById('pipi-count-text').innerText = pipiVal;
+            document.getElementById('pipi-unit-den').innerText = cakeDen;
+            document.getElementById('pipi-svg-label').innerText = `${pipiVal} / ${cakeDen}`;
+
+            document.getElementById('dandan-num-text').innerText = dandanVal;
+            document.getElementById('dandan-den-text').innerText = cakeDen;
+            document.getElementById('dandan-count-text').innerText = dandanVal;
+            document.getElementById('dandan-unit-den').innerText = cakeDen;
+            document.getElementById('dandan-svg-label').innerText = `${dandanVal} / ${cakeDen}`;
+
+            // 渲染蛋糕視圖
+            renderCakeContainer('pipi-cake-container', pipiVal, cakeDen, '#f59e0b', '#fef3c7');
+            renderCakeContainer('dandan-cake-container', dandanVal, cakeDen, '#0284c7', '#e0f2fe');
+
+            // 比較與更新算式
+            const exprBox = document.getElementById('cake-math-expr');
+            const resultText = document.getElementById('cake-result-text');
+            const resultIcon = document.getElementById('result-icon');
+
+            let symbol = '=';
+            if (pipiVal > dandanVal) {
+                symbol = '>';
+                resultText.innerText = `皮皮吃的蛋糕比較多！ (${pipiVal}/${cakeDen} > ${dandanVal}/${cakeDen})`;
+                resultIcon.innerHTML = `<i class="fa-solid fa-face-smile text-amber-300"></i>`;
+            } else if (pipiVal < dandanVal) {
+                symbol = '<';
+                resultText.innerText = `丹丹吃的蛋糕比較多！ (${pipiVal}/${cakeDen} < ${dandanVal}/${cakeDen})`;
+                resultIcon.innerHTML = `<i class="fa-solid fa-face-laugh-beam text-sky-300"></i>`;
+            } else {
+                symbol = '=';
+                resultText.innerText = `皮皮和丹丹吃得一樣多！ (${pipiVal}/${cakeDen} = ${dandanVal}/${cakeDen})`;
+                resultIcon.innerHTML = `<i class="fa-solid fa-handshake text-emerald-300"></i>`;
+            }
+
+            exprBox.innerHTML = `
+                <span class="fraction"><span class="numerator">${pipiVal}</span><span class="denominator">${cakeDen}</span></span> 
+                <span class="mx-2 text-yellow-300 font-extrabold">${symbol}</span> 
+                <span class="fraction"><span class="numerator">${dandanVal}</span><span class="denominator">${cakeDen}</span></span>
+            `;
+        }
+
+        function renderCakeContainer(containerId, activeCount, totalCount, activeColor, inactiveColor) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            for (let i = 0; i < totalCount; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'h-full flex-1 rounded-lg transition-all duration-300 flex items-center justify-center font-bold text-xs relative overflow-hidden border border-black/10';
+                
+                if (i < activeCount) {
+                    piece.style.backgroundColor = activeColor;
+                    piece.style.color = '#ffffff';
+                    piece.innerHTML = `<span class="opacity-90 drop-shadow"><i class="fa-solid fa-cookie"></i></span>`;
+                } else {
+                    piece.style.backgroundColor = inactiveColor;
+                    piece.style.color = '#94a3b8';
+                    piece.innerHTML = `<span class="opacity-40 text-[10px]">${i+1}</span>`;
+                }
+                container.appendChild(piece);
+            }
+        }
+
+        /* ----------------------------------------------------
+           3. 單元 2：披薩分割邏輯 (Pizza Comparison SVG)
+        ---------------------------------------------------- */
+        function updatePizzaComparison() {
+            const sharedNum = parseInt(document.getElementById('shared-num-slider').value);
+            document.getElementById('shared-num-val').innerText = sharedNum;
+
+            document.getElementById('pizzaA-num').innerText = sharedNum;
+            document.getElementById('pizzaB-num').innerText = sharedNum;
+            document.getElementById('summary-num1').innerText = sharedNum;
+            document.getElementById('summary-num2').innerText = sharedNum;
+
+            // 繪製 SVG 披薩
+            drawPizzaSVG('pizzaA-svg', 4, sharedNum, '#f43f5e');
+            drawPizzaSVG('pizzaB-svg', 8, sharedNum, '#6366f1');
+
+            // 觀念摘要更新
+            const summary = document.getElementById('pizza-summary-text');
+            summary.innerHTML = `
+                美美和多多都吃了 <strong>${sharedNum}</strong> 塊披薩。<br>
+                美美將披薩切成 <strong>4</strong> 等份，每一塊是 <span class="fraction"><span class="numerator">1</span><span class="denominator">4</span></span> 個披薩；<br>
+                多多將披薩切成 <strong>8</strong> 等份，每一塊是 <span class="fraction"><span class="numerator">1</span><span class="denominator">8</span></span> 個披薩。<br>
+                因為切割份數越少，單塊面積越大（<span class="fraction"><span class="numerator">1</span><span class="denominator">4</span></span> &gt; <span class="fraction"><span class="numerator">1</span><span class="denominator">8</span></span>），所以吃的總量是美美比較多！
+            `;
+        }
+
+        function drawPizzaSVG(svgId, totalSlices, eatenSlices, activeColor) {
+            const svg = document.getElementById(svgId);
+            svg.innerHTML = '';
+            const cx = 100, cy = 100, r = 85;
+
+            // 繪製披薩底盤圓圈
+            const bgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            bgCircle.setAttribute('cx', cx);
+            bgCircle.setAttribute('cy', cy);
+            bgCircle.setAttribute('r', r);
+            bgCircle.setAttribute('fill', '#fef3c7');
+            bgCircle.setAttribute('stroke', '#d97706');
+            bgCircle.setAttribute('stroke-width', '4');
+            svg.appendChild(bgCircle);
+
+            const sliceAngle = (2 * Math.PI) / totalSlices;
+
+            for (let i = 0; i < totalSlices; i++) {
+                const startAngle = i * sliceAngle - Math.PI / 2;
+                const endAngle = (i + 1) * sliceAngle - Math.PI / 2;
+
+                const x1 = cx + r * Math.cos(startAngle);
+                const y1 = cy + r * Math.sin(startAngle);
+                const x2 = cx + r * Math.cos(endAngle);
+                const y2 = cy + r * Math.sin(endAngle);
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const d = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2} Z`;
+                path.setAttribute('d', d);
+
+                if (i < eatenSlices) {
+                    path.setAttribute('fill', activeColor);
+                    path.setAttribute('stroke', '#ffffff');
+                    path.setAttribute('stroke-width', '2');
+                    path.setAttribute('opacity', '0.9');
+                } else {
+                    path.setAttribute('fill', '#f1f5f9');
+                    path.setAttribute('stroke', '#cbd5e1');
+                    path.setAttribute('stroke-width', '1.5');
+                }
+                svg.appendChild(path);
+
+                // 加上切線 divider
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', cx);
+                line.setAttribute('y1', cy);
+                line.setAttribute('x2', x1);
+                line.setAttribute('y2', y1);
+                line.setAttribute('stroke', '#b45309');
+                line.setAttribute('stroke-width', '1.5');
+                svg.appendChild(line);
+            }
+        }
+
+        /* ----------------------------------------------------
+           4. 單元 3：隨堂測驗題目資料與邏輯
+        ---------------------------------------------------- */
+        const quizData = [
+            {
+                id: 1,
+                question: "1條蛋糕平分成 6 等份，皮皮吃了 <span class='fraction'><span class='numerator'>4</span><span class='denominator'>6</span></span> 條，丹丹吃了 <span class='fraction'><span class='numerator'>2</span><span class='denominator'>6</span></span> 條，誰吃的蛋糕比較多？",
+                options: ["皮皮", "丹丹", "一樣多", "無法比較"],
+                answer: 0,
+                explanation: "分母都是 6 時，分子 4 大於 2，所以皮皮吃的 4/6 條比丹丹的 2/6 條多！"
+            },
+            {
+                id: 2,
+                question: "一張郵票平分成 8 枚，7 個 <span class='fraction'><span class='numerator'>1</span><span class='denominator'>8</span></span> 張大張郵票，合起來是多少張郵票？",
+                options: [
+                    "<span class='fraction'><span class='numerator'>1</span><span class='denominator'>8</span></span> 張",
+                    "<span class='fraction'><span class='numerator'>6</span><span class='denominator'>8</span></span> 張",
+                    "<span class='fraction'><span class='numerator'>7</span><span class='denominator'>8</span></span> 張",
+                    "7 張"
+                ],
+                answer: 2,
+                explanation: "7 個 1/8 合起來就是 7/8 張郵票。"
+            },
+            {
+                id: 3,
+                question: "美美和多多各有一個大小相同的披薩。美美吃了 <span class='fraction'><span class='numerator'>3</span><span class='denominator'>4</span></span> 個，多多吃了 <span class='fraction'><span class='numerator'>3</span><span class='denominator'>8</span></span> 個，誰吃的披薩比較多？",
+                options: ["美美", "多多", "一樣多", "不一定"],
+                answer: 0,
+                explanation: "分子相同（都是 3 塊）時，分母越小代表每一塊越大。1/4 塊比 1/8 塊大，所以美美吃的 3/4 個比較多！"
+            },
+            {
+                id: 4,
+                question: "一張印度大餅平分成 10 等份。妹妹拿了 <span class='fraction'><span class='numerator'>6</span><span class='denominator'>10</span></span> 張，姐姐拿了 <span class='fraction'><span class='numerator'>4</span><span class='denominator'>10</span></span> 張，請問妹妹比姐姐多拿了多少張？",
+                options: [
+                    "<span class='fraction'><span class='numerator'>2</span><span class='denominator'>10</span></span> 張",
+                    "<span class='fraction'><span class='numerator'>10</span><span class='denominator'>10</span></span> 張",
+                    "2 張",
+                    "<span class='fraction'><span class='numerator'>6</span><span class='denominator'>4</span></span> 張"
+                ],
+                answer: 0,
+                explanation: "6 個 1/10 扣掉 4 個 1/10，還多出 2 個 1/10，即 2/10 張。"
+            },
+            {
+                id: 5,
+                question: "關於分數「<span class='fraction'><span class='numerator'>1</span><span class='denominator'>6</span></span>」與「<span class='fraction'><span class='numerator'>1</span><span class='denominator'>8</span></span>」的比較，下列敘述何者正確？",
+                options: [
+                    "<span class='fraction'><span class='numerator'>1</span><span class='denominator'>6</span></span> 比 <span class='fraction'><span class='numerator'>1</span><span class='denominator'>8</span></span> 小，因為 6 比 8 小",
+                    "<span class='fraction'><span class='numerator'>1</span><span class='denominator'>6</span></span> 比 <span class='fraction'><span class='numerator'>1</span><span class='denominator'>8</span></span> 大，因為平分成 6 份的每一份比較大",
+                    "兩者一樣大",
+                    "分母越大代表分數越大"
+                ],
+                answer: 1,
+                explanation: "同一個整體，平分切成的份數越少（分母越小），每一等份的面積反而越大！"
+            }
+        ];
+
+        let userAnswers = {};
+
+        function initQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizData.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-white/90 p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4";
+                
+                let optionsHTML = '';
+                q.options.forEach((opt, optIndex) => {
+                    optionsHTML += `
+                        <button onclick="selectQuizOption(${q.id}, ${optIndex})" id="btn-q${q.id}-${optIndex}" 
+                            class="w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-sky-50 transition flex items-center justify-between font-medium text-slate-700 text-sm">
+                            <span>${String.fromCharCode(65 + optIndex)}. ${opt}</span>
+                            <i id="icon-q${q.id}-${optIndex}" class="fa-regular fa-circle text-slate-300 text-lg"></i>
+                        </button>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <span class="bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded-lg font-bold text-xs">第 ${index + 1} 題</span>
+                        <h3 class="text-base font-bold text-slate-800 flex-1">${q.question}</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pt-2">
+                        ${optionsHTML}
+                    </div>
+                    <div id="explain-q${q.id}" class="hidden p-3 rounded-xl text-xs leading-relaxed"></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectQuizOption(qId, optIndex) {
+            const q = quizData.find(item => item.id === qId);
+            userAnswers[qId] = optIndex;
+
+            // 重置該題選項按鈕樣式
+            q.options.forEach((_, i) => {
+                const btn = document.getElementById(`btn-q${qId}-${i}`);
+                const icon = document.getElementById(`icon-q${qId}-${i}`);
+                btn.className = "w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-sky-50 transition flex items-center justify-between font-medium text-slate-700 text-sm";
+                icon.className = "fa-regular fa-circle text-slate-300 text-lg";
+            });
+
+            const selectedBtn = document.getElementById(`btn-q${qId}-${optIndex}`);
+            const selectedIcon = document.getElementById(`icon-q${qId}-${optIndex}`);
+            const explainBox = document.getElementById(`explain-q${qId}`);
+
+            explainBox.classList.remove('hidden');
+
+            if (optIndex === q.answer) {
+                selectedBtn.className = "w-full text-left p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 font-bold transition flex items-center justify-between text-sm";
+                selectedIcon.className = "fa-solid fa-circle-check text-emerald-500 text-lg";
+                explainBox.className = "p-3 rounded-xl text-xs bg-emerald-100/80 text-emerald-800 border border-emerald-200";
+                explainBox.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> <strong>答對了！</strong> ${q.explanation}`;
+            } else {
+                selectedBtn.className = "w-full text-left p-3 rounded-xl border-2 border-rose-400 bg-rose-50 text-rose-900 font-bold transition flex items-center justify-between text-sm";
+                selectedIcon.className = "fa-solid fa-circle-xmark text-rose-500 text-lg";
+                explainBox.className = "p-3 rounded-xl text-xs bg-rose-100/80 text-rose-800 border border-rose-200";
+                explainBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> <strong>再想想看！</strong> ${q.explanation}`;
+            }
+
+            calculateScore();
+        }
+
+        function calculateScore() {
+            let score = 0;
+            let answeredCount = 0;
+
+            quizData.forEach(q => {
+                if (userAnswers[q.id] !== undefined) {
+                    answeredCount++;
+                    if (userAnswers[q.id] === q.answer) {
+                        score += 20;
+                    }
+                }
+            });
+
+            document.getElementById('quiz-score').innerText = score;
+
+            if (answeredCount === quizData.length) {
+                document.getElementById('quiz-complete-panel').classList.remove('hidden');
+            }
+        }
+
+        function resetQuiz() {
+            userAnswers = {};
+            document.getElementById('quiz-score').innerText = '0';
+            document.getElementById('quiz-complete-panel').classList.add('hidden');
+            initQuiz();
+        }
+
+        /* ----------------------------------------------------
+           5. 初始化載入
+        ---------------------------------------------------- */
+        window.onload = function() {
+            changeCakeDenominator();
+            updateCakeComparison();
+            updatePizzaComparison();
+            initQuiz();
+        };
+    </script>
+</body>
+</html>

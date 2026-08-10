@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>數學小偵探：角度大探險！ (認識直角、銳角與鈍角)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Zen Maru Gothic', 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: shinkaiSky 20s ease infinite;
+            min-height: 100vh;
+            color: #2d3748;
+        }
+
+        @keyframes shinkaiSky {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glassmorphism Card Style */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            border-radius: 1.25rem;
+        }
+
+        /* Custom Slider Styling */
+        input[type=range] {
+            accent-color: #3b82f6;
+        }
+
+        /* Shinkai Glow Button */
+        .shinkai-btn {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+        .shinkai-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+        }
+
+        .drop-zone {
+            min-height: 120px;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+        .drop-zone.drag-over {
+            border-color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.15);
+        }
+
+        /* Clouds overlay */
+        .cloud-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            background-image: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="relative pb-16 px-3 md:px-8">
+    <div class="cloud-bg"></div>
+
+    <div class="max-w-5xl mx-auto relative z-10 pt-6">
+        <!-- 品牌標誌列 -->
+        <div class="w-full flex items-center justify-start mb-4 px-2">
+            <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+            <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+        </div>
+
+        <!-- Header -->
+        <header class="glass-card p-6 mb-8 text-center border-b-4 border-indigo-400">
+            <div class="inline-block bg-indigo-100 text-indigo-800 text-sm font-bold px-3 py-1 rounded-full mb-2">
+                <i class="fa-solid fa-shapes mr-1"></i> 國小數學 5-3 互動探索
+            </div>
+            <h1 class="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-700 mb-2">
+                ✨ 角度大探險：認識直角、銳角與鈍角
+            </h1>
+            <p class="text-gray-600 font-medium text-sm md:text-base">
+                動動手指拉拉看、比比看，一起發現角的祕密！
+            </p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="flex flex-wrap justify-center gap-3 mb-8">
+            <button onclick="switchTab('lab')" id="tab-lab" class="tab-btn px-5 py-2.5 rounded-full font-bold text-white shinkai-btn flex items-center gap-2">
+                <i class="fa-solid fa-flask"></i> 1. 動力角度實驗室
+            </button>
+            <button onclick="switchTab('game')" id="tab-game" class="tab-btn px-5 py-2.5 rounded-full font-bold text-gray-700 bg-white/80 hover:bg-white flex items-center gap-2">
+                <i class="fa-solid fa-puzzle-piece"></i> 2. 角度分類大挑戰
+            </button>
+            <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn px-5 py-2.5 rounded-full font-bold text-gray-700 bg-white/80 hover:bg-white flex items-center gap-2">
+                <i class="fa-solid fa-circle-question"></i> 3. 隨堂小測驗
+            </button>
+        </div>
+
+        <!-- SECTION 1: Interactive Lab -->
+        <section id="sec-lab" class="glass-card p-6 mb-8">
+            <div class="border-b pb-4 mb-6">
+                <h2 class="text-2xl font-bold text-indigo-900 flex items-center gap-2">
+                    <i class="fa-solid fa-compass-drafting text-blue-500"></i> 動力角度實驗室
+                </h2>
+                <p class="text-gray-600 text-sm mt-1">拖動下方滑桿改變角度與邊長，觀察角的類型與三角板的對齊結果！</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <!-- SVG Canvas Container -->
+                <div class="lg:col-span-7 flex flex-col items-center justify-center bg-sky-50/70 rounded-2xl p-4 border border-sky-200 relative min-h-[340px] shadow-inner">
+                    <!-- Status Badge -->
+                    <div id="angleBadge" class="absolute top-4 left-4 bg-blue-600 text-white font-bold text-lg px-4 py-1.5 rounded-full shadow-md flex items-center gap-2">
+                        <span id="badgeIcon">📐</span> <span id="badgeText">直角 (90°)</span>
+                    </div>
+
+                    <!-- Canvas SVG -->
+                    <svg id="angleSVG" width="320" height="280" viewBox="0 0 320 280" class="overflow-visible">
+                        <!-- Set Square Overlay (三角板) -->
+                        <g id="setSquareGroup" class="transition-opacity duration-300 opacity-0">
+                            <!-- Right Triangle Set Square (90-45-45) -->
+                            <polygon points="160,200 310,200 160,50" fill="rgba(251, 191, 36, 0.35)" stroke="#d97706" stroke-width="3"/>
+                            <!-- Inner Hole (Centered inside the set square) -->
+                            <polygon points="192.5,167.5 245,167.5 192.5,115" fill="rgba(255, 255, 255, 0.6)" stroke="#b45309" stroke-width="1.5"/>
+                            <text x="165" y="185" fill="#b45309" font-size="12" font-weight="bold">三角板直角</text>
+                        </g>
+
+                        <!-- Angle Arc / Right Angle Marker -->
+                        <path id="angleArc" fill="rgba(59, 130, 246, 0.2)" stroke="#3b82f6" stroke-width="2" />
+                        <path id="rightAngleSquare" fill="none" stroke="#ef4444" stroke-width="2.5" d="" />
+
+                        <!-- Arm 1 (Horizontal) -->
+                        <line id="arm1" x1="160" y1="200" x2="280" y2="200" stroke="#2563eb" stroke-width="5" stroke-linecap="round" />
+                        
+                        <!-- Arm 2 (Rotated) -->
+                        <line id="arm2" x1="160" y1="200" x2="160" y2="80" stroke="#2563eb" stroke-width="5" stroke-linecap="round" />
+
+                        <!-- Vertex Point -->
+                        <circle cx="160" cy="200" r="7" fill="#ef4444" />
+                        
+                        <!-- Vertex Label -->
+                        <text x="140" y="225" font-size="14" font-weight="bold" fill="#334155">頂點</text>
+                    </svg>
+
+                    <!-- Concept Reminder Callout -->
+                    <div class="mt-2 bg-amber-50 border border-amber-300 text-amber-900 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-lightbulb text-amber-500 text-lg"></i>
+                        <span>觀念澄清：改變邊長<b>不會改變角度大小</b>喔！</span>
+                    </div>
+                </div>
+
+                <!-- Controls Panel -->
+                <div class="lg:col-span-5 space-y-5 bg-white/60 p-5 rounded-2xl border border-white">
+                    <!-- Angle Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="font-bold text-gray-700 text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-gauge-high text-indigo-500"></i> 調整角度大小：
+                            </label>
+                            <span id="angleValueDisplay" class="text-xl font-black text-indigo-600 bg-indigo-50 px-3 py-0.5 rounded-lg border border-indigo-200">90°</span>
+                        </div>
+                        <input type="range" id="angleRange" min="15" max="165" value="90" class="w-full h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        <div class="flex justify-between text-xs text-gray-400 font-bold px-1 mt-1">
+                            <span>15° (小銳角)</span>
+                            <span>90° (直角)</span>
+                            <span>165° (大鈍角)</span>
+                        </div>
+                    </div>
+
+                    <!-- Arm Length Slider -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="font-bold text-gray-700 text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-ruler-horizontal text-purple-500"></i> 調整邊長 (模擬剪短/拉長)：
+                            </label>
+                            <span id="armValueDisplay" class="text-sm font-bold text-purple-600 bg-purple-50 px-2.5 py-0.5 rounded-lg border border-purple-200">120 px</span>
+                        </div>
+                        <input type="range" id="armRange" min="60" max="150" value="120" class="w-full h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <!-- Toggle Tools -->
+                    <div class="pt-2 border-t border-gray-200 space-y-3">
+                        <label class="flex items-center gap-3 cursor-pointer p-2 rounded-xl hover:bg-indigo-50/50 transition-colors">
+                            <input type="checkbox" id="toggleSquare" class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500">
+                            <span class="text-sm font-bold text-gray-700">疊加「黃色三角板」進行比對</span>
+                        </label>
+                    </div>
+
+                    <!-- Realtime Educational Text Box -->
+                    <div id="explanationBox" class="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-xs sm:text-sm text-blue-950 font-medium leading-relaxed">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Drag and Drop Classification Game -->
+        <section id="sec-game" class="glass-card p-6 mb-8 hidden">
+            <div class="border-b pb-4 mb-6 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                <div>
+                    <h2 class="text-2xl font-bold text-indigo-900 flex items-center gap-2">
+                        <i class="fa-solid fa-boxes-packing text-indigo-500"></i> 角度分類大挑戰
+                    </h2>
+                    <p class="text-gray-600 text-sm mt-1">請點選或拖拽下方的角度卡片，放置到正確的分類框中！</p>
+                </div>
+                <button onclick="resetGame()" class="self-start sm:self-auto text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-3 py-2 rounded-lg border">
+                    <i class="fa-solid fa-rotate-right"></i> 重置題目
+                </button>
+            </div>
+
+            <!-- Draggable Cards Pool -->
+            <div class="mb-6">
+                <h3 class="text-sm font-bold text-gray-500 mb-2">待分類的角度卡片：</h3>
+                <div id="cardPool" class="flex flex-wrap gap-3 p-4 bg-white/50 rounded-2xl border border-indigo-100 min-h-[90px] items-center">
+                    <!-- Cards will be populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Drop Targets -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Acute Box -->
+                <div class="bg-emerald-50/80 border-2 border-dashed border-emerald-300 rounded-2xl p-4 flex flex-col">
+                    <div class="text-emerald-800 font-bold text-center border-b border-emerald-200 pb-2 mb-3 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-angle-left"></i> 銳角 (比直角小)
+                    </div>
+                    <div id="zone-acute" data-type="acute" class="drop-zone flex-1 rounded-xl p-2 space-y-2 flex flex-col items-center justify-start"></div>
+                </div>
+
+                <!-- Right Box -->
+                <div class="bg-blue-50/80 border-2 border-dashed border-blue-300 rounded-2xl p-4 flex flex-col">
+                    <div class="text-blue-800 font-bold text-center border-b border-blue-200 pb-2 mb-3 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-square-full text-xs"></i> 直角 (剛好等於直角/90°)
+                    </div>
+                    <div id="zone-right" data-type="right" class="drop-zone flex-1 rounded-xl p-2 space-y-2 flex flex-col items-center justify-start"></div>
+                </div>
+
+                <!-- Obtuse Box -->
+                <div class="bg-purple-50/80 border-2 border-dashed border-purple-300 rounded-2xl p-4 flex flex-col">
+                    <div class="text-purple-800 font-bold text-center border-b border-purple-200 pb-2 mb-3 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-angle-right"></i> 鈍角 (比直角大)
+                    </div>
+                    <div id="zone-obtuse" data-type="obtuse" class="drop-zone flex-1 rounded-xl p-2 space-y-2 flex flex-col items-center justify-start"></div>
+                </div>
+            </div>
+
+            <!-- Game Result Feedback -->
+            <div id="gameSuccessMessage" class="hidden mt-6 p-4 bg-emerald-100 border border-emerald-300 text-emerald-900 rounded-2xl text-center font-bold text-lg animate-bounce">
+                🎉 太棒了！全部分類正確！你已經完全掌握直角、銳角與鈍角了！
+            </div>
+        </section>
+
+        <!-- SECTION 3: Formative Quiz -->
+        <section id="sec-quiz" class="glass-card p-6 mb-8 hidden">
+            <div class="border-b pb-4 mb-6 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-indigo-900 flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-check text-purple-500"></i> 觀念整合隨堂測驗
+                    </h2>
+                    <p class="text-gray-600 text-sm mt-1">共 5 題，測試看看你對角度特性的理解吧！</p>
+                </div>
+                <div id="scoreDisplay" class="text-xl font-black text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-full border border-indigo-200">
+                    得分：0 / 100
+                </div>
+            </div>
+
+            <form id="quizForm" class="space-y-6">
+                <!-- Q1 -->
+                <div class="p-4 bg-white/70 rounded-2xl border border-gray-200">
+                    <p class="font-bold text-gray-800 mb-3">1. 三角板上「最大」的那個角是什麼角？</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q1" value="A"> A. 銳角
+                        </label>
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q1" value="B"> B. 直角
+                        </label>
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q1" value="C"> C. 鈍角
+                        </label>
+                    </div>
+                    <div id="feedback-q1" class="hidden mt-2 text-xs sm:text-sm font-bold p-2 rounded-lg"></div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="p-4 bg-white/70 rounded-2xl border border-gray-200">
+                    <p class="font-bold text-gray-800 mb-3">2. 比直角還要「小」的角，我們稱為什麼角？</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q2" value="A"> A. 銳角
+                        </label>
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q2" value="B"> B. 直角
+                        </label>
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q2" value="C"> C. 鈍角
+                        </label>
+                    </div>
+                    <div id="feedback-q2" class="hidden mt-2 text-xs sm:text-sm font-bold p-2 rounded-lg"></div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="p-4 bg-white/70 rounded-2xl border border-gray-200">
+                    <p class="font-bold text-gray-800 mb-3">3. 把一張紙上的角，將兩條邊用剪刀「剪短」後，這個角的大小會怎麼變化？</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q3" value="A"> A. 變大
+                        </label>
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q3" value="B"> B. 變小
+                        </label>
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q3" value="C"> C. 完全不會改變
+                        </label>
+                    </div>
+                    <div id="feedback-q3" class="hidden mt-2 text-xs sm:text-sm font-bold p-2 rounded-lg"></div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="p-4 bg-white/70 rounded-2xl border border-gray-200">
+                    <p class="font-bold text-gray-800 mb-3">4. 當鐘面顯示「下午 3 點整」時，時針與分針夾成的角是什麼角？</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q4" value="A"> A. 銳角
+                        </label>
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q4" value="B"> B. 直角
+                        </label>
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q4" value="C"> C. 鈍角
+                        </label>
+                    </div>
+                    <div id="feedback-q4" class="hidden mt-2 text-xs sm:text-sm font-bold p-2 rounded-lg"></div>
+                </div>
+
+                <!-- Q5 -->
+                <div class="p-4 bg-white/70 rounded-2xl border border-gray-200">
+                    <p class="font-bold text-gray-800 mb-3">5. 一個角度為 135 度的角，屬於什麼角？</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q5" value="A"> A. 銳角
+                        </label>
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q5" value="B"> B. 直角
+                        </label>
+                        <label class="p-3 border rounded-xl hover:bg-indigo-50 cursor-pointer flex items-center gap-2 text-sm font-semibold">
+                            <input type="radio" name="q5" value="C"> C. 鈍角
+                        </label>
+                    </div>
+                    <div id="feedback-q5" class="hidden mt-2 text-xs sm:text-sm font-bold p-2 rounded-lg"></div>
+                </div>
+
+                <div class="text-center pt-4">
+                    <button type="button" onclick="checkQuiz()" class="shinkai-btn text-white font-bold text-lg px-8 py-3 rounded-full shadow-lg">
+                        <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案並檢視解析
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script>
+        // Tab Switcher Logic
+        function switchTab(tabName) {
+            document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('sec-' + tabName).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-5 py-2.5 rounded-full font-bold text-gray-700 bg-white/80 hover:bg-white flex items-center gap-2";
+            });
+
+            const activeBtn = document.getElementById('tab-' + tabName);
+            activeBtn.className = "tab-btn px-5 py-2.5 rounded-full font-bold text-white shinkai-btn flex items-center gap-2";
+        }
+
+        // ==========================================
+        // SECTION 1: Interactive Angle Lab Math & SVG
+        // ==========================================
+        const angleRange = document.getElementById('angleRange');
+        const armRange = document.getElementById('armRange');
+        const toggleSquare = document.getElementById('toggleSquare');
+
+        const angleValueDisplay = document.getElementById('angleValueDisplay');
+        const armValueDisplay = document.getElementById('armValueDisplay');
+
+        const arm1 = document.getElementById('arm1');
+        const arm2 = document.getElementById('arm2');
+        const angleArc = document.getElementById('angleArc');
+        const rightAngleSquare = document.getElementById('rightAngleSquare');
+        const setSquareGroup = document.getElementById('setSquareGroup');
+
+        const angleBadge = document.getElementById('angleBadge');
+        const badgeIcon = document.getElementById('badgeIcon');
+        const badgeText = document.getElementById('badgeText');
+        const explanationBox = document.getElementById('explanationBox');
+
+        const vertexX = 160;
+        const vertexY = 200;
+
+        function updateAngleLab() {
+            const angleDeg = parseInt(angleRange.value);
+            const armLen = parseInt(armRange.value);
+
+            angleValueDisplay.innerText = `${angleDeg}°`;
+            armValueDisplay.innerText = `${armLen} px`;
+
+            // Calculate Arm 1 (Horizontal Right)
+            arm1.setAttribute('x1', vertexX);
+            arm1.setAttribute('y1', vertexY);
+            arm1.setAttribute('x2', vertexX + armLen);
+            arm1.setAttribute('y2', vertexY);
+
+            // Calculate Arm 2 (Rotated counter-clockwise)
+            const angleRad = (angleDeg * Math.PI) / 180;
+            const arm2X = vertexX + armLen * Math.cos(angleRad);
+            const arm2Y = vertexY - armLen * Math.sin(angleRad);
+
+            arm2.setAttribute('x1', vertexX);
+            arm2.setAttribute('y1', vertexY);
+            arm2.setAttribute('x2', arm2X);
+            arm2.setAttribute('y2', arm2Y);
+
+            // Draw Angle Arc or Right Angle Symbol
+            if (angleDeg === 90) {
+                // Right Angle Square Marker ∟
+                const sqSize = 24;
+                rightAngleSquare.setAttribute('d', `M ${vertexX + sqSize} ${vertexY} L ${vertexX + sqSize} ${vertexY - sqSize} L ${vertexX} ${vertexY - sqSize}`);
+                angleArc.setAttribute('d', '');
+            } else {
+                rightAngleSquare.setAttribute('d', '');
+                // Curved Arc
+                const arcR = Math.min(45, armLen * 0.4);
+                const arcEndX = vertexX + arcR * Math.cos(angleRad);
+                const arcEndY = vertexY - arcR * Math.sin(angleRad);
+                const largeArcFlag = angleDeg > 180 ? 1 : 0;
+                
+                angleArc.setAttribute('d', `M ${vertexX + arcR} ${vertexY} A ${arcR} ${arcR} 0 ${largeArcFlag} 0 ${arcEndX} ${arcEndY} L ${vertexX} ${vertexY} Z`);
+            }
+
+            // Toggle Set Square Visibility
+            setSquareGroup.style.opacity = toggleSquare.checked ? '1' : '0';
+
+            // Classify Angle
+            if (angleDeg < 90) {
+                angleBadge.className = "absolute top-4 left-4 bg-emerald-500 text-white font-bold text-lg px-4 py-1.5 rounded-full shadow-md flex items-center gap-2";
+                badgeIcon.innerText = "📐";
+                badgeText.innerText = `銳角 (${angleDeg}°)`;
+                explanationBox.innerHTML = `<b>【銳角點評】</b> 這個角是 <b>${angleDeg}°</b>，張開的角度比直角 (90°) 還要<b>小</b>！三角板的直角頂點會把這個角包住喔。`;
+            } else if (angleDeg === 90) {
+                angleBadge.className = "absolute top-4 left-4 bg-blue-600 text-white font-bold text-lg px-4 py-1.5 rounded-full shadow-md flex items-center gap-2";
+                badgeIcon.innerText = "∟";
+                badgeText.innerText = `直角 (90°)`;
+                explanationBox.innerHTML = `<b>【直角點評】</b> 這個角剛好是 <b>90°</b>！可以用符號「<b>∟</b>」來標記，三角板的最大角也是直角喔！`;
+            } else {
+                angleBadge.className = "absolute top-4 left-4 bg-purple-600 text-white font-bold text-lg px-4 py-1.5 rounded-full shadow-md flex items-center gap-2";
+                badgeIcon.innerText = "📐";
+                badgeText.innerText = `鈍角 (${angleDeg}°)`;
+                explanationBox.innerHTML = `<b>【鈍角點評】</b> 這個角是 <b>${angleDeg}°</b>，張開的角度比直角 (90°) 還要<b>大</b>！已經超過三角板直角的範圍囉。`;
+            }
+        }
+
+        angleRange.addEventListener('input', updateAngleLab);
+        armRange.addEventListener('input', updateAngleLab);
+        toggleSquare.addEventListener('change', updateAngleLab);
+
+        // Initial render
+        updateAngleLab();
+
+        // ==========================================
+        // SECTION 2: Drag and Drop Classification
+        // ==========================================
+        const cardsData = [
+            { id: 'c1', label: '30° 角', type: 'acute', angle: 30 },
+            { id: 'c2', label: '90° 角', type: 'right', angle: 90 },
+            { id: 'c3', label: '120° 角', type: 'obtuse', angle: 120 },
+            { id: 'c4', label: '三角板的最大角', type: 'right', isSetSquare: true },
+            { id: 'c5', label: '比直角小的角', type: 'acute', angle: 45 },
+            { id: 'c6', label: '150° 角', type: 'obtuse', angle: 150 }
+        ];
+
+        // Helper function to render actual SVG angle graphics
+        function getAngleSvgHtml(angleDeg) {
+            const vx = 14, vy = 20, len = 11;
+            const rad = (angleDeg * Math.PI) / 180;
+            const x2 = (vx + len * Math.cos(rad)).toFixed(1);
+            const y2 = (vy - len * Math.sin(rad)).toFixed(1);
+            const arcR = 5;
+            const arcX = (vx + arcR * Math.cos(rad)).toFixed(1);
+            const arcY = (vy - arcR * Math.sin(rad)).toFixed(1);
+            
+            let arcPath = `M ${vx + arcR} ${vy} A ${arcR} ${arcR} 0 0 0 ${arcX} ${arcY}`;
+            if (angleDeg === 90) {
+                arcPath = `M ${vx + 4} ${vy} L ${vx + 4} ${vy - 4} L ${vx} ${vy - 4}`;
+            }
+            
+            return `<svg width="24" height="24" viewBox="0 0 28 28" class="inline-block shrink-0">
+                <path d="${arcPath}" fill="none" stroke="#818cf8" stroke-width="1.5"/>
+                <line x1="${vx}" y1="${vy}" x2="${vx + len}" y2="${vy}" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="${vx}" y1="${vy}" x2="${x2}" y2="${y2}" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="${vx}" cy="${vy}" r="2" fill="#ef4444"/>
+            </svg>`;
+        }
+
+        // Helper function to render SVG set square (三角板) graphic
+        function getSetSquareSvgHtml() {
+            return `<svg width="24" height="24" viewBox="0 0 28 28" class="inline-block shrink-0">
+                <polygon points="4,24 24,24 4,4" fill="rgba(251, 191, 36, 0.5)" stroke="#d97706" stroke-width="2"/>
+                <polygon points="8,20 16,20 8,12" fill="#ffffff" stroke="#b45309" stroke-width="1.2"/>
+                <path d="M 8,24 L 8,20 L 4,20" fill="none" stroke="#ef4444" stroke-width="1.5"/>
+            </svg>`;
+        }
+
+        function initGame() {
+            const cardPool = document.getElementById('cardPool');
+            cardPool.innerHTML = '';
+            document.querySelectorAll('.drop-zone').forEach(z => z.innerHTML = '');
+            document.getElementById('gameSuccessMessage').classList.add('hidden');
+
+            // Shuffle cards
+            const shuffled = [...cardsData].sort(() => Math.random() - 0.5);
+
+            shuffled.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.id = card.id;
+                cardEl.draggable = true;
+                cardEl.dataset.type = card.type;
+                cardEl.className = "bg-white border border-indigo-200 text-indigo-900 font-bold px-3.5 py-2 rounded-xl shadow-sm cursor-grab hover:shadow-md transition-all flex items-center gap-2 select-none text-sm";
+                
+                // Render SVG icon if angle degree is specified, set square SVG if specified, otherwise render font icon
+                let iconContent = '';
+                if (card.angle !== undefined) {
+                    iconContent = getAngleSvgHtml(card.angle);
+                } else if (card.isSetSquare) {
+                    iconContent = getSetSquareSvgHtml();
+                } else {
+                    iconContent = `<i class="fa-solid ${card.icon} text-indigo-500"></i>`;
+                }
+
+                cardEl.innerHTML = `${iconContent} ${card.label}`;
+
+                // Drag Events
+                cardEl.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', card.id);
+                    cardEl.classList.add('opacity-50');
+                });
+
+                cardEl.addEventListener('dragend', () => {
+                    cardEl.classList.remove('opacity-50');
+                });
+
+                cardPool.appendChild(cardEl);
+            });
+        }
+
+        // Setup Drop Zones
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('drag-over');
+            });
+
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('drag-over');
+            });
+
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                const cardId = e.dataTransfer.getData('text/plain');
+                const cardEl = document.getElementById(cardId);
+                
+                if (cardEl) {
+                    zone.appendChild(cardEl);
+                    checkGameCompletion();
+                }
+            });
+        });
+
+        function checkGameCompletion() {
+            const pool = document.getElementById('cardPool');
+            if (pool.children.length === 0) {
+                // Validate placement
+                let allCorrect = true;
+                document.querySelectorAll('.drop-zone').forEach(zone => {
+                    const expectedType = zone.dataset.type;
+                    Array.from(zone.children).forEach(card => {
+                        if (card.dataset.type !== expectedType) {
+                            allCorrect = false;
+                        }
+                    });
+                });
+
+                if (allCorrect) {
+                    document.getElementById('gameSuccessMessage').classList.remove('hidden');
+                }
+            }
+        }
+
+        function resetGame() {
+            initGame();
+        }
+
+        initGame();
+
+        // ==========================================
+        // SECTION 3: Formative Quiz Evaluation
+        // ==========================================
+        const answers = {
+            q1: { ans: 'B', exp: '正確！三角板上最大的角剛好是直角 (90°)。' },
+            q2: { ans: 'A', exp: '正確！比直角小的角稱為「銳角」。' },
+            q3: { ans: 'C', exp: '正確！邊長變長或變短，都不會改變張開的角度大小！' },
+            q4: { ans: 'B', exp: '正確！3 點整時，時針指向 3、分針指向 12，夾角為 90° 直角。' },
+            q5: { ans: 'C', exp: '正確！135° 大於 90°，因此屬於「鈍角」。' }
+        };
+
+        function checkQuiz() {
+            let score = 0;
+            const totalQuestions = 5;
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const qKey = 'q' + i;
+                const selected = document.querySelector(`input[name="${qKey}"]:checked`);
+                const feedbackEl = document.getElementById(`feedback-${qKey}`);
+
+                feedbackEl.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+
+                if (selected) {
+                    if (selected.value === answers[qKey].ans) {
+                        score += 20;
+                        feedbackEl.classList.add('bg-emerald-100', 'text-emerald-800');
+                        feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${answers[qKey].exp}`;
+                    } else {
+                        feedbackEl.classList.add('bg-rose-100', 'text-rose-800');
+                        feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> 答錯囉！提示：${answers[qKey].exp}`;
+                    }
+                } else {
+                    feedbackEl.classList.add('bg-rose-100', 'text-rose-800');
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 請選擇一個答案！`;
+                }
+            }
+
+            document.getElementById('scoreDisplay').innerText = `得分：${score} / 100`;
+        }
+    </script>
+</body>
+</html>

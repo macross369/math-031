@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>「生活中的表格」互動探究教室</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icon CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 35%, #311b92 70%, #4a148c 100%);
+            background-attachment: fixed;
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        /* 新海誠夢幻天空風格雲朵與背景裝飾 */
+        .shinkai-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            border-radius: 50px;
+            animation: floatClouds 35s infinite linear;
+        }
+
+        @keyframes floatClouds {
+            0% { transform: translateX(-200px); }
+            100% { transform: translateX(100vw); }
+        }
+
+        /* 毛玻璃卡片質感 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-nav {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* 交叉高亮特效 (十字星光導向) */
+        .highlight-cross {
+            background-color: rgba(56, 189, 248, 0.35) !important;
+            transition: background-color 0.15s ease;
+        }
+
+        .highlight-active {
+            background-color: rgba(244, 63, 94, 0.85) !important;
+            color: #ffffff !important;
+            font-weight: bold;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(244, 63, 94, 0.8);
+            transition: all 0.15s ease;
+            z-index: 10;
+        }
+
+        /* 頁籤平滑切換 */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.35s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .shinkai-btn {
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+            transition: all 0.2s ease;
+        }
+        .shinkai-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6);
+        }
+    </style>
+</head>
+<body class="relative min-h-screen pb-12 overflow-x-hidden">
+
+    <!-- 動態背景雲朵 -->
+    <div class="shinkai-bg">
+        <div class="cloud w-64 h-20 top-10 -left-20"></div>
+        <div class="cloud w-96 h-28 top-40 -left-40" style="animation-delay: -12s;"></div>
+        <div class="cloud w-80 h-24 top-2/3 -left-10" style="animation-delay: -22s;"></div>
+    </div>
+
+    <!-- 頂部標題與導覽區 -->
+    <header class="relative z-10 glass-nav py-5 px-4 text-center sticky top-0 mb-6 shadow-lg">
+        
+        <!-- 修改：使用轉換後的 Google Drive 直接連結 (閒雲數學小棧 Logo) -->
+        <div class="max-w-6xl mx-auto w-full flex items-center justify-start mb-4 px-2 fade-in">
+            <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+            <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+        </div>
+
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-400 to-indigo-500 flex items-center justify-center text-2xl text-white shadow-lg">
+                    <i class="fa-solid fa-table-cells"></i>
+                </div>
+                <div class="text-left">
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-pink-300">
+                        生活中的表格．互動探究教室
+                    </h1>
+                    <p class="text-xs md:text-sm text-cyan-200/80">觀測數據變化 × 體驗十字對應 × 自主做答評量</p>
+                </div>
+            </div>
+
+            <!-- 導覽頁籤按鈕群 -->
+            <nav class="flex flex-wrap gap-2 justify-center">
+                <button onclick="switchTab('breakfast')" id="btn-breakfast" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold border border-white/20 bg-sky-500 text-white shadow-md transition">
+                    🥪 早餐店價目表
+                </button>
+                <button onclick="switchTab('schedule')" id="btn-schedule" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold border border-white/20 bg-white/10 hover:bg-white/20 text-slate-200 transition">
+                    📅 週功課表
+                </button>
+                <button onclick="switchTab('train')" id="btn-train" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold border border-white/20 bg-white/10 hover:bg-white/20 text-slate-200 transition">
+                    🚆 集集線時刻表
+                </button>
+                <button onclick="switchTab('fare')" id="btn-fare" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold border border-white/20 bg-white/10 hover:bg-white/20 text-slate-200 transition">
+                    🚌 墾丁快線票價表
+                </button>
+                <button onclick="switchTab('quiz')" id="btn-quiz" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold border border-white/20 bg-amber-500 hover:bg-amber-400 text-white transition">
+                    🎯 知識大考驗
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主要內容區域 -->
+    <main class="relative z-10 max-w-6xl mx-auto px-4">
+
+        <!-- 頁籤 1: 早餐店價目表 -->
+        <section id="tab-breakfast" class="tab-content active">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4 border-b border-white/10 pb-4">
+                    <div>
+                        <span class="px-3 py-1 bg-cyan-500/30 text-cyan-300 rounded-full text-xs font-bold border border-cyan-400/30">單元 9-1 一維表格</span>
+                        <h2 class="text-2xl font-bold mt-2 text-white flex items-center gap-2">
+                            <i class="fa-solid fa-utensils text-amber-400"></i> 亞米早餐店價目點餐體驗
+                        </h2>
+                        <p class="text-sm text-slate-300 mt-1">點擊菜單品項加入購物車，觀察點餐金額變化，並試著找出限定預算內的餐點！</p>
+                    </div>
+
+                    <!-- 預算篩選器滑桿 -->
+                    <div class="bg-slate-900/60 p-4 rounded-2xl border border-white/10 w-full lg:w-72">
+                        <label class="text-xs font-bold text-cyan-300 flex justify-between mb-1">
+                            <span>🔍 漢堡類金額上限小幫手:</span>
+                            <span id="budget-val" class="text-amber-400 font-extrabold text-base">40 元</span>
+                        </label>
+                        <input type="range" id="budget-slider" min="30" max="50" step="5" value="40" oninput="updateBudgetFilter(this.value)" class="w-full accent-cyan-400 cursor-pointer">
+                        <p class="text-[11px] text-slate-400 mt-1">顯示不超過此金額的漢堡品項</p>
+                    </div>
+                </div>
+
+                <!-- 價目表與購物車區域 -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <!-- 三明治類 -->
+                        <div class="bg-slate-800/40 rounded-2xl p-4 border border-white/10">
+                            <h3 class="text-md font-bold text-pink-300 mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-bread-slice"></i> 三明治類
+                            </h3>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <button onclick="addToCart('火腿三明治', 25)" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left transition group">
+                                    <div class="text-sm font-bold text-white group-hover:text-cyan-300">火腿三明治</div>
+                                    <div class="text-xs text-amber-400 font-semibold mt-1">25 元</div>
+                                </button>
+                                <button onclick="addToCart('起司三明治', 30)" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left transition group">
+                                    <div class="text-sm font-bold text-white group-hover:text-cyan-300">起司三明治</div>
+                                    <div class="text-xs text-amber-400 font-semibold mt-1">30 元</div>
+                                </button>
+                                <button onclick="addToCart('豬排三明治', 40)" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left transition group">
+                                    <div class="text-sm font-bold text-white group-hover:text-cyan-300">豬排三明治</div>
+                                    <div class="text-xs text-amber-400 font-semibold mt-1">40 元</div>
+                                </button>
+                                <button onclick="addToCart('總匯三明治', 55)" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left transition group">
+                                    <div class="text-sm font-bold text-white group-hover:text-cyan-300">總匯三明治</div>
+                                    <div class="text-xs text-amber-400 font-semibold mt-1">55 元</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 漢堡類 -->
+                        <div class="bg-slate-800/40 rounded-2xl p-4 border border-white/10">
+                            <h3 class="text-md font-bold text-amber-300 mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-hamburger"></i> 漢堡類 (可受滑桿過濾)
+                            </h3>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <button onclick="addToCart('蔬菜蛋堡', 35)" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left transition group burger-item" data-price="35">
+                                    <div class="text-sm font-bold text-white group-hover:text-amber-300">蔬菜蛋堡</div>
+                                    <div class="text-xs text-amber-400 font-semibold mt-1">35 元</div>
+                                </button>
+                                <button onclick="addToCart('火腿漢堡', 35)" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left transition group burger-item" data-price="35">
+                                    <div class="text-sm font-bold text-white group-hover:text-amber-300">火腿漢堡</div>
+                                    <div class="text-xs text-amber-400 font-semibold mt-1">35 元</div>
+                                </button>
+                                <button onclick="addToCart('香雞漢堡', 40)" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left transition group burger-item" data-price="40">
+                                    <div class="text-sm font-bold text-white group-hover:text-amber-300">香雞漢堡</div>
+                                    <div class="text-xs text-amber-400 font-semibold mt-1">40 元</div>
+                                </button>
+                                <button onclick="addToCart('豬排漢堡', 45)" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left transition group burger-item" data-price="45">
+                                    <div class="text-sm font-bold text-white group-hover:text-amber-300">豬排漢堡</div>
+                                    <div class="text-xs text-amber-400 font-semibold mt-1">45 元</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 飲料類 -->
+                        <div class="bg-slate-800/40 rounded-2xl p-4 border border-white/10">
+                            <h3 class="text-md font-bold text-cyan-300 mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-mug-hot"></i> 飲料類
+                            </h3>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <button onclick="addToCart('豆漿', 15)" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left transition group">
+                                    <div class="text-sm font-bold text-white group-hover:text-cyan-300">豆漿</div>
+                                    <div class="text-xs text-amber-400 font-semibold mt-1">15 元</div>
+                                </button>
+                                <button onclick="addToCart('奶茶', 20)" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left transition group">
+                                    <div class="text-sm font-bold text-white group-hover:text-cyan-300">奶茶</div>
+                                    <div class="text-xs text-amber-400 font-semibold mt-1">20 元</div>
+                                </button>
+                                <button onclick="addToCart('鮮奶', 25)" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left transition group">
+                                    <div class="text-sm font-bold text-white group-hover:text-cyan-300">鮮奶</div>
+                                    <div class="text-xs text-amber-400 font-semibold mt-1">25 元</div>
+                                </button>
+                                <button onclick="addToCart('柳橙汁', 25)" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left transition group">
+                                    <div class="text-sm font-bold text-white group-hover:text-cyan-300">柳橙汁</div>
+                                    <div class="text-xs text-amber-400 font-semibold mt-1">25 元</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 購物車 -->
+                    <div class="bg-slate-900/70 rounded-2xl p-5 border border-cyan-500/30 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-white border-b border-white/10 pb-3 flex justify-between items-center">
+                                <span>🛒 我的餐點清單</span>
+                                <button onclick="clearCart()" class="text-xs text-rose-400 hover:underline">清空</button>
+                            </h3>
+                            <div id="cart-items" class="mt-4 space-y-2 max-h-60 overflow-y-auto pr-1">
+                                <p class="text-xs text-slate-400 text-center py-8">尚未選擇餐點，請點擊左側餐點！</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-white/10">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm text-slate-300">品項總數:</span>
+                                <span id="cart-count" class="text-md font-bold text-white">0 件</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-sm text-slate-300">應付總金額:</span>
+                                <span id="cart-total" class="text-2xl font-black text-amber-400">0 元</span>
+                            </div>
+                            <div id="cart-calc-formula" class="text-xs text-cyan-200/80 bg-white/5 p-2 rounded-lg font-mono mb-3 hidden">
+                                算式: 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁籤 2: 週功課表 -->
+        <section id="tab-schedule" class="tab-content">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-white/10 pb-4">
+                    <div>
+                        <span class="px-3 py-1 bg-purple-500/30 text-purple-300 rounded-full text-xs font-bold border border-purple-400/30">單元 9-1 二維表格</span>
+                        <h2 class="text-2xl font-bold mt-2 text-white flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-week text-purple-400"></i> 皮皮班上的週功課表
+                        </h2>
+                        <p class="text-sm text-slate-300 mt-1">滑鼠游標移至或點擊課表上的格子，體驗「直欄（星期）」與「橫排（節次）」的十字交叉對應法！</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 bg-slate-900/50 p-2 rounded-xl border border-white/10 text-xs">
+                        <span class="w-3 h-3 rounded-full bg-cyan-400 inline-block"></span> 藍色：同行/同列
+                        <span class="w-3 h-3 rounded-full bg-rose-500 inline-block ml-2"></span> 紅色：目標點
+                    </div>
+                </div>
+
+                <!-- 課表互動 Table -->
+                <div class="overflow-x-auto rounded-2xl border border-white/15 bg-slate-900/60 p-2">
+                    <table id="schedule-table" class="w-full text-center border-collapse">
+                        <thead>
+                            <tr class="bg-indigo-900/60 text-cyan-200">
+                                <th class="p-3 border border-white/10 text-xs font-bold">星期 / 節次</th>
+                                <th class="p-3 border border-white/10 text-sm font-bold" data-col="1">一</th>
+                                <th class="p-3 border border-white/10 text-sm font-bold" data-col="2">二</th>
+                                <th class="p-3 border border-white/10 text-sm font-bold" data-col="3">三</th>
+                                <th class="p-3 border border-white/10 text-sm font-bold" data-col="4">四</th>
+                                <th class="p-3 border border-white/10 text-sm font-bold" data-col="5">五</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5 text-sm">
+                            <tr class="bg-indigo-950/20"><td colspan="6" class="py-1 text-xs text-amber-300 font-bold bg-amber-500/10">晨讀時間</td></tr>
+                            <tr data-row="1">
+                                <td class="p-3 border border-white/10 font-bold bg-slate-800/50 text-slate-300" data-row="1">1</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="1" data-col="1">英語</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="1" data-col="2">國語</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="1" data-col="3">自然科學</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="1" data-col="4">社會</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="1" data-col="5">數學</td>
+                            </tr>
+                            <tr data-row="2">
+                                <td class="p-3 border border-white/10 font-bold bg-slate-800/50 text-slate-300" data-row="2">2</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="2" data-col="1">國語</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="2" data-col="2">社會</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="2" data-col="3">自然科學</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="2" data-col="4">體育</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="2" data-col="5">國語</td>
+                            </tr>
+                            <tr data-row="3">
+                                <td class="p-3 border border-white/10 font-bold bg-slate-800/50 text-slate-300" data-row="3">3</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="3" data-col="1">數學</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="3" data-col="2">藝術</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="3" data-col="3">綜合活動</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="3" data-col="4">英語</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="3" data-col="5">自然科學</td>
+                            </tr>
+                            <tr data-row="4">
+                                <td class="p-3 border border-white/10 font-bold bg-slate-800/50 text-slate-300" data-row="4">4</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="4" data-col="1">社會</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="4" data-col="2">藝術</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="4" data-col="3">國語</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="4" data-col="4">數學</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="4" data-col="5">彈性學習</td>
+                            </tr>
+                            <tr class="bg-indigo-950/20"><td colspan="6" class="py-1 text-xs text-cyan-300 font-bold bg-cyan-500/10">午餐 / 午休時間</td></tr>
+                            <tr data-row="5">
+                                <td class="p-3 border border-white/10 font-bold bg-slate-800/50 text-slate-300" data-row="5">5</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="5" data-col="1">藝術</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="5" data-col="2">彈性學習</td>
+                                <td class="p-3 border border-white/10 bg-slate-800/30 text-slate-500" data-row="5" data-col="3">-</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="5" data-col="4">國語</td>
+                                <td class="p-3 border border-white/10 bg-slate-800/30 text-slate-500" data-row="5" data-col="5">-</td>
+                            </tr>
+                            <tr data-row="6">
+                                <td class="p-3 border border-white/10 font-bold bg-slate-800/50 text-slate-300" data-row="6">6</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="6" data-col="1">體育</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="6" data-col="2">數學</td>
+                                <td class="p-3 border border-white/10 bg-slate-800/30 text-slate-500" data-row="6" data-col="3">-</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="6" data-col="4">綜合活動</td>
+                                <td class="p-3 border border-white/10 bg-slate-800/30 text-slate-500" data-row="6" data-col="5">-</td>
+                            </tr>
+                            <tr data-row="7">
+                                <td class="p-3 border border-white/10 font-bold bg-slate-800/50 text-slate-300" data-row="7">7</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="7" data-col="1">彈性學習</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="7" data-col="2">健康</td>
+                                <td class="p-3 border border-white/10 bg-slate-800/30 text-slate-500" data-row="7" data-col="3">-</td>
+                                <td class="p-3 border border-white/10 cell-item cursor-pointer hover:bg-cyan-500/20" data-row="7" data-col="4">彈性學習</td>
+                                <td class="p-3 border border-white/10 bg-slate-800/30 text-slate-500" data-row="7" data-col="5">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 查表資訊卡 -->
+                <div class="mt-4 p-4 rounded-2xl bg-slate-900/60 border border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="text-sm">
+                        <span class="text-slate-400">目前選擇位置：</span>
+                        <span id="schedule-info" class="text-amber-300 font-bold ml-2">請點擊上方課表任何科目</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="countSubject('自然科學')" class="px-3 py-1.5 rounded-lg bg-emerald-500/30 hover:bg-emerald-500/50 text-emerald-200 text-xs font-bold border border-emerald-400/30">
+                            🔍 算算自然課有幾節？
+                        </button>
+                        <button onclick="countSubject('國語')" class="px-3 py-1.5 rounded-lg bg-sky-500/30 hover:bg-sky-500/50 text-sky-200 text-xs font-bold border border-sky-400/30">
+                            🔍 算算國語課有幾節？
+                        </button>
+                        <!-- 粉紅色風格數學課按鈕 -->
+                        <button onclick="countSubject('數學')" class="px-3 py-1.5 rounded-lg bg-pink-500/30 hover:bg-pink-500/50 text-pink-200 text-xs font-bold border border-pink-400/30">
+                            🔍 算算數學課有幾節？
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁籤 3: 火車時刻表 -->
+        <section id="tab-train" class="tab-content">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4 border-b border-white/10 pb-4">
+                    <div>
+                        <span class="px-3 py-1 bg-sky-500/30 text-sky-300 rounded-full text-xs font-bold border border-sky-400/30">單元 9-1 時刻表</span>
+                        <h2 class="text-2xl font-bold mt-2 text-white flex items-center gap-2">
+                            <i class="fa-solid fa-train text-sky-400"></i> 臺灣鐵路集集支線時刻表
+                        </h2>
+                        <p class="text-sm text-slate-300 mt-1">橫著看代表「同一車次停靠各站時刻」，直著看代表「各車次到達同一站的時間」。將滑鼠移至時間格體驗十字對應！</p>
+                    </div>
+
+                    <!-- 時間過濾按鈕 -->
+                    <div class="flex items-center gap-3 bg-slate-900/50 p-3 rounded-2xl border border-white/10">
+                        <span class="text-xs text-cyan-200 font-bold">過濾條件:</span>
+                        <button onclick="filterTrains('all')" id="btn-train-all" class="px-3 py-1 rounded-lg text-xs font-bold bg-cyan-500 text-white">全部車次</button>
+                        <button onclick="filterTrains('before12')" id="btn-train-am" class="px-3 py-1 rounded-lg text-xs font-bold bg-white/10 hover:bg-white/20 text-slate-300">12:00 前到達集集站</button>
+                    </div>
+                </div>
+
+                <!-- 時刻表 Table -->
+                <div class="overflow-x-auto rounded-2xl border border-white/15 bg-slate-900/60 p-2">
+                    <table id="train-table" class="w-full text-center border-collapse">
+                        <thead>
+                            <tr class="bg-sky-950/80 text-cyan-200">
+                                <th class="p-3 border border-white/10 text-xs font-bold" data-col="0">車次 \ 站名</th>
+                                <th class="p-3 border border-white/10 text-sm font-bold train-header" data-col="1">二水</th>
+                                <th class="p-3 border border-white/10 text-sm font-bold train-header" data-col="2">源泉</th>
+                                <th class="p-3 border border-white/10 text-sm font-bold train-header" data-col="3">濁水</th>
+                                <th class="p-3 border border-white/10 text-sm font-bold train-header" data-col="4">龍泉</th>
+                                <th class="p-3 border border-white/10 text-sm font-bold bg-amber-500/20 text-amber-300 train-header" data-col="5">集集</th>
+                                <th class="p-3 border border-white/10 text-sm font-bold bg-emerald-500/20 text-emerald-300 train-header" data-col="6">水里</th>
+                                <th class="p-3 border border-white/10 text-sm font-bold train-header" data-col="7">車埕</th>
+                            </tr>
+                        </thead>
+                        <tbody id="train-tbody" class="divide-y divide-white/5 text-sm font-mono">
+                            <tr id="train-2705" class="train-row transition" data-row="2705">
+                                <td class="p-3 border border-white/10 font-bold text-amber-300 bg-slate-800/50 train-header" data-col="0" data-row="2705">2705</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="1" data-row="2705">08:00</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="2" data-row="2705">08:05</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="3" data-row="2705">08:15</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="4" data-row="2705">08:23</td>
+                                <td class="p-3 border border-white/10 font-bold text-amber-300 bg-amber-500/10 train-cell cursor-pointer" data-col="5" data-row="2705">08:33</td>
+                                <td class="p-3 border border-white/10 font-bold text-emerald-300 bg-emerald-500/10 train-cell cursor-pointer" data-col="6" data-row="2705">08:49</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="7" data-row="2705">08:54</td>
+                            </tr>
+                            <tr id="train-2707" class="train-row transition" data-row="2707">
+                                <td class="p-3 border border-white/10 font-bold text-amber-300 bg-slate-800/50 train-header" data-col="0" data-row="2707">2707</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="1" data-row="2707">09:15</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="2" data-row="2707">09:20</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="3" data-row="2707">09:34</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="4" data-row="2707">09:42</td>
+                                <td class="p-3 border border-white/10 font-bold text-amber-300 bg-amber-500/10 train-cell cursor-pointer" data-col="5" data-row="2707">09:51</td>
+                                <td class="p-3 border border-white/10 font-bold text-emerald-300 bg-emerald-500/10 train-cell cursor-pointer" data-col="6" data-row="2707">10:07</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="7" data-row="2707">10:12</td>
+                            </tr>
+                            <tr id="train-2711" class="train-row transition" data-row="2711">
+                                <td class="p-3 border border-white/10 font-bold text-amber-300 bg-slate-800/50 train-header" data-col="0" data-row="2711">2711</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="1" data-row="2711">10:40</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="2" data-row="2711">10:45</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="3" data-row="2711">10:55</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="4" data-row="2711">11:03</td>
+                                <td class="p-3 border border-white/10 font-bold text-amber-300 bg-amber-500/10 train-cell cursor-pointer" data-col="5" data-row="2711">11:13</td>
+                                <td class="p-3 border border-white/10 font-bold text-emerald-300 bg-emerald-500/10 train-cell cursor-pointer" data-col="6" data-row="2711">11:29</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="7" data-row="2711">11:34</td>
+                            </tr>
+                            <tr id="train-2713" class="train-row transition" data-row="2713">
+                                <td class="p-3 border border-white/10 font-bold text-rose-300 bg-slate-800/50 train-header" data-col="0" data-row="2713">2713</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="1" data-row="2713">12:00</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="2" data-row="2713">12:05</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="3" data-row="2713">12:15</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="4" data-row="2713">12:23</td>
+                                <td class="p-3 border border-white/10 font-bold text-rose-300 bg-rose-500/10 train-cell cursor-pointer" data-col="5" data-row="2713">12:33</td>
+                                <td class="p-3 border border-white/10 font-bold text-emerald-300 bg-emerald-500/10 train-cell cursor-pointer" data-col="6" data-row="2713">12:49</td>
+                                <td class="p-3 border border-white/10 train-cell cursor-pointer" data-col="7" data-row="2713">12:54</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁籤 4: 墾丁快線票價表 -->
+        <section id="tab-fare" class="tab-content">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4 border-b border-white/10 pb-4">
+                    <div>
+                        <span class="px-3 py-1 bg-amber-500/30 text-amber-300 rounded-full text-xs font-bold border border-amber-400/30">單元 9-1 階梯式票價表</span>
+                        <h2 class="text-2xl font-bold mt-2 text-white flex items-center gap-2">
+                            <i class="fa-solid fa-bus text-amber-400"></i> 台灣好行墾丁快線全票票價表
+                        </h2>
+                        <p class="text-sm text-slate-300 mt-1">階梯式二維表格！將滑鼠移至票價數字，可透過動態十字反白精準對應「起點站」與「終點站」。</p>
+                    </div>
+
+                    <!-- 下拉選擇查價器 -->
+                    <div class="flex flex-col sm:flex-row items-center gap-3 bg-slate-900/60 p-3 rounded-2xl border border-white/10 w-full lg:w-auto">
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <span class="text-xs text-slate-300">起點:</span>
+                            <select id="start-station" onchange="calculateFare()" class="bg-slate-800 text-cyan-300 font-bold text-xs p-2 rounded-xl border border-white/20 outline-none w-full sm:w-auto">
+                                <option value="0">高鐵左營站</option>
+                                <option value="1">枋寮</option>
+                                <option value="2">車城農會</option>
+                                <option value="3">海生館</option>
+                                <option value="4">恒春</option>
+                                <option value="5">南灣</option>
+                                <option value="6">墾丁牌樓</option>
+                                <option value="7">墾丁派出所</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <span class="text-xs text-slate-300">終點:</span>
+                            <select id="end-station" onchange="calculateFare()" class="bg-slate-800 text-amber-300 font-bold text-xs p-2 rounded-xl border border-white/20 outline-none w-full sm:w-auto">
+                                <option value="1">枋寮</option>
+                                <option value="2" selected>車城農會</option>
+                                <option value="3">海生館</option>
+                                <option value="4">恒春</option>
+                                <option value="5">南灣</option>
+                                <option value="6">墾丁牌樓</option>
+                                <option value="7">墾丁派出所</option>
+                                <option value="8">小灣(墾丁)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 階梯表格動態生成區域 -->
+                <div id="fare-matrix-container" class="overflow-x-auto rounded-2xl border border-white/15 bg-slate-900/60 p-2 text-xs">
+                    <!-- JavaScript 將於此動態繪製階梯表 -->
+                </div>
+
+                <!-- 票價結果展示 -->
+                <div class="mt-4 p-4 rounded-2xl bg-gradient-to-r from-indigo-900/60 to-purple-900/60 border border-white/10 flex justify-between items-center">
+                    <span class="text-slate-300 text-sm font-semibold">路線票價查詢結果： <span id="fare-result-text" class="text-cyan-300 font-bold">高鐵左營站 ⇄ 車城農會</span></span>
+                    <span id="fare-result-price" class="text-2xl font-black text-amber-400">328 元</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁籤 5: 歷程性評量 (5題) -->
+        <section id="tab-quiz" class="tab-content">
+            <div class="glass-card rounded-3xl p-6 md:p-8">
+                <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+                    <div>
+                        <span class="px-3 py-1 bg-amber-500/30 text-amber-300 rounded-full text-xs font-bold border border-amber-400/30">單元歷程評量</span>
+                        <h2 class="text-2xl font-bold mt-2 text-white flex items-center gap-2">
+                            <i class="fa-solid fa-graduation-cap text-amber-400"></i> 「生活中的表格」知識大考驗
+                        </h2>
+                    </div>
+                    <div id="quiz-score-display" class="px-4 py-2 rounded-2xl bg-amber-500/20 text-amber-300 font-black text-lg border border-amber-400/40">
+                        得分: 0 / 5
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- 第 1 題 -->
+                    <div class="bg-slate-900/50 rounded-2xl p-5 border border-white/10">
+                        <p class="text-sm md:text-base font-bold text-cyan-200">1. 在亞米早餐店價目表中，哪一種三明治最便宜？價格是多少元？</p>
+                        <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <button onclick="checkQuiz(1, 'A')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">A. 起司三明治，30元</button>
+                            <button onclick="checkQuiz(1, 'B')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">B. 火腿三明治，25元</button>
+                            <button onclick="checkQuiz(1, 'C')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">C. 豬排三明治，40元</button>
+                        </div>
+                        <div id="q1-feedback" class="mt-3 p-2 rounded-xl text-xs font-bold hidden"></div>
+                    </div>
+
+                    <!-- 第 2 題 -->
+                    <div class="bg-slate-900/50 rounded-2xl p-5 border border-white/10">
+                        <p class="text-sm md:text-base font-bold text-cyan-200">2. 觀察皮皮班上的週功課表，星期一的第 3 節是什麼課？</p>
+                        <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <button onclick="checkQuiz(2, 'A')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">A. 國語課</button>
+                            <button onclick="checkQuiz(2, 'B')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">B. 英語課</button>
+                            <button onclick="checkQuiz(2, 'C')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">C. 數學課</button>
+                        </div>
+                        <div id="q2-feedback" class="mt-3 p-2 rounded-xl text-xs font-bold hidden"></div>
+                    </div>
+
+                    <!-- 第 3 題 -->
+                    <div class="bg-slate-900/50 rounded-2xl p-5 border border-white/10">
+                        <p class="text-sm md:text-base font-bold text-cyan-200">3. 美美搭乘集集線 2705 車次列車，預計何時到達水里站？</p>
+                        <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <button onclick="checkQuiz(3, 'A')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">A. 08:49</button>
+                            <button onclick="checkQuiz(3, 'B')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">B. 08:33</button>
+                            <button onclick="checkQuiz(3, 'C')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">C. 09:15</button>
+                        </div>
+                        <div id="q3-feedback" class="mt-3 p-2 rounded-xl text-xs font-bold hidden"></div>
+                    </div>
+
+                    <!-- 第 4 題 -->
+                    <div class="bg-slate-900/50 rounded-2xl p-5 border border-white/10">
+                        <p class="text-sm md:text-base font-bold text-cyan-200">4. 妮妮想在 12:00 以前到達集集站，她最晚要坐哪一班車次？</p>
+                        <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <button onclick="checkQuiz(4, 'A')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">A. 2705 車次</button>
+                            <button onclick="checkQuiz(4, 'B')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">B. 2711 車次</button>
+                            <button onclick="checkQuiz(4, 'C')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">C. 2713 車次</button>
+                        </div>
+                        <div id="q4-feedback" class="mt-3 p-2 rounded-xl text-xs font-bold hidden"></div>
+                    </div>
+
+                    <!-- 第 5 題 -->
+                    <div class="bg-slate-900/50 rounded-2xl p-5 border border-white/10">
+                        <p class="text-sm md:text-base font-bold text-cyan-200">5. 墾丁快線票價表中，熊媽媽買了一張 54 元的車票，她可能從哪裡坐到哪裡？</p>
+                        <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <button onclick="checkQuiz(5, 'A')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">A. 車城農會 坐到 南灣</button>
+                            <button onclick="checkQuiz(5, 'B')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">B. 高鐵左營站 坐到 枋寮</button>
+                            <button onclick="checkQuiz(5, 'C')" class="p-3 rounded-xl bg-white/5 hover:bg-white/15 text-left border border-white/10 text-slate-200">C. 恆春 坐到 墾丁派出所</button>
+                        </div>
+                        <div id="q5-feedback" class="mt-3 p-2 rounded-xl text-xs font-bold hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        /* 全域變數定義 */
+        let cart = [];
+        const stations = ['高鐵左營站', '枋寮', '車城農會', '海生館', '恒春', '南灣', '墾丁牌樓', '墾丁派出所', '小灣(墾丁)'];
+        const fareData = {
+            "0-1": 187, "0-2": 328, "0-3": 336, "0-4": 361, "0-5": 381, "0-6": 401, "0-7": 401, "0-8": 401,
+            "1-2": 141, "1-3": 150, "1-4": 174, "1-5": 195, "1-6": 214, "1-7": 214, "1-8": 214,
+            "2-3": 31,  "2-4": 33,  "2-5": 54,  "2-6": 73,  "2-7": 73,  "2-8": 73,
+            "3-4": 31,  "3-5": 45,  "3-6": 65,  "3-7": 65,  "3-8": 65,
+            "4-5": 31,  "4-6": 40,  "4-7": 40,  "4-8": 40,
+            "5-6": 31,  "5-7": 31,  "5-8": 31,
+            "6-7": 31,  "6-8": 31,
+            "7-8": 31
+        };
+
+        /* 1. 頁籤切換邏輯 */
+        function switchTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.classList.add('active');
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                if (btn.id === `btn-${tabId}`) {
+                    btn.className = 'tab-btn px-4 py-2 rounded-xl text-sm font-bold border border-white/20 bg-sky-500 text-white shadow-md transition';
+                } else {
+                    btn.className = 'tab-btn px-4 py-2 rounded-xl text-sm font-bold border border-white/20 bg-white/10 hover:bg-white/20 text-slate-200 transition';
+                }
+            });
+        }
+
+        /* 2. 早餐店點餐購物車與滑桿 */
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            renderCart();
+        }
+
+        function clearCart() {
+            cart = [];
+            renderCart();
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            const totalEl = document.getElementById('cart-total');
+            const countEl = document.getElementById('cart-count');
+            const formulaEl = document.getElementById('cart-calc-formula');
+
+            if (!container) return;
+
+            if (cart.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-8">尚未選擇餐點，請點擊左側餐點！</p>`;
+                totalEl.innerText = '0 元';
+                countEl.innerText = '0 件';
+                formulaEl.classList.add('hidden');
+                return;
+            }
+
+            let total = 0;
+            let itemHtml = '';
+            let formulaText = [];
+
+            cart.forEach((item, idx) => {
+                total += item.price;
+                formulaText.push(item.price);
+                itemHtml += `
+                    <div class="flex justify-between items-center text-xs bg-white/5 p-2 rounded-lg">
+                        <span class="text-slate-200">${item.name}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-amber-400 font-bold">${item.price}元</span>
+                            <button onclick="removeItem(${idx})" class="text-slate-400 hover:text-rose-400"><i class="fa-solid fa-circle-xmark"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = itemHtml;
+            totalEl.innerText = `${total} 元`;
+            countEl.innerText = `${cart.length} 件`;
+            
+            formulaEl.classList.remove('hidden');
+            formulaEl.innerText = `算式: ${formulaText.join(' + ')} = ${total} 元`;
+        }
+
+        function updateBudgetFilter(val) {
+            const valEl = document.getElementById('budget-val');
+            if (valEl) valEl.innerText = `${val} 元`;
+
+            const burgers = document.querySelectorAll('.burger-item');
+            burgers.forEach(burger => {
+                const price = parseInt(burger.getAttribute('data-price'));
+                if (price <= parseInt(val)) {
+                    burger.style.opacity = '1';
+                    burger.style.pointerEvents = 'auto';
+                } else {
+                    burger.style.opacity = '0.3';
+                    burger.style.pointerEvents = 'none';
+                }
+            });
+        }
+
+        /* 3. 週功課表十字交叉對應與統計 */
+        function initScheduleEvents() {
+            const scheduleTable = document.getElementById('schedule-table');
+            if (!scheduleTable) return;
+
+            const cells = scheduleTable.querySelectorAll('.cell-item');
+            cells.forEach(cell => {
+                cell.addEventListener('mouseenter', function() {
+                    const r = this.getAttribute('data-row');
+                    const c = this.getAttribute('data-col');
+                    highlightSchedule(r, c, this);
+                });
+
+                cell.addEventListener('click', function() {
+                    const r = this.getAttribute('data-row');
+                    const c = this.getAttribute('data-col');
+                    const dayNames = ['', '星期一', '星期二', '星期三', '星期四', '星期五'];
+                    const subject = this.innerText;
+                    document.getElementById('schedule-info').innerText = `${dayNames[c]} 第 ${r} 節 ➔ 【${subject}】`;
+                });
+            });
+
+            scheduleTable.addEventListener('mouseleave', clearScheduleHighlight);
+        }
+
+        function highlightSchedule(row, col, target) {
+            clearScheduleHighlight();
+            const scheduleTable = document.getElementById('schedule-table');
+            const cells = scheduleTable.querySelectorAll('td, th');
+            cells.forEach(c => {
+                const r = c.getAttribute('data-row');
+                const colAttr = c.getAttribute('data-col');
+                if (c === target) {
+                    c.classList.add('highlight-active');
+                } else if ((r && r === row) || (colAttr && colAttr === col)) {
+                    c.classList.add('highlight-cross');
+                }
+            });
+        }
+
+        function clearScheduleHighlight() {
+            const scheduleTable = document.getElementById('schedule-table');
+            if (!scheduleTable) return;
+            const cells = scheduleTable.querySelectorAll('td, th');
+            cells.forEach(c => c.classList.remove('highlight-cross', 'highlight-active'));
+        }
+
+        function countSubject(subName) {
+            let count = 0;
+            const scheduleTable = document.getElementById('schedule-table');
+            const cells = scheduleTable.querySelectorAll('.cell-item');
+            cells.forEach(c => {
+                if (c.innerText.trim() === subName) count++;
+            });
+            alertModal(`💡 統計結果：皮皮班上一週共有 ${count} 節【${subName}】課！`);
+        }
+
+        /* 4. 時刻表動態過濾與橫向/縱向十字高亮 */
+        function filterTrains(mode) {
+            const rAll = document.getElementById('btn-train-all');
+            const rAm = document.getElementById('btn-train-am');
+            const row2713 = document.getElementById('train-2713');
+
+            if (mode === 'before12') {
+                rAm.className = 'px-3 py-1 rounded-lg text-xs font-bold bg-cyan-500 text-white';
+                rAll.className = 'px-3 py-1 rounded-lg text-xs font-bold bg-white/10 hover:bg-white/20 text-slate-300';
+                if (row2713) row2713.style.display = 'none';
+            } else {
+                rAll.className = 'px-3 py-1 rounded-lg text-xs font-bold bg-cyan-500 text-white';
+                rAm.className = 'px-3 py-1 rounded-lg text-xs font-bold bg-white/10 hover:bg-white/20 text-slate-300';
+                if (row2713) row2713.style.display = 'table-row';
+            }
+        }
+
+        function initTrainEvents() {
+            const trainTable = document.getElementById('train-table');
+            if (!trainTable) return;
+
+            const trainCells = trainTable.querySelectorAll('.train-cell, .train-header');
+            trainCells.forEach(cell => {
+                cell.addEventListener('mouseenter', function() {
+                    const row = this.getAttribute('data-row');
+                    const col = this.getAttribute('data-col');
+                    highlightTrainTable(row, col, this);
+                });
+            });
+
+            trainTable.addEventListener('mouseleave', clearTrainHighlight);
+        }
+
+        function highlightTrainTable(row, col, target) {
+            clearTrainHighlight();
+            const trainTable = document.getElementById('train-table');
+            if (!trainTable) return;
+
+            const allCells = trainTable.querySelectorAll('td, th');
+            allCells.forEach(c => {
+                const r = c.getAttribute('data-row');
+                const colAttr = c.getAttribute('data-col');
+                if (c === target) {
+                    c.classList.add('highlight-active');
+                } else if ((row && r === row) || (col && colAttr === col)) {
+                    c.classList.add('highlight-cross');
+                }
+            });
+        }
+
+        function clearTrainHighlight() {
+            const trainTable = document.getElementById('train-table');
+            if (!trainTable) return;
+            const allCells = trainTable.querySelectorAll('td, th');
+            allCells.forEach(c => c.classList.remove('highlight-cross', 'highlight-active'));
+        }
+
+        /* 5. 墾丁快線階梯式票價表與動態十字高亮 */
+        function renderFareMatrix() {
+            const container = document.getElementById('fare-matrix-container');
+            if (!container) return;
+
+            let html = `<table id="fare-table" class="w-full text-center border-collapse"><thead><tr class="bg-indigo-900/60 text-cyan-200"><th class="p-2 border border-white/10 font-bold">起點 \\ 終點</th>`;
+            for (let i = 1; i < stations.length; i++) {
+                html += `<th id="fare-col-header-${i}" class="p-2 border border-white/10 font-bold fare-header">${stations[i]}</th>`;
+            }
+            html += `</tr></thead><tbody>`;
+
+            for (let r = 0; r < stations.length - 1; r++) {
+                html += `<tr><td id="fare-row-header-${r}" class="p-2 border border-white/10 bg-slate-800 font-bold text-cyan-300 text-left fare-header">${stations[r]}</td>`;
+                for (let c = 1; c < stations.length; c++) {
+                    if (c <= r) {
+                        html += `<td class="p-2 border border-white/5 bg-slate-900/40 text-slate-600">-</td>`;
+                    } else {
+                        const key = `${r}-${c}`;
+                        const price = fareData[key] || '-';
+                        html += `<td id="fare-cell-${r}-${c}" data-row="${r}" data-col="${c}" class="p-2 border border-white/10 text-slate-200 fare-cell cursor-pointer transition font-mono hover:bg-cyan-500/20">${price}</td>`;
+                    }
+                }
+                html += `</tr>`;
+            }
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+
+            bindFareHoverEvents();
+        }
+
+        function bindFareHoverEvents() {
+            const fareTable = document.getElementById('fare-table');
+            if (!fareTable) return;
+
+            const fareCells = fareTable.querySelectorAll('.fare-cell');
+            fareCells.forEach(cell => {
+                cell.addEventListener('mouseenter', function() {
+                    const r = parseInt(this.getAttribute('data-row'));
+                    const c = parseInt(this.getAttribute('data-col'));
+                    highlightFareCross(r, c, this);
+                });
+            });
+
+            fareTable.addEventListener('mouseleave', calculateFare);
+        }
+
+        function highlightFareCross(r, c, target) {
+            clearFareHighlight();
+
+            const rowHeader = document.getElementById(`fare-row-header-${r}`);
+            const colHeader = document.getElementById(`fare-col-header-${c}`);
+            if (rowHeader) rowHeader.classList.add('highlight-cross');
+            if (colHeader) colHeader.classList.add('highlight-cross');
+
+            const fareCells = document.querySelectorAll('.fare-cell');
+            fareCells.forEach(cell => {
+                const rowAttr = parseInt(cell.getAttribute('data-row'));
+                const colAttr = parseInt(cell.getAttribute('data-col'));
+                if (cell === target) {
+                    cell.classList.add('highlight-active');
+                } else if (rowAttr === r || colAttr === c) {
+                    cell.classList.add('highlight-cross');
+                }
+            });
+
+            document.getElementById('fare-result-text').innerText = `${stations[r]} ⇄ ${stations[c]}`;
+            const price = fareData[`${r}-${c}`];
+            if (price) {
+                document.getElementById('fare-result-price').innerText = `${price} 元`;
+            }
+        }
+
+        function clearFareHighlight() {
+            const all = document.querySelectorAll('.fare-cell, .fare-header');
+            all.forEach(el => el.classList.remove('highlight-cross', 'highlight-active'));
+        }
+
+        function calculateFare() {
+            let start = parseInt(document.getElementById('start-station').value);
+            let end = parseInt(document.getElementById('end-station').value);
+
+            if (start >= end) {
+                start = end - 1;
+                if (start < 0) start = 0;
+            }
+
+            clearFareHighlight();
+
+            const targetCell = document.getElementById(`fare-cell-${start}-${end}`);
+            const price = fareData[`${start}-${end}`];
+
+            if (targetCell && price) {
+                highlightFareCross(start, end, targetCell);
+            }
+        }
+
+        /* 6. 歷程評量問答與對錯提示 */
+        const quizAnswers = { 1: 'B', 2: 'C', 3: 'A', 4: 'B', 5: 'A' };
+        let userScores = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+        function checkQuiz(qNum, choice) {
+            const feedbackEl = document.getElementById(`q${qNum}-feedback`);
+            if (!feedbackEl) return;
+
+            feedbackEl.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-300', 'bg-rose-500/20', 'text-rose-300');
+
+            if (choice === quizAnswers[qNum]) {
+                userScores[qNum] = 1;
+                feedbackEl.classList.add('bg-emerald-500/20', 'text-emerald-300');
+                feedbackEl.innerText = '⭕ 答對了！非常優秀！';
+            } else {
+                userScores[qNum] = 0;
+                feedbackEl.classList.add('bg-rose-500/20', 'text-rose-300');
+                feedbackEl.innerText = '❌ 答錯囉，再重新觀察看看表格上的數字吧！';
+            }
+
+            const totalScore = Object.values(userScores).reduce((a, b) => a + b, 0);
+            const scoreDisplay = document.getElementById('quiz-score-display');
+            if (scoreDisplay) scoreDisplay.innerText = `得分: ${totalScore} / 5`;
+        }
+
+        /* 彈出提示訊息 */
+        function alertModal(msg) {
+            const modal = document.createElement('div');
+            modal.className = "fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4";
+            modal.innerHTML = `
+                <div class="glass-card p-6 rounded-2xl max-w-sm w-full text-center space-y-4">
+                    <p class="text-white text-base font-bold">${msg}</p>
+                    <button onclick="this.parentElement.parentElement.remove()" class="shinkai-btn px-6 py-2 rounded-xl text-white font-bold text-sm">確定</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        /* 初始化載入事件 */
+        window.onload = function() {
+            initScheduleEvents();
+            initTrainEvents();
+            renderFareMatrix();
+            calculateFare();
+        };
+    </script>
+</body>
+</html>
