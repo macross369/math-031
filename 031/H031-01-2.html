@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>錢幣化聚與四位數點數 - 互動實驗室</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+TC:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        shinkai: {
+                            sky: '#2b5876',
+                            dusk: '#4e4376',
+                            sunset: '#f857a6',
+                            orange: '#ff5858',
+                            sun: '#fecfef',
+                            cloud: 'rgba(255, 255, 255, 0.85)',
+                            card: 'rgba(255, 255, 255, 0.92)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                        rounded: ['"Zen Maru Gothic"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 30%, #683072 70%, #9b59b6 100%);
+            background-attachment: fixed;
+            font-family: 'Noto Sans TC', sans-serif;
+            min-height: 100vh;
+            color: #2d3748;
+        }
+
+        /* Floating background clouds */
+        .cloud-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .cloud {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            filter: blur(20px);
+            animation: floatCloud 25s infinite linear;
+        }
+
+        @keyframes floatCloud {
+            0% { transform: translateX(-200px) translateY(0); }
+            50% { transform: translateX(50vw) translateY(-20px); }
+            100% { transform: translateX(100vw) translateY(0); }
+        }
+
+        /* Coin & Banknote Graphics */
+        .banknote-1000 {
+            background: linear-gradient(135deg, #2b6cb0, #3182ce);
+            border: 2px solid #bee3f8;
+            box-shadow: 0 4px 6px rgba(49, 130, 206, 0.3);
+        }
+        .banknote-500 {
+            background: linear-gradient(135deg, #805ad5, #b794f4);
+            border: 2px solid #e9d8fd;
+            box-shadow: 0 4px 6px rgba(128, 90, 213, 0.3);
+        }
+        .banknote-100 {
+            background: linear-gradient(135deg, #e53e3e, #feb2b2);
+            border: 2px solid #fff5f5;
+            box-shadow: 0 4px 6px rgba(229, 62, 62, 0.3);
+        }
+        .coin-50 {
+            background: radial-gradient(circle at 35% 35%, #ffd700, #b8860b);
+            border: 2px solid #fff;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+        }
+        .coin-10 {
+            background: radial-gradient(circle at 35% 35%, #e2e8f0, #94a3b8);
+            border: 2px solid #fff;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+        }
+        .coin-5 {
+            background: radial-gradient(circle at 35% 35%, #cbd5e1, #64748b);
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .coin-1 {
+            background: radial-gradient(circle at 35% 35%, #dd6b20, #9c4221);
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Glassmorphic card styling */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: #1a202c;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(253, 160, 133, 0.4);
+        }
+
+        /* Interactive pulse effect */
+        .pulse-effect {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="relative min-h-screen pb-12">
+
+    <div class="cloud-bg">
+        <div class="cloud" style="width: 300px; height: 300px; top: 10%; left: -50px; animation-duration: 35s;"></div>
+        <div class="cloud" style="width: 450px; height: 450px; top: 40%; left: 20%; animation-duration: 45s;"></div>
+        <div class="cloud" style="width: 250px; height: 250px; top: 70%; left: 60%; animation-duration: 30s;"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="relative z-10 max-w-5xl mx-auto px-4 pt-6">
+
+        <!-- 修改：新增 閒雲數學小棧品牌標頭 -->
+        <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
+            <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+            <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+        </div>
+
+        <header class="text-center mb-6">
+            <div class="inline-block px-4 py-1 rounded-full bg-white/20 text-white text-xs md:text-sm font-semibold tracking-wider mb-2 backdrop-blur-sm border border-white/30">
+                <i class="fa-solid fa-graduation-cap mr-1"></i> 國小數學 1-2 點數錢幣與化聚探究
+            </div>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-wide font-rounded drop-shadow-md">
+                ✨ 錢幣化聚與四位數點數 Lab
+            </h1>
+            <p class="text-white/80 text-sm md:text-base mt-1">動態操作錢幣、觀察進位與換算，輕鬆掌控 1000 元與 100 元的聚散關係！</p>
+        </header>
+
+        <nav class="flex justify-center gap-2 md:gap-4 mb-6">
+            <button onclick="switchTab('tab-counting')" id="btn-tab-counting" class="tab-btn active px-4 py-2.5 rounded-xl font-rounded text-sm md:text-base transition-all duration-300 flex items-center gap-2">
+                <i class="fa-solid fa-coins"></i> 1. 錢幣點數與組合
+            </button>
+            <button onclick="switchTab('tab-regroup')" id="btn-tab-regroup" class="tab-btn bg-white/40 text-white hover:bg-white/60 px-4 py-2.5 rounded-xl font-rounded text-sm md:text-base transition-all duration-300 flex items-center gap-2">
+                <i class="fa-solid fa-arrows-rotate"></i> 2. 千與百動態化聚
+            </button>
+            <button onclick="switchTab('tab-quiz')" id="btn-tab-quiz" class="tab-btn bg-white/40 text-white hover:bg-white/60 px-4 py-2.5 rounded-xl font-rounded text-sm md:text-base transition-all duration-300 flex items-center gap-2">
+                <i class="fa-solid fa-clipboard-check"></i> 3. 歷程性小評量
+            </button>
+        </nav>
+
+        <!-- ================= TAB 1: 錢幣點數與自由組合 ================= -->
+        <div id="tab-counting" class="tab-content block">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Left Column: Controls & Presets -->
+                <div class="lg:col-span-5 glass-card rounded-2xl p-5">
+                    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2 border-b pb-2">
+                        <i class="fa-solid fa-sliders text-sky-600"></i> 調整錢幣數量
+                    </h2>
+
+                    <!-- Preset Textbook Scenarios -->
+                    <div class="mb-4 bg-sky-50 p-3 rounded-xl border border-sky-100">
+                        <span class="text-xs font-bold text-sky-800 block mb-2"><i class="fa-solid fa-bookmark"></i> 課本快速情境載入：</span>
+                        <div class="grid grid-cols-3 gap-2 text-xs">
+                            <button onclick="loadPreset(6,3,2,4)" class="bg-white hover:bg-sky-100 text-sky-900 py-1.5 px-2 rounded-lg border font-medium text-center transition">
+                                課本①<br><span class="text-gray-500">6千3百2十4</span>
+                            </button>
+                            <button onclick="loadPreset(2,3,0,5)" class="bg-white hover:bg-sky-100 text-sky-900 py-1.5 px-2 rounded-lg border font-medium text-center transition">
+                                美美<br><span class="text-gray-500">2305元</span>
+                            </button>
+                            <button onclick="loadPreset(1,13,0,0)" class="bg-white hover:bg-sky-100 text-sky-900 py-1.5 px-2 rounded-lg border font-medium text-center transition">
+                                丹丹<br><span class="text-gray-500">13個百元</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sliders -->
+                    <div class="space-y-4 text-sm">
+                        <!-- 1000元 -->
+                        <div>
+                            <div class="flex justify-between font-semibold text-blue-900 mb-1">
+                                <span><i class="fa-solid fa-money-bill-wave text-blue-600"></i> 1000 元鈔票</span>
+                                <span id="val-1000" class="text-blue-700 font-bold text-base">0 張</span>
+                            </div>
+                            <input type="range" id="slider-1000" min="0" max="9" value="0" oninput="updateCoins()" class="w-full accent-blue-600 h-2 bg-slate-200 rounded-lg cursor-pointer">
+                        </div>
+
+                        <!-- 100元 -->
+                        <div>
+                            <div class="flex justify-between font-semibold text-red-800 mb-1">
+                                <span><i class="fa-solid fa-money-bill-wave text-red-600"></i> 100 元鈔票</span>
+                                <span id="val-100" class="text-red-700 font-bold text-base">0 張</span>
+                            </div>
+                            <input type="range" id="slider-100" min="0" max="25" value="0" oninput="updateCoins()" class="w-full accent-red-600 h-2 bg-slate-200 rounded-lg cursor-pointer">
+                            <span class="text-[11px] text-gray-500">（滑桿可調至 25 張，測試多個百元聚成千）</span>
+                        </div>
+
+                        <!-- 10元 -->
+                        <div>
+                            <div class="flex justify-between font-semibold text-slate-800 mb-1">
+                                <span><i class="fa-solid fa-circle text-slate-400"></i> 10 元硬幣</span>
+                                <span id="val-10" class="text-slate-700 font-bold text-base">0 個</span>
+                            </div>
+                            <input type="range" id="slider-10" min="0" max="15" value="0" oninput="updateCoins()" class="w-full accent-slate-600 h-2 bg-slate-200 rounded-lg cursor-pointer">
+                        </div>
+
+                        <!-- 1元 -->
+                        <div>
+                            <div class="flex justify-between font-semibold text-amber-900 mb-1">
+                                <span><i class="fa-solid fa-coins text-amber-600"></i> 1 元硬幣</span>
+                                <span id="val-1" class="text-amber-800 font-bold text-base">0 個</span>
+                            </div>
+                            <input type="range" id="slider-1" min="0" max="15" value="0" oninput="updateCoins()" class="w-full accent-amber-600 h-2 bg-slate-200 rounded-lg cursor-pointer">
+                        </div>
+                    </div>
+
+                    <button onclick="loadPreset(0,0,0,0)" class="w-full mt-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl border text-sm transition">
+                        <i class="fa-solid fa-rotate-left"></i> 重置清空
+                    </button>
+                </div>
+
+                <!-- Right Column: Visual Stage & Results -->
+                <div class="lg:col-span-7 glass-card rounded-2xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-3 border-b pb-2">
+                            <h2 class="text-lg font-bold text-slate-800">
+                                <i class="fa-solid fa-eye text-indigo-600"></i> 錢幣展示舞台
+                            </h2>
+                            <span class="text-xs text-slate-500">動態對應圖樣</span>
+                        </div>
+
+                        <!-- Coin Display Area -->
+                        <div id="coin-stage" class="min-h-[220px] max-h-[340px] overflow-y-auto p-3 bg-slate-50/80 rounded-xl border border-slate-200 space-y-3">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Total Result Card -->
+                    <div class="mt-4 bg-gradient-to-r from-sky-600 to-indigo-600 text-white rounded-xl p-4 shadow-md">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-xs opacity-90 block">合起來是：</span>
+                                <div class="text-xs md:text-sm mt-0.5 space-x-1" id="breakdown-text">
+                                    0個千、0個百、0個十、0個一
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs opacity-80 block">總金額</span>
+                                <span id="total-amount" class="text-2xl md:text-3xl font-extrabold font-rounded tracking-wide">0 元</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: 千與百動態化聚 ================= -->
+        <div id="tab-regroup" class="tab-content hidden">
+            <div class="glass-card rounded-2xl p-6">
+                <div class="max-w-3xl mx-auto text-center mb-6">
+                    <h2 class="text-xl md:text-2xl font-bold text-slate-800 font-rounded mb-2">
+                        ⚡ 百元與千元「化聚與換算」實驗室
+                    </h2>
+                    <p class="text-sm text-slate-600">
+                        「10 個 100 元可以換成 1 個 1000 元」！點擊按鈕來動態體驗錢幣的聚合與拆解。
+                    </p>
+                </div>
+
+                <!-- Interactive Conversion Canvas -->
+                <div class="bg-gradient-to-b from-sky-50/60 to-purple-50/60 border border-sky-100 rounded-2xl p-6 shadow-inner">
+                    <!-- Current State Display -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        
+                        <!-- 1000元區 -->
+                        <div class="bg-white/90 p-5 rounded-xl border border-blue-200 shadow-sm text-center">
+                            <span class="text-xs font-bold text-blue-600 uppercase tracking-wider block mb-1">千位數 (1000元鈔票)</span>
+                            <div class="text-4xl font-extrabold text-blue-900 font-rounded my-2" id="regroup-thousands">
+                                0 <span class="text-base font-normal">張</span>
+                            </div>
+                            <div id="regroup-1000-icons" class="flex flex-wrap justify-center gap-1.5 min-h-[60px] p-2 bg-blue-50/50 rounded-lg">
+                                <!-- JS icons -->
+                            </div>
+                        </div>
+
+                        <!-- 100元區 -->
+                        <div class="bg-white/90 p-5 rounded-xl border border-red-200 shadow-sm text-center">
+                            <span class="text-xs font-bold text-red-600 uppercase tracking-wider block mb-1">百位數 (100元鈔票)</span>
+                            <div class="text-4xl font-extrabold text-red-900 font-rounded my-2" id="regroup-hundreds">
+                                13 <span class="text-base font-normal">張</span>
+                            </div>
+                            <div id="regroup-100-icons" class="flex flex-wrap justify-center gap-1.5 min-h-[60px] p-2 bg-red-50/50 rounded-lg">
+                                <!-- JS icons -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Controls -->
+                    <div class="mt-6 flex flex-wrap justify-center gap-3">
+                        <button onclick="doRegroup(10)" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition transform active:scale-95 flex items-center gap-2">
+                            <i class="fa-solid fa-compress"></i> 聚合：將 10 張 100 元 變成 1 張 1000 元
+                        </button>
+                        <button onclick="doSplit()" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition transform active:scale-95 flex items-center gap-2">
+                            <i class="fa-solid fa-expand"></i> 拆解：將 1 張 1000 元 換成 10 張 100 元
+                        </button>
+                    </div>
+
+                    <!-- Preset Scenarios for Regrouping -->
+                    <div class="mt-6 border-t pt-4 flex flex-wrap justify-center items-center gap-2 text-xs">
+                        <span class="text-slate-600 font-bold">思考題練習：</span>
+                        <button onclick="setRegroupState(0, 13)" class="bg-white hover:bg-slate-100 text-slate-800 px-3 py-1.5 rounded-lg border">
+                            丹丹：13個百元？
+                        </button>
+                        <button onclick="setRegroupState(0, 23)" class="bg-white hover:bg-slate-100 text-slate-800 px-3 py-1.5 rounded-lg border">
+                            多多：23個百元？
+                        </button>
+                        <button onclick="setRegroupState(5, 15)" class="bg-white hover:bg-slate-100 text-slate-800 px-3 py-1.5 rounded-lg border">
+                            類題：5張千元+15張百元？
+                        </button>
+                    </div>
+
+                    <!-- Explanatory Box -->
+                    <div id="regroup-explanation" class="mt-4 p-4 bg-sky-100/80 border border-sky-200 rounded-xl text-sky-900 text-sm font-medium text-center">
+                        💡 點擊上方的「聚合」或「拆解」觀察總金額的變化與對應關係！
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: 歷程性小評量 (5題) ================= -->
+        <div id="tab-quiz" class="tab-content hidden">
+            <div class="glass-card rounded-2xl p-6">
+                <!-- Quiz Header -->
+                <div class="flex justify-between items-center mb-6 border-b pb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800 font-rounded flex items-center gap-2">
+                            <i class="fa-solid fa-circle-question text-purple-600"></i> 錢幣點數與化聚 - 自我檢測
+                        </h2>
+                        <p class="text-xs text-slate-500">共 5 題，試著完成題目檢驗學習成果吧！</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-500 block">得分</span>
+                        <span id="quiz-score" class="text-2xl font-black text-indigo-600 font-rounded">0 / 50</span>
+                    </div>
+                </div>
+
+                <!-- Questions Container -->
+                <div class="space-y-6" id="quiz-container">
+                    
+                    <!-- Question 1 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm" id="q1-box">
+                        <div class="font-bold text-slate-800 mb-2">
+                            <span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs mr-2">第 1 題</span>
+                            「6 個千、3 個百、2 個十和 4 個一」，合起來是多少元？
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3 text-sm">
+                            <button onclick="checkAnswer(1, 'A')" class="q1-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">A) 6324 元</button>
+                            <button onclick="checkAnswer(1, 'B')" class="q1-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">B) 6234 元</button>
+                            <button onclick="checkAnswer(1, 'C')" class="q1-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">C) 3624 元</button>
+                            <button onclick="checkAnswer(1, 'D')" class="q1-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">D) 6342 元</button>
+                        </div>
+                        <div id="q1-feedback" class="mt-2 text-xs font-semibold hidden"></div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm" id="q2-box">
+                        <div class="font-bold text-slate-800 mb-2">
+                            <span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs mr-2">第 2 題</span>
+                            丹丹手上有 13 個百元鈔票，可以換成幾張一千元和幾張一百元？
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3 text-sm">
+                            <button onclick="checkAnswer(2, 'A')" class="q2-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">A) 1 個千元 和 3 個百元</button>
+                            <button onclick="checkAnswer(2, 'B')" class="q2-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">B) 3 個千元 和 1 個百元</button>
+                            <button onclick="checkAnswer(2, 'C')" class="q2-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">C) 13 個千元</button>
+                            <button onclick="checkAnswer(2, 'D')" class="q2-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">D) 10 個千元 和 3 個百元</button>
+                        </div>
+                        <div id="q2-feedback" class="mt-2 text-xs font-semibold hidden"></div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm" id="q3-box">
+                        <div class="font-bold text-slate-800 mb-2">
+                            <span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs mr-2">第 3 題</span>
+                            爸爸買皮夾花了 4235 元。妮妮付了「2張1000元、4張500元、2張100元、3個10元和5個1元」，請問妮妮付的錢正確嗎？
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-3 text-sm">
+                            <button onclick="checkAnswer(3, 'A')" class="q3-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">A) 正確 (因為金額剛好等於 4235 元)</button>
+                            <button onclick="checkAnswer(3, 'B')" class="q3-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">B) 錯誤 (金額不對)</button>
+                        </div>
+                        <div id="q3-feedback" class="mt-2 text-xs font-semibold hidden"></div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm" id="q4-box">
+                        <div class="font-bold text-slate-800 mb-2">
+                            <span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs mr-2">第 4 題</span>
+                            算算看：「5 張千元、15 張百元、0 個十和 0 個一」，合起來是多少元？
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3 text-sm">
+                            <button onclick="checkAnswer(4, 'A')" class="q4-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">A) 5150 元</button>
+                            <button onclick="checkAnswer(4, 'B')" class="q4-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">B) 6500 元</button>
+                            <button onclick="checkAnswer(4, 'C')" class="q4-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">C) 5500 元</button>
+                            <button onclick="checkAnswer(4, 'D')" class="q4-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">D) 6050 元</button>
+                        </div>
+                        <div id="q4-feedback" class="mt-2 text-xs font-semibold hidden"></div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm" id="q5-box">
+                        <div class="font-bold text-slate-800 mb-2">
+                            <span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs mr-2">第 5 題</span>
+                            阿嬤買行李箱要付 3050 元，下列哪一個錢幣組合剛好是 3050 元？
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3 text-sm">
+                            <button onclick="checkAnswer(5, 'A')" class="q5-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">A) 3 張 1000 元 和 5 個 100 元</button>
+                            <button onclick="checkAnswer(5, 'B')" class="q5-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">B) 3 張 1000 元 和 5 個 10 元</button>
+                            <button onclick="checkAnswer(5, 'C')" class="q5-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">C) 30 張 100 元 和 5 個 1 元</button>
+                            <button onclick="checkAnswer(5, 'D')" class="q5-opt border rounded-lg p-2 hover:bg-indigo-50 text-left">D) 3 個 100 元 和 5 個 10 元</button>
+                        </div>
+                        <div id="q5-feedback" class="mt-2 text-xs font-semibold hidden"></div>
+                    </div>
+
+                </div>
+
+                <!-- Reset Quiz Button -->
+                <div class="mt-6 text-center">
+                    <button onclick="resetQuiz()" class="px-5 py-2 bg-slate-800 text-white rounded-xl text-sm font-medium hover:bg-slate-700 transition">
+                        <i class="fa-solid fa-rotate-right"></i> 重新測驗
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-white/70 text-xs">
+            <p>設計專為國小數學課程使用 | 支援 Google 協作平台無縫嵌入</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript Core Logic -->
+    <script>
+        
+        // Tab switching logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('bg-white/40', 'text-white');
+            });
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.add('active');
+            activeBtn.classList.remove('bg-white/40', 'text-white');
+        }
+
+        // ================= LAB 1: COIN COUNTING =================
+        function updateCoins() {
+            const c1000 = parseInt(document.getElementById('slider-1000').value);
+            const c100 = parseInt(document.getElementById('slider-100').value);
+            const c10 = parseInt(document.getElementById('slider-10').value);
+            const c1 = parseInt(document.getElementById('slider-1').value);
+
+            // Update Text Displays
+            document.getElementById('val-1000').innerText = c1000 + ' 張';
+            document.getElementById('val-100').innerText = c100 + ' 張';
+            document.getElementById('val-10').innerText = c10 + ' 個';
+            document.getElementById('val-1').innerText = c1 + ' 個';
+
+            // Total calculation
+            const total = (c1000 * 1000) + (c100 * 100) + (c10 * 10) + (c1 * 1);
+            document.getElementById('total-amount').innerText = total.toLocaleString() + ' 元';
+
+            // Breakdown text
+            document.getElementById('breakdown-text').innerText = `${c1000}個千、${c100}個百、${c10}個十、${c1}個一`;
+
+            // Render Coin Stage
+            renderCoinStage(c1000, c100, c10, c1);
+        }
+
+        function renderCoinStage(c1000, c100, c10, c1) {
+            const stage = document.getElementById('coin-stage');
+            stage.innerHTML = '';
+
+            if (c1000 === 0 && c100 === 0 && c10 === 0 && c1 === 0) {
+                stage.innerHTML = '<div class="text-center text-slate-400 py-12 text-sm"><i class="fa-solid fa-hand-pointer text-2xl mb-2 block"></i>滑動左側滑桿或點擊情境按鈕來擺放錢幣</div>';
+                return;
+            }
+
+            // Render 1000s
+            if (c1000 > 0) {
+                const group1000 = document.createElement('div');
+                group1000.className = "mb-2";
+                group1000.innerHTML = `<span class="text-xs font-bold text-blue-700 block mb-1">1000元鈔票 (${c1000}張)：</span>`;
+                const container = document.createElement('div');
+                container.className = "flex flex-wrap gap-2";
+                for (let i = 0; i < c1000; i++) {
+                    container.innerHTML += `<div class="banknote-1000 text-white rounded-md px-3 py-1.5 text-xs font-bold flex items-center gap-1 shadow">
+                        <i class="fa-solid fa-money-bill"></i> 1000
+                    </div>`;
+                }
+                group1000.appendChild(container);
+                stage.appendChild(group1000);
+            }
+
+            // Render 100s
+            if (c100 > 0) {
+                const group100 = document.createElement('div');
+                group100.className = "mb-2";
+                group100.innerHTML = `<span class="text-xs font-bold text-red-700 block mb-1">100元鈔票 (${c100}張)：</span>`;
+                const container = document.createElement('div');
+                container.className = "flex flex-wrap gap-1.5";
+                for (let i = 0; i < c100; i++) {
+                    container.innerHTML += `<div class="banknote-100 text-red-900 rounded-md px-2.5 py-1 text-xs font-bold flex items-center gap-1 shadow">
+                        <i class="fa-solid fa-money-bill"></i> 100
+                    </div>`;
+                }
+                group100.appendChild(container);
+                stage.appendChild(group100);
+            }
+
+            // Render 10s
+            if (c10 > 0) {
+                const group10 = document.createElement('div');
+                group10.className = "mb-2";
+                group10.innerHTML = `<span class="text-xs font-bold text-slate-700 block mb-1">10元硬幣 (${c10}個)：</span>`;
+                const container = document.createElement('div');
+                container.className = "flex flex-wrap gap-2";
+                for (let i = 0; i < c10; i++) {
+                    container.innerHTML += `<div class="coin-10 text-slate-800 w-8 h-8 rounded-full font-bold text-xs flex items-center justify-center shadow">
+                        10
+                    </div>`;
+                }
+                group10.appendChild(container);
+                stage.appendChild(group10);
+            }
+
+            // Render 1s
+            if (c1 > 0) {
+                const group1 = document.createElement('div');
+                group1.className = "mb-2";
+                group1.innerHTML = `<span class="text-xs font-bold text-amber-800 block mb-1">1元硬幣 (${c1}個)：</span>`;
+                const container = document.createElement('div');
+                container.className = "flex flex-wrap gap-2";
+                for (let i = 0; i < c1; i++) {
+                    container.innerHTML += `<div class="coin-1 text-white w-7 h-7 rounded-full font-bold text-xs flex items-center justify-center shadow">
+                        1
+                    </div>`;
+                }
+                group1.appendChild(container);
+                stage.appendChild(group1);
+            }
+        }
+
+        function loadPreset(k, h, t, o) {
+            document.getElementById('slider-1000').value = k;
+            document.getElementById('slider-100').value = h;
+            document.getElementById('slider-10').value = t;
+            document.getElementById('slider-1').value = o;
+            updateCoins();
+        }
+
+        // ================= LAB 2: REGROUPING LOGIC =================
+        let regroupState = {
+            thousands: 0,
+            hundreds: 13
+        };
+
+        function updateRegroupDisplay(message) {
+            document.getElementById('regroup-thousands').innerText = regroupState.thousands + ' 張';
+            document.getElementById('regroup-hundreds').innerText = regroupState.hundreds + ' 張';
+
+            // Render Thousand Icons
+            const kBox = document.getElementById('regroup-1000-icons');
+            kBox.innerHTML = '';
+            for (let i = 0; i < regroupState.thousands; i++) {
+                kBox.innerHTML += `<div class="banknote-1000 text-white text-xs px-2 py-1 rounded font-bold">1000</div>`;
+            }
+            if (regroupState.thousands === 0) kBox.innerHTML = `<span class="text-xs text-slate-400 self-center">無千元鈔票</span>`;
+
+            // Render Hundred Icons
+            const hBox = document.getElementById('regroup-100-icons');
+            hBox.innerHTML = '';
+            for (let i = 0; i < regroupState.hundreds; i++) {
+                hBox.innerHTML += `<div class="banknote-100 text-red-900 text-xs px-2 py-1 rounded font-bold">100</div>`;
+            }
+            if (regroupState.hundreds === 0) hBox.innerHTML = `<span class="text-xs text-slate-400 self-center">無百元鈔票</span>`;
+
+            // Calculate total
+            const total = (regroupState.thousands * 1000) + (regroupState.hundreds * 100);
+
+            const exp = document.getElementById('regroup-explanation');
+            exp.innerHTML = message || `✨ 當前總金額：<b>${total} 元</b>（相當於 ${regroupState.thousands} 個 1000 元 與 ${regroupState.hundreds} 個 100 元）`;
+        }
+
+        function doRegroup(count = 10) {
+            if (regroupState.hundreds >= count) {
+                regroupState.hundreds -= count;
+                regroupState.thousands += 1;
+                const total = (regroupState.thousands * 1000) + (regroupState.hundreds * 100);
+                updateRegroupDisplay(`✅ 成功聚合！將 ${count} 張 100元 換成了 1 張 1000元。總金額依然是 <b>${total} 元</b>！`);
+            } else {
+                updateRegroupDisplay(`⚠️ 百元鈔票不足 ${count} 張，無法再聚合成 1000 元囉！`);
+            }
+        }
+
+        function doSplit() {
+            if (regroupState.thousands >= 1) {
+                regroupState.thousands -= 1;
+                regroupState.hundreds += 10;
+                const total = (regroupState.thousands * 1000) + (regroupState.hundreds * 100);
+                updateRegroupDisplay(`🔄 成功拆解！將 1 張 1000元 拆成了 10 張 100元。總金額依然是 <b>${total} 元</b>！`);
+            } else {
+                updateRegroupDisplay(`⚠️ 沒有千元鈔票可以拆解囉！`);
+            }
+        }
+
+        function setRegroupState(k, h) {
+            regroupState.thousands = k;
+            regroupState.hundreds = h;
+            updateRegroupDisplay();
+        }
+
+        // ================= LAB 3: QUIZ LOGIC =================
+        const answers = {
+            1: { correct: 'A', exp: '正確！6個千(6000) + 3個百(300) + 2個十(20) + 4個一(4) = 6324元。' },
+            2: { correct: 'A', exp: '正確！10個百元可以換成1個千元，所以13個百元可換成 1個千元 和 3個百元。' },
+            3: { correct: 'A', exp: '正確！2張1000元(2000) + 4張500元(2000) + 2張100元(200) + 3個10元(30) + 5個1元(5) = 4235元！' },
+            4: { correct: 'B', exp: '正確！5張千元(5000) + 15張百元(1500) = 6500元。' },
+            5: { correct: 'B', exp: '正確！3張1000元(3000) + 5個10元(50) = 3050元。' }
+        };
+
+        let userScores = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+        function checkAnswer(qNum, option) {
+            const feedbackEl = document.getElementById(`q${qNum}-feedback`);
+            const qData = answers[qNum];
+
+            // Highlight buttons
+            const opts = document.querySelectorAll(`.q${qNum}-opt`);
+            opts.forEach(btn => btn.classList.remove('bg-emerald-100', 'bg-rose-100', 'border-emerald-500', 'border-rose-500'));
+
+            if (option === qData.correct) {
+                userScores[qNum] = 10;
+                feedbackEl.className = "mt-2 p-2 rounded bg-emerald-50 text-emerald-800 text-xs border border-emerald-200 block";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> 答對了！ ${qData.exp}`;
+            } else {
+                userScores[qNum] = 0;
+                feedbackEl.className = "mt-2 p-2 rounded bg-rose-50 text-rose-800 text-xs border border-rose-200 block";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 mr-1"></i> 再試試看！思考一下千與百的進位關係。`;
+            }
+
+            // Calculate score
+            let totalScore = 0;
+            for (let key in userScores) {
+                totalScore += userScores[key];
+            }
+            document.getElementById('quiz-score').innerText = `${totalScore} / 50`;
+        }
+
+        function resetQuiz() {
+            userScores = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+            document.getElementById('quiz-score').innerText = `0 / 50`;
+            for (let i = 1; i <= 5; i++) {
+                const fb = document.getElementById(`q${i}-feedback`);
+                fb.classList.add('hidden');
+                fb.innerText = '';
+            }
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            updateCoins();
+            updateRegroupDisplay();
+        };
+    </script>
+</body>
+</html>

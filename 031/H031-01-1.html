@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>認識 10000 以內的數 - 新海誠奇幻互動學習館</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #0f172a 40%, #020617 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 夢幻新海誠風星空、雲霧、晨昏交替光暈效果 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                radial-gradient(2px 2px at 15% 25%, rgba(255, 255, 255, 0.8), rgba(0,0,0,0)),
+                radial-gradient(3px 3px at 45% 15%, rgba(147, 197, 253, 0.9), rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 75% 35%, rgba(251, 207, 232, 0.8), rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 85% 75%, rgba(253, 230, 138, 0.8), rgba(0,0,0,0)),
+                radial-gradient(2.5px 2.5px at 25% 80%, rgba(199, 210, 254, 0.9), rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 400px 400px;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.7;
+        }
+
+        /* 晨昏大光暈背景裝飾 */
+        .shinkai-glow {
+            position: fixed;
+            top: -20vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90vw;
+            height: 50vh;
+            background: radial-gradient(ellipse at center, rgba(79, 70, 229, 0.25) 0%, rgba(236, 72, 153, 0.15) 40%, transparent 70%);
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 頂級玻璃擬態卡片 (Glassmorphism) */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+            position: relative;
+            z-index: 10;
+        }
+
+        .glass-card-light {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* 3D 擬真積木質感 */
+        .cube-thousand {
+            background: linear-gradient(135deg, #fb923c, #c2410c);
+            box-shadow: inset -3px -3px 0px rgba(0,0,0,0.25), 0 4px 10px rgba(251, 146, 60, 0.3);
+            border: 1px solid #ffedd5;
+        }
+        .cube-hundred {
+            background: linear-gradient(135deg, #60a5fa, #1d4ed8);
+            box-shadow: inset -2px -2px 0px rgba(0,0,0,0.25), 0 4px 10px rgba(96, 165, 250, 0.3);
+            border: 1px solid #dbeafe;
+        }
+        .cube-ten {
+            background: linear-gradient(135deg, #f87171, #b91c1c);
+            box-shadow: inset -2px -2px 0px rgba(0,0,0,0.25), 0 4px 10px rgba(248, 113, 113, 0.3);
+            border: 1px solid #fee2e2;
+        }
+        .cube-one {
+            background: linear-gradient(135deg, #34d399, #047857);
+            box-shadow: inset -1px -1px 0px rgba(0,0,0,0.25), 0 4px 8px rgba(52, 211, 153, 0.3);
+            border: 1px solid #dcfce7;
+        }
+
+        /* 自訂漸層滑桿 */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 9999px;
+            height: 10px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 22px;
+            width: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            cursor: pointer;
+            box-shadow: 0 0 15px #38bdf8;
+            border: 2px solid white;
+            transition: transform 0.2s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+
+    <div class="shinkai-glow"></div>
+
+    <!-- 修改：使用轉換後的 Google Drive 直接連結 -->
+    <div class="w-full max-w-6xl mx-auto flex items-center justify-start mb-4 px-2 fade-in relative z-20">
+        <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+        <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+    </div>
+
+    <header class="max-w-6xl mx-auto mb-8 text-center relative z-10">
+        <div class="inline-block px-5 py-1.5 rounded-full glass-card-light text-cyan-200 text-xs md:text-sm font-bold tracking-widest mb-3 border border-cyan-300/30 shadow-lg">
+            ✨ 三年級數學・新海誠奇幻學習館
+        </div>
+        <h1 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-pink-200 to-amber-200 drop-shadow-[0_5px_15px_rgba(56,189,248,0.3)]">
+            認識 10000 以內的數
+        </h1>
+        <p class="text-slate-300 text-xs md:text-base mt-2 max-w-2xl mx-auto">在星空與雲彩交織的氛圍中，透過積木操作、數列跳數與探究實驗，輕鬆掌握千位數的位值與讀寫規律！</p>
+    </header>
+
+    <div class="max-w-6xl mx-auto mb-8 flex justify-center space-x-2 md:space-x-4 relative z-10">
+        <button onclick="switchTab('manipulative')" id="tab-manipulative" class="px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 glass-card bg-indigo-600/70 text-white border-cyan-400/60 shadow-lg shadow-indigo-500/30 scale-105">
+            🎲 積木與位值表
+        </button>
+        <button onclick="switchTab('sequence')" id="tab-sequence" class="px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 glass-card hover:bg-slate-800/60 text-slate-300">
+            📈 數列與累加減
+        </button>
+        <button onclick="switchTab('quiz')" id="tab-quiz" class="px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 glass-card hover:bg-slate-800/60 text-slate-300">
+            🏆 5題闖關測驗
+        </button>
+    </div>
+
+    <main class="max-w-6xl mx-auto relative z-10">
+        
+        <!-- Tab 1: 積木與位值表 -->
+        <section id="section-manipulative" class="space-y-6">
+            <!-- 數值顯示面板 -->
+            <div class="glass-card rounded-3xl p-6 md:p-8 border-indigo-400/30">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-cyan-300">目前代表的數字</span>
+                        <div class="text-5xl md:text-7xl font-black text-amber-300 tracking-wider my-3 font-mono flex items-baseline gap-2 drop-shadow-md">
+                            <span id="display-number">2356</span>
+                            <span class="text-lg font-normal text-slate-300">個</span>
+                        </div>
+                        <div class="mt-4 p-4 rounded-2xl bg-slate-900/60 border border-slate-700/60 backdrop-blur-md">
+                            <div class="text-xs text-indigo-300 mb-1 font-bold">國字讀作：</div>
+                            <div id="display-chinese" class="text-xl md:text-2xl font-black text-pink-200">二千三百五十六</div>
+                        </div>
+                    </div>
+
+                    <!-- 位值分析卡 -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                        <div class="p-4 rounded-2xl bg-amber-500/15 border border-amber-500/40 backdrop-blur-md shadow-lg">
+                            <div class="text-xs text-amber-300 font-bold mb-1">千位</div>
+                            <div id="val-thousand" class="text-3xl font-black text-amber-200 font-mono">2</div>
+                            <div class="text-[11px] text-amber-300/80 mt-1">個千 (1000)</div>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-blue-500/15 border border-blue-500/40 backdrop-blur-md shadow-lg">
+                            <div class="text-xs text-blue-300 font-bold mb-1">百位</div>
+                            <div id="val-hundred" class="text-3xl font-black text-blue-200 font-mono">3</div>
+                            <div class="text-[11px] text-blue-300/80 mt-1">個百 (100)</div>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-red-500/15 border border-red-500/40 backdrop-blur-md shadow-lg">
+                            <div class="text-xs text-red-300 font-bold mb-1">十位</div>
+                            <div id="val-ten" class="text-3xl font-black text-red-200 font-mono">5</div>
+                            <div class="text-[11px] text-red-300/80 mt-1">個十 (10)</div>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 backdrop-blur-md shadow-lg">
+                            <div class="text-xs text-emerald-300 font-bold mb-1">個位</div>
+                            <div id="val-one" class="text-3xl font-black text-emerald-200 font-mono">6</div>
+                            <div class="text-[11px] text-emerald-300/80 mt-1">個一 (1)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 控制滑桿區域 -->
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6 pt-6 border-t border-slate-700/60">
+                    <div>
+                        <label class="flex justify-between text-xs font-bold text-amber-300 mb-2">
+                            <span>千位控制 (0-9)</span>
+                            <span id="label-q" class="font-mono bg-amber-500/20 px-2 py-0.5 rounded">2</span>
+                        </label>
+                        <input type="range" id="range-q" min="0" max="9" value="2" class="w-full" oninput="updateValuesFromSliders()">
+                    </div>
+                    <div>
+                        <label class="flex justify-between text-xs font-bold text-blue-300 mb-2">
+                            <span>百位控制 (0-9)</span>
+                            <span id="label-b" class="font-mono bg-blue-500/20 px-2 py-0.5 rounded">3</span>
+                        </label>
+                        <input type="range" id="range-b" min="0" max="9" value="3" class="w-full" oninput="updateValuesFromSliders()">
+                    </div>
+                    <div>
+                        <label class="flex justify-between text-xs font-bold text-red-300 mb-2">
+                            <span>十位控制 (0-9)</span>
+                            <span id="label-s" class="font-mono bg-red-500/20 px-2 py-0.5 rounded">5</span>
+                        </label>
+                        <input type="range" id="range-s" min="0" max="9" value="5" class="w-full" oninput="updateValuesFromSliders()">
+                    </div>
+                    <div>
+                        <label class="flex justify-between text-xs font-bold text-emerald-300 mb-2">
+                            <span>個位控制 (0-9)</span>
+                            <span id="label-g" class="font-mono bg-emerald-500/20 px-2 py-0.5 rounded">6</span>
+                        </label>
+                        <input type="range" id="range-g" min="0" max="9" value="6" class="w-full" oninput="updateValuesFromSliders()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 積木視覺化展示區 -->
+            <div class="glass-card rounded-3xl p-6 md:p-8 border-indigo-400/30">
+                <h3 class="text-lg font-bold text-cyan-200 mb-4 flex items-center gap-2">
+                    <span>🧊</span> 具象積木視覺化 (Base-10 Blocks)
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 min-h-[240px]">
+                    <!-- 千位積木展區 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/50 border border-amber-500/20 flex flex-col items-center">
+                        <span class="text-xs text-amber-300 mb-3 font-bold">千位大正方體積木</span>
+                        <div id="container-thousand" class="flex flex-wrap gap-2 justify-center items-center my-auto p-2"></div>
+                    </div>
+                    <!-- 百位積木展區 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/50 border border-blue-500/20 flex flex-col items-center">
+                        <span class="text-xs text-blue-300 mb-3 font-bold">百位平板積木</span>
+                        <div id="container-hundred" class="flex flex-wrap gap-2 justify-center items-center my-auto p-2"></div>
+                    </div>
+                    <!-- 十位積木展區 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/50 border border-red-500/20 flex flex-col items-center">
+                        <span class="text-xs text-red-300 mb-3 font-bold">十位長條積木</span>
+                        <div id="container-ten" class="flex flex-wrap gap-2 justify-center items-center my-auto p-2"></div>
+                    </div>
+                    <!-- 個位積木展區 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/50 border border-emerald-500/20 flex flex-col items-center">
+                        <span class="text-xs text-emerald-300 mb-3 font-bold">個位小正方體</span>
+                        <div id="container-one" class="flex flex-wrap gap-1.5 justify-center items-center my-auto p-2"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 2: 數列與累加減 -->
+        <section id="section-sequence" class="space-y-6 hidden">
+            <div class="glass-card rounded-3xl p-6 md:p-8 border-pink-400/30">
+                <h3 class="text-xl font-bold text-pink-200 mb-2">🔄 數列規律探究 (Skip Counting)</h3>
+                <p class="text-xs text-slate-300 mb-6">點擊加減按鈕，觀察位值的變換規律，特別注意滿十進位與零的變換！</p>
+
+                <!-- 當前數值與控制控制鈕 -->
+                <div class="text-center py-8 bg-slate-900/60 rounded-3xl border border-indigo-500/30 mb-6 backdrop-blur-md">
+                    <span class="text-xs text-indigo-300 font-bold uppercase tracking-wider">探究中的當前數值</span>
+                    <div id="seq-current-num" class="text-6xl md:text-8xl font-black text-cyan-300 font-mono my-3 drop-shadow-lg">
+                        5990
+                    </div>
+                    <div id="seq-chinese" class="text-lg md:text-xl text-pink-200 font-bold">五千九百九十</div>
+                </div>
+
+                <!-- 變化按鈕區 -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <button onclick="changeSeqNum(1000)" class="p-3.5 rounded-2xl glass-card-light hover:bg-amber-500/25 text-amber-200 font-bold text-sm flex flex-col items-center transition shadow">
+                        <span>+ 1000</span>
+                        <span class="text-[10px] opacity-75 mt-1">千位加 1</span>
+                    </button>
+                    <button onclick="changeSeqNum(100)" class="p-3.5 rounded-2xl glass-card-light hover:bg-blue-500/25 text-blue-200 font-bold text-sm flex flex-col items-center transition shadow">
+                        <span>+ 100</span>
+                        <span class="text-[10px] opacity-75 mt-1">百位加 1</span>
+                    </button>
+                    <button onclick="changeSeqNum(10)" class="p-3.5 rounded-2xl glass-card-light hover:bg-red-500/25 text-red-200 font-bold text-sm flex flex-col items-center transition shadow">
+                        <span>+ 10</span>
+                        <span class="text-[10px] opacity-75 mt-1">十位加 1</span>
+                    </button>
+                    <button onclick="changeSeqNum(1)" class="p-3.5 rounded-2xl glass-card-light hover:bg-emerald-500/25 text-emerald-200 font-bold text-sm flex flex-col items-center transition shadow">
+                        <span>+ 1</span>
+                        <span class="text-[10px] opacity-75 mt-1">個位加 1</span>
+                    </button>
+
+                    <button onclick="changeSeqNum(-1000)" class="p-3.5 rounded-2xl glass-card-light hover:bg-amber-500/25 text-amber-200 font-bold text-sm flex flex-col items-center transition shadow">
+                        <span>- 1000</span>
+                        <span class="text-[10px] opacity-75 mt-1">千位減 1</span>
+                    </button>
+                    <button onclick="changeSeqNum(-100)" class="p-3.5 rounded-2xl glass-card-light hover:bg-blue-500/25 text-blue-200 font-bold text-sm flex flex-col items-center transition shadow">
+                        <span>- 100</span>
+                        <span class="text-[10px] opacity-75 mt-1">百位減 1</span>
+                    </button>
+                    <button onclick="changeSeqNum(-10)" class="p-3.5 rounded-2xl glass-card-light hover:bg-red-500/25 text-red-200 font-bold text-sm flex flex-col items-center transition shadow">
+                        <span>- 10</span>
+                        <span class="text-[10px] opacity-75 mt-1">十位減 1</span>
+                    </button>
+                    <button onclick="changeSeqNum(-1)" class="p-3.5 rounded-2xl glass-card-light hover:bg-emerald-500/25 text-emerald-200 font-bold text-sm flex flex-col items-center transition shadow">
+                        <span>- 1</span>
+                        <span class="text-[10px] opacity-75 mt-1">個位減 1</span>
+                    </button>
+                </div>
+
+                <!-- 變換歷程軌跡 -->
+                <div class="mt-8 pt-6 border-t border-slate-700/60">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-indigo-300">📜 數列變換歷程紀錄</span>
+                        <button onclick="resetSeqHistory()" class="text-xs px-3 py-1 bg-slate-800/80 hover:bg-slate-700 rounded-lg text-slate-300 transition">重設紀錄</button>
+                    </div>
+                    <div id="seq-history-list" class="flex flex-wrap gap-2.5 items-center">
+                        <!-- 動態插入紀錄卡片 -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 3: 5題闖關測驗 -->
+        <section id="section-quiz" class="space-y-6 hidden">
+            <div class="glass-card rounded-3xl p-6 md:p-8 border-purple-400/30">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-200">🎯 歷程性小試身手測驗</h3>
+                        <p class="text-xs text-slate-300">檢測你對10000以內數的理解情況！</p>
+                    </div>
+                    <div class="bg-slate-900/60 px-5 py-2.5 rounded-2xl border border-purple-500/30 text-right">
+                        <span class="text-xs text-slate-400">目前得分</span>
+                        <div id="quiz-score" class="text-2xl font-black text-amber-300 font-mono">0 / 5</div>
+                    </div>
+                </div>
+
+                <!-- 題目容器 -->
+                <div id="quiz-container" class="space-y-6">
+                    <!-- 題目將動態渲染 -->
+                </div>
+
+                <!-- 重新測驗按鈕 -->
+                <div class="text-center pt-6">
+                    <button onclick="resetQuiz()" class="px-8 py-3 rounded-2xl bg-gradient-to-r from-purple-500 via-indigo-600 to-pink-500 font-bold text-white shadow-xl hover:brightness-110 transition transform hover:scale-105">
+                        🔄 重新開始測驗
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // 全域狀態控制
+        let currentNumber = 2356;
+        let seqNumber = 5990;
+        let seqHistory = [5990];
+
+        // 測驗題目資料庫
+        const quizData = [
+            {
+                id: 1,
+                question: "1. 下列哪一個選項表示「8個千、0個百、4個十和9個一」合起來的數？",
+                options: ["8490", "8049", "8409", "8094"],
+                answer: 1,
+                explanation: "千位是8，百位是0，十位是4，個位是9，合起來記作 8049。"
+            },
+            {
+                id: 2,
+                question: "2. 數字 8049 正確的中文讀法是什麼？",
+                options: ["八千四十九", "八千零四十九", "八千零四十零九", "八千四百零九"],
+                answer: 1,
+                explanation: "百位是0時，要讀出「零」，所以讀作「八千零四十九」。"
+            },
+            {
+                id: 3,
+                question: "3. 「5990」再加 10 是多少？",
+                options: ["5991", "6000", "5900", "6010"],
+                answer: 1,
+                explanation: "5990 + 10 = 6000 (十位滿十向百位進一，百位滿十向千位進一)。"
+            },
+            {
+                id: 4,
+                question: "4. 「3100」連續減少 1，下一個數是多少？",
+                options: ["3099", "3090", "3000", "3009"],
+                answer: 0,
+                explanation: "3100 往回數 1 是 3099。"
+            },
+            {
+                id: 5,
+                question: "5. 10個 1000 合起來是多少？讀作什麼？",
+                options: ["10000，讀作「一萬」", "1000，讀作「一千」", "100000，讀作「十萬」", "1000，讀作「一萬」"],
+                answer: 0,
+                explanation: "10個 1000 合起來是 10000，讀作「一萬」。"
+            }
+        ];
+
+        let userAnswers = {};
+
+        window.onload = function() {
+            renderManipulative();
+            renderSeqExplorer();
+            renderQuiz();
+        };
+
+        // 標籤頁面切換 logic
+        function switchTab(tab) {
+            ['manipulative', 'sequence', 'quiz'].forEach(t => {
+                const sec = document.getElementById(`section-${t}`);
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tab) {
+                    sec.classList.remove('hidden');
+                    btn.className = "px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 glass-card bg-indigo-600/70 text-white border-cyan-400/60 shadow-lg shadow-indigo-500/30 scale-105";
+                } else {
+                    sec.classList.add('hidden');
+                    btn.className = "px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 glass-card hover:bg-slate-800/60 text-slate-300";
+                }
+            });
+        }
+
+        // 數字轉中文讀法演算法
+        function numberToChinese(num) {
+            if (num === 10000) return '一萬';
+            if (num === 0) return '零';
+
+            const digits = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+            let str = num.toString().padStart(4, '0');
+            let q = parseInt(str[0]);
+            let b = parseInt(str[1]);
+            let s = parseInt(str[2]);
+            let g = parseInt(str[3]);
+
+            let result = '';
+
+            // 千位
+            if (q > 0) result += digits[q] + '千';
+
+            // 百位
+            if (b > 0) {
+                result += digits[b] + '百';
+            } else if (q > 0 && (s > 0 || g > 0)) {
+                result += '零';
+            }
+
+            // 十位
+            if (s > 0) {
+                result += digits[s] + '十';
+            } else if (b > 0 && g > 0) {
+                if (!result.endsWith('零')) result += '零';
+            }
+
+            // 個位
+            if (g > 0) {
+                result += digits[g];
+            }
+
+            // 整理連續零的情況
+            result = result.replace(/零+/g, '零');
+            if (result.endsWith('零')) result = result.slice(0, -1);
+
+            return result || '零';
+        }
+
+        // 滑桿變更時更新全域數值與畫面
+        function updateValuesFromSliders() {
+            const q = parseInt(document.getElementById('range-q').value);
+            const b = parseInt(document.getElementById('range-b').value);
+            const s = parseInt(document.getElementById('range-s').value);
+            const g = parseInt(document.getElementById('range-g').value);
+
+            currentNumber = q * 1000 + b * 100 + s * 10 + g;
+            renderManipulative();
+        }
+
+        // 渲染積木與位值展示
+        function renderManipulative() {
+            const str = currentNumber.toString().padStart(4, '0');
+            const q = parseInt(str[0]);
+            const b = parseInt(str[1]);
+            const s = parseInt(str[2]);
+            const g = parseInt(str[3]);
+
+            // 更新文字與數字顯示
+            document.getElementById('display-number').textContent = currentNumber;
+            document.getElementById('display-chinese').textContent = numberToChinese(currentNumber);
+
+            document.getElementById('val-thousand').textContent = q;
+            document.getElementById('val-hundred').textContent = b;
+            document.getElementById('val-ten').textContent = s;
+            document.getElementById('val-one').textContent = g;
+
+            document.getElementById('label-q').textContent = q;
+            document.getElementById('label-b').textContent = b;
+            document.getElementById('label-s').textContent = s;
+            document.getElementById('label-g').textContent = g;
+
+            document.getElementById('range-q').value = q;
+            document.getElementById('range-b').value = b;
+            document.getElementById('range-s').value = s;
+            document.getElementById('range-g').value = g;
+
+            // 繪製千位積木
+            const cThousand = document.getElementById('container-thousand');
+            cThousand.innerHTML = '';
+            for (let i = 0; i < q; i++) {
+                const el = document.createElement('div');
+                el.className = 'w-10 h-10 cube-thousand rounded-lg flex items-center justify-center text-[10px] font-bold text-white shadow-md transform hover:scale-110 transition';
+                el.textContent = '1000';
+                cThousand.appendChild(el);
+            }
+
+            // 繪製百位積木
+            const cHundred = document.getElementById('container-hundred');
+            cHundred.innerHTML = '';
+            for (let i = 0; i < b; i++) {
+                const el = document.createElement('div');
+                el.className = 'w-9 h-9 cube-hundred rounded-lg flex items-center justify-center text-[9px] font-bold text-white shadow-md transform hover:scale-110 transition';
+                el.textContent = '100';
+                cHundred.appendChild(el);
+            }
+
+            // 繪製十位積木
+            const cTen = document.getElementById('container-ten');
+            cTen.innerHTML = '';
+            for (let i = 0; i < s; i++) {
+                const el = document.createElement('div');
+                el.className = 'w-4 h-9 cube-ten rounded-md flex items-center justify-center text-[8px] font-bold text-white shadow-md transform hover:scale-110 transition';
+                el.textContent = '10';
+                cTen.appendChild(el);
+            }
+
+            // 繪製個位積木
+            const cOne = document.getElementById('container-one');
+            cOne.innerHTML = '';
+            for (let i = 0; i < g; i++) {
+                const el = document.createElement('div');
+                el.className = 'w-4 h-4 cube-one rounded-md flex items-center justify-center text-[7px] font-bold text-white shadow-md transform hover:scale-110 transition';
+                el.textContent = '1';
+                cOne.appendChild(el);
+            }
+        }
+
+        // 數列累加累減邏輯
+        function changeSeqNum(delta) {
+            let nextVal = seqNumber + delta;
+            if (nextVal >= 0 && nextVal <= 10000) {
+                seqNumber = nextVal;
+                seqHistory.push(seqNumber);
+                if (seqHistory.length > 8) seqHistory.shift(); // 保留最近8筆
+                renderSeqExplorer();
+            }
+        }
+
+        function resetSeqHistory() {
+            seqHistory = [seqNumber];
+            renderSeqExplorer();
+        }
+
+        function renderSeqExplorer() {
+            document.getElementById('seq-current-num').textContent = seqNumber;
+            document.getElementById('seq-chinese').textContent = numberToChinese(seqNumber);
+
+            const list = document.getElementById('seq-history-list');
+            list.innerHTML = '';
+            seqHistory.forEach((val, index) => {
+                const badge = document.createElement('div');
+                badge.className = `px-3 py-1.5 rounded-xl font-mono text-sm font-bold border transition-all ${
+                    index === seqHistory.length - 1 
+                        ? 'bg-amber-400/20 border-amber-400 text-amber-200 scale-105 shadow-lg' 
+                        : 'bg-slate-800/60 border-slate-700/80 text-slate-300'
+                }`;
+                badge.textContent = val;
+                list.appendChild(badge);
+
+                if (index < seqHistory.length - 1) {
+                    const arrow = document.createElement('span');
+                    arrow.className = 'text-xs text-cyan-400 font-bold';
+                    arrow.textContent = '➔';
+                    list.appendChild(arrow);
+                }
+            });
+        }
+
+        // 測驗系統渲染
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizData.forEach((q, idx) => {
+                const qCard = document.createElement('div');
+                qCard.className = 'p-5 md:p-6 rounded-2xl bg-slate-900/60 border border-slate-700/70 space-y-4 backdrop-blur-md shadow-lg';
+
+                const title = document.createElement('h4');
+                title.className = 'font-bold text-slate-100 text-base md:text-lg';
+                title.textContent = q.question;
+                qCard.appendChild(title);
+
+                const optsGrid = document.createElement('div');
+                optsGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-3 mt-3';
+
+                q.options.forEach((opt, optIdx) => {
+                    const btn = document.createElement('button');
+                    btn.className = `p-3.5 rounded-xl text-left text-sm font-semibold border transition-all duration-200 ${
+                        userAnswers[q.id] === optIdx
+                            ? 'bg-indigo-600/70 border-indigo-400 text-white shadow-md'
+                            : 'bg-slate-800/50 border-slate-700/70 text-slate-300 hover:bg-slate-700/60'
+                    }`;
+                    btn.textContent = opt;
+                    btn.onclick = () => selectAnswer(q.id, optIdx);
+                    optsGrid.appendChild(btn);
+                });
+
+                qCard.appendChild(optsGrid);
+
+                // 即時回饋與解析卡
+                if (userAnswers[q.id] !== undefined) {
+                    const feedback = document.createElement('div');
+                    const isCorrect = userAnswers[q.id] === q.answer;
+                    feedback.className = `p-4 rounded-xl text-xs md:text-sm font-medium mt-3 ${
+                        isCorrect ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-500/40' : 'bg-rose-500/20 text-rose-200 border border-rose-500/40'
+                    }`;
+                    feedback.innerHTML = `
+                        <div class="flex items-center gap-1.5 font-bold mb-1 text-base">
+                            <span>${isCorrect ? '✨ 回答正確！太棒了！' : '💡 再想想看，加油！'}</span>
+                        </div>
+                        <div class="leading-relaxed opacity-90">${q.explanation}</div>
+                    `;
+                    qCard.appendChild(feedback);
+                }
+
+                container.appendChild(qCard);
+            });
+
+            calculateScore();
+        }
+
+        function selectAnswer(qId, optIdx) {
+            userAnswers[qId] = optIdx;
+            renderQuiz();
+        }
+
+        function calculateScore() {
+            let score = 0;
+            quizData.forEach(q => {
+                if (userAnswers[q.id] === q.answer) {
+                    score++;
+                }
+            });
+            document.getElementById('quiz-score').textContent = `${score} / 5`;
+        }
+
+        function resetQuiz() {
+            userAnswers = {};
+            renderQuiz();
+        }
+    </script>
+</body>
+</html>

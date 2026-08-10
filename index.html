@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>閒雲數學小棧 - 國小三上數學單元目錄總覽</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'Inter', 'sans-serif'],
+                        rounded: ['Fredoka', '"Noto Sans TC"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0f766e 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-modal {
+            background: rgba(15, 23, 42, 0.94);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="p-3 md:p-6 custom-scrollbar">
+
+    <div class="max-w-6xl mx-auto flex flex-col items-center">
+
+        <!-- Header Bar with Google Drive Logo Image -->
+        <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
+            <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+            <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+        </div>
+
+        <div class="w-full glass-card rounded-2xl p-6 md:p-8 mb-8 fade-in relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-10 -top-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-semibold tracking-wide border border-cyan-400/30 mb-3">
+                        <i class="fa-solid fa-graduation-cap"></i> 國小三年級上學期 數學科
+                    </div>
+                    <h1 class="text-2xl md:text-4xl font-black text-white tracking-tight mb-2">
+                        三上數學各單元互動學習目錄
+                    </h1>
+                    <p class="text-slate-300 text-sm md:text-base max-w-2xl">
+                        統整三上數學所有單元之互動教學網頁。點擊「顯示單元網頁」即可展開各小節獨立學習連結，或開啟「簡易教具預覽」進行互動操作學習。
+                    </p>
+                </div>
+
+                <!-- Learning Progress Widget -->
+                <div class="flex items-center gap-4 bg-slate-900/60 p-4 rounded-xl border border-white/10 shrink-0">
+                    <div class="relative w-16 h-16 flex items-center justify-center">
+                        <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-slate-700" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path id="progressCircle" class="text-emerald-400 transition-all duration-700 ease-out" stroke-dasharray="0, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <span id="progressText" class="absolute text-sm font-bold text-emerald-300">0%</span>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400 font-medium">學習總進度</div>
+                        <div class="text-lg font-bold text-white"><span id="completedCount">0</span> / <span id="totalCount">9</span> 單元完成</div>
+                        <button onclick="resetProgress()" class="text-[11px] text-slate-400 hover:text-rose-300 underline transition-colors mt-0.5">重置學習紀錄</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-white/10 flex flex-col sm:flex-row gap-3 items-center justify-between">
+                <!-- Search Input -->
+                <div class="relative w-full sm:w-72">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="searchInput" placeholder="搜尋單元名稱或小節..." oninput="filterUnits()"
+                           class="w-full bg-slate-900/80 text-sm text-white placeholder-slate-400 pl-10 pr-4 py-2 rounded-xl border border-white/15 focus:outline-none focus:border-cyan-400 transition-colors">
+                </div>
+
+                <!-- Category Filters -->
+                <div class="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 custom-scrollbar">
+                    <button onclick="setCategoryFilter('all')" class="cat-btn active bg-cyan-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-all" data-cat="all">全部單元</button>
+                    <button onclick="setCategoryFilter('number')" class="cat-btn bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs px-3 py-1.5 rounded-lg font-medium transition-all" data-cat="number">數與運算</button>
+                    <button onclick="setCategoryFilter('geo')" class="cat-btn bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs px-3 py-1.5 rounded-lg font-medium transition-all" data-cat="geo">圖形幾何</button>
+                    <button onclick="setCategoryFilter('measure')" class="cat-btn bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs px-3 py-1.5 rounded-lg font-medium transition-all" data-cat="measure">量與時間/資料</button>
+                </div>
+
+                <!-- Action Button -->
+                <button onclick="openConfigModal()" class="w-full sm:w-auto text-xs bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 px-3 py-2 rounded-xl font-medium transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-gear"></i> 管理單元網址
+                </button>
+            </div>
+        </div>
+
+        <div id="unitsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full fade-in">
+            <!-- Dynamic Unit Cards Rendered Here -->
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 mb-6 text-center text-xs text-slate-400">
+            <p>© 閒雲數學小棧 - 國小數學數位學習平台 | 專為國小三年級學生設計之數位互動教學系統</p>
+        </footer>
+
+    </div>
+
+    <!-- Modals -->
+    <div id="configModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-modal w-full max-w-2xl rounded-2xl p-6 shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="flex items-center justify-between pb-4 border-b border-white/10">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-link text-cyan-400"></i> 設定各單元與小節對應網址
+                </h3>
+                <button onclick="closeConfigModal()" class="text-slate-400 hover:text-white p-1 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <p class="text-xs text-slate-300 my-3">
+                在此填入您各單元與小節對應之獨立網頁網址（預設規範例如：`031/H031-01-1.html`）。
+            </p>
+
+            <div id="configInputsContainer" class="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar my-2">
+                <!-- Inputs rendered via JS -->
+            </div>
+
+            <div class="pt-4 border-t border-white/10 flex items-center justify-end gap-3">
+                <button onclick="closeConfigModal()" class="px-4 py-2 text-xs text-slate-300 hover:bg-slate-800 rounded-xl">取消</button>
+                <button onclick="saveUnitLinks()" class="px-5 py-2 text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl shadow-lg transition-colors">
+                    <i class="fa-solid fa-floppy-disk mr-1"></i> 儲存網址設定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="previewModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-3 md:p-6 hidden">
+        <div class="glass-modal w-full max-w-3xl rounded-2xl p-5 md:p-6 shadow-2xl flex flex-col max-h-[95vh] relative overflow-hidden">
+            <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <span id="previewUnitBadge" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">簡易教具預覽</span>
+                    <h3 id="previewUnitTitle" class="text-base md:text-lg font-bold text-white">單元標題</h3>
+                </div>
+                <button onclick="closePreviewModal()" class="text-slate-400 hover:text-white p-1 text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="my-4 flex-1 overflow-y-auto custom-scrollbar flex flex-col items-center justify-center min-h-[380px] bg-slate-950/70 rounded-xl p-4 border border-white/10" id="previewContent">
+                <!-- Interactive Tool Demo loaded here -->
+            </div>
+
+            <div class="pt-3 border-t border-white/10 flex items-center justify-end">
+                <button onclick="closePreviewModal()" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-xs transition-all">
+                    關閉預覽
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-800 border border-cyan-500/50 text-white text-xs px-4 py-3 rounded-xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+        <span id="toastMsg">設定已成功儲存</span>
+    </div>
+
+    <script>
+        // Data structure matching Grade 3 Math Curriculum exactly with 031/H-prefix URL format
+        const unitsData = [
+            {
+                id: 1,
+                unitNum: "第一單元",
+                title: "10000以內的數",
+                category: "number",
+                icon: "fa-cubes-stacked",
+                color: "from-blue-500 to-cyan-500",
+                badgeColor: "bg-blue-500/20 text-blue-300 border-blue-400/30",
+                desc: "10000以內的位值（千、百、十、個位）、錢幣點數與大小比較。",
+                tags: ["萬以內的數", "錢幣點數", "數的大小比較"],
+                defaultUrl: "031/H031-01.html",
+                interactiveType: "base10",
+                subsections: [
+                    { id: "1-1", title: "認識10000以內的數", defaultUrl: "031/H031-01-1.html" },
+                    { id: "1-2", title: "點數錢幣", defaultUrl: "031/H031-01-2.html" },
+                    { id: "1-3", title: "比大小", defaultUrl: "031/H031-01-3.html" }
+                ]
+            },
+            {
+                id: 2,
+                unitNum: "第二單元",
+                title: "10000以內的加減",
+                category: "number",
+                icon: "fa-calculator",
+                color: "from-emerald-500 to-teal-500",
+                badgeColor: "bg-emerald-500/20 text-emerald-300 border-emerald-400/30",
+                desc: "四位數加法與減法直式計算、連續進位與退位、加減應用題與驗算。",
+                tags: ["加法直式", "減法直式", "加與減驗算"],
+                defaultUrl: "031/H031-02.html",
+                interactiveType: "calc",
+                subsections: [
+                    { id: "2-1", title: "10000以內的加法", defaultUrl: "031/H031-02-1.html" },
+                    { id: "2-2", title: "10000以內的減法", defaultUrl: "031/H031-02-2.html" },
+                    { id: "2-3", title: "加與減", defaultUrl: "031/H031-02-3.html" }
+                ]
+            },
+            {
+                id: 3,
+                unitNum: "第三單元",
+                title: "毫米與數線",
+                category: "measure",
+                icon: "fa-ruler-horizontal",
+                color: "from-violet-500 to-purple-500",
+                badgeColor: "bg-violet-500/20 text-violet-300 border-violet-400/30",
+                desc: "認識毫米(mm)、公分與毫米的換算與比較、長度加減與數線定位。",
+                tags: ["毫米 mm", "長度換算與比較", "數線定位"],
+                defaultUrl: "031/H031-03.html",
+                interactiveType: "ruler",
+                subsections: [
+                    { id: "3-1", title: "認識毫米", defaultUrl: "031/H031-03-1.html" },
+                    { id: "3-2", title: "長度的換算與比較", defaultUrl: "031/H031-03-2.html" },
+                    { id: "3-3", title: "長度的加減", defaultUrl: "031/H031-03-3.html" },
+                    { id: "3-4", title: "數線", defaultUrl: "031/H031-03-4.html" }
+                ]
+            },
+            {
+                id: 4,
+                unitNum: "第四單元",
+                title: "乘法",
+                category: "number",
+                icon: "fa-xmark",
+                color: "from-amber-500 to-orange-500",
+                badgeColor: "bg-amber-500/20 text-amber-300 border-amber-400/30",
+                desc: "二位數及三位數乘以一位數的直式計算、乘法估算與生活應用。",
+                tags: ["二位數乘一位數", "三位數乘一位數", "乘法估算"],
+                defaultUrl: "031/H031-04.html",
+                interactiveType: "mult",
+                subsections: [
+                    { id: "4-1", title: "二位數乘以一位數", defaultUrl: "031/H031-04-1.html" },
+                    { id: "4-2", title: "三位數乘以一位數", defaultUrl: "031/H031-04-2.html" },
+                    { id: "4-3", title: "乘法估算", defaultUrl: "031/H031-04-3.html" }
+                ]
+            },
+            {
+                id: 5,
+                unitNum: "第五單元",
+                title: "角與形狀",
+                category: "geo",
+                icon: "fa-shapes",
+                color: "from-sky-500 to-indigo-500",
+                badgeColor: "bg-sky-500/20 text-sky-300 border-sky-400/30",
+                desc: "認識角與角的大小比較、直角的辨識、正方形與長方形的邊角性質。",
+                tags: ["認識角", "認識直角", "正方形與長方形"],
+                defaultUrl: "031/H031-05.html",
+                interactiveType: "anglesShapes",
+                subsections: [
+                    { id: "5-1", title: "認識角", defaultUrl: "031/H031-05-1.html" },
+                    { id: "5-2", title: "角的大小比較", defaultUrl: "031/H031-05-2.html" },
+                    { id: "5-3", title: "認識直角", defaultUrl: "031/H031-05-3.html" },
+                    { id: "5-4", title: "正方形與長方形", defaultUrl: "031/H031-05-4.html" }
+                ]
+            },
+            {
+                id: 6,
+                unitNum: "第六單元",
+                title: "除法",
+                category: "number",
+                icon: "fa-divide",
+                color: "from-emerald-600 to-teal-600",
+                badgeColor: "bg-emerald-500/20 text-emerald-300 border-emerald-400/30",
+                desc: "分裝與平分概念、除法直式計算、整除與餘數的學習。",
+                tags: ["分裝與除", "平分與除", "除法直式"],
+                defaultUrl: "031/H031-06.html",
+                interactiveType: "division",
+                subsections: [
+                    { id: "6-1", title: "分裝與除", defaultUrl: "031/H031-06-1.html" },
+                    { id: "6-2", title: "平分與除", defaultUrl: "031/H031-06-2.html" },
+                    { id: "6-3", title: "除法與直式", defaultUrl: "031/H031-06-3.html" }
+                ]
+            },
+            {
+                id: 7,
+                unitNum: "第七單元",
+                title: "公斤與公克",
+                category: "measure",
+                icon: "fa-weight-hanging",
+                color: "from-yellow-500 to-amber-600",
+                badgeColor: "bg-yellow-500/20 text-yellow-300 border-yellow-400/30",
+                desc: "重量單位公斤(kg)與公克(g)、磅秤報讀、單位換算、大小比較與重量加減。",
+                tags: ["公斤與公克", "磅秤報讀", "重量計算"],
+                defaultUrl: "031/H031-07.html",
+                interactiveType: "scale",
+                subsections: [
+                    { id: "7-1", title: "認識公斤", defaultUrl: "031/H031-07-1.html" },
+                    { id: "7-2", title: "認識公克", defaultUrl: "031/H031-07-2.html" },
+                    { id: "7-3", title: "幾公斤幾公克", defaultUrl: "031/H031-07-3.html" },
+                    { id: "7-4", title: "重量的換算與比較", defaultUrl: "031/H031-07-4.html" },
+                    { id: "7-5", title: "重量的計算", defaultUrl: "031/H031-07-5.html" }
+                ]
+            },
+            {
+                id: 8,
+                unitNum: "第八單元",
+                title: "分數",
+                category: "number",
+                icon: "fa-chart-pie",
+                color: "from-fuchsia-500 to-pink-500",
+                badgeColor: "bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-400/30",
+                desc: "認識幾分之幾、分數與1的關係、同分母分數的大小比較與意義。",
+                tags: ["幾分之幾", "分數與1", "分數的大小比較"],
+                defaultUrl: "031/H031-08.html",
+                interactiveType: "fraction",
+                subsections: [
+                    { id: "8-1", title: "幾分之幾", defaultUrl: "031/H031-08-1.html" },
+                    { id: "8-2", title: "分數與1", defaultUrl: "031/H031-08-2.html" },
+                    { id: "8-3", title: "分數的大小比較", defaultUrl: "031/H031-08-3.html" }
+                ]
+            },
+            {
+                id: 9,
+                unitNum: "第九單元",
+                title: "列表與規律",
+                category: "measure",
+                icon: "fa-table-cells",
+                color: "from-cyan-500 to-blue-600",
+                badgeColor: "bg-cyan-500/20 text-cyan-300 border-cyan-400/30",
+                desc: "生活中的表格、分類與製作表格、正字劃記與資料統計。",
+                tags: ["生活表格", "分類表格", "正字劃記統計"],
+                defaultUrl: "031/H031-09.html",
+                interactiveType: "patterns",
+                subsections: [
+                    { id: "9-1", title: "生活中的表格", defaultUrl: "031/H031-09-1.html" },
+                    { id: "9-2", title: "分類與製作表格", defaultUrl: "031/H031-09-2.html" },
+                    { id: "9-3", title: "圖案的規律", defaultUrl: "031/H031-09-3.html" },
+                    { id: "9-4", title: "數形的規律", defaultUrl: "031/H031-09-4.html" }
+                ]
+            }
+        ];
+
+        let unitUrls = {};
+        let completedUnits = {};
+        let expandedSubsections = {};
+        let currentFilter = 'all';
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSavedData();
+            renderUnits();
+            updateProgressStats();
+        });
+
+        function loadSavedData() {
+            try {
+                const savedUrls = localStorage.getItem('math3a_unit_urls');
+                if (savedUrls) {
+                    unitUrls = JSON.parse(savedUrls);
+                } else {
+                    unitsData.forEach(u => {
+                        unitUrls[u.id] = u.defaultUrl;
+                        if (u.subsections) {
+                            u.subsections.forEach(sub => {
+                                unitUrls[sub.id] = sub.defaultUrl;
+                            });
+                        }
+                    });
+                }
+
+                const savedCompleted = localStorage.getItem('math3a_completed_units');
+                if (savedCompleted) {
+                    completedUnits = JSON.parse(savedCompleted);
+                }
+            } catch (e) {
+                console.error("Local storage error", e);
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('math3a_unit_urls', JSON.stringify(unitUrls));
+            localStorage.setItem('math3a_completed_units', JSON.stringify(completedUnits));
+        }
+
+        function renderUnits() {
+            const grid = document.getElementById('unitsGrid');
+            grid.innerHTML = '';
+
+            const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            const filtered = unitsData.filter(unit => {
+                const matchesCat = (currentFilter === 'all') || (unit.category === currentFilter);
+                const matchesSearch = unit.title.toLowerCase().includes(searchVal) || 
+                                      unit.unitNum.toLowerCase().includes(searchVal) ||
+                                      unit.desc.toLowerCase().includes(searchVal) ||
+                                      unit.tags.some(t => t.toLowerCase().includes(searchVal)) ||
+                                      (unit.subsections && unit.subsections.some(s => s.id.toLowerCase().includes(searchVal) || s.title.toLowerCase().includes(searchVal)));
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-3xl mb-2 opacity-50"></i>
+                        <p>找不到符合條件的單元或小節</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(unit => {
+                const isCompleted = !!completedUnits[unit.id];
+                const isExpanded = !!expandedSubsections[unit.id];
+
+                let subHtml = '';
+                if (unit.subsections && unit.subsections.length > 0) {
+                    subHtml = `
+                        <div id="sub_section_${unit.id}" class="${isExpanded ? 'block' : 'hidden'} mt-3 pt-3 border-t border-white/10 transition-all">
+                            <div class="text-[11px] font-bold text-cyan-300/90 mb-2 flex items-center justify-between">
+                                <span><i class="fa-solid fa-layer-group mr-1"></i>小節學習頁面：</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-2 gap-1.5">
+                                ${unit.subsections.map(sub => {
+                                    const subUrl = unitUrls[sub.id] || sub.defaultUrl;
+                                    return `
+                                        <a href="${subUrl}" target="_blank" title="${sub.id} ${sub.title}" 
+                                           class="px-2 py-1.5 bg-slate-900/90 hover:bg-cyan-500/20 text-cyan-200 hover:text-white border border-white/10 hover:border-cyan-400/50 rounded-lg transition-all flex flex-col justify-center group/sub">
+                                            <span class="text-[10px] font-extrabold text-cyan-400 group-hover/sub:text-cyan-300">${sub.id}</span>
+                                            <span class="truncate w-full text-[11px] font-medium text-slate-300 group-hover/sub:text-white">${sub.title}</span>
+                                        </a>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const card = document.createElement('div');
+                card.className = `glass-card rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden group ${isCompleted ? 'border-emerald-500/40 bg-slate-900/40' : ''}`;
+
+                card.innerHTML = `
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${unit.color} opacity-10 rounded-bl-full pointer-events-none group-hover:opacity-20 transition-opacity"></div>
+                    
+                    <div>
+                        <!-- Header / Unit Number -->
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2.5 py-1 rounded-lg text-xs font-bold border ${unit.badgeColor}">
+                                ${unit.unitNum}
+                            </span>
+                            <button onclick="toggleCompleted('${unit.id}')" title="切換完成狀態" class="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full transition-all ${isCompleted ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/30' : 'bg-slate-800 text-slate-400 hover:text-slate-200 border border-white/5'}">
+                                <i class="fa-solid ${isCompleted ? 'fa-circle-check text-emerald-400' : 'fa-circle'}"></i>
+                                <span>${isCompleted ? '已標記完成' : '標記完成'}</span>
+                            </button>
+                        </div>
+
+                        <!-- Title & Icon -->
+                        <div class="flex items-start gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${unit.color} flex items-center justify-center text-white text-lg shadow-md shrink-0 mt-0.5">
+                                <i class="fa-solid ${unit.icon}"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">
+                                    ${unit.title}
+                                </h3>
+                                <p class="text-xs text-slate-300 mt-1 line-clamp-2 leading-relaxed">
+                                    ${unit.desc}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Tags -->
+                        <div class="flex flex-wrap gap-1.5 mb-3 mt-2">
+                            ${unit.tags.map(tag => `<span class="text-[11px] bg-slate-900/60 text-slate-300 px-2 py-0.5 rounded-md border border-white/5"># ${tag}</span>`).join('')}
+                        </div>
+                    </div>
+
+                    <div>
+                        <!-- Main Action Buttons -->
+                        <div class="pt-3 border-t border-white/10 flex items-center gap-2">
+                            <button onclick="openPreview('${unit.id}')" class="flex-1 text-xs py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl transition-all border border-white/10 flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-eye text-cyan-400"></i> 簡易教具預覽
+                            </button>
+                            <button onclick="toggleSubsections('${unit.id}')" class="flex-1 text-xs py-2 px-3 bg-gradient-to-r ${unit.color} hover:brightness-110 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center">
+                                <span>顯示單元網頁</span>
+                            </button>
+                        </div>
+
+                        <!-- Subsections Area -->
+                        ${subHtml}
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleSubsections(unitId) {
+            expandedSubsections[unitId] = !expandedSubsections[unitId];
+            const subElem = document.getElementById(`sub_section_${unitId}`);
+            if (subElem) {
+                if (expandedSubsections[unitId]) {
+                    subElem.classList.remove('hidden');
+                    subElem.classList.add('block');
+                } else {
+                    subElem.classList.add('hidden');
+                    subElem.classList.remove('block');
+                }
+            }
+        }
+
+        function toggleCompleted(unitId) {
+            completedUnits[unitId] = !completedUnits[unitId];
+            saveData();
+            renderUnits();
+            updateProgressStats();
+            showToast(completedUnits[unitId] ? "已將單元標記為完成！" : "已取消單元完成標記");
+        }
+
+        function updateProgressStats() {
+            const mainUnits = unitsData.filter(u => typeof u.id === 'number');
+            const total = mainUnits.length;
+            const completedCount = mainUnits.filter(u => completedUnits[u.id]).length;
+            const percent = Math.round((completedCount / total) * 100);
+
+            document.getElementById('totalCount').innerText = total;
+            document.getElementById('completedCount').innerText = completedCount;
+            document.getElementById('progressText').innerText = `${percent}%`;
+
+            const circle = document.getElementById('progressCircle');
+            circle.setAttribute('stroke-dasharray', `${percent}, 100`);
+        }
+
+        function resetProgress() {
+            completedUnits = {};
+            saveData();
+            renderUnits();
+            updateProgressStats();
+            showToast("學習紀錄已重置");
+        }
+
+        function setCategoryFilter(cat) {
+            currentFilter = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.dataset.cat === cat) {
+                    btn.className = "cat-btn active bg-cyan-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-all shadow-md";
+                } else {
+                    btn.className = "cat-btn bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs px-3 py-1.5 rounded-lg font-medium transition-all";
+                }
+            });
+            renderUnits();
+        }
+
+        function filterUnits() {
+            renderUnits();
+        }
+
+        function openConfigModal() {
+            const container = document.getElementById('configInputsContainer');
+            container.innerHTML = '';
+
+            unitsData.forEach(u => {
+                const currentUrl = unitUrls[u.id] || u.defaultUrl;
+                const div = document.createElement('div');
+                div.className = "bg-slate-900/70 p-3.5 rounded-xl border border-white/10 flex flex-col gap-2.5";
+                
+                let subInputsHtml = '';
+                if (u.subsections && u.subsections.length > 0) {
+                    subInputsHtml = `
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-white/5">
+                            ${u.subsections.map(sub => {
+                                const subUrl = unitUrls[sub.id] || sub.defaultUrl;
+                                return `
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-[11px] font-mono text-cyan-300 w-12 font-bold shrink-0">${sub.id}</span>
+                                        <input type="text" id="url_input_${sub.id}" value="${subUrl}" placeholder="${sub.defaultUrl}"
+                                               class="w-full bg-slate-950 text-[11px] text-white px-2 py-1 rounded-lg border border-white/10 focus:outline-none focus:border-cyan-400 font-mono">
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                }
+
+                div.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div class="sm:w-1/3">
+                            <span class="text-xs font-bold text-cyan-300">${u.unitNum}</span>
+                            <div class="text-sm font-semibold text-white truncate">${u.title}</div>
+                        </div>
+                        <input type="text" id="url_input_${u.id}" value="${currentUrl}" placeholder="網址，例如：031/H031-0${u.id}.html"
+                               class="sm:w-2/3 bg-slate-950 text-xs text-white px-3 py-2 rounded-lg border border-white/15 focus:outline-none focus:border-cyan-400 font-mono">
+                    </div>
+                    ${subInputsHtml}
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('configModal').classList.remove('hidden');
+        }
+
+        function closeConfigModal() {
+            document.getElementById('configModal').classList.add('hidden');
+        }
+
+        function saveUnitLinks() {
+            unitsData.forEach(u => {
+                const input = document.getElementById(`url_input_${u.id}`);
+                if (input) {
+                    unitUrls[u.id] = input.value.trim() || u.defaultUrl;
+                }
+                if (u.subsections) {
+                    u.subsections.forEach(sub => {
+                        const subInput = document.getElementById(`url_input_${sub.id}`);
+                        if (subInput) {
+                            unitUrls[sub.id] = subInput.value.trim() || sub.defaultUrl;
+                        }
+                    });
+                }
+            });
+            saveData();
+            renderUnits();
+            closeConfigModal();
+            showToast("單元與小節網址設定已儲存");
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        function openPreview(unitId) {
+            const unit = unitsData.find(u => String(u.id) === String(unitId));
+            if (!unit) return;
+
+            document.getElementById('previewUnitTitle').innerText = `${unit.unitNum}：${unit.title}`;
+
+            const contentArea = document.getElementById('previewContent');
+            contentArea.innerHTML = '';
+
+            switch (unit.interactiveType) {
+                case 'base10':
+                    contentArea.innerHTML = renderBase10Demo();
+                    initBase10Logic();
+                    break;
+                case 'calc':
+                    contentArea.innerHTML = renderCalcDemo();
+                    initCalcLogic();
+                    break;
+                case 'ruler':
+                    contentArea.innerHTML = renderRulerDemo();
+                    initRulerLogic();
+                    break;
+                case 'mult':
+                    contentArea.innerHTML = renderMultDemo();
+                    initMultLogic();
+                    break;
+                case 'anglesShapes':
+                    contentArea.innerHTML = renderAnglesShapesDemo();
+                    initAnglesShapesLogic();
+                    break;
+                case 'division':
+                    contentArea.innerHTML = renderDivisionDemo();
+                    initDivisionLogic();
+                    break;
+                case 'scale':
+                    contentArea.innerHTML = renderScaleDemo();
+                    initScaleLogic();
+                    break;
+                case 'fraction':
+                    contentArea.innerHTML = renderFractionDemo();
+                    initFractionLogic();
+                    break;
+                case 'patterns':
+                    contentArea.innerHTML = renderPatternsDemo();
+                    initPatternsLogic();
+                    break;
+                default:
+                    contentArea.innerHTML = `<p class="text-slate-400 text-sm">此單元互動教具載入中...</p>`;
+            }
+
+            document.getElementById('previewModal').classList.remove('hidden');
+        }
+
+        function closePreviewModal() {
+            document.getElementById('previewModal').classList.add('hidden');
+        }
+
+        function renderBase10Demo() {
+            return `
+                <div class="w-full flex flex-col items-center text-center">
+                    <div class="flex items-center gap-2 mb-4 bg-slate-900/90 p-1.5 rounded-xl border border-white/10">
+                        <button onclick="switchBase10Tab('money')" id="b10TabMoney" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-white transition-all">
+                            <i class="fa-solid fa-coins mr-1"></i> 1-1 & 1-2 位值與點數錢幣
+                        </button>
+                        <button onclick="switchBase10Tab('compare')" id="b10TabComp" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition-all">
+                            <i class="fa-solid fa-code-compare mr-1"></i> 1-3 數的大小比較
+                        </button>
+                    </div>
+
+                    <div id="base10ModeMoney" class="w-full flex flex-col items-center">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-xs text-slate-300">請輸入四位數：</span>
+                            <input type="number" id="base10Input" value="3582" min="1" max="9999" class="w-24 bg-slate-900 text-cyan-300 font-mono text-center font-bold px-2 py-1 rounded-lg border border-cyan-500/40 text-sm">
+                            <button id="base10RandBtn" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1.5 rounded-lg text-slate-300 border border-white/10"><i class="fa-solid fa-dice"></i> 隨機出題</button>
+                        </div>
+
+                        <div class="grid grid-cols-4 gap-2 w-full max-w-xl my-2">
+                            <div class="bg-blue-950/80 p-2.5 rounded-xl border border-blue-500/30">
+                                <div class="text-xs font-bold text-blue-300">千位 (1000)</div>
+                                <div id="digitTh" class="text-2xl font-black text-white font-mono my-1">3</div>
+                                <div id="moneyTh" class="text-xs flex flex-wrap gap-1 justify-center min-h-[40px] items-center"></div>
+                            </div>
+                            <div class="bg-emerald-950/80 p-2.5 rounded-xl border border-emerald-500/30">
+                                <div class="text-xs font-bold text-emerald-300">百位 (100)</div>
+                                <div id="digitHu" class="text-2xl font-black text-white font-mono my-1">5</div>
+                                <div id="moneyHu" class="text-xs flex flex-wrap gap-1 justify-center min-h-[40px] items-center"></div>
+                            </div>
+                            <div class="bg-amber-950/80 p-2.5 rounded-xl border border-amber-500/30">
+                                <div class="text-xs font-bold text-amber-300">十位 (10)</div>
+                                <div id="digitTe" class="text-2xl font-black text-white font-mono my-1">8</div>
+                                <div id="moneyTe" class="text-xs flex flex-wrap gap-1 justify-center min-h-[40px] items-center"></div>
+                            </div>
+                            <div class="bg-rose-950/80 p-2.5 rounded-xl border border-rose-500/30">
+                                <div class="text-xs font-bold text-rose-300">個位 (1)</div>
+                                <div id="digitUn" class="text-2xl font-black text-white font-mono my-1">2</div>
+                                <div id="moneyUn" class="text-xs flex flex-wrap gap-1 justify-center min-h-[40px] items-center"></div>
+                            </div>
+                        </div>
+
+                        <div id="base10Breakdown" class="text-xs text-cyan-200 bg-slate-900/80 px-4 py-2 rounded-xl border border-white/10 mt-2 font-mono">
+                            3582 = 3個千 + 5個百 + 8個十 + 2個一
+                        </div>
+                    </div>
+
+                    <div id="base10ModeCompare" class="w-full flex flex-col items-center hidden">
+                        <div class="flex items-center justify-center gap-3 mb-4">
+                            <div class="flex flex-col items-center">
+                                <span class="text-xs text-blue-300 mb-1 font-bold">數字甲</span>
+                                <input type="number" id="compNumA" value="4825" min="0" max="9999" class="w-24 bg-slate-900 text-blue-300 font-mono text-center font-bold px-2 py-1.5 rounded-xl border border-blue-500/40 text-base">
+                            </div>
+                            <span id="compOp" class="text-2xl font-black text-amber-400 mt-4">&gt;</span>
+                            <div class="flex flex-col items-center">
+                                <span class="text-xs text-emerald-300 mb-1 font-bold">數字乙</span>
+                                <input type="number" id="compNumB" value="4590" min="0" max="9999" class="w-24 bg-slate-900 text-emerald-300 font-mono text-center font-bold px-2 py-1.5 rounded-xl border border-emerald-500/40 text-base">
+                            </div>
+                            <button id="compRandBtn" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-2 rounded-xl text-slate-300 border border-white/10 mt-4"><i class="fa-solid fa-dice"></i> 隨機比對</button>
+                        </div>
+
+                        <div id="compSteps" class="text-xs text-slate-200 bg-slate-900/80 p-3.5 rounded-xl border border-white/10 text-left max-w-md space-y-1.5 w-full"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function switchBase10Tab(tab) {
+            const m1 = document.getElementById('base10ModeMoney');
+            const m2 = document.getElementById('base10ModeCompare');
+            const btn1 = document.getElementById('b10TabMoney');
+            const btn2 = document.getElementById('b10TabComp');
+
+            if (tab === 'money') {
+                m1.classList.remove('hidden');
+                m2.classList.add('hidden');
+                btn1.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-white transition-all";
+                btn2.className = "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition-all";
+            } else {
+                m2.classList.remove('hidden');
+                m1.classList.add('hidden');
+                btn2.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-white transition-all";
+                btn1.className = "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition-all";
+            }
+        }
+
+        function initBase10Logic() {
+            const input = document.getElementById('base10Input');
+            const randBtn = document.getElementById('base10RandBtn');
+
+            const updateMoney = () => {
+                let val = parseInt(input.value) || 0;
+                if (val > 9999) val = 9999;
+                if (val < 0) val = 0;
+
+                const th = Math.floor(val / 1000);
+                const hu = Math.floor((val % 1000) / 100);
+                const te = Math.floor((val % 100) / 10);
+                const un = val % 10;
+
+                document.getElementById('digitTh').innerText = th;
+                document.getElementById('digitHu').innerText = hu;
+                document.getElementById('digitTe').innerText = te;
+                document.getElementById('digitUn').innerText = un;
+
+                document.getElementById('moneyTh').innerHTML = th > 0 ? `<span class="bg-blue-600/30 border border-blue-400/40 text-blue-200 px-1.5 py-0.5 rounded text-[10px] font-bold">1000</span>`.repeat(th) : '<span class="text-slate-600">-</span>';
+                document.getElementById('moneyHu').innerHTML = hu > 0 ? `<span class="bg-emerald-600/30 border border-emerald-400/40 text-emerald-200 px-1.5 py-0.5 rounded text-[10px] font-bold">100</span>`.repeat(hu) : '<span class="text-slate-600">-</span>';
+                document.getElementById('moneyTe').innerHTML = te > 0 ? `<span class="bg-amber-600/30 border border-amber-400/40 text-amber-200 px-1.5 py-0.5 rounded text-[10px] font-bold">10</span>`.repeat(te) : '<span class="text-slate-600">-</span>';
+                document.getElementById('moneyUn').innerHTML = un > 0 ? `<span class="bg-rose-600/30 border border-rose-400/40 text-rose-200 px-1.5 py-0.5 rounded text-[10px] font-bold">1</span>`.repeat(un) : '<span class="text-slate-600">-</span>';
+
+                document.getElementById('base10Breakdown').innerText = `${val} = ${th}個千 + ${hu}個百 + ${te}個十 + ${un}個一 = ${th*1000} + ${hu*100} + ${te*10} + ${un}`;
+            };
+
+            if (input) input.oninput = updateMoney;
+            if (randBtn) {
+                randBtn.onclick = () => {
+                    input.value = Math.floor(Math.random() * 9000) + 1000;
+                    updateMoney();
+                };
+            }
+
+            const compA = document.getElementById('compNumA');
+            const compB = document.getElementById('compNumB');
+            const compRand = document.getElementById('compRandBtn');
+
+            const updateCompare = () => {
+                const a = parseInt(compA.value) || 0;
+                const b = parseInt(compB.value) || 0;
+
+                const thA = Math.floor(a / 1000), thB = Math.floor(b / 1000);
+                const huA = Math.floor((a % 1000) / 100), huB = Math.floor((b % 1000) / 100);
+                const teA = Math.floor((a % 100) / 10), teB = Math.floor((b % 100) / 10);
+                const unA = a % 10, unB = b % 10;
+
+                let op = '=';
+                let stepLog = '';
+
+                if (a > b) op = '>';
+                else if (a < b) op = '<';
+
+                document.getElementById('compOp').innerText = op;
+
+                if (thA !== thB) {
+                    stepLog = `1. 先比較<b>千位</b>：數字甲的千位是 <span class="text-blue-300 font-bold">${thA}</span>，數字乙的千位是 <span class="text-emerald-300 font-bold">${thB}</span>。因為 ${thA} ${thA>thB?'>':'<'} ${thB}，所以直接判定 <span class="text-amber-300 font-bold">${a} ${op} ${b}</span>！`;
+                } else if (huA !== huB) {
+                    stepLog = `1. 千位皆為 ${thA}，接著比較<b>百位</b>：甲的百位是 <span class="text-blue-300 font-bold">${huA}</span>，乙的百位是 <span class="text-emerald-300 font-bold">${huB}</span>。因為 ${huA} ${huA>huB?'>':'<'} ${huB}，所以判定 <span class="text-amber-300 font-bold">${a} ${op} ${b}</span>！`;
+                } else if (teA !== teB) {
+                    stepLog = `1. 千位與百位皆相同，接著比較<b>十位</b>：甲的十位是 <span class="text-blue-300 font-bold">${teA}</span>，乙的十位是 <span class="text-emerald-300 font-bold">${teB}</span>。因為 ${teA} ${teA>teB?'>':'<'} ${teB}，判定 <span class="text-amber-300 font-bold">${a} ${op} ${b}</span>！`;
+                } else if (unA !== unB) {
+                    stepLog = `1. 千、百、十位皆相同，最後比較<b>個位</b>：甲的個位是 <span class="text-blue-300 font-bold">${unA}</span>，乙的個位是 <span class="text-emerald-300 font-bold">${unB}</span>。因為 ${unA} ${unA>unB?'>':'<'} ${unB}，判定 <span class="text-amber-300 font-bold">${a} ${op} ${b}</span>！`;
+                } else {
+                    stepLog = `千、百、十、個位每個位值數值通通相同，所以 <span class="text-amber-300 font-bold">${a} = ${b}</span>！`;
+                }
+
+                document.getElementById('compSteps').innerHTML = stepLog;
+            };
+
+            if (compA) compA.oninput = updateCompare;
+            if (compB) compB.oninput = updateCompare;
+            if (compRand) {
+                compRand.onclick = () => {
+                    const base = Math.floor(Math.random() * 8000) + 1000;
+                    compA.value = base;
+                    compB.value = base + (Math.floor(Math.random() * 5) - 2) * 10;
+                    updateCompare();
+                };
+            }
+
+            updateMoney();
+            updateCompare();
+        }
+
+        function renderCalcDemo() {
+            return `
+                <div class="w-full flex flex-col items-center text-center">
+                    <div class="flex items-center gap-2 mb-3 bg-slate-900/90 p-1.5 rounded-xl border border-white/10">
+                        <button onclick="switchCalcMode('+')" id="btnCalcAdd" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 text-white transition-all">
+                            2-1 加法直式 (滿十進位)
+                        </button>
+                        <button onclick="switchCalcMode('-')" id="btnCalcSub" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition-all">
+                            2-2 減法直式 (退位借一)
+                        </button>
+                        <button onclick="switchCalcMode('check')" id="btnCalcChk" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition-all">
+                            2-3 加與減驗算
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2 mb-3">
+                        <input type="number" id="calcNumA" value="4825" min="1000" max="9999" class="w-24 bg-slate-900 text-emerald-300 font-mono text-center font-bold px-2 py-1 rounded-lg border border-emerald-500/40 text-sm">
+                        <span id="calcOpLabel" class="text-white font-bold text-base">+</span>
+                        <input type="number" id="calcNumB" value="1376" min="1" max="9999" class="w-24 bg-slate-900 text-emerald-300 font-mono text-center font-bold px-2 py-1 rounded-lg border border-emerald-500/40 text-sm">
+                        <button id="calcRandomBtn" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1.5 rounded-lg text-slate-300 border border-white/10"><i class="fa-solid fa-dice"></i> 隨機出題</button>
+                    </div>
+
+                    <div class="bg-slate-900/90 p-4 rounded-2xl border border-emerald-500/30 font-mono text-xl shadow-inner inline-block min-w-[280px]">
+                        <div class="grid grid-cols-5 gap-2 text-xs text-slate-400 font-sans border-b border-white/10 pb-1 mb-1 text-center font-bold">
+                            <span class="text-amber-400">萬位</span><span>千位</span><span>百位</span><span>十位</span><span>個位</span>
+                        </div>
+                        <div id="vCarryRow" class="grid grid-cols-5 gap-2 text-xs font-bold text-amber-400 text-center min-h-[22px]"></div>
+                        <div id="vNumA" class="grid grid-cols-5 gap-2 text-white font-bold tracking-widest text-center"></div>
+                        <div id="vNumB" class="grid grid-cols-5 gap-2 text-emerald-300 font-bold tracking-widest border-b-2 border-white/40 pb-1.5 my-1 text-center"></div>
+                        <div id="vAns" class="grid grid-cols-5 gap-2 text-amber-300 font-black tracking-widest text-center pt-1"></div>
+                    </div>
+
+                    <div id="calcTip" class="text-xs text-emerald-200/90 mt-3 font-sans bg-slate-900/60 p-2.5 rounded-xl border border-white/10 max-w-md w-full text-left"></div>
+                </div>
+            `;
+        }
+
+        let calcCurrentOp = '+';
+
+        function switchCalcMode(mode) {
+            calcCurrentOp = mode;
+            document.getElementById('btnCalcAdd').className = mode==='+' ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 text-white transition-all" : "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition-all";
+            document.getElementById('btnCalcSub').className = mode==='-' ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 text-white transition-all" : "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition-all";
+            document.getElementById('btnCalcChk').className = mode==='check' ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 text-white transition-all" : "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition-all";
+            
+            document.getElementById('calcOpLabel').innerText = mode === '-' ? '-' : '+';
+            if (typeof updateCalcLogic === 'function') updateCalcLogic();
+        }
+
+        function initCalcLogic() {
+            const aInput = document.getElementById('calcNumA');
+            const bInput = document.getElementById('calcNumB');
+            const randBtn = document.getElementById('calcRandomBtn');
+
+            window.updateCalcLogic = () => {
+                let a = parseInt(aInput.value) || 0;
+                let b = parseInt(bInput.value) || 0;
+
+                if (calcCurrentOp === '-' && a < b) {
+                    const temp = a; a = b; b = temp;
+                    aInput.value = a; bInput.value = b;
+                }
+
+                let ans = calcCurrentOp === '-' ? (a - b) : (a + b);
+                const pad5 = (n) => String(n).padStart(5, ' ');
+                const strA = pad5(a);
+                const strB = pad5(b);
+                const strAns = pad5(ans);
+
+                document.getElementById('vCarryRow').innerHTML = `<span></span><span></span><span></span><span></span><span></span>`;
+
+                document.getElementById('vNumA').innerHTML = strA.split('').map(c => `<span>${c===' '?'&nbsp;':c}</span>`).join('');
+                document.getElementById('vNumB').innerHTML = `<span class="text-emerald-400 font-extrabold">${calcCurrentOp==='-'?'-':'+'}</span>` + strB.substring(1).split('').map(c => `<span>${c===' '?'&nbsp;':c}</span>`).join('');
+                document.getElementById('vAns').innerHTML = strAns.split('').map(c => `<span>${c===' '?'&nbsp;':c}</span>`).join('');
+
+                if (calcCurrentOp === '+') {
+                    document.getElementById('calcTip').innerHTML = `<div class="font-bold text-emerald-300 mb-1">加法進位提示：</div>1. 個位相加滿 10 向十位進 1。<br>2. 計算結果：<span class="text-amber-300 font-bold">${a} + ${b} = ${ans}</span>`;
+                } else if (calcCurrentOp === '-') {
+                    document.getElementById('calcTip').innerHTML = `<div class="font-bold text-emerald-300 mb-1">減法退位提示：</div>1. 個位不夠減時，從十位借 1 當作 10。<br>2. 計算結果：<span class="text-amber-300 font-bold">${a} - ${b} = ${ans}</span>`;
+                } else {
+                    document.getElementById('calcTip').innerHTML = `<div class="font-bold text-emerald-300 mb-1">2-3 加與減驗算算式：</div>減法答案驗算：<span class="text-amber-300 font-bold">${ans} + ${b} = ${a}</span><br>加法答案驗算：<span class="text-amber-300 font-bold">${a+b} - ${b} = ${a}</span>`;
+                }
+            };
+
+            if (aInput) aInput.oninput = window.updateCalcLogic;
+            if (bInput) bInput.oninput = window.updateCalcLogic;
+            if (randBtn) {
+                randBtn.onclick = () => {
+                    aInput.value = Math.floor(Math.random() * 7000) + 1500;
+                    bInput.value = Math.floor(Math.random() * 1200) + 200;
+                    window.updateCalcLogic();
+                };
+            }
+
+            window.updateCalcLogic();
+        }
+
+        function renderRulerDemo() {
+            return `
+                <div class="w-full flex flex-col items-center text-center">
+                    <div class="text-xs text-slate-300 mb-2 font-bold"><i class="fa-solid fa-ruler text-violet-400 mr-1"></i>3-1 & 3-2 互動毫米高精度直尺與長度換算：</div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xs text-slate-300">請拉動設定長度 (0~80 mm)：</span>
+                        <input type="range" id="rulerVal" min="0" max="80" value="45" class="w-48 accent-violet-400">
+                        <span id="rulerNum" class="text-sm font-mono font-bold text-violet-300 w-16">45 mm</span>
+                    </div>
+
+                    <div class="w-full bg-slate-900/90 p-4 rounded-2xl border border-violet-500/30 overflow-x-auto custom-scrollbar my-2 flex justify-center">
+                        <div class="relative w-[340px] h-24 bg-amber-100/95 rounded-lg border-2 border-amber-600/80 shadow-md font-mono text-slate-900 select-none p-2 flex flex-col justify-between">
+                            <svg id="rulerSvg" width="320" height="60" viewBox="0 0 320 60" class="w-full h-full">
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div id="rulerConversion" class="text-xs text-violet-200 font-mono bg-slate-900/80 px-4 py-2 rounded-xl border border-white/10 mt-2">
+                        45 mm = 4 公分 5 毫米 (4cm 5mm)
+                    </div>
+                </div>
+            `;
+        }
+
+        function initRulerLogic() {
+            const slider = document.getElementById('rulerVal');
+            const numDisp = document.getElementById('rulerNum');
+            const svg = document.getElementById('rulerSvg');
+            const conv = document.getElementById('rulerConversion');
+
+            const updateRuler = () => {
+                const mm = parseInt(slider.value) || 0;
+                const cm = Math.floor(mm / 10);
+                const remMm = mm % 10;
+
+                numDisp.innerText = `${mm} mm`;
+
+                let svgContent = `<rect x="0" y="0" width="320" height="55" fill="#fef3c7" rx="4"/>`;
+                
+                for (let i = 0; i <= 80; i++) {
+                    const x = i * 4;
+                    let lineH = 8;
+                    let strokeW = 1;
+                    let strokeColor = "#64748b";
+
+                    if (i % 10 === 0) {
+                        lineH = 22;
+                        strokeW = 2;
+                        strokeColor = "#0f172a";
+                        const cmVal = i / 10;
+                        svgContent += `<text x="${x}" y="38" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="middle">${cmVal}${cmVal===8?' cm':''}</text>`;
+                    } else if (i % 5 === 0) {
+                        lineH = 14;
+                        strokeW = 1.5;
+                        strokeColor = "#334155";
+                    }
+
+                    svgContent += `<line x1="${x}" y1="0" x2="${x}" y2="${lineH}" stroke="${strokeColor}" stroke-width="${strokeW}"/>`;
+                }
+
+                const pointerX = mm * 4;
+                svgContent += `
+                    <line x1="${pointerX}" y1="0" x2="${pointerX}" y2="50" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="0"/>
+                    <polygon points="${pointerX-5},48 ${pointerX+5},48 ${pointerX},55" fill="#dc2626"/>
+                    <circle cx="${pointerX}" cy="0" r="4" fill="#dc2626"/>
+                `;
+
+                svg.innerHTML = svgContent;
+                conv.innerHTML = `精確長度：<b>${mm} mm</b> = <span class="text-cyan-300 font-bold">${cm}</span> 公分 <span class="text-amber-300 font-bold">${remMm}</span> 毫米 (${cm}cm ${remMm}mm)`;
+            };
+
+            if (slider) slider.oninput = updateRuler;
+            updateRuler();
+        }
+
+        function renderMultDemo() {
+            return `
+                <div class="w-full flex flex-col items-center text-center">
+                    <div class="text-xs text-slate-300 mb-2 font-bold"><i class="fa-solid fa-xmark text-amber-400 mr-1"></i>4-1~4-3 直式乘法計算與估算：</div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <input type="number" id="multNumA" value="238" min="10" max="999" class="w-20 bg-slate-900 text-amber-300 font-mono text-center font-bold px-2 py-1 rounded-lg border border-amber-500/40 text-sm">
+                        <span class="text-white font-bold">×</span>
+                        <input type="number" id="multNumB" value="4" min="2" max="9" class="w-16 bg-slate-900 text-amber-300 font-mono text-center font-bold px-2 py-1 rounded-lg border border-amber-500/40 text-sm">
+                        <button id="multRandBtn" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1.5 rounded-lg text-slate-300 border border-white/10"><i class="fa-solid fa-dice"></i> 隨機出題</button>
+                    </div>
+
+                    <div class="bg-slate-900/90 p-4 rounded-2xl border border-amber-500/30 font-mono text-xl shadow-inner inline-block min-w-[240px]">
+                        <div class="grid grid-cols-4 gap-2 text-xs text-slate-400 font-sans border-b border-white/10 pb-1 mb-1 text-center font-bold">
+                            <span>千位</span><span>百位</span><span>十位</span><span>個位</span>
+                        </div>
+                        <div id="mNumA" class="grid grid-cols-4 gap-2 text-white font-bold tracking-widest text-center"></div>
+                        <div id="mNumB" class="grid grid-cols-4 gap-2 text-amber-300 font-bold tracking-widest border-b-2 border-white/40 pb-1.5 my-1 text-center"></div>
+                        <div id="mAns" class="grid grid-cols-4 gap-2 text-amber-300 font-black tracking-widest text-center pt-1"></div>
+                    </div>
+
+                    <div id="multTip" class="text-xs text-amber-200/90 mt-3 font-sans bg-slate-900/60 p-2.5 rounded-xl border border-white/10 max-w-md w-full text-left"></div>
+                </div>
+            `;
+        }
+
+        function initMultLogic() {
+            const aInput = document.getElementById('multNumA');
+            const bInput = document.getElementById('multNumB');
+            const randBtn = document.getElementById('multRandBtn');
+
+            const calculate = () => {
+                const a = parseInt(aInput.value) || 0;
+                const b = parseInt(bInput.value) || 0;
+                const ans = a * b;
+
+                const pad4 = (n) => String(n).padStart(4, ' ');
+                const strA = pad4(a);
+                const strB = pad4(b);
+                const strAns = pad4(ans);
+
+                document.getElementById('mNumA').innerHTML = `<span>${strA[0]!==' '?strA[0]:'&nbsp;'}</span><span>${strA[1]!==' '?strA[1]:'&nbsp;'}</span><span>${strA[2]!==' '?strA[2]:'&nbsp;'}</span><span>${strA[3]!==' '?strA[3]:'&nbsp;'}</span>`;
+                document.getElementById('mNumB').innerHTML = `<span class="text-amber-400 font-extrabold">×</span><span></span><span></span><span class="text-amber-300">${strB[3]}</span>`;
+                document.getElementById('mAns').innerHTML = `<span>${strAns[0]!==' '?strAns[0]:'&nbsp;'}</span><span>${strAns[1]!==' '?strAns[1]:'&nbsp;'}</span><span>${strAns[2]!==' '?strAns[2]:'&nbsp;'}</span><span>${strAns[3]!==' '?strAns[3]:'&nbsp;'}</span>`;
+
+                const approxA = Math.round(a / 100) * 100 || Math.round(a / 10) * 10;
+                const estAns = approxA * b;
+
+                document.getElementById('multTip').innerHTML = `
+                    <div class="font-bold text-amber-300 mb-1">計算與乘法估算解析：</div>
+                    <div>1. 精確計算：<span class="text-cyan-300 font-bold">${a} × ${b} = ${ans}</span></div>
+                    <div>2. 4-3 估算驗算：將 ${a} 大約看成 <span class="text-emerald-300 font-bold">${approxA}</span>，估算結果約為 <span class="text-emerald-300 font-bold">${approxA} × ${b} = ${estAns}</span>。</div>
+                `;
+            };
+
+            if (aInput) aInput.oninput = calculate;
+            if (bInput) bInput.oninput = calculate;
+            if (randBtn) {
+                randBtn.onclick = () => {
+                    aInput.value = Math.floor(Math.random() * 800) + 120;
+                    bInput.value = Math.floor(Math.random() * 8) + 2;
+                    calculate();
+                };
+            }
+
+            calculate();
+        }
+
+        function renderAnglesShapesDemo() {
+            return `
+                <div class="w-full flex flex-col items-center text-center">
+                    <div class="flex items-center gap-2 mb-3 bg-slate-900/90 p-1.5 rounded-xl border border-white/10">
+                        <button onclick="switchAnglesShapesTab('angle')" id="btnTabAngle" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-500 text-white transition-all">
+                            5-1~5-3 認識角與直角量角器
+                        </button>
+                        <button onclick="switchAnglesShapesTab('shape')" id="btnTabShape" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition-all">
+                            5-4 正方形與長方形
+                        </button>
+                    </div>
+
+                    <div id="modeAngleView" class="w-full flex flex-col items-center">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xs text-slate-300">角度大小：</span>
+                            <input type="range" id="angleRange" min="15" max="180" value="90" class="w-48 accent-sky-400">
+                            <span id="angleValueText" class="text-sm font-mono font-bold text-sky-300 w-12">90°</span>
+                        </div>
+
+                        <div class="w-full max-w-sm bg-slate-900/90 p-4 rounded-2xl border border-sky-500/30 my-2 flex justify-center items-center relative h-48">
+                            <svg id="angleSvg" width="240" height="180" viewBox="0 0 240 180" class="overflow-visible">
+                            </svg>
+                        </div>
+
+                        <div id="angleInfoText" class="text-xs text-sky-200 bg-slate-900/80 px-4 py-2 rounded-xl border border-white/10">
+                            這是一個 <b class="text-emerald-300">直角 (90°)</b>！
+                        </div>
+                    </div>
+
+                    <div id="modeShapeView" class="w-full flex flex-col items-center hidden">
+                        <div class="flex gap-2 mb-3">
+                            <button onclick="selectShapeType('square')" id="btnShapeSq" class="px-3 py-1 bg-sky-600 text-white rounded-lg text-xs font-bold">正方形</button>
+                            <button onclick="selectShapeType('rect')" id="btnShapeRect" class="px-3 py-1 bg-slate-800 text-slate-300 rounded-lg text-xs font-bold">長方形</button>
+                        </div>
+                        <div id="shapeSvgContainer" class="bg-slate-900/90 p-4 rounded-2xl border border-sky-500/30 my-1 min-h-[140px] flex items-center justify-center"></div>
+                        <div id="shapeDescText" class="text-xs text-slate-200 bg-slate-900/80 p-3 rounded-xl border border-white/10 mt-2 max-w-md"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        let currentShapeMode = 'square';
+
+        function switchAnglesShapesTab(tab) {
+            const vAngle = document.getElementById('modeAngleView');
+            const vShape = document.getElementById('modeShapeView');
+            const bAngle = document.getElementById('btnTabAngle');
+            const bShape = document.getElementById('btnTabShape');
+
+            if (tab === 'angle') {
+                vAngle.classList.remove('hidden');
+                vShape.classList.add('hidden');
+                bAngle.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-500 text-white transition-all";
+                bShape.className = "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition-all";
+            } else {
+                vShape.classList.remove('hidden');
+                vAngle.classList.add('hidden');
+                bShape.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-500 text-white transition-all";
+                bAngle.className = "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition-all";
+                selectShapeType(currentShapeMode);
+            }
+        }
+
+        function selectShapeType(type) {
+            currentShapeMode = type;
+            const btnSq = document.getElementById('btnShapeSq');
+            const btnRect = document.getElementById('btnShapeRect');
+            const container = document.getElementById('shapeSvgContainer');
+            const desc = document.getElementById('shapeDescText');
+
+            if (type === 'square') {
+                btnSq.className = "px-3 py-1 bg-sky-600 text-white rounded-lg text-xs font-bold";
+                btnRect.className = "px-3 py-1 bg-slate-800 text-slate-300 rounded-lg text-xs font-bold";
+                container.innerHTML = `
+                    <svg width="120" height="120" viewBox="0 0 120 120">
+                        <rect x="15" y="15" width="90" height="90" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="3" rx="2"/>
+                        <path d="M 15 25 L 25 25 L 25 15" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                        <path d="M 95 25 L 105 25 L 105 15" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                        <path d="M 15 95 L 25 95 L 25 105" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                        <path d="M 95 95 L 105 95 L 105 105" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                    </svg>
+                `;
+                desc.innerHTML = `<b class="text-sky-300">正方形性質：</b><br>1. 有 4 個邊，且 <span class="text-emerald-300 font-bold">4 個邊一樣長</span>。<br>2. 有 4 個角，且 <span class="text-amber-300 font-bold">4 個角都是直角 (90°)</span>。`;
+            } else {
+                btnRect.className = "px-3 py-1 bg-sky-600 text-white rounded-lg text-xs font-bold";
+                btnSq.className = "px-3 py-1 bg-slate-800 text-slate-300 rounded-lg text-xs font-bold";
+                container.innerHTML = `
+                    <svg width="180" height="100" viewBox="0 0 180 100">
+                        <rect x="15" y="15" width="150" height="70" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="3" rx="2"/>
+                        <path d="M 15 25 L 25 25 L 25 15" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                        <path d="M 155 25 L 165 25 L 165 15" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                        <path d="M 15 75 L 25 75 L 25 85" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                        <path d="M 155 75 L 165 75 L 165 85" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                    </svg>
+                `;
+                desc.innerHTML = `<b class="text-sky-300">長方形性質：</b><br>1. 有 4 個邊，<span class="text-emerald-300 font-bold">對邊一樣長</span>（長對長、寬對寬）。<br>2. 有 4 個角，且 <span class="text-amber-300 font-bold">4 個角都是直角 (90°)</span>。`;
+            }
+        }
+
+        function initAnglesShapesLogic() {
+            const range = document.getElementById('angleRange');
+            const valText = document.getElementById('angleValueText');
+            const svg = document.getElementById('angleSvg');
+            const info = document.getElementById('angleInfoText');
+
+            const drawAngle = () => {
+                const deg = parseInt(range.value) || 90;
+                valText.innerText = `${deg}°`;
+
+                const rad = (deg * Math.PI) / 180;
+                const r = 80;
+                const cx = 120, cy = 130;
+
+                const x1 = cx + r;
+                const y1 = cy;
+                const x2 = cx + r * Math.cos(-rad);
+                const y2 = cy + r * Math.sin(-rad);
+
+                let arcSvg = '';
+                if (deg === 90) {
+                    arcSvg = `<path d="M ${cx+20} ${cy} L ${cx+20} ${cy-20} L ${cx} ${cy-20}" fill="none" stroke="#f59e0b" stroke-width="2"/>`;
+                } else {
+                    const arcR = 30;
+                    const ax2 = cx + arcR * Math.cos(-rad);
+                    const ay2 = cy + arcR * Math.sin(-rad);
+                    const largeArc = deg > 180 ? 1 : 0;
+                    arcSvg = `<path d="M ${cx+arcR} ${cy} A ${arcR} ${arcR} 0 ${largeArc} 0 ${ax2} ${ay2}" fill="rgba(56,189,248,0.2)" stroke="#f59e0b" stroke-width="2"/>`;
+                }
+
+                svg.innerHTML = `
+                    <line x1="${cx}" y1="${cy}" x2="${x1}" y2="${y1}" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="${cx}" cy="${cy}" r="5" fill="#f59e0b"/>
+                    ${arcSvg}
+                `;
+
+                if (deg < 90) {
+                    info.innerHTML = `角度大小：<b>${deg}°</b>，比直角(90°)小，是一個 <b class="text-amber-300">銳角</b>！`;
+                } else if (deg === 90) {
+                    info.innerHTML = `角度大小：<b>90°</b>，正好是標準的 <b class="text-emerald-300">直角 (Right Angle)</b>！`;
+                } else {
+                    info.innerHTML = `角度大小：<b>${deg}°</b>，比直角(90°)大，是一個 <b class="text-rose-300">鈍角</b>！`;
+                }
+            };
+
+            if (range) range.oninput = drawAngle;
+            drawAngle();
+        }
+
+        function renderDivisionDemo() {
+            return `
+                <div class="w-full flex flex-col items-center text-center">
+                    <div class="text-xs text-slate-300 mb-2 font-bold"><i class="fa-solid fa-divide text-emerald-400 mr-1"></i>6-1~6-3 分裝、平分與除法直式：</div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xs text-slate-300">被除數：</span>
+                        <input type="number" id="divNumA" value="17" min="1" max="40" class="w-14 bg-slate-900 text-emerald-300 font-mono text-center font-bold px-1.5 py-1 rounded-lg border border-emerald-500/40 text-sm">
+                        <span class="text-xs text-slate-300">÷ 除數：</span>
+                        <input type="number" id="divNumB" value="5" min="1" max="10" class="w-14 bg-slate-900 text-emerald-300 font-mono text-center font-bold px-1.5 py-1 rounded-lg border border-emerald-500/40 text-sm">
+                        <button id="divRandBtn" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1.5 rounded-lg text-slate-300 border border-white/10"><i class="fa-solid fa-dice"></i> 隨機出題</button>
+                    </div>
+
+                    <div id="divGroupVisual" class="flex flex-wrap gap-2 justify-center max-w-md bg-slate-900/90 p-3.5 rounded-2xl border border-emerald-500/30 my-1 min-h-[80px] items-center">
+                    </div>
+
+                    <div id="divFormula" class="text-xs text-emerald-200 font-mono bg-slate-900/80 px-4 py-2 rounded-xl border border-white/10 mt-2">
+                        17 ÷ 5 = 3 ... 2 (商數為 3，餘數為 2)
+                    </div>
+                </div>
+            `;
+        }
+
+        function initDivisionLogic() {
+            const aInput = document.getElementById('divNumA');
+            const bInput = document.getElementById('divNumB');
+            const randBtn = document.getElementById('divRandBtn');
+            const groupVis = document.getElementById('divGroupVisual');
+            const formText = document.getElementById('divFormula');
+
+            const updateDiv = () => {
+                const a = parseInt(aInput.value) || 1;
+                const b = parseInt(bInput.value) || 1;
+                const quo = Math.floor(a / b);
+                const rem = a % b;
+
+                let html = "";
+                for (let i = 0; i < quo; i++) {
+                    html += `
+                        <div class="bg-emerald-950/90 border border-emerald-400/60 p-2 rounded-xl flex flex-col items-center shadow-md">
+                            <span class="text-[10px] text-emerald-300 font-bold mb-1 border-b border-emerald-500/30 w-full text-center pb-0.5">第 ${i+1} 組</span>
+                            <div class="flex items-center gap-1">
+                                ${'<div class="w-5 h-5 rounded-full bg-emerald-500/30 border border-emerald-400 flex items-center justify-center text-[10px] text-emerald-200 shadow-sm"><i class="fa-solid fa-apple-whole"></i></div>'.repeat(b)}
+                            </div>
+                        </div>
+                    `;
+                }
+                if (rem > 0) {
+                    html += `
+                        <div class="bg-rose-950/90 border border-rose-400/60 p-2 rounded-xl flex flex-col items-center shadow-md">
+                            <span class="text-[10px] text-rose-300 font-bold mb-1 border-b border-rose-500/30 w-full text-center pb-0.5">剩下的 (餘數)</span>
+                            <div class="flex items-center gap-1">
+                                ${'<div class="w-5 h-5 rounded-full bg-rose-500/30 border border-rose-400 flex items-center justify-center text-[10px] text-rose-200 shadow-sm"><i class="fa-solid fa-apple-whole"></i></div>'.repeat(rem)}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                groupVis.innerHTML = html || `<span class="text-slate-500 text-xs">無結果</span>`;
+                formText.innerHTML = `除法結果：<b>${a} ÷ ${b} = <span class="text-cyan-300 font-bold">${quo}</span> ... <span class="text-rose-300 font-bold">${rem}</span></b><br><span class="text-[11px] text-amber-300">驗算算式：${b} × ${quo} + ${rem} = ${a}</span>`;
+            };
+
+            if (aInput) aInput.oninput = updateDiv;
+            if (bInput) bInput.oninput = updateDiv;
+            if (randBtn) {
+                randBtn.onclick = () => {
+                    aInput.value = Math.floor(Math.random() * 25) + 8;
+                    bInput.value = Math.floor(Math.random() * 5) + 2;
+                    updateDiv();
+                };
+            }
+
+            updateDiv();
+        }
+
+        function renderScaleDemo() {
+            return `
+                <div class="w-full flex flex-col items-center text-center">
+                    <div class="text-xs text-slate-300 mb-2 font-bold"><i class="fa-solid fa-weight-hanging text-yellow-400 mr-1"></i>7-1~7-5 磅秤報讀與公斤公克換算：</div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-xs text-slate-300">調整重量：</span>
+                        <input type="range" id="scaleVal" min="0" max="3000" step="50" value="1350" class="w-48 accent-yellow-400">
+                        <span id="scaleGramText" class="text-sm font-mono font-bold text-yellow-300 w-20">1350 g</span>
+                    </div>
+
+                    <div class="bg-slate-900/90 p-4 rounded-2xl border border-yellow-500/30 my-1 flex flex-col items-center justify-center relative w-56 h-56">
+                        <svg id="scaleDialSvg" width="200" height="200" viewBox="0 0 200 200">
+                        </svg>
+                    </div>
+
+                    <div id="scaleResultText" class="text-xs text-yellow-200 font-mono bg-slate-900/80 px-4 py-2 rounded-xl border border-white/10 mt-2">
+                        1350 公克 = 1 公斤 350 公克 (1kg 350g)
+                    </div>
+                </div>
+            `;
+        }
+
+        function initScaleLogic() {
+            const slider = document.getElementById('scaleVal');
+            const textG = document.getElementById('scaleGramText');
+            const svg = document.getElementById('scaleDialSvg');
+            const result = document.getElementById('scaleResultText');
+
+            const drawScale = () => {
+                const g = parseInt(slider.value) || 0;
+                const kg = Math.floor(g / 1000);
+                const remG = g % 1000;
+
+                textG.innerText = `${g} g`;
+
+                let ticksSvg = `<circle cx="100" cy="100" r="85" fill="#fef3c7" stroke="#b45309" stroke-width="4"/>`;
+                
+                for (let i = 0; i < 30; i++) {
+                    const angle = (i * 12 - 90) * (Math.PI / 180);
+                    const isKg = i % 10 === 0;
+                    const r1 = 80;
+                    const r2 = isKg ? 65 : 73;
+                    const x1 = 100 + r1 * Math.cos(angle);
+                    const y1 = 100 + r1 * Math.sin(angle);
+                    const x2 = 100 + r2 * Math.cos(angle);
+                    const y2 = 100 + r2 * Math.sin(angle);
+
+                    ticksSvg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${isKg?'#0f172a':'#64748b'}" stroke-width="${isKg?3:1.5}"/>`;
+
+                    if (isKg) {
+                        const kgLabel = i / 10;
+                        const lx = 100 + 52 * Math.cos(angle);
+                        const ly = 100 + 52 * Math.sin(angle) + 4;
+                        ticksSvg += `<text x="${lx}" y="${ly}" font-size="12" font-weight="bold" fill="#0f172a" text-anchor="middle">${kgLabel}kg</text>`;
+                    }
+                }
+
+                const pointerAngle = ((g / 3000) * 360 - 90) * (Math.PI / 180);
+                const px = 100 + 68 * Math.cos(pointerAngle);
+                const py = 100 + 68 * Math.sin(pointerAngle);
+
+                ticksSvg += `
+                    <line x1="100" y1="100" x2="${px}" y2="${py}" stroke="#dc2626" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="100" cy="100" r="7" fill="#dc2626"/>
+                    <circle cx="100" cy="100" r="3" fill="#ffffff"/>
+                `;
+
+                svg.innerHTML = ticksSvg;
+                result.innerHTML = `磅秤讀數：<b>${g} 公克</b> = <span class="text-cyan-300 font-bold">${kg}</span> 公斤 <span class="text-yellow-300 font-bold">${remG}</span> 公克 (${kg}kg ${remG}g)`;
+            };
+
+            if (slider) slider.oninput = drawScale;
+            drawScale();
+        }
+
+        function renderFractionDemo() {
+            return `
+                <div class="w-full flex flex-col items-center text-center">
+                    <div class="text-xs text-slate-300 mb-2 font-bold"><i class="fa-solid fa-chart-pie text-fuchsia-400 mr-1"></i>8-1~8-3 認識分數與分數派圖：</div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="flex items-center gap-1">
+                            <span class="text-xs text-slate-300">分子 (取幾份)：</span>
+                            <button onclick="changeFraction(0, -1)" class="w-6 h-6 bg-slate-800 text-white rounded font-bold text-xs">-</button>
+                            <span id="fracNum" class="text-sm font-bold text-fuchsia-300 font-mono w-6">3</span>
+                            <button onclick="changeFraction(0, 1)" class="w-6 h-6 bg-slate-800 text-white rounded font-bold text-xs">+</button>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="text-xs text-slate-300">分母 (平分成)：</span>
+                            <button onclick="changeFraction(-1, 0)" class="w-6 h-6 bg-slate-800 text-white rounded font-bold text-xs">-</button>
+                            <span id="fracDen" class="text-sm font-bold text-fuchsia-300 font-mono w-6">8</span>
+                            <button onclick="changeFraction(1, 0)" class="w-6 h-6 bg-slate-800 text-white rounded font-bold text-xs">+</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/90 p-4 rounded-2xl border border-fuchsia-500/30 my-1 flex items-center justify-center relative w-48 h-48">
+                        <svg id="fracPieSvg" width="160" height="160" viewBox="0 0 160 160">
+                        </svg>
+                    </div>
+
+                    <div id="fracDesc" class="text-xs text-fuchsia-200 font-mono bg-slate-900/80 px-4 py-2 rounded-xl border border-white/10 mt-2">
+                        分數表示：八分之三 (3/8)
+                    </div>
+                </div>
+            `;
+        }
+
+        let fracD = 8, fracN = 3;
+
+        function changeFraction(denDelta, numDelta) {
+            fracD = Math.max(1, Math.min(12, fracD + denDelta));
+            fracN = Math.max(0, Math.min(fracD, fracN + numDelta));
+            document.getElementById('fracDen').innerText = fracD;
+            document.getElementById('fracNum').innerText = fracN;
+            if (typeof updateFractionView === 'function') updateFractionView();
+        }
+
+        function initFractionLogic() {
+            const svg = document.getElementById('fracPieSvg');
+            const desc = document.getElementById('fracDesc');
+
+            window.updateFractionView = () => {
+                const cx = 80, cy = 80, r = 70;
+                let pathSvg = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#334155" stroke="#ec4899" stroke-width="3"/>`;
+
+                for (let i = 0; i < fracD; i++) {
+                    const a1 = (i * (360 / fracD) - 90) * (Math.PI / 180);
+                    const a2 = ((i + 1) * (360 / fracD) - 90) * (Math.PI / 180);
+
+                    const x1 = cx + r * Math.cos(a1);
+                    const y1 = cy + r * Math.sin(a1);
+                    const x2 = cx + r * Math.cos(a2);
+                    const y2 = cy + r * Math.sin(a2);
+
+                    const largeArc = (360 / fracD) > 180 ? 1 : 0;
+                    const isFilled = i < fracN;
+
+                    if (fracD === 1) {
+                        pathSvg += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fracN===1?'#d946ef':'#334155'}"/>`;
+                    } else {
+                        pathSvg += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z" fill="${isFilled?'#d946ef':'#334155'}" stroke="#0f172a" stroke-width="2"/>`;
+                    }
+                }
+
+                svg.innerHTML = pathSvg;
+
+                const chineseNum = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"];
+                const denStr = chineseNum[fracD] || fracD;
+                const numStr = chineseNum[fracN] || fracN;
+
+                desc.innerHTML = `讀作：<b>${denStr}分之${numStr}</b> (<span class="text-cyan-300 font-bold">${fracN}/${fracD}</span>)<br>` +
+                    (fracN === fracD ? `<span class="text-emerald-300 font-bold">當分子等於分母時，${fracN}/${fracD} 等於 1！</span>` : `<span class="text-slate-300">將 1 個圓形平分成 ${fracD} 份，取其中的 ${fracN} 份。</span>`);
+            };
+
+            window.updateFractionView();
+        }
+
+        let tallyData = { "蘋果": 7, "香蕉": 12, "西瓜": 4, "橘子": 9 };
+
+        function renderPatternsDemo() {
+            return `
+                <div class="w-full flex flex-col items-center text-center">
+                    <div class="text-xs text-slate-300 mb-2 font-bold"><i class="fa-solid fa-table-cells text-cyan-400 mr-1"></i>9-1 & 9-2 分類與正字劃記表格：</div>
+                    <div class="text-xs text-slate-300 mb-2">點擊水果增加數量，自動即時畫「正」字與統計數字：</div>
+                    <div class="flex flex-wrap justify-center gap-2 mb-3">
+                        <button onclick="addTally('蘋果')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs border border-white/10">蘋果 +1</button>
+                        <button onclick="addTally('香蕉')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs border border-white/10">香蕉 +1</button>
+                        <button onclick="addTally('西瓜')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs border border-white/10">西瓜 +1</button>
+                        <button onclick="addTally('橘子')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs border border-white/10">橘子 +1</button>
+                    </div>
+
+                    <div class="w-full max-w-md bg-slate-900/90 rounded-xl border border-white/10 overflow-hidden text-xs my-1">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-800/80 text-cyan-300 border-b border-white/10">
+                                <tr>
+                                    <th class="p-2.5">水果項目</th>
+                                    <th class="p-2.5">正字劃記 (SVG 筆劃)</th>
+                                    <th class="p-2.5">數量 (人)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tallyTbody" class="text-slate-200">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addTally(fruit) {
+            if (tallyData[fruit] !== undefined) {
+                tallyData[fruit]++;
+                renderTallyTable();
+            }
+        }
+
+        function renderTallyTable() {
+            const tbody = document.getElementById('tallyTbody');
+            if (!tbody) return;
+
+            let total = 0;
+            let rowsHtml = '';
+
+            const renderTallySvg = (num) => {
+                if (num === 0) return '<span class="text-slate-500">-</span>';
+                const fullCount = Math.floor(num / 5);
+                const rem = num % 5;
+
+                let svgStr = '';
+
+                // Correct standard 1~5 stroke rendering for "正" tally mark
+                const makeStrokeSvg = (strokes) => {
+                    let paths = '';
+                    // Stroke 1: Top horizontal (一)
+                    if (strokes >= 1) paths += `<line x1="3" y1="5" x2="25" y2="5" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>`;
+                    // Stroke 2: Center vertical (丨)
+                    if (strokes >= 2) paths += `<line x1="14" y1="5" x2="14" y2="23" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>`;
+                    // Stroke 3: Middle-right horizontal (─)
+                    if (strokes >= 3) paths += `<line x1="14" y1="14" x2="25" y2="14" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>`;
+                    // Stroke 4: Left lower vertical (從左下 y=23 往上畫至中間 y=14)
+                    if (strokes >= 4) paths += `<line x1="3" y1="14" x2="3" y2="23" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>`;
+                    // Stroke 5: Bottom horizontal (一)
+                    if (strokes >= 5) paths += `<line x1="3" y1="23" x2="25" y2="23" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>`;
+                    return `<svg width="28" height="28" viewBox="0 0 28 28" class="inline-block mx-0.5">${paths}</svg>`;
+                };
+
+                for (let i = 0; i < fullCount; i++) {
+                    svgStr += makeStrokeSvg(5);
+                }
+                if (rem > 0) {
+                    svgStr += makeStrokeSvg(rem);
+                }
+
+                return svgStr;
+            };
+
+            for (const [fruit, count] of Object.entries(tallyData)) {
+                total += count;
+                rowsHtml += `
+                    <tr class="border-b border-white/10">
+                        <td class="p-2 font-bold text-sm">${fruit}</td>
+                        <td class="p-2 align-middle">${renderTallySvg(count)}</td>
+                        <td class="p-2 font-bold text-cyan-300 font-mono text-sm">${count}</td>
+                    </tr>
+                `;
+            }
+
+            rowsHtml += `
+                <tr class="font-bold text-emerald-300 bg-slate-900/60">
+                    <td class="p-2">合計</td>
+                    <td class="p-2">-</td>
+                    <td class="p-2 font-mono text-sm">${total}</td>
+                </tr>
+            `;
+
+            tbody.innerHTML = rowsHtml;
+        }
+
+        function initPatternsLogic() {
+            renderTallyTable();
+        }
+    </script>
+</body>
+</html>

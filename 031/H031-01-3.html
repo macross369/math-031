@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>四位數比大小與組數探究樂園</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif, system-ui;
+            /* 新海誠風格：湛藍與霞光粉紫漸層背景 */
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: shinkaiSky 15s ease infinite;
+            min-height: 100vh;
+            color: #2d3748;
+        }
+
+        @keyframes shinkaiSky {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 玻璃擬態 (Glassmorphism) 卡片效果 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            border-radius: 1.25rem;
+        }
+
+        /* 新海誠夢幻按鈕 */
+        .btn-shinkai {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+        .btn-shinkai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
+        }
+
+        /* 位值表高亮強調動畫 */
+        .digit-highlight {
+            animation: pulseGlow 1.5s infinite alternate;
+            background-color: rgba(254, 240, 138, 0.8) !important;
+            border-color: #f59e0b !important;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+            100% { transform: scale(1.05); box-shadow: 0 0 12px 4px rgba(245, 158, 11, 0.6); }
+        }
+
+        /* 拖放區域與卡片樣式 */
+        .card-slot {
+            min-height: 80px;
+            border: 2px dashed #93c5fd;
+            transition: all 0.2s ease;
+        }
+        .card-slot.drag-over {
+            background-color: rgba(219, 234, 254, 0.7);
+            border-color: #2563eb;
+            transform: scale(1.02);
+        }
+
+        .number-card {
+            cursor: grab;
+            user-select: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+        }
+        .number-card:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        /* 頁籤切換樣式 */
+        .tab-btn.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+    </style>
+</head>
+<body class="p-3 md:p-6">
+
+    <!-- 主容器 -->
+    <div class="max-w-5xl mx-auto">
+        
+        <!-- 標頭區 -->
+        <header class="glass-card p-6 mb-6 text-center relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-300 rounded-full blur-3xl opacity-50"></div>
+            <div class="absolute -left-10 -top-10 w-40 h-40 bg-pink-300 rounded-full blur-3xl opacity-50"></div>
+            
+            <!-- 新增：閒雲數學小棧 Logo 與標題區 -->
+            <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
+                <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+                <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+            </div>
+
+            <h1 class="text-3xl md:text-4xl font-black text-indigo-900 tracking-wider mb-2 flex items-center justify-center gap-3">
+                <i class="fa-solid fa-cloud-sun text-amber-400"></i>
+                四位數比大小與組數探究樂園
+            </h1>
+            <p class="text-indigo-700 font-bold text-sm md:text-base">
+                ✨ 觀察位值變化 ‧ 靈活排列卡片 ‧ 成為四位數比大小大師！
+            </p>
+        </header>
+
+        <!-- 功能頁籤選單 -->
+        <div class="flex justify-center gap-2 mb-6">
+            <button onclick="switchTab('explore')" id="tab-explore" class="tab-btn active px-5 py-3 rounded-xl font-bold text-gray-700 bg-white/70 hover:bg-white transition flex items-center gap-2">
+                <i class="fa-solid fa-scale-balanced"></i> 1. 動態位值比大小
+            </button>
+            <button onclick="switchTab('cards')" id="tab-cards" class="tab-btn px-5 py-3 rounded-xl font-bold text-gray-700 bg-white/70 hover:bg-white transition flex items-center gap-2">
+                <i class="fa-solid fa-shapes"></i> 2. 數字卡組數大挑戰
+            </button>
+            <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn px-5 py-3 rounded-xl font-bold text-gray-700 bg-white/70 hover:bg-white transition flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square"></i> 3. 歷程隨堂小測驗
+            </button>
+        </div>
+
+        <!-- ==================== 模組 1：動態位值比大小 ==================== -->
+        <main id="sec-explore" class="tab-content block">
+            <div class="glass-card p-6 mb-6">
+                <div class="flex items-center justify-between border-b pb-3 mb-4">
+                    <h2 class="text-2xl font-bold text-indigo-900 flex items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass-chart text-blue-500"></i> 位值比較與動態分析
+                    </h2>
+                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">情境：圖書館藏書比較</span>
+                </div>
+
+                <!-- 數值調整控制區 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <!-- 數字 A -->
+                    <div class="bg-indigo-50/70 p-4 rounded-xl border border-indigo-100">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="font-bold text-indigo-900 text-lg flex items-center gap-2">
+                                <span class="w-3 h-3 bg-indigo-500 rounded-full"></span> 幸福圖書館：<span id="numA-display" class="text-2xl font-black text-indigo-600">3412</span> 本
+                            </label>
+                        </div>
+                        <input type="range" id="sliderA" min="1000" max="9999" value="3412" step="1" 
+                               class="w-full h-3 bg-indigo-200 rounded-lg appearance-none cursor-pointer accent-indigo-600 mb-4"
+                               oninput="updateCompare()">
+                        <div class="grid grid-cols-4 gap-2 text-center text-xs font-bold text-gray-600">
+                            <div>千位<input type="number" id="a-千" min="1" max="9" value="3" onchange="syncFromDigits('A')" class="w-full text-center border rounded py-1 text-base font-bold text-indigo-700"></div>
+                            <div>百位<input type="number" id="a-百" min="0" max="9" value="4" onchange="syncFromDigits('A')" class="w-full text-center border rounded py-1 text-base font-bold text-indigo-700"></div>
+                            <div>十位<input type="number" id="a-十" min="0" max="9" value="1" onchange="syncFromDigits('A')" class="w-full text-center border rounded py-1 text-base font-bold text-indigo-700"></div>
+                            <div>個位<input type="number" id="a-個" min="0" max="9" value="2" onchange="syncFromDigits('A')" class="w-full text-center border rounded py-1 text-base font-bold text-indigo-700"></div>
+                        </div>
+                    </div>
+
+                    <!-- 數字 B -->
+                    <div class="bg-rose-50/70 p-4 rounded-xl border border-rose-100">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="font-bold text-rose-900 text-lg flex items-center gap-2">
+                                <span class="w-3 h-3 bg-rose-500 rounded-full"></span> 平安圖書館：<span id="numB-display" class="text-2xl font-black text-rose-600">1798</span> 本
+                            </label>
+                        </div>
+                        <input type="range" id="sliderB" min="1000" max="9999" value="1798" step="1" 
+                               class="w-full h-3 bg-rose-200 rounded-lg appearance-none cursor-pointer accent-rose-600 mb-4"
+                               oninput="updateCompare()">
+                        <div class="grid grid-cols-4 gap-2 text-center text-xs font-bold text-gray-600">
+                            <div>千位<input type="number" id="b-千" min="1" max="9" value="1" onchange="syncFromDigits('B')" class="w-full text-center border rounded py-1 text-base font-bold text-rose-700"></div>
+                            <div>百位<input type="number" id="b-百" min="0" max="9" value="7" onchange="syncFromDigits('B')" class="w-full text-center border rounded py-1 text-base font-bold text-rose-700"></div>
+                            <div>十位<input type="number" id="b-十" min="0" max="9" value="9" onchange="syncFromDigits('B')" class="w-full text-center border rounded py-1 text-base font-bold text-rose-700"></div>
+                            <div>個位<input type="number" id="b-個" min="0" max="9" value="8" onchange="syncFromDigits('B')" class="w-full text-center border rounded py-1 text-base font-bold text-rose-700"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 即時位值比對表 -->
+                <div class="overflow-x-auto mb-6">
+                    <table class="w-full text-center border-collapse bg-white rounded-xl overflow-hidden shadow-sm">
+                        <thead>
+                            <tr class="bg-indigo-900 text-white text-sm md:text-base">
+                                <th class="py-3 px-2">項目 / 位值</th>
+                                <th class="py-3 px-2 w-1/5">千位</th>
+                                <th class="py-3 px-2 w-1/5">百位</th>
+                                <th class="py-3 px-2 w-1/5">十位</th>
+                                <th class="py-3 px-2 w-1/5">個位</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-lg font-bold">
+                            <tr class="border-b border-gray-100">
+                                <td class="py-3 text-indigo-700 bg-indigo-50/50">幸福圖書館 (A)</td>
+                                <td id="cell-a-千" class="py-3 transition-all">3</td>
+                                <td id="cell-a-百" class="py-3 transition-all">4</td>
+                                <td id="cell-a-十" class="py-3 transition-all">1</td>
+                                <td id="cell-a-個" class="py-3 transition-all">2</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 text-rose-700 bg-rose-50/50">平安圖書館 (B)</td>
+                                <td id="cell-b-千" class="py-3 transition-all">1</td>
+                                <td id="cell-b-百" class="py-3 transition-all">7</td>
+                                <td id="cell-b-十" class="py-3 transition-all">9</td>
+                                <td id="cell-b-個" class="py-3 transition-all">8</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 比較結果與解析卡片 -->
+                <div class="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-5 text-center">
+                    <div class="text-sm font-bold text-amber-800 mb-1">即時比較結論</div>
+                    <div class="text-3xl md:text-4xl font-black text-gray-800 mb-3 flex items-center justify-center gap-4">
+                        <span id="res-numA" class="text-indigo-600">3412</span>
+                        <span id="res-symbol" class="inline-block bg-amber-400 text-white px-4 py-1 rounded-2xl shadow-md text-3xl">&gt;</span>
+                        <span id="res-numB" class="text-rose-600">1798</span>
+                    </div>
+                    <p id="res-explanation" class="text-base font-bold text-amber-900 bg-white/80 py-2 px-4 rounded-lg inline-block shadow-sm">
+                        千位數字不同 (3 > 1)，因此 3412 比 1798 大！
+                    </p>
+                </div>
+            </div>
+        </main>
+
+        <!-- ==================== 模組 2：數字卡組數大挑戰 ==================== -->
+        <main id="sec-cards" class="tab-content hidden">
+            <div class="glass-card p-6 mb-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b pb-3 mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-indigo-900 flex items-center gap-2">
+                            <i class="fa-solid fa-puzzle-piece text-amber-500"></i> 4張數字卡組數大挑戰
+                        </h2>
+                        <p class="text-xs text-gray-600 mt-1">請用滑鼠拖曳或點選數字卡，放入目標位值框中組合成四位數。</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="setCardPreset([4,8,5,0])" class="text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold px-3 py-1.5 rounded-lg transition">載入例題：4,8,5,0</button>
+                        <button onclick="setCardPreset([5,7,3,2])" class="text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold px-3 py-1.5 rounded-lg transition">載入例題：5,7,3,2</button>
+                        <button onclick="setCardPreset([0,3,4,7])" class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold px-3 py-1.5 rounded-lg transition">素養題：0,3,4,7</button>
+                    </div>
+                </div>
+
+                <!-- 數字卡庫 -->
+                <div class="mb-6">
+                    <div class="text-sm font-bold text-gray-700 mb-2">手邊的數字卡（請拖曳或點擊）：</div>
+                    <div id="card-pool" class="flex justify-center gap-4 p-4 bg-indigo-50/50 rounded-xl min-h-[90px] items-center">
+                        <!-- JS 動態生成數字卡 -->
+                    </div>
+                </div>
+
+                <!-- 放置區域 (位值表) -->
+                <div class="grid grid-cols-4 gap-2 md:gap-4 text-center mb-6">
+                    <div>
+                        <div class="bg-indigo-600 text-white font-bold py-1.5 rounded-t-lg text-sm">千位</div>
+                        <div class="card-slot rounded-b-lg bg-white flex items-center justify-center p-2" data-position="千" ondragover="allowDrop(event)" ondrop="handleDrop(event)" onclick="slotClick('千')"></div>
+                    </div>
+                    <div>
+                        <div class="bg-blue-600 text-white font-bold py-1.5 rounded-t-lg text-sm">百位</div>
+                        <div class="card-slot rounded-b-lg bg-white flex items-center justify-center p-2" data-position="百" ondragover="allowDrop(event)" ondrop="handleDrop(event)" onclick="slotClick('百')"></div>
+                    </div>
+                    <div>
+                        <div class="bg-teal-600 text-white font-bold py-1.5 rounded-t-lg text-sm">十位</div>
+                        <div class="card-slot rounded-b-lg bg-white flex items-center justify-center p-2" data-position="十" ondragover="allowDrop(event)" ondrop="handleDrop(event)" onclick="slotClick('十')"></div>
+                    </div>
+                    <div>
+                        <div class="bg-emerald-600 text-white font-bold py-1.5 rounded-t-lg text-sm">個位</div>
+                        <div class="card-slot rounded-b-lg bg-white flex items-center justify-center p-2" data-position="個" ondragover="allowDrop(event)" ondrop="handleDrop(event)" onclick="slotClick('個')"></div>
+                    </div>
+                </div>
+
+                <!-- 操作與回饋訊息 -->
+                <div id="card-msg" class="hidden mb-4 p-3 rounded-lg text-center font-bold text-sm"></div>
+
+                <div class="flex flex-wrap justify-between items-center gap-3 border-t pt-4">
+                    <div class="text-lg font-bold text-gray-800">
+                        目前組成的數字：<span id="formed-number" class="text-3xl font-black text-indigo-600">----</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="resetCards()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-lg transition text-sm">
+                            <i class="fa-solid fa-rotate-left"></i> 重置卡片
+                        </button>
+                        <button onclick="autoSolve('max')" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg transition text-sm shadow-sm">
+                            <i class="fa-solid fa-crown"></i> 自動組最大數
+                        </button>
+                        <button onclick="autoSolve('min')" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-lg transition text-sm shadow-sm">
+                            <i class="fa-solid fa-seedling"></i> 自動組最小數
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 觀念小學堂提示 -->
+                <div class="mt-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg text-xs md:text-sm text-blue-900 leading-relaxed">
+                    <strong>💡 組數密技提醒：</strong>
+                    <ul class="list-disc list-inside mt-1 space-y-1">
+                        <li>要排出<strong>最大數</strong>：將數字從大到小依次放在 千位 ➔ 百位 ➔ 十位 ➔ 個位。</li>
+                        <li>要排出<strong>最小數</strong>：將數字從小到大排列，但<span class="text-rose-600 font-bold">「千位不能是 0」</span>！若有 0，需用第二小的非零數字放在千位。</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <!-- ==================== 模組 3：歷程隨堂測驗 ==================== -->
+        <main id="sec-quiz" class="tab-content hidden">
+            <div class="glass-card p-6 mb-6">
+                <div class="flex justify-between items-center border-b pb-3 mb-6">
+                    <h2 class="text-2xl font-bold text-indigo-900 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-purple-600"></i> 四位數概念隨堂測驗
+                    </h2>
+                    <div class="text-right">
+                        <span id="quiz-score" class="text-xl font-black text-indigo-600">得分：0 / 50</span>
+                    </div>
+                </div>
+
+                <!-- 題目容器 -->
+                <div id="quiz-container" class="space-y-6">
+                    <!-- JS 動態生成 5 題觀念測驗 -->
+                </div>
+
+                <!-- 測驗結算按鈕 -->
+                <div class="mt-8 text-center">
+                    <button onclick="resetQuiz()" class="btn-shinkai px-8 py-3 text-white font-black rounded-xl text-lg shadow-lg">
+                        <i class="fa-solid fa-arrow-rotate-right"></i> 重新測驗
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- 頁尾聲明 -->
+        <footer class="text-center text-white/80 text-xs font-medium py-4">
+            設計用於 國小三年級數學「1-3 比大小與組數」互動教學 ｜ 適用 Google 協作平台嵌入
+        </footer>
+
+    </div>
+
+    <!-- JavaScript 互動邏輯 -->
+    <script>
+        // ==================== 頁籤切換邏輯 ====================
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`sec-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        // ==================== 模組 1：動態位值比大小 ====================
+        function updateCompare() {
+            const valA = parseInt(document.getElementById('sliderA').value);
+            const valB = parseInt(document.getElementById('sliderB').value);
+
+            // 更新顯示數值
+            document.getElementById('numA-display').innerText = valA;
+            document.getElementById('numB-display').innerText = valB;
+            document.getElementById('res-numA').innerText = valA;
+            document.getElementById('res-numB').innerText = valB;
+
+            // 拆解位數
+            const strA = valA.toString().padStart(4, '0');
+            const strB = valB.toString().padStart(4, '0');
+
+            const digitsA = { 千: strA[0], 百: strA[1], 十: strA[2], 個: strA[3] };
+            const digitsB = { 千: strB[0], 百: strB[1], 十: strB[2], 個: strB[3] };
+
+            // 更新輸入框與表格
+            ['千', '百', '十', '個'].forEach((pos, idx) => {
+                const posKey = ['千', '百', '十', '個'][idx];
+                document.getElementById(`a-${posKey}`).value = strA[idx];
+                document.getElementById(`b-${posKey}`).value = strB[idx];
+                document.getElementById(`cell-a-${posKey}`).innerText = strA[idx];
+                document.getElementById(`cell-b-${posKey}`).innerText = strB[idx];
+
+                // 清除高亮
+                document.getElementById(`cell-a-${posKey}`).classList.remove('digit-highlight');
+                document.getElementById(`cell-b-${posKey}`).classList.remove('digit-highlight');
+            });
+
+            // 比較邏輯與高亮顯示
+            const symEl = document.getElementById('res-symbol');
+            const expEl = document.getElementById('res-explanation');
+
+            if (valA > valB) {
+                symEl.innerText = '>';
+                symEl.className = 'inline-block bg-amber-500 text-white px-4 py-1 rounded-2xl shadow-md text-3xl';
+            } else if (valA < valB) {
+                symEl.innerText = '<';
+                symEl.className = 'inline-block bg-indigo-500 text-white px-4 py-1 rounded-2xl shadow-md text-3xl';
+            } else {
+                symEl.innerText = '=';
+                symEl.className = 'inline-block bg-gray-500 text-white px-4 py-1 rounded-2xl shadow-md text-3xl';
+            }
+
+            // 尋找最高不同位數
+            if (digitsA.千 !== digitsB.千) {
+                highlightCells('千');
+                expEl.innerText = `【千位不同】幸福圖書館千位為 ${digitsA.千}，平安圖書館千位為 ${digitsB.千}。直接比較千位即可得出結果！`;
+            } else if (digitsA.百 !== digitsB.百) {
+                highlightCells('百');
+                expEl.innerText = `【千位相同，比百位】兩數千位都是 ${digitsA.千}，接著比較百位：${digitsA.百} 與 ${digitsB.百}！`;
+            } else if (digitsA.十 !== digitsB.十) {
+                highlightCells('十');
+                expEl.innerText = `【千、百位皆相同，比十位】千位與百位都相同，比較十位數字：${digitsA.十} 與 ${digitsB.十}！`;
+            } else if (digitsA.個 !== digitsB.個) {
+                highlightCells('個');
+                expEl.innerText = `【千、百、十位皆相同，比個位】前面三個位數完全相同，最後比較個位：${digitsA.個} 與 ${digitsB.個}！`;
+            } else {
+                expEl.innerText = `【兩數完全相等】所有位值上的數字完全相同！`;
+            }
+        }
+
+        function highlightCells(pos) {
+            document.getElementById(`cell-a-${pos}`).classList.add('digit-highlight');
+            document.getElementById(`cell-b-${pos}`).classList.add('digit-highlight');
+        }
+
+        function syncFromDigits(type) {
+            const posKeys = ['千', '百', '十', '個'];
+            let numStr = '';
+            posKeys.forEach(p => {
+                let val = document.getElementById(`${type.toLowerCase()}-${p}`).value;
+                if (val === '' || val < 0) val = 0;
+                if (val > 9) val = 9;
+                numStr += val;
+            });
+            // 千位不可為 0
+            if (numStr[0] === '0') numStr = '1' + numStr.substring(1);
+            
+            document.getElementById(`slider${type}`).value = parseInt(numStr);
+            updateCompare();
+        }
+
+        // ==================== 模組 2：數字卡組數邏輯 ====================
+        let currentDigits = [4, 8, 5, 0];
+        let cardSlots = { 千: null, 百: null, 十: null, 個: null };
+        let selectedCardIndex = null; // 手機點擊輔助
+
+        function setCardPreset(digitsArr) {
+            currentDigits = [...digitsArr];
+            resetCards();
+        }
+
+        function renderCardPool() {
+            const poolEl = document.getElementById('card-pool');
+            poolEl.innerHTML = '';
+            
+            currentDigits.forEach((digit, idx) => {
+                // 檢查是否已被放置
+                const isPlaced = Object.values(cardSlots).includes(idx);
+                if (!isPlaced) {
+                    const card = document.createElement('div');
+                    card.className = `number-card w-14 h-16 rounded-xl border-2 border-indigo-300 flex items-center justify-center text-2xl font-black text-indigo-800 shadow-md ${selectedCardIndex === idx ? 'ring-4 ring-amber-400' : ''}`;
+                    card.draggable = true;
+                    card.innerText = digit;
+                    card.ondragstart = (e) => e.dataTransfer.setData('text/plain', idx);
+                    card.onclick = () => selectCardForClick(idx);
+                    poolEl.appendChild(card);
+                }
+            });
+        }
+
+        function selectCardForClick(idx) {
+            selectedCardIndex = selectedCardIndex === idx ? null : idx;
+            renderCardPool();
+        }
+
+        function allowDrop(e) { e.preventDefault(); }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const cardIdx = parseInt(e.dataTransfer.getData('text/plain'));
+            const targetPos = e.currentTarget.getAttribute('data-position');
+            placeCardInSlot(cardIdx, targetPos);
+        }
+
+        function slotClick(targetPos) {
+            if (selectedCardIndex !== null) {
+                placeCardInSlot(selectedCardIndex, targetPos);
+                selectedCardIndex = null;
+            } else if (cardSlots[targetPos] !== null) {
+                // 點擊已放置的卡片退回卡片庫
+                cardSlots[targetPos] = null;
+                updateCardSlotsUI();
+            }
+        }
+
+        function placeCardInSlot(cardIdx, targetPos) {
+            // 千位不能為 0 防呆檢查
+            if (targetPos === '千' && currentDigits[cardIdx] === 0) {
+                showCardMsg('⚠️ 規則提醒：千位數字不能為 0 喔！否則就不算四位數了。', 'bg-rose-100 text-rose-800 border border-rose-300');
+                return;
+            }
+
+            // 若該卡片已被放置於其他位置，先清除
+            Object.keys(cardSlots).forEach(pos => {
+                if (cardSlots[pos] === cardIdx) cardSlots[pos] = null;
+            });
+
+            cardSlots[targetPos] = cardIdx;
+            hideCardMsg();
+            updateCardSlotsUI();
+        }
+
+        function updateCardSlotsUI() {
+            renderCardPool();
+            const posKeys = ['千', '百', '十', '個'];
+            let formedStr = '';
+
+            posKeys.forEach(pos => {
+                const slotEl = document.querySelector(`.card-slot[data-position="${pos}"]`);
+                const cardIdx = cardSlots[pos];
+
+                if (cardIdx !== null) {
+                    const digit = currentDigits[cardIdx];
+                    slotEl.innerHTML = `
+                        <div class="number-card w-12 h-14 rounded-lg border-2 border-indigo-400 bg-white flex items-center justify-center text-xl font-black text-indigo-900 shadow">
+                            ${digit}
+                        </div>
+                    `;
+                    formedStr += digit;
+                } else {
+                    slotEl.innerHTML = `<span class="text-gray-300 font-bold text-xs">放置卡片</span>`;
+                    formedStr += '-';
+                }
+            });
+
+            document.getElementById('formed-number').innerText = formedStr;
+        }
+
+        function resetCards() {
+            cardSlots = { 千: null, 百: null, 十: null, 個: null };
+            selectedCardIndex = null;
+            hideCardMsg();
+            updateCardSlotsUI();
+        }
+
+        function autoSolve(type) {
+            resetCards();
+            let available = [...currentDigits.map((val, idx) => ({ val, idx }))];
+
+            if (type === 'max') {
+                // 從大到小排
+                available.sort((a, b) => b.val - a.val);
+                cardSlots['千'] = available[0].idx;
+                cardSlots['百'] = available[1].idx;
+                cardSlots['十'] = available[2].idx;
+                cardSlots['個'] = available[3].idx;
+                showCardMsg('✨ 已為您排出最大四位數！', 'bg-emerald-100 text-emerald-800 border border-emerald-300');
+            } else if (type === 'min') {
+                // 從小到大排，但千位不能為0
+                available.sort((a, b) => a.val - b.val);
+                let thousandItem = available.find(item => item.val > 0);
+                if (!thousandItem) thousandItem = available[0]; // 全0特例處理
+
+                cardSlots['千'] = thousandItem.idx;
+                let remaining = available.filter(item => item.idx !== thousandItem.idx);
+                cardSlots['百'] = remaining[0].idx;
+                cardSlots['十'] = remaining[1].idx;
+                cardSlots['個'] = remaining[2].idx;
+                showCardMsg('🌱 已為您排出最小四位數（千位不為0）！', 'bg-blue-100 text-blue-800 border border-blue-300');
+            }
+            updateCardSlotsUI();
+        }
+
+        function showCardMsg(msg, className) {
+            const msgEl = document.getElementById('card-msg');
+            msgEl.className = `mb-4 p-3 rounded-lg text-center font-bold text-sm ${className}`;
+            msgEl.innerText = msg;
+            msgEl.classList.remove('hidden');
+        }
+
+        function hideCardMsg() {
+            document.getElementById('card-msg').classList.add('hidden');
+        }
+
+        // ==================== 模組 3：歷程測驗題目與評量 ====================
+        const quizData = [
+            {
+                id: 1,
+                question: "1. 幸福圖書館有漫畫 756 本，兒童百科有 1765 本。比一比，哪一類書籍比較少？（請選擇正確的符號）",
+                options: ["756 < 1765 (漫畫比較少)", "756 > 1765 (兒童百科比較少)", "756 = 1765 (兩者一樣多)"],
+                correct: 0,
+                explanation: "756 不到 1000 本，而 1765 超過 1000 本，所以 756 < 1765，漫畫比較少。"
+            },
+            {
+                id: 2,
+                question: "2. 比較 3756 與 3412 的大小時，千位數字都是 3，接下來應該比較哪一個位值？",
+                options: ["個位數字", "十位數字", "百位數字"],
+                correct: 2,
+                explanation: "當千位數字相同時，應該接著比較下一個位值「百位數字」（7 > 4）。"
+            },
+            {
+                id: 3,
+                question: "3. 用 4、8、5、0 這四張數字卡排出的「最小四位數」是多少？",
+                options: ["0458", "4058", "4508"],
+                correct: 1,
+                explanation: "組四位數時千位不能是 0，因此千位放最小的非零數字 4，其餘由小到大排為 0、5、8，得到 4058。"
+            },
+            {
+                id: 4,
+                question: "4. 【素養評量】小明抽到 0、3、4、7 四張卡片，他想排出一個比 7000 大且比 7400 小的四位數，下列何者正確？",
+                options: ["7034", "7403", "7500"],
+                correct: 0,
+                explanation: "比 7000 大且比 7400 小，千位必須是 7，百位必須小於 4（可為 3 或 0）。7034 符合此條件。"
+            },
+            {
+                id: 5,
+                question: "5. 手提包價格被模糊標記為 $3_59（只知道花了 32 張百元鈔票才夠買）。請問價格可能是多少？",
+                options: ["3159 元", "3459 元", "3559 元"],
+                correct: 0,
+                explanation: "32 張百元鈔票是 3200 元。手提包價格必須小於 3200 元才夠買，故百位數字必須比 2 小，只能是 0 或 1，因此答案為 3159 元。"
+            }
+        ];
+
+        let userAnswers = Array(5).fill(null);
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizData.forEach((q, idx) => {
+                const qBox = document.createElement('div');
+                qBox.className = "bg-white/80 p-5 rounded-xl border border-indigo-100 shadow-sm";
+                
+                let optionsHTML = '';
+                q.options.forEach((opt, optIdx) => {
+                    const isSelected = userAnswers[idx] === optIdx;
+                    optionsHTML += `
+                        <button onclick="selectAnswer(${idx}, ${optIdx})" 
+                                class="w-full text-left p-3 my-1 rounded-lg border font-bold transition flex items-center justify-between
+                                ${isSelected ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-gray-50 hover:bg-indigo-50 border-gray-200 text-gray-700'}">
+                            <span>${opt}</span>
+                            ${isSelected ? '<i class="fa-solid fa-circle-check"></i>' : ''}
+                        </button>
+                    `;
+                });
+
+                let feedbackHTML = '';
+                if (userAnswers[idx] !== null) {
+                    const isCorrect = userAnswers[idx] === q.correct;
+                    feedbackHTML = `
+                        <div class="mt-3 p-3 rounded-lg font-bold text-sm ${isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                            ${isCorrect ? '✅ 回答正確！' : '❌ 答案不正確喔！'}
+                            <p class="font-normal text-xs mt-1 text-gray-700">${q.explanation}</p>
+                        </div>
+                    `;
+                }
+
+                qBox.innerHTML = `
+                    <div class="font-bold text-gray-800 text-base mb-3">${q.question}</div>
+                    <div class="space-y-1">${optionsHTML}</div>
+                    ${feedbackHTML}
+                `;
+                container.appendChild(qBox);
+            });
+
+            updateQuizScore();
+        }
+
+        function selectAnswer(qIdx, optIdx) {
+            userAnswers[qIdx] = optIdx;
+            renderQuiz();
+        }
+
+        function updateQuizScore() {
+            let score = 0;
+            userAnswers.forEach((ans, idx) => {
+                if (ans === quizData[idx].correct) score += 10;
+            });
+            document.getElementById('quiz-score').innerText = `得分：${score} / 50`;
+        }
+
+        function resetQuiz() {
+            userAnswers = Array(5).fill(null);
+            renderQuiz();
+        }
+
+        // ==================== 初始化執行 ====================
+        window.onload = () => {
+            updateCompare();
+            renderCardPool();
+            updateCardSlotsUI();
+            renderQuiz();
+        };
+    </script>
+</body>
+</html>
