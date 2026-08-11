@@ -100,15 +100,23 @@
             flex-direction: column;
             vertical-align: middle;
             text-align: center;
-            padding: 0 4px;
-            font-weight: bold;
+            padding: 0 0.25em;
+            font-weight: 700;
+            line-height: 1;
+            margin: 0 2px;
+            position: relative;
+            top: -0.05em;
         }
         .fraction .numerator {
             border-bottom: 2px solid currentColor;
             padding-bottom: 1px;
+            display: block;
+            line-height: 1;
         }
         .fraction .denominator {
             padding-top: 1px;
+            display: block;
+            line-height: 1;
         }
 
         /* 動畫效果 */
@@ -132,7 +140,7 @@
     <!-- 頂部標題區 -->
     <header class="max-w-5xl mx-auto mb-6 text-center text-white relative">
         <h1 class="text-3xl md:text-4xl font-black tracking-wide drop-shadow-md bg-clip-text text-transparent bg-gradient-to-r from-amber-200 via-white to-sky-200">
-            8-3 分數的大小比較與合成
+            國小三上數學 8-3 互動學習網頁
         </h1>
         <p class="text-xs md:text-sm text-sky-100 mt-2 font-light max-w-xl mx-auto drop-shadow">
             滑動控制項觀察蛋糕與披薩的等分變化，發現同分母與異分母比較的小秘密！
@@ -179,9 +187,12 @@
                     </div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">調整皮皮吃的塊數（分子）：</label>
                     <input type="range" id="pipi-slider" min="0" max="6" value="4" oninput="updateCakeComparison()">
-                    <div class="text-xs text-slate-500 mt-2 bg-white/80 p-2 rounded-lg border border-amber-100">
-                        相當於 <span id="pipi-count-text" class="font-bold text-amber-600">4</span> 個 
-                        <span class="fraction text-xs"><span class="numerator">1</span><span class="denominator" id="pipi-unit-den">6</span></span> 條蛋糕
+                    <div class="text-xs text-slate-500 mt-2 bg-white/80 p-2 rounded-lg border border-amber-100 flex items-center flex-wrap gap-1">
+                        <span>相當於</span>
+                        <span id="pipi-count-text" class="font-bold text-amber-600">4</span>
+                        <span>個</span>
+                        <span class="fraction text-xs"><span class="numerator">1</span><span class="denominator" id="pipi-unit-den">6</span></span>
+                        <span>條蛋糕</span>
                     </div>
                 </div>
 
@@ -197,9 +208,12 @@
                     </div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">調整丹丹吃的塊數（分子）：</label>
                     <input type="range" id="dandan-slider" min="0" max="6" value="2" oninput="updateCakeComparison()">
-                    <div class="text-xs text-slate-500 mt-2 bg-white/80 p-2 rounded-lg border border-sky-100">
-                        相當於 <span id="dandan-count-text" class="font-bold text-sky-600">2</span> 個 
-                        <span class="fraction text-xs"><span class="numerator">1</span><span class="denominator" id="dandan-unit-den">6</span></span> 條蛋糕
+                    <div class="text-xs text-slate-500 mt-2 bg-white/80 p-2 rounded-lg border border-sky-100 flex items-center flex-wrap gap-1">
+                        <span>相當於</span>
+                        <span id="dandan-count-text" class="font-bold text-sky-600">2</span>
+                        <span>個</span>
+                        <span class="fraction text-xs"><span class="numerator">1</span><span class="denominator" id="dandan-unit-den">6</span></span>
+                        <span>條蛋糕</span>
                     </div>
                 </div>
             </div>
@@ -303,7 +317,7 @@
                         <svg id="pizzaA-svg" width="200" height="200" viewBox="0 0 200 200" class="drop-shadow-md"></svg>
                     </div>
                     <div class="w-full mt-4 bg-rose-50 p-3 rounded-xl text-xs text-slate-600 space-y-1">
-                        <div>• 每一等份是：<span class="fraction font-bold text-rose-600"><span class="numerator">1</span><span class="denominator" id="pizzaA-unit-den">4</span></span> 個披薩</div>
+                        <div class="flex items-center flex-wrap gap-1">• 每一等份是：<span class="fraction font-bold text-rose-600"><span class="numerator">1</span><span class="denominator" id="pizzaA-unit-den">4</span></span> 個披薩</div>
                         <div>• 每一塊的大小：<span class="font-bold text-rose-600">較大 🍕</span></div>
                     </div>
                 </div>
@@ -321,7 +335,7 @@
                         <svg id="pizzaB-svg" width="200" height="200" viewBox="0 0 200 200" class="drop-shadow-md"></svg>
                     </div>
                     <div class="w-full mt-4 bg-indigo-50 p-3 rounded-xl text-xs text-slate-600 space-y-1">
-                        <div>• 每一等份是：<span class="fraction font-bold text-indigo-600"><span class="numerator">1</span><span class="denominator" id="pizzaB-unit-den">8</span></span> 個披薩</div>
+                        <div class="flex items-center flex-wrap gap-1">• 每一等份是：<span class="fraction font-bold text-indigo-600"><span class="numerator">1</span><span class="denominator" id="pizzaB-unit-den">8</span></span> 個披薩</div>
                         <div>• 每一塊的大小：<span class="font-bold text-indigo-600">較小 🍕</span></div>
                     </div>
                 </div>
@@ -395,85 +409,90 @@
                 const sec = document.getElementById(`section${i}`);
                 const btn = document.getElementById(`tab${i}-btn`);
                 if (i === tabIndex) {
-                    sec.classList.remove('hidden');
-                    btn.className = "flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 bg-white text-slate-800 shadow-md";
-                } else {
-                    sec.classList.add('hidden');
-                    btn.className = "flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 text-white hover:bg-white/10";
-                }
-            });
-        }
-
-        /* ----------------------------------------------------
-           2. 單元 1：蛋糕比較邏輯 (Cake Comparison)
-        ---------------------------------------------------- */
-        let cakeDen = 6;
-
-        function changeCakeDenominator() {
-            cakeDen = parseInt(document.getElementById('cake-den-slider').value);
-            document.getElementById('cake-den-val').innerText = `${cakeDen} 等份`;
-
-            // 更新皮皮與丹丹滑桿最大值
-            const pipiSlider = document.getElementById('pipi-slider');
-            const dandanSlider = document.getElementById('dandan-slider');
-            pipiSlider.max = cakeDen;
-            dandanSlider.max = cakeDen;
-
-            if (parseInt(pipiSlider.value) > cakeDen) pipiSlider.value = cakeDen;
-            if (parseInt(dandanSlider.value) > cakeDen) dandanSlider.value = cakeDen;
-
-            updateCakeComparison();
-        }
-
-        function updateCakeComparison() {
-            const pipiVal = parseInt(document.getElementById('pipi-slider').value);
-            const dandanVal = parseInt(document.getElementById('dandan-slider').value);
-
-            // 更新文字顯示
-            document.getElementById('pipi-num-text').innerText = pipiVal;
-            document.getElementById('pipi-den-text').innerText = cakeDen;
-            document.getElementById('pipi-count-text').innerText = pipiVal;
-            document.getElementById('pipi-unit-den').innerText = cakeDen;
-            document.getElementById('pipi-svg-label').innerText = `${pipiVal} / ${cakeDen}`;
-
-            document.getElementById('dandan-num-text').innerText = dandanVal;
-            document.getElementById('dandan-den-text').innerText = cakeDen;
-            document.getElementById('dandan-count-text').innerText = dandanVal;
-            document.getElementById('dandan-unit-den').innerText = cakeDen;
-            document.getElementById('dandan-svg-label').innerText = `${dandanVal} / ${cakeDen}`;
-
-            // 渲染蛋糕視圖
-            renderCakeContainer('pipi-cake-container', pipiVal, cakeDen, '#f59e0b', '#fef3c7');
-            renderCakeContainer('dandan-cake-container', dandanVal, cakeDen, '#0284c7', '#e0f2fe');
-
-            // 比較與更新算式
-            const exprBox = document.getElementById('cake-math-expr');
-            const resultText = document.getElementById('cake-result-text');
-            const resultIcon = document.getElementById('result-icon');
-
-            let symbol = '=';
-            if (pipiVal > dandanVal) {
-                symbol = '>';
-                resultText.innerText = `皮皮吃的蛋糕比較多！ (${pipiVal}/${cakeDen} > ${dandanVal}/${cakeDen})`;
-                resultIcon.innerHTML = `<i class="fa-solid fa-face-smile text-amber-300"></i>`;
-            } else if (pipiVal < dandanVal) {
-                symbol = '<';
-                resultText.innerText = `丹丹吃的蛋糕比較多！ (${pipiVal}/${cakeDen} < ${dandanVal}/${cakeDen})`;
-                resultIcon.innerHTML = `<i class="fa-solid fa-face-laugh-beam text-sky-300"></i>`;
+                sec.classList.remove('hidden');
+                btn.className = "flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 bg-white text-slate-800 shadow-md";
             } else {
-                symbol = '=';
-                resultText.innerText = `皮皮和丹丹吃得一樣多！ (${pipiVal}/${cakeDen} = ${dandanVal}/${cakeDen})`;
-                resultIcon.innerHTML = `<i class="fa-solid fa-handshake text-emerald-300"></i>`;
+                sec.classList.add('hidden');
+                btn.className = "flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 text-white hover:bg-white/10";
             }
+        });
+    }
 
-            exprBox.innerHTML = `
-                <span class="fraction"><span class="numerator">${pipiVal}</span><span class="denominator">${cakeDen}</span></span> 
-                <span class="mx-2 text-yellow-300 font-extrabold">${symbol}</span> 
-                <span class="fraction"><span class="numerator">${dandanVal}</span><span class="denominator">${cakeDen}</span></span>
-            `;
+    /* 輔助函式：統一產生標準直式分數 HTML */
+    function formatFraction(num, den) {
+        return `<span class="fraction"><span class="numerator">${num}</span><span class="denominator">${den}</span></span>`;
+    }
+
+    /* ----------------------------------------------------
+       2. 單元 1：蛋糕比較邏輯 (Cake Comparison)
+    ---------------------------------------------------- */
+    let cakeDen = 6;
+
+    function changeCakeDenominator() {
+        cakeDen = parseInt(document.getElementById('cake-den-slider').value);
+        document.getElementById('cake-den-val').innerText = `${cakeDen} 等份`;
+
+        // 更新皮皮與丹丹滑桿最大值
+        const pipiSlider = document.getElementById('pipi-slider');
+        const dandanSlider = document.getElementById('dandan-slider');
+        pipiSlider.max = cakeDen;
+        dandanSlider.max = cakeDen;
+
+        if (parseInt(pipiSlider.value) > cakeDen) pipiSlider.value = cakeDen;
+        if (parseInt(dandanSlider.value) > cakeDen) dandanSlider.value = cakeDen;
+
+        updateCakeComparison();
+    }
+
+    function updateCakeComparison() {
+        const pipiVal = parseInt(document.getElementById('pipi-slider').value);
+        const dandanVal = parseInt(document.getElementById('dandan-slider').value);
+
+        // 更新文字顯示
+        document.getElementById('pipi-num-text').innerText = pipiVal;
+        document.getElementById('pipi-den-text').innerText = cakeDen;
+        document.getElementById('pipi-count-text').innerText = pipiVal;
+        document.getElementById('pipi-unit-den').innerText = cakeDen;
+        document.getElementById('pipi-svg-label').innerHTML = formatFraction(pipiVal, cakeDen);
+
+        document.getElementById('dandan-num-text').innerText = dandanVal;
+        document.getElementById('dandan-den-text').innerText = cakeDen;
+        document.getElementById('dandan-count-text').innerText = dandanVal;
+        document.getElementById('dandan-unit-den').innerText = cakeDen;
+        document.getElementById('dandan-svg-label').innerHTML = formatFraction(dandanVal, cakeDen);
+
+        // 渲染蛋糕視圖
+        renderCakeContainer('pipi-cake-container', pipiVal, cakeDen, '#f59e0b', '#fef3c7');
+        renderCakeContainer('dandan-cake-container', dandanVal, cakeDen, '#0284c7', '#e0f2fe');
+
+        // 比較與更新算式
+        const exprBox = document.getElementById('cake-math-expr');
+        const resultText = document.getElementById('cake-result-text');
+        const resultIcon = document.getElementById('result-icon');
+
+        let symbol = '=';
+        if (pipiVal > dandanVal) {
+            symbol = '>';
+            resultText.innerHTML = `皮皮吃的蛋糕比較多！ (${formatFraction(pipiVal, cakeDen)} &gt; ${formatFraction(dandanVal, cakeDen)})`;
+            resultIcon.innerHTML = `<i class="fa-solid fa-face-smile text-amber-300"></i>`;
+        } else if (pipiVal < dandanVal) {
+            symbol = '<';
+            resultText.innerHTML = `丹丹吃的蛋糕比較多！ (${formatFraction(pipiVal, cakeDen)} &lt; ${formatFraction(dandanVal, cakeDen)})`;
+            resultIcon.innerHTML = `<i class="fa-solid fa-face-laugh-beam text-sky-300"></i>`;
+        } else {
+            symbol = '=';
+            resultText.innerHTML = `皮皮和丹丹吃得一樣多！ (${formatFraction(pipiVal, cakeDen)} = ${formatFraction(dandanVal, cakeDen)})`;
+            resultIcon.innerHTML = `<i class="fa-solid fa-handshake text-emerald-300"></i>`;
         }
 
-        function renderCakeContainer(containerId, activeCount, totalCount, activeColor, inactiveColor) {
+        exprBox.innerHTML = `
+            ${formatFraction(pipiVal, cakeDen)} 
+            <span class="mx-2 text-yellow-300 font-extrabold">${symbol}</span> 
+            ${formatFraction(dandanVal, cakeDen)}
+        `;
+    }
+
+    function renderCakeContainer(containerId, activeCount, totalCount, activeColor, inactiveColor) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
             for (let i = 0; i < totalCount; i++) {

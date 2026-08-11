@@ -106,7 +106,7 @@
                 <i class="fa-solid fa-scale-balanced"></i>
             </div>
             <div class="inline-block px-4 py-1 bg-sky-100 text-sky-700 rounded-full text-sm font-semibold tracking-wide mb-2 shadow-sm">
-                <i class="fa-solid fa-graduation-cap mr-1"></i> 國小數學 7-4 輕重小偵探
+                <i class="fa-solid fa-graduation-cap mr-1"></i> 國小三上數學 7-4 互動學習網頁
             </div>
             <h1 class="text-3xl md:text-4xl font-black text-shinkai-title tracking-wider mb-2">
                 重量的換算與比較
@@ -135,7 +135,7 @@
                     </div>
                     <div>
                         <h2 class="text-xl font-bold text-slate-800">公斤 (kg) 與 公克 (g) 換算機</h2>
-                        <p class="text-xs text-slate-500">拖動滑桿觀察 $1 \text{ 公斤} = 1000 \text{ 公克}$ 的變化</p>
+                        <p class="text-xs text-slate-500">拖動滑桿觀察 <span class="font-bold text-sky-600">1 公斤 = 1000 公克</span> 的變化</p>
                     </div>
                 </div>
 
@@ -188,7 +188,7 @@
 
                     <!-- Visual Block Representation -->
                     <div class="bg-gradient-to-b from-sky-900 to-indigo-950 p-6 rounded-2xl text-white text-center shadow-inner relative overflow-hidden">
-                        <div class="text-xs text-sky-300 font-semibold mb-2 uppercase tracking-wider">圖像化分解 (1000g = 1kg)</div>
+                        <div class="text-xs text-sky-300 font-semibold mb-2 uppercase tracking-wider">圖像化分解 (1000公克 = 1公斤)</div>
                         
                         <!-- Visual Weights Display -->
                         <div id="visual-blocks" class="flex flex-wrap justify-center items-center gap-2 min-h-[90px] p-2 bg-white/10 rounded-xl mb-4 border border-white/10">
@@ -281,7 +281,7 @@
                     <!-- Comparison Result Symbol Overlay -->
                     <div class="absolute top-4 bg-white/20 backdrop-blur-md px-6 py-2 rounded-full border border-white/30 text-white font-black text-2xl flex items-center gap-3 shadow-lg">
                         <span id="disp-left-name" class="text-amber-300 text-base">石虎</span>
-                        <span id="disp-symbol" class="text-yellow-400 text-3xl font-extrabold">&gt;</span>
+                        <span id="disp-symbol" class="text-yellow-400 text-3xl font-extrabold">＞</span>
                         <span id="disp-right-name" class="text-cyan-300 text-base">虎斑貓</span>
                     </div>
 
@@ -410,7 +410,7 @@
                                 <option value="">請選擇</option>
                                 <option value=">">＞ (大於)</option>
                                 <option value="<">＜ (小於)</option>
-                                <option value="=" font-bold>= (等於)</option>
+                                <option value="=">＝ (等於)</option>
                             </select>
                             <button onclick="checkQ4()" class="ml-auto px-4 py-2 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:bg-emerald-600 transition-all">檢查答案</button>
                         </div>
@@ -478,7 +478,7 @@
             } else if (kg === 0) {
                 document.getElementById('formula-breakdown').innerText = `${g} 公克`;
             } else {
-                document.getElementById('formula-breakdown').innerText = `${kg} 公斤 ${g} 公克 = ${kg * 1000}g + ${g}g`;
+                document.getElementById('formula-breakdown').innerText = `${kg} 公斤 ${g} 公克 = ${kg * 1000}公克 + ${g}公克`;
             }
 
             document.getElementById('total-gram-disp').innerText = `答案：${totalGrams} 公克`;
@@ -491,7 +491,15 @@
             for (let i = 0; i < kg; i++) {
                 const block = document.createElement('div');
                 block.className = "px-3 py-1.5 bg-amber-400 text-amber-950 font-black rounded-lg text-xs shadow border border-amber-300 flex items-center gap-1 animate-pulse";
-                block.innerHTML = `<i class="fa-solid fa-cube"></i> 1kg (${1000}g)`;
+                block.innerHTML = `<i class="fa-solid fa-cube"></i> 1公斤 (1000公克)`;
+                blocksContainer.appendChild(block);
+            }
+
+            // Add remaining g block
+            if (g > 0) {
+                const block = document.createElement('div');
+                block.className = "px-3 py-1.5 bg-teal-400 text-teal-950 font-black rounded-lg text-xs shadow border border-teal-300 flex items-center gap-1";
+                block.innerHTML = `<i class="fa-solid fa-shapes"></i> ${g}公克`;
                 blocksContainer.appendChild(block);
             }
 
@@ -530,8 +538,8 @@
             // Update text labels inside SVG scale pans
             document.getElementById('left-pan-text').textContent = leftName.length > 4 ? leftName.slice(0, 4) + '…' : leftName;
             document.getElementById('right-pan-text').textContent = rightName.length > 4 ? rightName.slice(0, 4) + '…' : rightName;
-            document.getElementById('left-pan-weight').textContent = `${leftTotalG}g`;
-            document.getElementById('right-pan-weight').textContent = `${rightTotalG}g`;
+            document.getElementById('left-pan-weight').textContent = `${leftTotalG}公克`;
+            document.getElementById('right-pan-weight').textContent = `${rightTotalG}公克`;
 
             // Calculate tilt angle (-14 deg to +14 deg max)
             const diff = rightTotalG - leftTotalG;
@@ -630,10 +638,22 @@
             const val = document.getElementById('q4-select').value;
             if (val === '>') {
                 scoreState.q4 = true;
-                setFeedback('q4-feedback', true, '答對了！8kg 100g (8100g) 大於 8kg 10g (8010g)。');
+                setFeedback('q4-feedback', true, '答對了！8公斤100公克 (8100公克) ＞ 8公斤10公克 (8010公克)。');
             } else {
                 scoreState.q4 = false;
-                setFeedback('q4-feedback', false, '提示：換算成公克比比看，8100g 和 8010g 哪一個大？');
+                setFeedback('q4-feedback', false, '提示：換算成公克比比看，8100公克 和 8010公克 哪一個大？');
+            }
+            updateScoreDisplay();
+        }
+
+        function checkQ5() {
+            const selected = document.querySelector('input[name="q5-radio"]:checked');
+            if (selected && selected.value === 'capybara') {
+                scoreState.q5 = true;
+                setFeedback('q5-feedback', true, '答對了！水豚寶寶 1350公克 ＞ 豬寶寶 1100公克 (1公斤100公克)！');
+            } else {
+                scoreState.q5 = false;
+                setFeedback('q5-feedback', false, '提示：豬寶寶 1公斤100公克 等於 1100公克 喔！');
             }
             updateScoreDisplay();
         }

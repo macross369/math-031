@@ -107,7 +107,7 @@
     <header class="glass-card rounded-3xl p-6 mb-6 text-center relative overflow-hidden">
       <div class="absolute -right-6 -bottom-6 text-indigo-500/10 text-9xl font-black pointer-events-none">分數</div>
       <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-100 text-indigo-700 text-sm font-bold mb-3">
-        <i class="fa-solid fa-graduation-cap"></i> 國小數學三上 8-1 幾分之幾
+        <i class="fa-solid fa-graduation-cap"></i> 國小三上數學 8-1 互動學習網頁
       </div>
       <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
         ✨ 分數奇幻探索樂園 ✨
@@ -380,13 +380,13 @@
           </div>
           <div>
             <h2 class="text-xl font-bold text-slate-800">思考帽觀念大考驗 (課本 P.121)</h2>
-            <p class="text-xs text-slate-500">媽媽買了一片白巧克力，她吃了 4/10 片，原本買的是哪一片？</p>
+            <p class="text-xs text-slate-500">媽媽買了一片白巧克力，她吃了 <span class="fraction-inline"><span class="num">4</span><span class="den">10</span></span> 片，原本買的是哪一片？</p>
           </div>
         </div>
 
         <div class="bg-amber-50/60 p-4 rounded-2xl border border-amber-200/80 mb-6 text-sm text-slate-700">
           <p class="font-bold text-amber-900 mb-1">💡 觀念澄清引導：</p>
-          <p>「4/10 片」代表這片巧克力原本要被<strong>平分成 10 格</strong>（分母），而吃了其中的 <strong>4 格</strong>（分子）。請觀察下面三片巧克力，哪一片才是原本的白巧克力？</p>
+          <p>「<span class="fraction-inline"><span class="num">4</span><span class="den">10</span></span> 片」代表這片巧克力原本要被<strong>平分成 10 格</strong>（分母），而吃了其中的 <strong>4 格</strong>（分子）。請觀察下面三片巧克力，哪一片才是原本的白巧克力？</p>
         </div>
 
         <!-- 三個選項巧克力 -->
@@ -482,6 +482,11 @@
      * AUDIO SYNTHESIZER (Web Audio API - 無需外部音效檔)
      * =================================================================== */
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function formatFraction(num, den, colorClass = '') {
+      return `<span class="fraction-inline ${colorClass}"><span class="num">${num}</span><span class="den">${den}</span></span>`;
+    }
+
     function playSound(type) {
       try {
         if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -561,12 +566,7 @@
       document.getElementById('pie-den-explain').innerText = pieDen;
 
       // 更新分數顯示
-      document.getElementById('pie-fraction-display').innerHTML = `
-        <span class="fraction-inline text-amber-600">
-          <span class="num">${pieNum}</span>
-          <span class="den">${pieDen}</span>
-        </span>
-      `;
+      document.getElementById('pie-fraction-display').innerHTML = formatFraction(pieNum, pieDen, 'text-amber-600');
 
       // 中文讀法
       const numMap = ['零', '一', '二', '三', '四', '五', '六', '七', '八'];
@@ -575,10 +575,10 @@
       // 特別備註
       const noteEl = document.getElementById('pie-special-note');
       if (pieNum === pieDen) {
-        noteEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 text-base"></i><span>完整！ ${pieNum}個 1/${pieDen} 張和 1 張蔥油餅一樣大！</span>`;
+        noteEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 text-base"></i><span>完整！ ${pieNum}個 ${formatFraction(1, pieDen)} 張和 1 張蔥油餅一樣大！</span>`;
         noteEl.className = "mt-4 p-3 rounded-xl bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold text-xs flex items-center gap-2";
       } else {
-        noteEl.innerHTML = `<i class="fa-solid fa-circle-info text-indigo-600 text-base"></i><span>觀念：${pieNum}個 1/${pieDen} 張就是 ${pieNum}/${pieDen} 張蔥油餅。</span>`;
+        noteEl.innerHTML = `<i class="fa-solid fa-circle-info text-indigo-600 text-base"></i><span>觀念：${pieNum}個 ${formatFraction(1, pieDen)} 張就是 ${formatFraction(pieNum, pieDen)} 張蔥油餅。</span>`;
         noteEl.className = "mt-4 p-3 rounded-xl bg-indigo-50 text-indigo-800 border border-indigo-200 text-xs font-bold flex items-center gap-2";
       }
 
@@ -673,7 +673,7 @@
             ? (stripItem === 'paper' ? 'bg-indigo-400 text-white' : 'bg-amber-500 text-white')
             : 'bg-white text-slate-300'
         }`;
-        seg.innerText = `1/${stripDen}`;
+        seg.innerHTML = formatFraction(1, stripDen);
         container.appendChild(seg);
       }
 
@@ -685,7 +685,7 @@
       for (let i = 1; i <= stripNum; i++) {
         const item = document.createElement('div');
         item.className = "sequence-item px-3 py-1.5 bg-white rounded-xl shadow-sm border border-indigo-200 text-xs font-bold text-indigo-900 flex items-center gap-1";
-        item.innerHTML = `<span class="bg-indigo-100 text-indigo-700 px-1.5 rounded">${i}個</span> 1/${stripDen} ${unitStr}`;
+        item.innerHTML = `<span class="bg-indigo-100 text-indigo-700 px-1.5 rounded">${i}個</span> ${formatFraction(1, stripDen)} ${unitStr}`;
         seqBox.appendChild(item);
 
         if (i < stripNum) {
@@ -706,7 +706,7 @@
 
       document.getElementById('sequence-summary').innerHTML = `
         <span>數詞序列累積：</span>
-        <span class="text-indigo-600 font-black">${stripNum} 個 1/${stripDen} ${unitStr} 是 <span class="text-2xl">${stripNum}/${stripDen}</span> ${unitStr}${extraNote}</span>
+        <span class="text-indigo-600 font-black">${stripNum} 個 ${formatFraction(1, stripDen)} ${unitStr} 是 <span class="text-2xl">${formatFraction(stripNum, stripDen)}</span> ${unitStr}${extraNote}</span>
       `;
     }
 
@@ -762,7 +762,7 @@
             ? 'bg-amber-800 border-amber-600 text-amber-200 shadow-inner' 
             : 'bg-amber-200/30 border-amber-900/40 text-amber-900/40'
         }`;
-        sq.innerText = `1/${chocoTotal}`;
+        sq.innerHTML = formatFraction(1, chocoTotal);
         sq.onclick = () => {
           playSound('click');
           chocoSelected = (i < chocoSelected) ? i : i + 1;
@@ -773,9 +773,9 @@
       }
 
       document.getElementById('choco-total-text').innerText = `${chocoTotal} 格`;
-      document.getElementById('choco-unit-text').innerText = `1/${chocoTotal} 片`;
+      document.getElementById('choco-unit-text').innerHTML = formatFraction(1, chocoTotal) + ' 片';
       document.getElementById('choco-selected-text').innerText = `${chocoSelected} 格`;
-      document.getElementById('choco-fraction-num').innerText = `${chocoSelected}/${chocoTotal}`;
+      document.getElementById('choco-fraction-num').innerHTML = formatFraction(chocoSelected, chocoTotal);
     }
 
     /* ===================================================================
@@ -797,7 +797,7 @@
           <div class="font-black text-base flex items-center gap-2 text-emerald-800">
             <i class="fa-solid fa-circle-check text-xl"></i> 太棒了！答對了！
           </div>
-          <p class="text-sm">因為「<strong>4/10 片</strong>」的分母是 <strong>10</strong>，表示這片白巧克力原本被<strong>平分成 10 格</strong>。媽媽吃了其中的 4 格！</p>
+          <p class="text-sm">因為「<strong>${formatFraction(4, 10)} 片</strong>」的分母是 <strong>10</strong>，表示這片白巧克力原本被<strong>平分成 10 格</strong>。媽媽吃了其中的 4 格！</p>
         `;
       } else {
         playSound('wrong');
@@ -807,7 +807,7 @@
           <div class="font-black text-base flex items-center gap-2 text-rose-800">
             <i class="fa-solid fa-circle-xmark text-xl"></i> 再想一想喔！
           </div>
-          <p class="text-sm">分數「4/10 片」的<strong>分母 10</strong> 代表「整片巧克力原本平分成的總格數」。請找找看哪一片原本有 10 格呢？</p>
+          <p class="text-sm">分數「${formatFraction(4, 10)} 片」的<strong>分母 10</strong> 代表「整片巧克力原本平分成的總格數」。請找找看哪一片原本有 10 格呢？</p>
         `;
       }
     }
@@ -818,30 +818,30 @@
     const quizData = [
       {
         q: "1. 一張蔥油餅平分成 4 等分，其中的 1 等分是多少張蔥油餅？",
-        options: ["4 張", "1/4 張", "2/4 張", "1 張"],
+        options: ["4 張", `${formatFraction(1, 4)} 張`, `${formatFraction(2, 4)} 張`, "1 張"],
         ans: 1,
-        exp: "平分成 4 等分，每 1 等分就是 1/4 張。"
+        get exp() { return `平分成 4 等分，每 1 等分就是 ${formatFraction(1, 4)} 張。`; }
       },
       {
-        q: "2. 觀察數詞序列：3 個 1/6 張色紙累積起來，是多少張色紙？",
-        options: ["1/6 張", "2/6 張", "3/6 張", "6/3 張"],
+        get q() { return `2. 觀察數詞序列：3 個 ${formatFraction(1, 6)} 張色紙累積起來，是多少張色紙？`; },
+        options: [`${formatFraction(1, 6)} 張`, `${formatFraction(2, 6)} 張`, `${formatFraction(3, 6)} 張`, `${formatFraction(6, 3)} 張`],
         ans: 2,
-        exp: "1個 1/6、2個 1/6、3個 1/6，合起來就是 3/6 張色紙。"
+        get exp() { return `1個 ${formatFraction(1, 6)}、2個 ${formatFraction(1, 6)}、3個 ${formatFraction(1, 6)}，合起來就是 ${formatFraction(3, 6)} 張色紙。`; }
       },
       {
         q: "3. 一片巧克力有 8 格，小明吃了 5 格，是吃了幾片巧克力？",
-        options: ["5/8 片", "8/5 片", "5 片", "8 片"],
+        options: [`${formatFraction(5, 8)} 片`, `${formatFraction(8, 5)} 片`, "5 片", "8 片"],
         ans: 0,
-        exp: "平分成 8 格（分母為8），吃了 5 格（分子為5），代表吃了 5/8 片。"
+        get exp() { return `平分成 8 格（分母為8），吃了 5 格（分子為5），代表吃了 ${formatFraction(5, 8)} 片。`; }
       },
       {
         q: "4. 蜂蜜蛋糕平分成 9 片，拿了 9 片相當於幾條蜂蜜蛋糕？",
-        options: ["9 條", "1/9 條", "1 條", "0 條"],
+        options: ["9 條", `${formatFraction(1, 9)} 條`, "1 條", "0 條"],
         ans: 2,
-        exp: "9/9 條和 1 條蜂蜜蛋糕一樣大！"
+        get exp() { return `${formatFraction(9, 9)} 條和 1 條蜂蜜蛋糕一樣大！`; }
       },
       {
-        q: "5. 分數 4/10 中，數字「10」代表什麼意思？",
+        get q() { return `5. 分數 ${formatFraction(4, 10)} 中，數字「10」代表什麼意思？`; },
         options: ["吃了 10 格", "剩下 10 格", "整體平分成 10 等分", "共有 10 人吃"],
         ans: 2,
         exp: "分母（下方數字）代表整體被平分成的總等份數。"

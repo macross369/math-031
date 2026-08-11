@@ -101,7 +101,7 @@
         <!-- 頂部標題與導覽頁標籤 -->
         <header class="text-center mb-8">
             <div class="inline-block px-4 py-1 rounded-full bg-rose-500/20 border border-rose-300/30 text-rose-200 text-sm font-semibold tracking-wide mb-2">
-                ✨ 國小數學 7-1 觀念互動學習
+                ✨ 國小三上數學 7-1 互動學習網頁
             </div>
             <h1 class="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-sky-200 via-rose-100 to-amber-200 drop-shadow-sm mb-4">
                 認識公斤與重量測量
@@ -142,27 +142,59 @@
                             <i class="fa-solid fa-box-open"></i> 點擊選取測量物品
                         </h2>
                         <div class="grid grid-cols-2 gap-3">
-                            <!-- 物品 1 -->
-                            <button onclick="addItem(1000, '冰糖 (1kg)', '🧊')" class="p-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl flex flex-col items-center justify-center gap-1 transition-all active:scale-95 group">
-                                <span class="text-3xl group-hover:scale-110 transition-transform">🧊</span>
+                            <!-- 物品 1：冰糖 (1kg) -->
+                            <button onclick="addItem(1000, '冰糖 (1kg)', `<svg class='w-7 h-7 inline-block drop-shadow' viewBox='0 0 64 64'><rect x='14' y='12' width='36' height='44' rx='6' fill='#38bdf8' stroke='#e0f2fe' stroke-width='2'/><path d='M14 22 Q32 28 50 22 L50 12 Q32 18 14 12 Z' fill='#0284c7'/><text x='32' y='44' text-anchor='middle' font-size='10' font-weight='bold' fill='#ffffff'>1kg</text></svg>`)" class="p-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl flex flex-col items-center justify-center gap-1 transition-all active:scale-95 group">
+                                <div class="w-10 h-10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg viewBox="0 0 64 64" class="w-9 h-9 drop-shadow">
+                                        <rect x="14" y="12" width="36" height="44" rx="6" fill="#38bdf8" stroke="#e0f2fe" stroke-width="2"/>
+                                        <path d="M14 22 Q32 28 50 22 L50 12 Q32 18 14 12 Z" fill="#0284c7"/>
+                                        <polygon points="32,28 39,35 32,42 25,35" fill="#ffffff" opacity="0.9"/>
+                                        <text x="32" y="50" text-anchor="middle" font-size="10" font-weight="bold" fill="#ffffff">1kg</text>
+                                    </svg>
+                                </div>
                                 <span class="font-bold text-slate-100">1kg 冰糖</span>
                                 <span class="text-xs text-rose-300 font-semibold">+ 1000g</span>
                             </button>
-                            <!-- 物品 2 -->
-                            <button onclick="addItem(500, '砂糖 (500g)', '🧂')" class="p-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl flex flex-col items-center justify-center gap-1 transition-all active:scale-95 group">
-                                <span class="text-3xl group-hover:scale-110 transition-transform">🧂</span>
+
+                            <!-- 物品 2：砂糖 (500g) -->
+                            <button onclick="addItem(500, '砂糖 (500g)', `<svg class='w-7 h-7 inline-block drop-shadow' viewBox='0 0 64 64'><rect x='16' y='14' width='32' height='42' rx='5' fill='#f59e0b' stroke='#fef3c7' stroke-width='2'/><path d='M16 22 Q32 26 48 22 L48 14 Q32 18 16 14 Z' fill='#d97706'/><polygon points='32,26 37,32 32,38 27,32' fill='#ffffff' opacity='0.9'/><text x='32' y='48' text-anchor='middle' font-size='9' font-weight='bold' fill='#ffffff'>500g</text></svg>`)" class="p-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl flex flex-col items-center justify-center gap-1 transition-all active:scale-95 group">
+                                <div class="w-10 h-10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg viewBox="0 0 64 64" class="w-9 h-9 drop-shadow">
+                                        <rect x="16" y="14" width="32" height="42" rx="5" fill="#f59e0b" stroke="#fef3c7" stroke-width="2"/>
+                                        <path d="M16 22 Q32 26 48 22 L48 14 Q32 18 16 14 Z" fill="#d97706"/>
+                                        <polygon points="32,26 37,32 32,38 27,32" fill="#ffffff" opacity="0.9"/>
+                                        <text x="32" y="48" text-anchor="middle" font-size="9" font-weight="bold" fill="#ffffff">500g</text>
+                                    </svg>
+                                </div>
                                 <span class="font-bold text-slate-100">500g 砂糖</span>
                                 <span class="text-xs text-rose-300 font-semibold">+ 500g</span>
                             </button>
-                            <!-- 物品 3 -->
-                            <button onclick="addItem(200, '蘋果 (200g)', '🍎')" class="p-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl flex flex-col items-center justify-center gap-1 transition-all active:scale-95 group">
-                                <span class="text-3xl group-hover:scale-110 transition-transform">🍎</span>
+
+                            <!-- 物品 3：蘋果 (200g) -->
+                            <button onclick="addItem(200, '蘋果 (200g)', `<svg class='w-7 h-7 inline-block drop-shadow' viewBox='0 0 64 64'><path d='M32 18 C26 10 12 14 12 28 C12 44 26 54 32 54 C38 54 52 44 52 28 C52 14 38 10 32 18 Z' fill='#f43f5e' stroke='#be123c' stroke-width='2'/><path d='M32 18 Q36 8 40 6' stroke='#78350f' stroke-width='3' stroke-linecap='round' fill='none'/><path d='M34 12 Q44 10 44 18 Q36 18 34 12 Z' fill='#22c55e'/><ellipse cx='24' cy='26' rx='3' ry='6' fill='#ffffff' opacity='0.3' transform='rotate(-20 24 26)'/></svg>`)" class="p-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl flex flex-col items-center justify-center gap-1 transition-all active:scale-95 group">
+                                <div class="w-10 h-10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg viewBox="0 0 64 64" class="w-9 h-9 drop-shadow">
+                                        <path d="M32 18 C26 10 12 14 12 28 C12 44 26 54 32 54 C38 54 52 44 52 28 C52 14 38 10 32 18 Z" fill="#f43f5e" stroke="#be123c" stroke-width="2"/>
+                                        <path d="M32 18 Q36 8 40 6" stroke="#78350f" stroke-width="3" stroke-linecap="round" fill="none"/>
+                                        <path d="M34 12 Q44 10 44 18 Q36 18 34 12 Z" fill="#22c55e"/>
+                                        <ellipse cx="24" cy="26" rx="3" ry="6" fill="#ffffff" opacity="0.3" transform="rotate(-20 24 26)"/>
+                                    </svg>
+                                </div>
                                 <span class="font-bold text-slate-100">蘋果 (200g)</span>
                                 <span class="text-xs text-rose-300 font-semibold">+ 200g</span>
                             </button>
-                            <!-- 物品 4 -->
-                            <button onclick="addItem(300, '馬鈴薯 (300g)', '🥔')" class="p-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl flex flex-col items-center justify-center gap-1 transition-all active:scale-95 group">
-                                <span class="text-3xl group-hover:scale-110 transition-transform">🥔</span>
+
+                            <!-- 物品 4：馬鈴薯 (300g) -->
+                            <button onclick="addItem(300, '馬鈴薯 (300g)', `<svg class='w-7 h-7 inline-block drop-shadow' viewBox='0 0 64 64'><path d='M12 30 C10 18, 26 10, 42 12 C56 14, 58 28, 54 40 C50 52, 32 56, 20 52 C10 48, 14 42, 12 30 Z' fill='#d97706' stroke='#b45309' stroke-width='2'/><ellipse cx='24' cy='24' rx='2' ry='1.5' fill='#78350f'/><ellipse cx='38' cy='22' rx='1.5' ry='2' fill='#78350f'/></svg>`)" class="p-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl flex flex-col items-center justify-center gap-1 transition-all active:scale-95 group">
+                                <div class="w-10 h-10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg viewBox="0 0 64 64" class="w-9 h-9 drop-shadow">
+                                        <path d="M12 30 C10 18, 26 10, 42 12 C56 14, 58 28, 54 40 C50 52, 32 56, 20 52 C10 48, 14 42, 12 30 Z" fill="#d97706" stroke="#b45309" stroke-width="2"/>
+                                        <ellipse cx="24" cy="24" rx="2" ry="1.5" fill="#78350f"/>
+                                        <ellipse cx="38" cy="22" rx="1.5" ry="2" fill="#78350f"/>
+                                        <ellipse cx="44" cy="36" rx="2" ry="1.5" fill="#78350f"/>
+                                        <ellipse cx="28" cy="42" rx="2.5" ry="1.5" fill="#78350f"/>
+                                    </svg>
+                                </div>
                                 <span class="font-bold text-slate-100">馬鈴薯 (300g)</span>
                                 <span class="text-xs text-rose-300 font-semibold">+ 300g</span>
                             </button>
@@ -191,11 +223,14 @@
                             <span id="slider-val-display" class="font-mono text-lg font-bold text-amber-300">0 g</span>
                         </div>
                         <input type="range" id="weight-slider" min="0" max="3000" step="50" value="0" oninput="onSliderChange(this.value)" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer">
-                        <div class="flex justify-between text-xs text-slate-400 mt-2 font-mono">
-                            <span>0kg (0g)</span>
-                            <span>1kg (1000g)</span>
-                            <span>2kg (2000g)</span>
-                            <span>3kg (3000g)</span>
+                        <!-- 高清晰重量刻度標籤與指標線 -->
+                        <div class="relative w-full pt-2">
+                            <div class="flex justify-between text-xs md:text-sm font-bold font-mono">
+                                <span class="bg-slate-900/80 text-sky-300 px-2 py-1 rounded-lg border border-sky-400/40 shadow">0kg <span class="text-slate-300 font-normal">(0g)</span></span>
+                                <span class="bg-slate-900/80 text-amber-300 px-2 py-1 rounded-lg border border-amber-400/40 shadow">1kg <span class="text-slate-300 font-normal">(1000g)</span></span>
+                                <span class="bg-slate-900/80 text-emerald-300 px-2 py-1 rounded-lg border border-emerald-400/40 shadow">2kg <span class="text-slate-300 font-normal">(2000g)</span></span>
+                                <span class="bg-slate-900/80 text-rose-300 px-2 py-1 rounded-lg border border-rose-400/40 shadow">3kg <span class="text-slate-300 font-normal">(3000g)</span></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -216,7 +251,7 @@
                         <div id="dial-scale-container" class="relative w-80 h-80 my-2 flex flex-col items-center justify-center">
                             <!-- 頂部藍色秤盤 Tray -->
                             <div id="scale-plate" class="relative z-10 w-72 h-10 bg-gradient-to-b from-[#38cbe6] via-[#11b8d6] to-[#0ea5c0] rounded-t-xl border-t-2 border-cyan-200 shadow-lg flex items-center justify-center transition-transform duration-300">
-                                <div id="plate-items-icons" class="absolute -top-8 text-3xl flex gap-1.5 drop-shadow"></div>
+                                <div id="plate-items-icons" class="absolute -top-8 text-3xl flex items-end justify-center gap-1.5 drop-shadow"></div>
                             </div>
                             <!-- 秤盤雙黑色立柱 Support Posts -->
                             <div class="relative z-0 w-28 h-4 flex justify-between px-6 -mt-0.5">

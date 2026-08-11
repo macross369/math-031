@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7-2 認識公克與 1000g 磅秤 - 互動探究實驗室</title>
+    <title>國小三上數學 7-2 互動學習網頁 - 互動探究實驗室</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -104,10 +104,9 @@
                     </div>
                     <div>
                         <h1 class="text-xl md:text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-sky-300 via-amber-200 to-rose-300">
-                            7-2 認識公克與 1000g 磅秤
+                            國小三上數學 7-2 互動學習網頁
                         </h1>
-                        <!-- 已移除 "新海誠風格動態互動教具｜" 文字 -->
-                        <p class="text-xs text-sky-200/80">1大格=50g．1小格=5g．1000g=1kg</p>
+                        <p class="text-xs text-sky-200/80">認識公克與 1000g 磅秤</p>
                     </div>
                 </div>
 
@@ -153,15 +152,16 @@
                     <!-- Main Scale SVG Container -->
                     <div class="flex flex-col md:flex-row items-center justify-center gap-6 my-2">
                         <!-- SVG Dial Scale -->
-                        <div class="relative w-72 h-72 md:w-80 md:h-80 flex-shrink-0">
+                        <div class="relative w-72 h-72 md:w-80 md:h-80 flex-shrink-0 mt-6">
+                            <!-- Support Pillar -->
+                            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-8 bg-gradient-to-b from-slate-300 to-slate-400 border-x border-slate-500 z-0"></div>
                             <!-- Tray Platform -->
-                            <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 w-44 h-8 bg-gradient-to-r from-slate-300 via-slate-100 to-slate-400 rounded-t-xl border-b-2 border-slate-600 shadow-md flex items-center justify-center">
+                            <div class="absolute -top-8 left-1/2 -translate-x-1/2 w-44 h-8 bg-gradient-to-r from-slate-300 via-slate-100 to-slate-400 rounded-t-xl border-b-2 border-slate-600 shadow-md flex items-center justify-center z-10">
                                 <span id="tray-item-label" class="text-xs text-slate-800 font-bold px-2 truncate">托盤 (空)</span>
                             </div>
-                            <div class="absolute top-5 left-1/2 -translate-x-1/2 w-8 h-6 bg-slate-400/80 border-x border-slate-600"></div>
 
                             <!-- Dial SVG -->
-                            <svg id="scale-svg" viewBox="0 0 400 400" class="w-full h-full drop-shadow-2xl">
+                            <svg id="scale-svg" viewBox="0 0 400 400" class="w-full h-full drop-shadow-2xl relative z-20">
                                 <!-- Scale Outer Rim -->
                                 <circle cx="200" cy="200" r="185" fill="#f8fafc" stroke="#3b82f6" stroke-width="8"/>
                                 <circle cx="200" cy="200" r="180" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>

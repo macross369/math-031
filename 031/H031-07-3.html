@@ -119,8 +119,8 @@
                         <i class="fa-solid fa-weight-scale"></i>
                     </div>
                     <div class="text-left">
-                        <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-wide">3公斤秤與刻度報讀</h1>
-                        <p class="text-xs text-pink-200 font-medium">國小數學 7-3 幾公斤幾公克 互動探究網</p>
+                        <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-wide">國小三上數學 7-3 互動學習網頁</h1>
+                        <p class="text-xs text-pink-200 font-medium">幾公斤幾公克-3公斤秤與刻度報讀</p>
                     </div>
                 </div>
 
@@ -386,20 +386,67 @@
         let currentLabItem = null;
         let userQuizAnswers = {};
 
-        // 課本實境物品清單（更名紅豆 1, 2, 3）
+        // 課本實境物品清單（全面升級：使用保證相容的向量圖示與精緻圓角方塊，解決破圖問題）
         const labItems = [
-            { id: 'veggie', name: '青江菜', weight: 300, icon: '🥦', color: 'text-emerald-500', desc: '指針從 0 指向第 3 個大格 (300g)。' },
-            { id: 'sweetpotato', name: '地瓜袋', weight: 720, icon: '🍠', color: 'text-amber-600', desc: '超過 500g，再往前數 2 大格 (200g) 與 2 小格 (20g)，共 720g。' },
-            { id: 'apples', name: '一袋蘋果', weight: 1200, icon: '🍎', color: 'text-red-500', desc: '超過 1kg (1000g)，再往前走 2 大格 (200g)，為 1kg 200g (1200g)。' },
-            { id: 'oranges', name: '一袋橘子', weight: 2510, icon: '🍊', color: 'text-orange-500', desc: '超過 2kg (2000g)，再數 5 大格 (500g) 與 1 小格 (10g)，為 2kg 510g (2510g)。' },
-            { id: 'paperbag1', name: '蔬菜紙袋 (1)', weight: 1400, icon: '🛍️', color: 'text-amber-700', desc: '超過 1kg，指向第 4 大格處，為 1 公斤 400 公克 (1400g)。' },
-            { id: 'paperbag2', name: '蔬菜紙袋 (2)', weight: 2340, icon: '🛍️', color: 'text-emerald-700', desc: '超過 2kg，指向第 3 大格又 4 小格，為 2 公斤 340 公克 (2340g)。' },
-            { id: 'beans100', name: '紅豆 (1)', weight: 100, icon: '🫘', color: 'text-red-600', desc: '指針剛好指向第 1 大格刻度 (100g)。' },
-            { id: 'beans500', name: '紅豆 (2)', weight: 500, icon: '🫘', color: 'text-red-700', desc: '指針剛好指向 500g 標示刻度。' },
-            { id: 'beans1000', name: '紅豆 (3)', weight: 1000, icon: '🫘', color: 'text-red-800', desc: '指針指向 1kg (1000g) 標示處。' },
-            { id: 'textbook', name: '數學課本', weight: 350, icon: '📘', color: 'text-blue-500', desc: '指針指在 3 大格 (300g) 與 5 小格 (50g) 位置，共 350g。' },
-            { id: 'waterEmpty', name: '空水壺', weight: 250, icon: '🫙', color: 'text-cyan-500', desc: '2 大格 (200g) 又 5 小格 (50g)，共 250g。' },
-            { id: 'waterFull', name: '裝滿水的水壺', weight: 850, icon: '🧃', color: 'text-blue-600', desc: '超過 500g，再數 3 大格 (300g) 與 5 小格 (50g)，共 850g。' }
+            { id: 'veggie', name: '青江菜', weight: 300, 
+              icon: '<div class="w-12 h-12 bg-emerald-50 border-2 border-emerald-200 rounded-xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-leaf text-emerald-500 text-2xl"></i></div>', 
+              panIcon: '<div class="w-24 h-24 bg-emerald-50 border-4 border-emerald-200 rounded-[2rem] flex items-center justify-center shadow-lg"><i class="fa-solid fa-leaf text-emerald-500 text-6xl"></i></div>', 
+              color: 'text-emerald-500', desc: '指針從 0 指向第 3 個大格 (300g)。' },
+            
+            { id: 'sweetpotato', name: '地瓜袋', weight: 720, 
+              icon: '<div class="w-12 h-12 bg-purple-50 border-2 border-purple-200 rounded-xl flex items-center justify-center shadow-sm"><span class="text-2xl drop-shadow-sm">🍠</span></div>', 
+              panIcon: '<div class="w-24 h-24 bg-purple-50 border-4 border-purple-200 rounded-[2rem] flex items-center justify-center shadow-lg"><span class="text-6xl drop-shadow-md">🍠</span></div>', 
+              color: 'text-amber-600', desc: '超過 500g，再往前數 2 大格 (200g) 與 2 小格 (20g)，共 720g。' },
+            
+            { id: 'apples', name: '一袋蘋果', weight: 1200, 
+              icon: '<div class="w-12 h-12 bg-red-50 border-2 border-red-200 rounded-xl flex items-center justify-center shadow-sm"><span class="text-2xl drop-shadow-sm">🍎</span></div>', 
+              panIcon: '<div class="w-24 h-24 bg-red-50 border-4 border-red-200 rounded-[2rem] flex items-center justify-center shadow-lg"><span class="text-6xl drop-shadow-md">🍎</span></div>', 
+              color: 'text-red-500', desc: '超過 1kg (1000g)，再往前走 2 大格 (200g)，為 1kg 200g (1200g)。' },
+            
+            { id: 'oranges', name: '一袋橘子', weight: 2510, 
+              icon: '<div class="w-12 h-12 bg-orange-50 border-2 border-orange-200 rounded-xl flex items-center justify-center shadow-sm"><span class="text-2xl drop-shadow-sm">🍊</span></div>', 
+              panIcon: '<div class="w-24 h-24 bg-orange-50 border-4 border-orange-200 rounded-[2rem] flex items-center justify-center shadow-lg"><span class="text-6xl drop-shadow-md">🍊</span></div>', 
+              color: 'text-orange-500', desc: '超過 2kg (2000g)，再數 5 大格 (500g) 與 1 小格 (10g)，為 2kg 510g (2510g)。' },
+            
+            { id: 'paperbag1', name: '蔬菜紙袋 (1)', weight: 1400, 
+              icon: '<div class="w-12 h-12 bg-lime-50 border-2 border-lime-200 rounded-xl flex items-center justify-center shadow-sm relative"><i class="fa-solid fa-bag-shopping text-amber-600 text-2xl"></i><i class="fa-solid fa-leaf text-emerald-500 text-sm absolute bottom-2 right-2 drop-shadow"></i></div>', 
+              panIcon: '<div class="w-24 h-24 bg-lime-50 border-4 border-lime-200 rounded-[2rem] flex items-center justify-center shadow-lg relative"><i class="fa-solid fa-bag-shopping text-amber-600 text-6xl drop-shadow"></i><i class="fa-solid fa-leaf text-emerald-500 text-3xl absolute bottom-4 right-4 drop-shadow"></i></div>', 
+              color: 'text-amber-700', desc: '超過 1kg，指向第 4 大格處，為 1 公斤 400 公克 (1400g)。' },
+            
+            { id: 'paperbag2', name: '蔬菜紙袋 (2)', weight: 2340, 
+              icon: '<div class="w-12 h-12 bg-yellow-50 border-2 border-yellow-200 rounded-xl flex items-center justify-center shadow-sm relative"><i class="fa-solid fa-bag-shopping text-amber-600 text-2xl"></i><i class="fa-solid fa-carrot text-orange-500 text-sm absolute bottom-2 right-2 drop-shadow"></i></div>', 
+              panIcon: '<div class="w-24 h-24 bg-yellow-50 border-4 border-yellow-200 rounded-[2rem] flex items-center justify-center shadow-lg relative"><i class="fa-solid fa-bag-shopping text-amber-600 text-6xl drop-shadow"></i><i class="fa-solid fa-carrot text-orange-500 text-3xl absolute bottom-4 right-4 drop-shadow"></i></div>', 
+              color: 'text-emerald-700', desc: '超過 2kg，指向第 3 大格又 4 小格，為 2 公斤 340 公克 (2340g)。' },
+            
+            { id: 'beans100', name: '紅豆 (1)', weight: 100, 
+              icon: '<div class="w-12 h-12 bg-rose-50 border-2 border-rose-200 rounded-xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-seedling text-rose-600 text-2xl"></i></div>', 
+              panIcon: '<div class="w-24 h-24 bg-rose-50 border-4 border-rose-200 rounded-[2rem] flex items-center justify-center shadow-lg"><i class="fa-solid fa-seedling text-rose-600 text-6xl drop-shadow"></i></div>', 
+              color: 'text-red-600', desc: '指針剛好指向第 1 大格刻度 (100g)。' },
+            
+            { id: 'beans500', name: '紅豆 (2)', weight: 500, 
+              icon: '<div class="w-12 h-12 bg-rose-100 border-2 border-rose-300 rounded-xl flex items-center justify-center shadow-sm relative"><i class="fa-solid fa-sack-xmark text-rose-700 text-2xl"></i></div>', 
+              panIcon: '<div class="w-24 h-24 bg-rose-100 border-4 border-rose-300 rounded-[2rem] flex items-center justify-center shadow-lg relative"><i class="fa-solid fa-sack-xmark text-rose-700 text-6xl drop-shadow"></i></div>', 
+              color: 'text-red-700', desc: '指針剛好指向 500g 標示刻度。' },
+            
+            { id: 'beans1000', name: '紅豆 (3)', weight: 1000, 
+              icon: '<div class="w-12 h-12 bg-rose-200 border-2 border-rose-400 rounded-xl flex items-center justify-center shadow-sm relative"><i class="fa-solid fa-box text-rose-800 text-2xl"></i><i class="fa-solid fa-seedling text-rose-200 text-[10px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></i></div>', 
+              panIcon: '<div class="w-24 h-24 bg-rose-200 border-4 border-rose-400 rounded-[2rem] flex items-center justify-center shadow-lg relative"><i class="fa-solid fa-box text-rose-800 text-6xl drop-shadow"></i><i class="fa-solid fa-seedling text-rose-200 text-2xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></i></div>', 
+              color: 'text-red-800', desc: '指針指向 1kg (1000g) 標示處。' },
+            
+            { id: 'textbook', name: '數學課本', weight: 350, 
+              icon: '<div class="w-12 h-12 bg-blue-50 border-2 border-blue-200 rounded-xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-book text-blue-500 text-2xl"></i></div>', 
+              panIcon: '<div class="w-24 h-24 bg-blue-50 border-4 border-blue-200 rounded-[2rem] flex items-center justify-center shadow-lg"><i class="fa-solid fa-book text-blue-500 text-6xl drop-shadow"></i></div>', 
+              color: 'text-blue-500', desc: '指針指在 3 大格 (300g) 與 5 小格 (50g) 位置，共 350g。' },
+            
+            { id: 'waterEmpty', name: '空水壺', weight: 250, 
+              icon: '<div class="w-12 h-12 bg-slate-50 border-2 border-slate-200 rounded-xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-bottle-water text-slate-300 text-2xl"></i></div>', 
+              panIcon: '<div class="w-24 h-24 bg-slate-50 border-4 border-slate-200 rounded-[2rem] flex items-center justify-center shadow-lg"><i class="fa-solid fa-bottle-water text-slate-300 text-6xl drop-shadow"></i></div>', 
+              color: 'text-cyan-500', desc: '2 大格 (200g) 又 5 小格 (50g)，共 250g。' },
+            
+            { id: 'waterFull', name: '裝滿水的水壺', weight: 850, 
+              icon: '<div class="w-12 h-12 bg-cyan-50 border-2 border-cyan-200 rounded-xl flex items-center justify-center shadow-sm relative"><i class="fa-solid fa-bottle-water text-blue-500 text-2xl"></i><i class="fa-solid fa-droplet text-cyan-400 text-xs absolute bottom-1 right-2"></i></div>', 
+              panIcon: '<div class="w-24 h-24 bg-cyan-50 border-4 border-cyan-200 rounded-[2rem] flex items-center justify-center shadow-lg relative"><i class="fa-solid fa-bottle-water text-blue-500 text-6xl drop-shadow"></i><i class="fa-solid fa-droplet text-cyan-400 text-3xl absolute bottom-3 right-4"></i></div>', 
+              color: 'text-blue-600', desc: '超過 500g，再數 3 大格 (300g) 與 5 小格 (50g)，共 850g。' }
         ];
 
         // 測驗題目清單
@@ -690,7 +737,9 @@
                 btn.onclick = () => selectLabItem(item);
 
                 btn.innerHTML = `
-                    <div class="text-2xl group-hover:scale-110 transition mb-1">${item.icon}</div>
+                    <div class="group-hover:scale-110 transition-transform duration-300 mb-2 flex items-center justify-center">
+                        ${item.icon}
+                    </div>
                     <div class="text-xs font-bold text-slate-800 truncate w-full">${item.name}</div>
                 `;
                 grid.appendChild(btn);
@@ -702,7 +751,9 @@
             document.getElementById('labItemName').innerText = item.name;
 
             document.getElementById('labPanItem').innerHTML = `
-                <div class="text-5xl drop-shadow-md animate-bounce">${item.icon}</div>
+                <div class="flex flex-col items-center justify-center animate-bounce mb-2 z-10">
+                    ${item.panIcon}
+                </div>
             `;
 
             document.getElementById('answerBox').classList.remove('hidden');
