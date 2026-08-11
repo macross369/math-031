@@ -123,14 +123,16 @@
 <body class="shinkai-bg pb-12">
 
     <!-- Header Title Banner -->
-    <header class="py-6 text-center text-white px-4">
+    <header class="py-8 text-center text-white px-4">
         <div class="max-w-5xl mx-auto">
-            <!-- 閒雲數學小棧 Top Left Logo Block -->
-            <div class="w-full max-w-5xl flex items-center justify-start mb-4 px-2">
+            <!-- 閒雲數學小棧 Logo Banner -->
+            <!-- 修改：使用轉換後的 Google Drive 直接連結 -->
+            <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
                 <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
                 <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
             </div>
 
+            <span class="bg-indigo-500/30 text-indigo-100 text-xs font-semibold px-3 py-1 rounded-full border border-indigo-300/30 tracking-widest uppercase">國小三上數學 2-2 互動學習網頁</span>
             <h1 class="text-3xl md:text-5xl font-black mt-2 tracking-wide drop-shadow-md">
                 <i class="fa-solid fa-calculator text-amber-300 mr-3"></i>萬以內減法與驗算探究寶典
             </h1>
@@ -253,39 +255,51 @@
                     <div class="space-y-4">
                         <!-- Subtraction Vertical -->
                         <div class="bg-indigo-50/80 p-4 rounded-2xl border border-indigo-200">
-                            <div class="text-xs font-bold text-indigo-700 mb-3 border-b border-indigo-200/60 pb-1">
+                            <div class="text-xs font-bold text-indigo-700 mb-3 flex justify-between items-center">
                                 <span>【減法直式】計算</span>
                             </div>
                             <div class="font-mono text-xl font-bold text-gray-800 max-w-[200px] mx-auto">
-                                <!-- Place value headers aligned to digits -->
-                                <div class="grid grid-cols-5 text-center text-xs text-indigo-500 font-bold mb-1">
+                                <!-- 5-Column Place Value Header -->
+                                <div class="grid grid-cols-5 text-center text-xs font-bold text-indigo-600 mb-1 border-b border-indigo-200/50 pb-1">
                                     <span></span><span>千</span><span>百</span><span>十</span><span>個</span>
                                 </div>
-                                <!-- Minuend -->
-                                <div id="v-minuend-grid" class="grid grid-cols-5 text-center py-0.5"></div>
-                                <!-- Subtrahend with minus at 5th column & line stretching from column 1 to 5 -->
-                                <div id="v-subtrahend-grid" class="grid grid-cols-5 text-center py-0.5 border-b-2 border-gray-800"></div>
-                                <!-- Difference -->
-                                <div id="v-diff-grid" class="grid grid-cols-5 text-center py-1 text-indigo-600"></div>
+                                <!-- Minuend Row -->
+                                <div class="grid grid-cols-5 text-center py-0.5">
+                                    <span></span><span id="vm-th">3</span><span id="vm-h">9</span><span id="vm-t">8</span><span id="vm-u">6</span>
+                                </div>
+                                <!-- Subtrahend Row with minus sign in 5th position and bottom line extending across all 5 cols -->
+                                <div class="grid grid-cols-5 text-center border-b-2 border-gray-800 pb-1 py-0.5">
+                                    <span class="text-indigo-600 font-black">-</span><span id="vs-th">2</span><span id="vs-h">1</span><span id="vs-t">3</span><span id="vs-u">2</span>
+                                </div>
+                                <!-- Difference Row -->
+                                <div class="grid grid-cols-5 text-center text-indigo-600 pt-1">
+                                    <span></span><span id="vd-th">1</span><span id="vd-h">8</span><span id="vd-t">5</span><span id="vd-u">4</span>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Verification Vertical -->
                         <div class="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-200">
-                            <div class="text-xs font-bold text-emerald-700 mb-3 border-b border-emerald-200/60 pb-1">
+                            <div class="text-xs font-bold text-emerald-700 mb-3 flex justify-between items-center">
                                 <span>【加法驗算】差 + 減數</span>
                             </div>
                             <div class="font-mono text-xl font-bold text-gray-800 max-w-[200px] mx-auto">
-                                <!-- Place value headers aligned to digits -->
-                                <div class="grid grid-cols-5 text-center text-xs text-emerald-500 font-bold mb-1">
+                                <!-- 5-Column Place Value Header -->
+                                <div class="grid grid-cols-5 text-center text-xs font-bold text-emerald-600 mb-1 border-b border-emerald-200/50 pb-1">
                                     <span></span><span>千</span><span>百</span><span>十</span><span>個</span>
                                 </div>
-                                <!-- Difference -->
-                                <div id="v-check-diff-grid" class="grid grid-cols-5 text-center py-0.5 text-emerald-600"></div>
-                                <!-- Subtrahend with plus at 5th column & line stretching from column 1 to 5 -->
-                                <div id="v-check-sub-grid" class="grid grid-cols-5 text-center py-0.5 border-b-2 border-gray-800"></div>
-                                <!-- Sum -->
-                                <div id="v-check-sum-grid" class="grid grid-cols-5 text-center py-1 text-indigo-600"></div>
+                                <!-- Check Diff Row -->
+                                <div class="grid grid-cols-5 text-center text-emerald-600 py-0.5">
+                                    <span></span><span id="vcd-th">1</span><span id="vcd-h">8</span><span id="vcd-t">5</span><span id="vcd-u">4</span>
+                                </div>
+                                <!-- Check Subtrahend Row with plus sign in 5th position and bottom line extending across all 5 cols -->
+                                <div class="grid grid-cols-5 text-center border-b-2 border-gray-800 pb-1 py-0.5">
+                                    <span class="text-emerald-600 font-black">+</span><span id="vcs-th">2</span><span id="vcs-h">1</span><span id="vcs-t">3</span><span id="vcs-u">2</span>
+                                </div>
+                                <!-- Check Sum Row -->
+                                <div class="grid grid-cols-5 text-center text-indigo-600 pt-1">
+                                    <span></span><span id="vcsum-th">3</span><span id="vcsum-h">9</span><span id="vcsum-t">8</span><span id="vcsum-u">6</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -723,31 +737,22 @@
             document.getElementById('bar-sub-text').innerText = `${state.subtrahend} (減數)`;
             document.getElementById('bar-diff-text').innerText = `${diff} (差)`;
 
-            // Update Vertical Grid Algorithm Displays
-            updateVerticalGrid('v-minuend-grid', state.minuend, '');
-            updateVerticalGrid('v-subtrahend-grid', state.subtrahend, '-');
-            updateVerticalGrid('v-diff-grid', diff, '');
+            // Update 5-Column Grid Vertical Algorithm Displays
+            setGridDigits('vm', state.minuend);
+            setGridDigits('vs', state.subtrahend);
+            setGridDigits('vd', diff);
 
-            updateVerticalGrid('v-check-diff-grid', diff, '');
-            updateVerticalGrid('v-check-sub-grid', state.subtrahend, '+');
-            updateVerticalGrid('v-check-sum-grid', state.minuend, '');
+            setGridDigits('vcd', diff);
+            setGridDigits('vcs', state.subtrahend);
+            setGridDigits('vcsum', state.minuend);
         }
 
-        function updateVerticalGrid(gridId, number, operator = '') {
-            const el = document.getElementById(gridId);
-            if (!el) return;
-            const str = number.toString().padStart(4, ' ');
-            const digits = str.split('');
-            
-            const opClass = operator === '-' ? 'text-indigo-600 font-black' : (operator === '+' ? 'text-emerald-600 font-black' : '');
-
-            el.innerHTML = `
-                <span class="${opClass}">${operator}</span>
-                <span>${digits[0] === ' ' ? '&nbsp;' : digits[0]}</span>
-                <span>${digits[1] === ' ' ? '&nbsp;' : digits[1]}</span>
-                <span>${digits[2] === ' ' ? '&nbsp;' : digits[2]}</span>
-                <span>${digits[3] === ' ' ? '&nbsp;' : digits[3]}</span>
-            `;
+        function setGridDigits(prefix, num) {
+            const s = num.toString().padStart(4, ' ');
+            document.getElementById(`${prefix}-th`).innerText = s[0] === ' ' ? '' : s[0];
+            document.getElementById(`${prefix}-h`).innerText = s[1] === ' ' ? '' : s[1];
+            document.getElementById(`${prefix}-t`).innerText = s[2] === ' ' ? '' : s[2];
+            document.getElementById(`${prefix}-u`).innerText = s[3] === ' ' ? '' : s[3];
         }
 
         /* ----------------------------------------------------

@@ -157,7 +157,7 @@
 
     <div class="relative z-10 max-w-6xl mx-auto px-4 py-6">
         
-        <!-- 閒雲數學小棧 Logo Header -->
+        <!-- 閒雲數學小棧 Logo 與 標題 Header -->
         <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
             <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
             <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
@@ -168,11 +168,14 @@
             <div class="absolute -top-10 -right-10 w-40 h-40 bg-amber-300/30 rounded-full blur-2xl"></div>
             <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-sky-400/30 rounded-full blur-2xl"></div>
             
+            <span class="inline-block px-4 py-1.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-bold rounded-full text-sm mb-3 shadow-md">
+                <i class="fa-solid fa-graduation-cap mr-1"></i> 國小三上數學 3-3 互動學習網頁
+            </span>
             <h1 class="text-3xl md:text-4xl font-black text-slate-800 tracking-wide mb-2">
                 <i class="fa-solid fa-ruler-combined text-sky-500 mr-2"></i>長度的加減法探究學院
             </h1>
             <p class="text-slate-600 font-medium text-sm md:text-base max-w-2xl mx-auto">
-                觀察 $1\text{ 公分} = 10\text{ 毫米}$ 的動態轉換，學習二階單位的直式進位加法與退位減法！
+                觀察 1 公分 = 10 毫米 的動態轉換，學習二階單位的直式進位加法與退位減法！
             </p>
 
             <!-- Navigation Tabs -->
@@ -265,7 +268,7 @@
                         <div class="font-bold mb-1 text-amber-800 flex items-center">
                             <i class="fa-solid fa-lightbulb text-amber-500 mr-1.5 text-sm"></i>小知識提醒：
                         </div>
-                        $1\text{ 公分} = 10\text{ 毫米}$。<br>
+                        1 公分 = 10 毫米。<br>
                         • 毫米超過 10 時，可以滿 10 換成 1 公分 (進位)。<br>
                         • 毫米不夠減時，可以從公分借 1 公分換成 10 毫米 (退位)。
                     </div>
@@ -428,6 +431,46 @@
 
     </div>
 
+    <!-- TEACHER EMBED GUIDE MODAL -->
+    <div id="teacher-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 space-y-4 shadow-2xl relative">
+            <button onclick="toggleTeacherModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center">
+                ✕
+            </button>
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800">如何嵌入 Google 協作平台？</h3>
+                    <p class="text-xs text-slate-500">簡單三步驟，輕鬆將此互動網頁融入課堂</p>
+                </div>
+            </div>
+
+            <ol class="list-decimal list-inside space-y-3 text-sm text-slate-700 leading-relaxed">
+                <li class="font-medium">
+                    <b>複製檔案代碼：</b>將此 HTML 網頁的完整代碼儲存為 <code class="bg-slate-100 px-1.5 py-0.5 rounded text-indigo-600 font-mono">index.html</code>。
+                </li>
+                <li class="font-medium">
+                    <b>開啟 Google 協作平台：</b>進入編輯頁面，點擊右側選單的 <b>「嵌入」</b> 按鈕。
+                </li>
+                <li class="font-medium">
+                    <b>貼上嵌入程式碼：</b>選擇 <b>「嵌入程式碼」</b> 分頁，將整個 HTML 內容貼入並點選下一步發佈即可！
+                </li>
+            </ol>
+
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-600">
+                <i class="fa-solid fa-circle-info text-sky-500 mr-1"></i>提示：此網頁完全不依賴任何外部伺服器資料庫，所有計算均在瀏覽器端即時運行，學生可安全使用。
+            </div>
+
+            <div class="text-right pt-2">
+                <button onclick="toggleTeacherModal()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm shadow-md">
+                    了解，關閉視窗
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- JAVASCRIPT LOGIC -->
     <script>
         // -------------------------------------------------------------
@@ -550,9 +593,9 @@
                     noteMm.innerHTML = ``;
                     
                     explanationList.innerHTML = `
-                        <li><b>步驟 1 (毫米計算)：</b> $${aMm} + ${bMm} = ${rawMmSum}$ 毫米。</li>
+                        <li><b>步驟 1 (毫米計算)：</b> ${aMm} + ${bMm} = ${rawMmSum} 毫米。</li>
                         <li><b>步驟 2 (單位進位)：</b> ${rawMmSum} 毫米超過 10 毫米！換成 <b>${carry} 公分 ${remMm} 毫米</b>。在毫米位置記 <b class="text-pink-600">${remMm}</b>，並在公分位置上方進位記 <b class="text-amber-600">+${carry}</b>。</li>
-                        <li><b>步驟 3 (公分計算)：</b> $${aCm} + ${bCm} + ${carry} (\text{進位}) = ${ansCm}$ 公分。</li>
+                        <li><b>步驟 3 (公分計算)：</b> ${aCm} + ${bCm} + ${carry} (進位) = ${ansCm} 公分。</li>
                         <li class="text-emerald-700 font-bold">👉 合計答案為：${ansCm} 公分 ${ansMm} 毫米。</li>
                     `;
                 } else {
@@ -562,8 +605,8 @@
                     noteMm.innerHTML = ``;
 
                     explanationList.innerHTML = `
-                        <li><b>步驟 1 (毫米計算)：</b> $${aMm} + ${bMm} = ${rawMmSum}$ 毫米 (未超過 10 毫米，不需進位)。</li>
-                        <li><b>步驟 2 (公分計算)：</b> $${aCm} + ${bCm} = ${ansCm}$ 公分。</li>
+                        <li><b>步驟 1 (毫米計算)：</b> ${aMm} + ${bMm} = ${rawMmSum} 毫米 (未超過 10 毫米，不需進位)。</li>
+                        <li><b>步驟 2 (公分計算)：</b> ${aCm} + ${bCm} = ${ansCm} 公分。</li>
                         <li class="text-emerald-700 font-bold">👉 合計答案為：${ansCm} 公分 ${ansMm} 毫米。</li>
                     `;
                 }
@@ -581,10 +624,10 @@
                     ansCm = (aCm - 1) - bCm;
 
                     explanationList.innerHTML = `
-                        <li><b>步驟 1 (檢查毫米)：</b> $${aMm}$ 毫米不夠減 $${bMm}$ 毫米。</li>
-                        <li><b>步驟 2 (退位換算)：</b> 向公分借 1 公分 ($1\\text{ cm} = 10\\text{ mm}$)，公分剩下 <b class="text-rose-600">${aCm - 1}</b>，毫米變為 $10 + ${aMm} = ${10 + aMm}$ 毫米。</li>
-                        <li><b>步驟 3 (毫米相減)：</b> $${10 + aMm} - ${bMm} = ${ansMm}$ 毫米。</li>
-                        <li><b>步驟 4 (公分相減)：</b> $${aCm - 1} - ${bCm} = ${ansCm}$ 公分。</li>
+                        <li><b>步驟 1 (檢查毫米)：</b> ${aMm} 毫米不夠減 ${bMm} 毫米。</li>
+                        <li><b>步驟 2 (退位換算)：</b> 向公分借 1 公分 (1 公分 = 10 毫米)，公分剩下 <b class="text-rose-600">${aCm - 1}</b>，毫米變為 ${10 + aMm} 毫米。</li>
+                        <li><b>步驟 3 (毫米相減)：</b> ${10 + aMm} - ${bMm} = ${ansMm} 毫米。</li>
+                        <li><b>步驟 4 (公分相減)：</b> ${aCm - 1} - ${bCm} = ${ansCm} 公分。</li>
                         <li class="text-emerald-700 font-bold">👉 相差答案為：${ansCm} 公分 ${ansMm} 毫米。</li>
                     `;
                 } else {
@@ -597,8 +640,8 @@
                     ansCm = aCm - bCm;
 
                     explanationList.innerHTML = `
-                        <li><b>步驟 1 (毫米計算)：</b> $${aMm} - ${bMm} = ${ansMm}$ 毫米。</li>
-                        <li><b>步驟 2 (公分計算)：</b> $${aCm} - ${bCm} = ${ansCm}$ 公分。</li>
+                        <li><b>步驟 1 (毫米計算)：</b> ${aMm} - ${bMm} = ${ansMm} 毫米。</li>
+                        <li><b>步驟 2 (公分計算)：</b> ${aCm} - ${bCm} = ${ansCm} 公分。</li>
                         <li class="text-emerald-700 font-bold">👉 相差答案為：${ansCm} 公分 ${ansMm} 毫米。</li>
                     `;
                 }
@@ -634,7 +677,7 @@
                 story: "兔子公仔高 5 公分 7 毫米，底座高 25 毫米（即 2 公分 5 毫米）。請問公仔和底座合起來高幾公分幾毫米？",
                 ansCm: 8,
                 ansMm: 2,
-                hint: "先算毫米：$7 + 5 = 12$ 毫米；$12$ 毫米滿 $10$ 換成 $1$ 公分 $2$ 毫米。再算公分：$5 + 2 + 1 = 8$ 公分。"
+                hint: "先算毫米：7 + 5 = 12 毫米；12 毫米滿 10 換成 1 公分 2 毫米。再算公分：5 + 2 + 1 = 8 公分。"
             },
             {
                 id: 2,
@@ -643,7 +686,7 @@
                 story: "有一段紅紙條長 7 公分 4 毫米，藍紙條長 5 公分 9 毫米。這兩段紙條相差幾公分幾毫米？",
                 ansCm: 1,
                 ansMm: 5,
-                hint: "$4$ 毫米不夠減 $9$ 毫米，向 $7$ 公分借 $1$ 公分換成 $10$ 毫米。$14 - 9 = 5$ 毫米，公分剩下 $6 - 5 = 1$ 公分。"
+                hint: "4 毫米不夠減 9 毫米，向 7 公分借 1 公分換成 10 毫米。14 - 9 = 5 毫米，公分剩下 6 - 5 = 1 公分。"
             },
             {
                 id: 3,
@@ -652,7 +695,7 @@
                 story: "長頸鹿模型高 8 公分（即 8 公分 0 毫米），大象模型高 6 公分 4 毫米。長頸鹿模型比大象模型高幾公分幾毫米？",
                 ansCm: 1,
                 ansMm: 6,
-                hint: "$8$ 公分看成 $7$ 公分 $10$ 毫米。$10 - 4 = 6$ 毫米，$7 - 6 = 1$ 公分。"
+                hint: "8 公分看成 7 公分 10 毫米。10 - 4 = 6 毫米，7 - 6 = 1 公分。"
             },
             {
                 id: 4,
@@ -661,7 +704,7 @@
                 story: "計算：4 公分 7 毫米 + 5 公分 8 毫米 = (  ) 公分 (  ) 毫米。",
                 ansCm: 10,
                 ansMm: 5,
-                hint: "毫米：$7 + 8 = 15$ 毫米 ($= 1$ 公分 $5$ 毫米)。公分：$4 + 5 + 1 = 10$ 公分。"
+                hint: "毫米：7 + 8 = 15 毫米 (= 1 公分 5 毫米)。公分：4 + 5 + 1 = 10 公分。"
             },
             {
                 id: 5,
@@ -670,7 +713,7 @@
                 story: "計算：8 公分 3 毫米 - 1 公分 5 毫米 = (  ) 公分 (  ) 毫米。",
                 ansCm: 6,
                 ansMm: 8,
-                hint: "毫米：$13 - 5 = 8$ 毫米。公分：$7 - 1 = 6$ 公分。"
+                hint: "毫米：13 - 5 = 8 毫米。公分：7 - 1 = 6 公分。"
             }
         ];
 
@@ -780,6 +823,8 @@
 
         // -------------------------------------------------------------
         // 4. UI TAB SWITCHER & MODALS
+        // -------------------------------------------------------------
+        // 4. UI TAB SWITCHER
         // -------------------------------------------------------------
         function switchTab(tab) {
             const lab = document.getElementById('tab-lab');
