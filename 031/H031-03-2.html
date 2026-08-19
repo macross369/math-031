@@ -67,9 +67,9 @@
             stroke-linecap: round;
         }
         
-        /* Shimmer gradient effect */
+        /* Shimmer gradient effect matching reference image */
         .shimmer-text {
-            background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #f43f5e 100%);
+            background: linear-gradient(90deg, #0284c7 0%, #38bdf8 30%, #a855f7 65%, #f43f5e 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -119,27 +119,27 @@
 
         <!-- Header / Banner -->
         <header class="glass-card rounded-3xl p-6 mb-8 text-center relative overflow-hidden">
-            <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-sky-300/30 rounded-full blur-2xl"></div>
+            <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-sky-300/30 rounded-full blur-2xl pointer-events-none"></div>
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-100 text-sky-800 text-sm font-semibold mb-3">
                 <i class="fa-solid fa-graduation-cap"></i> 國小三上數學 3-2 互動學習網頁
             </div>
-            <h1 class="text-3xl md:text-4xl font-black tracking-tight text-slate-800 mb-2">
-                長度的換算與比較 <span class="shimmer-text">探究工作坊</span>
+            <h1 class="text-3xl md:text-4xl font-black tracking-tight shimmer-text mb-2">
+                長度的換算與比較 探究工作坊
             </h1>
             <p class="text-slate-600 text-sm md:text-base max-w-2xl mx-auto">
                 透過直觀滑桿、動態微觀放大鏡與兩兩比對，輕鬆搞懂 <span class="font-bold text-sky-600">1 公分 = 10 毫米</span> 的神奇化聚關係！
             </p>
 
             <!-- Navigation Tabs -->
-            <div class="flex justify-center gap-3 mt-6">
-                <button id="tab-btn-1" onclick="switchTab(1)" class="px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-sky-600 text-white shadow-lg shadow-sky-500/30">
+            <div class="flex flex-wrap justify-center gap-3 mt-6 relative z-10">
+                <button id="tab-btn-1" type="button" onclick="switchTab(1)" class="px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-sky-600 text-white shadow-lg shadow-sky-500/30 cursor-pointer">
                     <i class="fa-solid fa-magnifying-glass"></i> 探索一：毫米公分換算器
                 </button>
-                <button id="tab-btn-2" onclick="switchTab(2)" class="px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-white/80 text-slate-700 hover:bg-white">
+                <button id="tab-btn-2" type="button" onclick="switchTab(2)" class="px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-white/80 text-slate-700 hover:bg-white cursor-pointer">
                     <i class="fa-solid fa-code-compare"></i> 探索二：長度 PK 比一比
                 </button>
-                <button id="tab-btn-3" onclick="switchTab(3)" class="px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-white/80 text-slate-700 hover:bg-white">
-                    <i class="fa-solid fa-pen-to-square"></i> 隨堂小測驗 (5題)
+                <button id="tab-btn-3" type="button" onclick="switchTab(3)" class="px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-white/80 text-slate-700 hover:bg-white cursor-pointer">
+                    <i class="fa-solid fa-pen-to-square"></i> 闖關測驗
                 </button>
             </div>
         </header>
@@ -300,16 +300,11 @@
         <!-- Tab Content 3: Quiz Assessment -->
         <section id="tab-3" class="hidden space-y-6">
             <div class="glass-card rounded-3xl p-6 md:p-8">
-                <div class="flex items-center justify-between border-b border-slate-200/80 pb-4 mb-6">
-                    <div>
-                        <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-list-check text-emerald-500"></i> 歷程性隨堂測驗
-                        </h2>
-                        <p class="text-xs md:text-sm text-slate-500 mt-1">完成下列 5 題觀念評量，獲得即時反饋與觀念修正！</p>
-                    </div>
-                    <button onclick="resetQuiz()" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-bold transition">
-                        <i class="fa-solid fa-rotate-right"></i> 重新測驗
-                    </button>
+                <div class="border-b border-slate-200/80 pb-4 mb-6">
+                    <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-emerald-500"></i> 闖關測驗
+                    </h2>
+                    <p class="text-xs md:text-sm text-slate-500 mt-1">完成下列 5 題觀念評量，獲得即時反饋與觀念修正！</p>
                 </div>
 
                 <form id="quiz-form" class="space-y-6" onsubmit="event.preventDefault(); evaluateQuiz();">
@@ -426,9 +421,12 @@
                         </div>
                     </div>
 
-                    <div class="text-center pt-4">
+                    <div class="flex flex-wrap items-center justify-center gap-4 pt-4">
                         <button type="submit" class="px-8 py-3 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white font-extrabold rounded-2xl shadow-lg shadow-sky-500/30 transition transform active:scale-95 text-lg">
-                            <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案評分
+                            <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案
+                        </button>
+                        <button type="button" onclick="resetQuiz()" class="px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-2xl shadow transition transform active:scale-95 text-lg">
+                            <i class="fa-solid fa-rotate-right mr-2"></i> 重新測驗
                         </button>
                     </div>
                 </form>
@@ -450,21 +448,32 @@
     <script>
         function switchTab(tabIndex) {
             // Hide all tabs
-            document.getElementById('tab-1').classList.add('hidden');
-            document.getElementById('tab-2').classList.add('hidden');
-            document.getElementById('tab-3').classList.add('hidden');
+            const tab1 = document.getElementById('tab-1');
+            const tab2 = document.getElementById('tab-2');
+            const tab3 = document.getElementById('tab-3');
+            
+            if (tab1) tab1.classList.add('hidden');
+            if (tab2) tab2.classList.add('hidden');
+            if (tab3) tab3.classList.add('hidden');
 
             // Reset tab button states
             const btns = [1, 2, 3];
             btns.forEach(i => {
                 const btn = document.getElementById(`tab-btn-${i}`);
-                btn.className = "px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-white/80 text-slate-700 hover:bg-white";
+                if (btn) {
+                    btn.className = "px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-white/80 text-slate-700 hover:bg-white cursor-pointer";
+                }
             });
 
             // Active chosen tab
-            document.getElementById(`tab-${tabIndex}`).classList.remove('hidden');
+            const targetTab = document.getElementById(`tab-${tabIndex}`);
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+            }
             const activeBtn = document.getElementById(`tab-btn-${tabIndex}`);
-            activeBtn.className = "px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-sky-600 text-white shadow-lg shadow-sky-500/30";
+            if (activeBtn) {
+                activeBtn.className = "px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-sky-600 text-white shadow-lg shadow-sky-500/30 cursor-pointer";
+            }
         }
 
         function initRulerSVG() {
@@ -579,11 +588,11 @@
         };
 
         const quizExplanations = {
-            q1: "答對了！因為 1 公分 = 10 毫米，所以 2 公分就是 2 個 10 毫米，等於 20 毫米。",
-            q2: "答對了！48 毫米可拆成 40 毫米與 8 毫米，40 毫米可換算為 4 公分，合起來就是 4 公分 8 毫米。",
-            q3: "答對了！7 公分 2 毫米等於 72 毫米。比對 72 毫米 < 75 毫米，所以填入 < 符號。",
-            q4: "答對了！60 毫米包含 6 個 10 毫米，6 個 10 毫米就是 6 公分。",
-            q5: "答對了！玉米罐頭 9 公分 = 90 毫米。46 毫米 (鮪魚罐頭) 比 90 毫米矮！"
+            q1: "因為 1 公分 = 10 毫米，所以 2 公分就是 2 個 10 毫米，等於 20 毫米。",
+            q2: "48 毫米可拆成 40 毫米與 8 毫米，40 毫米可換算為 4 公分，合起來就是 4 公分 8 毫米。",
+            q3: "7 公分 2 毫米等於 72 毫米。比對 72 毫米 < 75 毫米，所以填入 < 符號。",
+            q4: "60 毫米包含 6 個 10 毫米，6 個 10 毫米就是 6 公分。",
+            q5: "玉米罐頭 9 公分 = 90 毫米。46 毫米 (鮪魚罐頭) 比 90 毫米 (玉米罐頭) 矮！"
         };
 
         function evaluateQuiz() {
@@ -596,17 +605,23 @@
                 const feedbackElem = document.getElementById(`q${i}-feedback`);
                 const boxElem = document.getElementById(`q${i}-box`);
 
-                feedbackElem.classList.remove('hidden', 'text-emerald-600', 'text-rose-600');
-                boxElem.classList.remove('border-emerald-400', 'border-rose-400', 'bg-emerald-50/50', 'bg-rose-50/50');
+                feedbackElem.className = 'mt-3 text-sm font-semibold';
+                boxElem.className = 'bg-white/80 p-5 rounded-2xl border shadow-sm';
 
-                if (selectedOption && selectedOption.value === quizAnswers[key]) {
+                if (!selectedOption) {
+                    // 未作答（黃色系，不顯示其他說明與正確答案）
+                    feedbackElem.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> 未作答。`;
+                    feedbackElem.classList.add('text-amber-600');
+                    boxElem.classList.add('border-amber-300', 'bg-amber-50/50');
+                } else if (selectedOption.value === quizAnswers[key]) {
+                    // 答對（僅在答對時顯示讚賞與詳細解析）
                     score += 20;
-                    feedbackElem.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${quizExplanations[key]}`;
+                    feedbackElem.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> 答對了！${quizExplanations[key]}`;
                     feedbackElem.classList.add('text-emerald-600');
                     boxElem.classList.add('border-emerald-400', 'bg-emerald-50/50');
                 } else {
-                    const wrongText = selectedOption ? "不太對哦，再想想看！" : "尚未選擇答案！";
-                    feedbackElem.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> ${wrongText} (提示：1公分=10毫米)`;
+                    // 答錯（提示溫和反思，不出現「答對了」或公佈正解矛盾敘述）
+                    feedbackElem.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> 不太對哦，再想想看！（提示：1 公分 = 10 毫米）`;
                     feedbackElem.classList.add('text-rose-600');
                     boxElem.classList.add('border-rose-400', 'bg-rose-50/50');
                 }
@@ -623,7 +638,7 @@
             if (score === 100) {
                 scoreComment.textContent = "太厲害了！你已經完全掌握長度的化聚與比較觀念！🌟";
             } else if (score >= 60) {
-                scoreComment.textContent = "做得好！觀察錯題的反饋，再試一次就能拿滿分囉！👍";
+                scoreComment.textContent = "做得好！觀察錯題與未作答的反饋，再試一次就能拿滿分囉！👍";
             } else {
                 scoreComment.textContent = "別灰心！可以切換到「探索一」與「探索二」頁面拉拉看滑桿，會更容易理解哦！💪";
             }
@@ -638,8 +653,8 @@
             for (let i = 1; i <= 5; i++) {
                 const feedbackElem = document.getElementById(`q${i}-feedback`);
                 const boxElem = document.getElementById(`q${i}-box`);
-                feedbackElem.classList.add('hidden');
-                boxElem.classList.remove('border-emerald-400', 'border-rose-400', 'bg-emerald-50/50', 'bg-rose-50/50');
+                feedbackElem.className = 'mt-3 text-sm font-semibold hidden';
+                boxElem.className = 'bg-white/80 p-5 rounded-2xl border border-slate-200 shadow-sm';
             }
         }
 

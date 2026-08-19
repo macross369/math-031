@@ -182,7 +182,7 @@
                     <i class="fa-solid fa-sliders"></i> 動態線段圖探究
                 </button>
                 <button id="tab-quiz" onclick="switchTab('quiz')" class="btn-tab bg-white text-slate-700 hover:bg-slate-100 px-6 py-2.5 rounded-full font-bold text-sm sm:text-base flex items-center gap-2 border border-slate-200">
-                    <i class="fa-solid fa-clipboard-question"></i> 歷程評量 (5題)
+                    <i class="fa-solid fa-clipboard-question"></i> 闖關測驗
                 </button>
             </div>
         </header>
@@ -354,23 +354,29 @@
                     <h2 class="text-xl font-black text-slate-800">
                         <i class="fa-solid fa-award text-amber-500 mr-2"></i>加與減未知數 - 觀念檢測挑戰
                     </h2>
-                    <p class="text-xs sm:text-sm text-slate-600 mt-1">測驗包含 5 道精選實踐題，即時核對並觀看動畫線段圖診斷。</p>
+                    <p class="text-xs sm:text-sm text-slate-600 mt-1">測驗包含 5 道精選實踐題，請完成作答後點擊最下方「提交答案」。</p>
                 </div>
                 <div class="flex items-center gap-4 bg-white/90 px-5 py-3 rounded-2xl border border-slate-200 shadow-sm">
                     <div class="text-center">
                         <div class="text-xs text-slate-400 font-bold">目前得分</div>
                         <div id="quiz-score" class="text-2xl font-black text-indigo-600">0 / 100</div>
                     </div>
-                    <div class="h-8 w-px bg-slate-200"></div>
-                    <button onclick="resetQuiz()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-xl transition">
-                        <i class="fa-solid fa-rotate-right mr-1"></i> 重新測驗
-                    </button>
                 </div>
             </div>
 
             <!-- Quiz Questions Container -->
             <div id="quiz-container" class="space-y-6">
                 <!-- Dynamically Rendered Questions via JS -->
+            </div>
+
+            <!-- Quiz Action Buttons Container -->
+            <div class="flex justify-center items-center gap-4 pt-4 pb-8">
+                <button onclick="submitQuiz()" class="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-white font-bold px-8 py-3 rounded-full text-base shadow-lg shadow-emerald-900/30 hover:shadow-emerald-500/40 hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2 transition-all duration-300">
+                    <i class="fa-solid fa-paper-plane"></i> 提交答案
+                </button>
+                <button onclick="resetQuiz()" class="bg-white/20 hover:bg-white/30 text-white border border-white/40 font-bold px-8 py-3 rounded-full text-base shadow-md backdrop-blur-md hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2 transition-all duration-300">
+                    <i class="fa-solid fa-rotate-right"></i> 重新測驗
+                </button>
             </div>
 
         </main>
@@ -721,7 +727,7 @@
                 options: [
                     { text: "1583 - 1417 = 166 張", correct: false, reason: "錯誤！發出的加剩下的才是原本發放前的全部總數。" },
                     { text: "1583 + 1417 = 3000 張", correct: true, reason: "正確！發出的數量 (1583) 加上剩下的數量 (1417)，合起來就是原本全部的數量 (3000)。" },
-                    { text: "3000 - 1583 = 1417 張", correct: false, reason: "這是驗算式，題目要求計算原本總量的算式。" }
+                    { text: "3000 - 1583 = 1417 張", correct: false, reason: "錯誤！這是驗算式，題目要求計算原本總量的算式。" }
                 ],
                 explanation: "算式記錄為 ( ? ) - 1583 = 1417，計算時用 1583 + 1417 = 3000。"
             },
@@ -772,54 +778,63 @@
         }
 
         function selectAnswer(qId, optionIdx) {
+            // Only record user selection without immediately displaying grade
             quizUserAnswers[qId] = optionIdx;
-            const q = quizQuestions.find(item => item.id === qId);
-            const selectedOpt = q.options[optionIdx];
-            const feedbackEl = document.getElementById(`quiz-feedback-${qId}`);
-
-            feedbackEl.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200');
-            feedbackEl.classList.add('border');
-
-            if (selectedOpt.correct) {
-                feedbackEl.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
-                feedbackEl.innerHTML = `
-                    <div class="flex items-center gap-2 font-bold mb-1">
-                        <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i> 回答正確！ (+20分)
-                    </div>
-                    <div>${selectedOpt.reason}</div>
-                    <div class="mt-1 text-slate-500 text-xs">💡 觀念解析：${q.explanation}</div>
-                `;
-            } else {
-                feedbackEl.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
-                feedbackEl.innerHTML = `
-                    <div class="flex items-center gap-2 font-bold mb-1">
-                        <i class="fa-solid fa-circle-xmark text-rose-600 text-base"></i> 再思考看看！
-                    </div>
-                    <div>${selectedOpt.reason}</div>
-                    <div class="mt-1 text-slate-500 text-xs">💡 觀念解析：${q.explanation}</div>
-                `;
-            }
-
-            calculateScore();
         }
 
-        function calculateScore() {
+        function submitQuiz() {
             let total = 0;
+
             quizQuestions.forEach(q => {
-                const userAns = quizUserAnswers[q.id];
-                if (userAns !== undefined && q.options[userAns].correct) {
-                    total += 20;
+                const optionIdx = quizUserAnswers[q.id];
+                const feedbackEl = document.getElementById(`quiz-feedback-${q.id}`);
+
+                if (feedbackEl) {
+                    feedbackEl.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200', 'bg-amber-50', 'text-amber-800', 'border-amber-200');
+                    feedbackEl.classList.add('border');
+
+                    if (optionIdx === undefined) {
+                        // Unanswered condition: Yellow styling with "未作答。" only
+                        feedbackEl.classList.add('bg-amber-50', 'text-amber-800', 'border-amber-200');
+                        feedbackEl.innerHTML = `
+                            <div class="flex items-center gap-2 font-bold">
+                                <i class="fa-solid fa-circle-exclamation text-amber-600 text-base"></i> 未作答。
+                            </div>
+                        `;
+                    } else {
+                        const selectedOpt = q.options[optionIdx];
+                        if (selectedOpt.correct) {
+                            total += 20;
+                            feedbackEl.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+                            feedbackEl.innerHTML = `
+                                <div class="flex items-center gap-2 font-bold mb-1">
+                                    <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i> 回答正確！ (+20分)
+                                </div>
+                                <div>${selectedOpt.reason}</div>
+                                <div class="mt-1 text-slate-500 text-xs">💡 觀念解析：${q.explanation}</div>
+                            `;
+                        } else {
+                            feedbackEl.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-200');
+                            feedbackEl.innerHTML = `
+                                <div class="flex items-center gap-2 font-bold mb-1">
+                                    <i class="fa-solid fa-circle-xmark text-rose-600 text-base"></i> 再思考看看！
+                                </div>
+                                <div>${selectedOpt.reason}</div>
+                                <div class="mt-1 text-slate-500 text-xs">💡 觀念解析：${q.explanation}</div>
+                            `;
+                        }
+                    }
                 }
             });
+
             document.getElementById('quiz-score').innerText = `${total} / 100`;
         }
 
         function resetQuiz() {
             quizUserAnswers = {};
-            calculateScore();
+            document.getElementById('quiz-score').innerText = `0 / 100`;
             renderQuiz();
         }
-
 
         function switchTab(tabName) {
             const btnSandbox = document.getElementById('tab-sandbox');

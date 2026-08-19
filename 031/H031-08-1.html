@@ -132,7 +132,7 @@
         <i class="fa-solid fa-lightbulb text-amber-500"></i> 思考帽 (迷思解密)
       </button>
       <button onclick="switchTab('quiz')" id="tab-btn-quiz" class="px-5 py-3 rounded-2xl font-bold transition flex items-center gap-2 bg-white/60 text-slate-700 hover:bg-white/80">
-        <i class="fa-solid fa-pen-to-square"></i> 隨堂測驗 (5題)
+        <i class="fa-solid fa-pen-to-square"></i> 闖關測驗
       </button>
     </nav>
 
@@ -445,13 +445,13 @@
       </div>
     </section>
 
-    <!-- TAB 5: 隨堂測驗 (5題歷程評量) -->
+    <!-- TAB 5: 闖關測驗 -->
     <section id="tab-quiz" class="tab-content hidden space-y-6">
       <div class="glass-card rounded-3xl p-6">
         <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-6">
           <div>
             <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <i class="fa-solid fa-clipboard-question text-indigo-600"></i> 分數學習歷程隨堂測驗
+              <i class="fa-solid fa-clipboard-question text-indigo-600"></i> 闖關測驗
             </h2>
             <p class="text-xs text-slate-500">共 5 題，即時回饋診斷學習成效</p>
           </div>
@@ -466,7 +466,7 @@
 
         <div class="mt-8 flex justify-center gap-4">
           <button onclick="submitQuiz()" class="btn-gradient text-white px-8 py-3 rounded-2xl font-bold shadow-lg">
-            <i class="fa-solid fa-paper-plane"></i> 提交測驗答案
+            <i class="fa-solid fa-paper-plane"></i> 提交答案
           </button>
           <button onclick="resetQuiz()" class="bg-slate-200 text-slate-700 px-6 py-3 rounded-2xl font-bold hover:bg-slate-300">
             <i class="fa-solid fa-rotate-left"></i> 重新測驗
@@ -668,7 +668,8 @@
       for (let i = 0; i < stripDen; i++) {
         const seg = document.createElement('div');
         seg.style.width = `${100 / stripDen}%`;
-        seg.className = `h-full border-r border-dashed border-slate-400 flex items-center justify-center font-bold text-xs transition-all ${
+        const borderRightClass = (i === stripDen - 1) ? '' : 'border-r-2 border-dashed border-amber-200';
+        seg.className = `h-full ${borderRightClass} flex items-center justify-center font-bold text-xs transition-all ${
           i < stripNum 
             ? (stripItem === 'paper' ? 'bg-indigo-400 text-white' : 'bg-amber-500 text-white')
             : 'bg-white text-slate-300'
@@ -882,7 +883,10 @@
         const expEl = document.getElementById(`quiz-exp-${idx}`);
         expEl.classList.remove('hidden');
 
-        if (selected && parseInt(selected.value) === q.ans) {
+        if (!selected) {
+          expEl.className = "p-3 rounded-xl text-xs font-bold mt-2 bg-amber-100 text-amber-800 border border-amber-300";
+          expEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 未作答。`;
+        } else if (parseInt(selected.value) === q.ans) {
           score += 20;
           expEl.className = "p-3 rounded-xl text-xs font-bold mt-2 bg-emerald-100 text-emerald-800 border border-emerald-300";
           expEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> 正確！${q.exp}`;

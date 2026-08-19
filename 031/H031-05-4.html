@@ -97,20 +97,7 @@
             box-shadow: 0 0 20px #7dd3fc;
         }
 
-        /* SVG Container background grid */
-        .svg-grid-bg {
-            background-size: 20px 20px;
-            background-image: 
-                linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-        }
-
-        .dot-grid-bg {
-            background-size: 25px 25px;
-            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.25) 1.5px, transparent 1.5px);
-        }
-
-        /* Pulse tab animations */
+        /* Tab styling */
         .tab-btn.active {
             background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
             color: #ffffff;
@@ -120,12 +107,13 @@
 </head>
 <body class="relative overflow-x-hidden min-h-screen pb-12">
 
+    <!-- Background glow shapes -->
     <div class="sky-glow"></div>
     <div class="sky-glow-2"></div>
 
     <div class="relative z-10 max-w-6xl mx-auto px-4 py-6">
         <!-- 閒雲數學小棧 Logo 標頭 -->
-        <div class="w-full flex items-center justify-start mb-4 px-2 fade-in">
+        <div class="w-full flex items-center justify-start mb-4 px-2">
             <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
             <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
         </div>
@@ -137,7 +125,7 @@
                 <i class="fa-solid fa-cloud-sun"></i> 國小三上數學 5-4 互動學習網頁
             </div>
             <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-200 via-indigo-100 to-pink-200 mb-2">
-                正方形與長方形 互動探索教室
+                正方形與長方形 互動探究教室
             </h1>
             <p class="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto">
                 透過拉動滑桿、動態旋轉圖形與對比直角標記，探索邊長與角的祕密！
@@ -152,7 +140,7 @@
                     <i class="fa-solid fa-object-group"></i> 2. 旋轉圖形大辨識
                 </button>
                 <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn glass-card-subtle text-slate-300 hover:text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-graduation-cap"></i> 3. 歷程自我測驗 (5題)
+                    <i class="fa-solid fa-graduation-cap"></i> 3. 闖關測驗
                 </button>
             </div>
         </header>
@@ -192,7 +180,7 @@
                             </div>
 
                             <!-- Height Slider (Disabled in Square mode) -->
-                            <div id="height-container" class="opacity-50 transition-opacity">
+                            <div id="height-container" class="opacity-40 transition-opacity">
                                 <div class="flex justify-between items-center text-xs font-semibold mb-1">
                                     <span class="text-slate-200">短邊/高 (公分):</span>
                                     <span class="text-pink-300 font-bold text-base"><span id="val-height">3</span> cm</span>
@@ -223,7 +211,7 @@
                             </label>
                             <label class="flex items-center justify-between cursor-pointer p-2 rounded-xl hover:bg-white/5 transition">
                                 <span class="text-xs font-medium text-slate-200"><i class="fa-solid fa-border-all text-purple-400 mr-1.5"></i> 顯示 1cm 方格背景網</span>
-                                <input type="checkbox" id="toggle-grid" checked onchange="toggleGridBackground()" class="w-4 h-4 accent-purple-400 rounded">
+                                <input type="checkbox" id="toggle-grid" checked onchange="updateShape()" class="w-4 h-4 accent-purple-400 rounded">
                             </label>
                         </div>
                     </div>
@@ -238,7 +226,7 @@
                 </div>
 
                 <!-- Visual Canvas Display -->
-                <div class="lg:col-span-7 glass-card rounded-3xl p-6 flex flex-col items-center justify-between min-h-[420px] relative overflow-hidden">
+                <div class="lg:col-span-7 glass-card rounded-3xl p-6 flex flex-col items-center justify-between min-h-[540px] relative overflow-hidden">
                     <div class="w-full flex justify-between items-center mb-2 z-10">
                         <span class="text-xs font-bold text-slate-300 bg-slate-900/50 px-3 py-1 rounded-full border border-white/10">
                             <i class="fa-solid fa-eye text-sky-400 mr-1"></i> 即時視覺圖板
@@ -249,8 +237,8 @@
                     </div>
 
                     <!-- Interactive SVG Canvas Area -->
-                    <div id="svg-container" class="w-full flex-1 flex items-center justify-center rounded-2xl svg-grid-bg relative transition-all duration-300 my-2 overflow-hidden min-h-[320px]">
-                        <svg id="geo-svg" class="w-full h-80 max-w-md" viewBox="0 0 400 320">
+                    <div id="svg-container" class="w-full flex-1 flex items-center justify-center rounded-2xl relative transition-all duration-300 my-2 overflow-hidden min-h-[440px]">
+                        <svg id="geo-svg" class="w-full h-[440px] max-w-lg" viewBox="0 0 480 440">
                             <!-- Dynamic SVG Content rendered by JS -->
                         </svg>
                     </div>
@@ -291,7 +279,6 @@
                     <div onclick="inspectClassifier('ㄆ')" id="card-ㄆ" class="glass-card-subtle rounded-2xl p-4 cursor-pointer hover:border-sky-400 transition transform hover:-translate-y-1 text-center relative group">
                         <span class="absolute top-2 left-3 font-bold text-sky-300 text-sm">ㄆ</span>
                         <svg class="w-24 h-24 mx-auto my-2" viewBox="0 0 100 100">
-                            <!-- Curved trapezoid like shape in book -->
                             <path d="M 30,20 L 70,20 Q 65,50 70,80 L 30,80 Q 35,50 30,20 Z" fill="rgba(244, 63, 94, 0.2)" stroke="#f43f5e" stroke-width="2.5"/>
                         </svg>
                         <span class="inline-block text-xs text-slate-300 bg-white/10 px-2 py-0.5 rounded-full group-hover:bg-rose-500/30">點擊觀察</span>
@@ -310,7 +297,6 @@
                     <div onclick="inspectClassifier('ㄈ')" id="card-ㄈ" class="glass-card-subtle rounded-2xl p-4 cursor-pointer hover:border-sky-400 transition transform hover:-translate-y-1 text-center relative group">
                         <span class="absolute top-2 left-3 font-bold text-sky-300 text-sm">ㄈ</span>
                         <svg class="w-24 h-24 mx-auto my-2" viewBox="0 0 100 100">
-                            <!-- Trapezoid -->
                             <polygon points="30,25 70,25 80,75 20,75" fill="rgba(234, 179, 8, 0.2)" stroke="#eab308" stroke-width="2.5"/>
                         </svg>
                         <span class="inline-block text-xs text-slate-300 bg-white/10 px-2 py-0.5 rounded-full group-hover:bg-amber-500/30">點擊觀察</span>
@@ -320,7 +306,6 @@
                     <div onclick="inspectClassifier('ㄉ')" id="card-ㄉ" class="glass-card-subtle rounded-2xl p-4 cursor-pointer hover:border-sky-400 transition transform hover:-translate-y-1 text-center relative group">
                         <span class="absolute top-2 left-3 font-bold text-sky-300 text-sm">ㄉ</span>
                         <svg class="w-24 h-24 mx-auto my-2" viewBox="0 0 100 100">
-                            <!-- Rotated rectangle -->
                             <g transform="rotate(25 50 50)">
                                 <rect x="20" y="30" width="60" height="40" fill="rgba(52, 211, 153, 0.2)" stroke="#34d399" stroke-width="2.5"/>
                             </g>
@@ -332,7 +317,6 @@
                     <div onclick="inspectClassifier('ㄊ')" id="card-ㄊ" class="glass-card-subtle rounded-2xl p-4 cursor-pointer hover:border-sky-400 transition transform hover:-translate-y-1 text-center relative group">
                         <span class="absolute top-2 left-3 font-bold text-sky-300 text-sm">ㄊ</span>
                         <svg class="w-24 h-24 mx-auto my-2" viewBox="0 0 100 100">
-                            <!-- Tilted square (diamond orientation) -->
                             <g transform="rotate(45 50 50)">
                                 <rect x="28" y="28" width="44" height="44" fill="rgba(244, 114, 182, 0.2)" stroke="#f472b6" stroke-width="2.5"/>
                             </g>
@@ -363,13 +347,13 @@
                 <div class="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
                     <div>
                         <h2 class="text-2xl font-bold text-sky-200 flex items-center gap-2">
-                            <i class="fa-solid fa-clipboard-question text-pink-400"></i> 歷程性小評量
+                            <i class="fa-solid fa-clipboard-question text-pink-400"></i> 闖關測驗
                         </h2>
-                        <p class="text-xs text-slate-300 mt-1">自我檢測：鞏固正方形與長方形的邊長與角特徵！</p>
+                        <p class="text-xs text-slate-300 mt-1">鞏固正方形與長方形的邊長與角特徵！選完答案後請點擊「提交答案」。</p>
                     </div>
                     <div class="bg-indigo-950/80 border border-indigo-400/30 rounded-2xl px-4 py-2 text-center">
-                        <span class="text-xs text-slate-400 block">目前得分</span>
-                        <span id="quiz-score" class="text-2xl font-black text-amber-300">0 / 100</span>
+                        <span class="text-xs text-slate-400 block">得分結果</span>
+                        <span id="quiz-score" class="text-2xl font-black text-amber-300">-- / 100</span>
                     </div>
                 </div>
 
@@ -381,10 +365,10 @@
                             <span class="text-sky-400 font-black mr-1">Q1.</span> 正方形有哪些邊與角的關鍵特性？（選出正確答案）
                         </p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm">
-                            <button onclick="checkAnswer(1, 'A')" class="q-opt-1 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">A) 4條邊都一樣長，4個角都是直角</button>
-                            <button onclick="checkAnswer(1, 'B')" class="q-opt-1 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">B) 4條邊長度都不一樣，有4個直角</button>
-                            <button onclick="checkAnswer(1, 'C')" class="q-opt-1 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">C) 只有2條邊一樣長，沒有直角</button>
-                            <button onclick="checkAnswer(1, 'D')" class="q-opt-1 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">D) 4條邊一樣長，但只有2個直角</button>
+                            <button onclick="selectOption(1, 'A')" id="btn-1-A" class="q-opt-1 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">A) 4條邊都一樣長，4個角都是直角</button>
+                            <button onclick="selectOption(1, 'B')" id="btn-1-B" class="q-opt-1 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">B) 4條邊長度都不一樣，有4個直角</button>
+                            <button onclick="selectOption(1, 'C')" id="btn-1-C" class="q-opt-1 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">C) 只有2條邊一樣長，沒有直角</button>
+                            <button onclick="selectOption(1, 'D')" id="btn-1-D" class="q-opt-1 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">D) 4條邊一樣長，但只有2個直角</button>
                         </div>
                         <div id="q-feedback-1" class="mt-3 text-xs font-bold hidden p-2.5 rounded-xl"></div>
                     </div>
@@ -395,10 +379,10 @@
                             <span class="text-sky-400 font-black mr-1">Q2.</span> 長方形的「邊長」特性是什麼？
                         </p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm">
-                            <button onclick="checkAnswer(2, 'A')" class="q-opt-2 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">A) 4條邊全部都不一樣長</button>
-                            <button onclick="checkAnswer(2, 'B')" class="q-opt-2 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">B) 長邊一樣長，短邊一樣長（對邊相等）</button>
-                            <button onclick="checkAnswer(2, 'C')" class="q-opt-2 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">C) 4條邊全部都一樣長</button>
-                            <button onclick="checkAnswer(2, 'D')" class="q-opt-2 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">D) 只有3條邊一樣長</button>
+                            <button onclick="selectOption(2, 'A')" id="btn-2-A" class="q-opt-2 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">A) 4條邊全部都不一樣長</button>
+                            <button onclick="selectOption(2, 'B')" id="btn-2-B" class="q-opt-2 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">B) 長邊一樣長，短邊一樣長（對邊相等）</button>
+                            <button onclick="selectOption(2, 'C')" id="btn-2-C" class="q-opt-2 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">C) 4條邊全部都一樣長</button>
+                            <button onclick="selectOption(2, 'D')" id="btn-2-D" class="q-opt-2 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">D) 只有3條邊一樣長</button>
                         </div>
                         <div id="q-feedback-2" class="mt-3 text-xs font-bold hidden p-2.5 rounded-xl"></div>
                     </div>
@@ -409,10 +393,10 @@
                             <span class="text-sky-400 font-black mr-1">Q3.</span> 如果將一個「正方形」旋轉 45 度（斜斜放著，像菱形），它還是正方形嗎？為什麼？
                         </p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm">
-                            <button onclick="checkAnswer(3, 'A')" class="q-opt-3 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">A) 不是，因為它變斜了就不是正方形</button>
-                            <button onclick="checkAnswer(3, 'B')" class="q-opt-3 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">B) 是，因為它的 4 條邊依然一樣長、4 個角依然都是直角</button>
-                            <button onclick="checkAnswer(3, 'C')" class="q-opt-3 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">C) 不是，它會變成圓形</button>
-                            <button onclick="checkAnswer(3, 'D')" class="q-opt-3 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">D) 不是，它會變成三角形</button>
+                            <button onclick="selectOption(3, 'A')" id="btn-3-A" class="q-opt-3 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">A) 不是，因為它變斜了就不是正方形</button>
+                            <button onclick="selectOption(3, 'B')" id="btn-3-B" class="q-opt-3 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">B) 是，因為它的 4 條邊依然一樣長、4 個角依然都是直角</button>
+                            <button onclick="selectOption(3, 'C')" id="btn-3-C" class="q-opt-3 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">C) 不是，它會變成圓形</button>
+                            <button onclick="selectOption(3, 'D')" id="btn-3-D" class="q-opt-3 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">D) 不是，它會變成三角形</button>
                         </div>
                         <div id="q-feedback-3" class="mt-3 text-xs font-bold hidden p-2.5 rounded-xl"></div>
                     </div>
@@ -423,10 +407,10 @@
                             <span class="text-sky-400 font-black mr-1">Q4.</span> 小明在方格紙上畫了一個圖形，長邊是 7cm、短邊是 3cm，且 4 個角都是直角，這是什麼圖形？
                         </p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm">
-                            <button onclick="checkAnswer(4, 'A')" class="q-opt-4 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">A) 正方形</button>
-                            <button onclick="checkAnswer(4, 'B')" class="q-opt-4 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">B) 長方形</button>
-                            <button onclick="checkAnswer(4, 'C')" class="q-opt-4 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">C) 梯形</button>
-                            <button onclick="checkAnswer(4, 'D')" class="q-opt-4 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">D) 三角形</button>
+                            <button onclick="selectOption(4, 'A')" id="btn-4-A" class="q-opt-4 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">A) 正方形</button>
+                            <button onclick="selectOption(4, 'B')" id="btn-4-B" class="q-opt-4 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">B) 長方形</button>
+                            <button onclick="selectOption(4, 'C')" id="btn-4-C" class="q-opt-4 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">C) 梯形</button>
+                            <button onclick="selectOption(4, 'D')" id="btn-4-D" class="q-opt-4 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">D) 三角形</button>
                         </div>
                         <div id="q-feedback-4" class="mt-3 text-xs font-bold hidden p-2.5 rounded-xl"></div>
                     </div>
@@ -437,19 +421,22 @@
                             <span class="text-sky-400 font-black mr-1">Q5.</span> 正方形和長方形共同擁有的特徵是什麼？
                         </p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm">
-                            <button onclick="checkAnswer(5, 'A')" class="q-opt-5 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">A) 4 條邊都必須完全等長</button>
-                            <button onclick="checkAnswer(5, 'B')" class="q-opt-5 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">B) 都恰好有 4 個直角，而且都是四邊形</button>
-                            <button onclick="checkAnswer(5, 'C')" class="q-opt-5 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">C) 都只有 3 個角</button>
-                            <button onclick="checkAnswer(5, 'D')" class="q-opt-5 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">D) 都不可以被旋轉</button>
+                            <button onclick="selectOption(5, 'A')" id="btn-5-A" class="q-opt-5 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">A) 4 條邊都必須完全等長</button>
+                            <button onclick="selectOption(5, 'B')" id="btn-5-B" class="q-opt-5 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">B) 都恰好有 4 個直角，而且都是四邊形</button>
+                            <button onclick="selectOption(5, 'C')" id="btn-5-C" class="q-opt-5 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">C) 都只有 3 個角</button>
+                            <button onclick="selectOption(5, 'D')" id="btn-5-D" class="q-opt-5 p-3 text-left rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition">D) 都不可以被旋轉</button>
                         </div>
                         <div id="q-feedback-5" class="mt-3 text-xs font-bold hidden p-2.5 rounded-xl"></div>
                     </div>
                 </div>
 
-                <!-- Reset Quiz Button -->
-                <div class="mt-8 text-center">
-                    <button onclick="resetQuiz()" class="px-6 py-2.5 bg-white/10 hover:bg-white/20 text-slate-200 font-bold rounded-xl text-xs sm:text-sm transition">
-                        <i class="fa-solid fa-rotate-left mr-1"></i> 重新測驗
+                <!-- Submit & Reset Quiz Buttons -->
+                <div class="mt-8 flex flex-wrap justify-center items-center gap-4">
+                    <button onclick="submitQuiz()" class="px-6 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold rounded-xl text-xs sm:text-sm shadow-lg shadow-sky-500/30 transition transform hover:scale-105 active:scale-95 flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> 提交答案
+                    </button>
+                    <button onclick="resetQuiz()" class="px-6 py-2.5 bg-white/10 hover:bg-white/20 text-slate-200 font-bold rounded-xl text-xs sm:text-sm transition flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-left"></i> 重新測驗
                     </button>
                 </div>
             </div>
@@ -457,12 +444,73 @@
     </div>
 
     <script>
-        // State Variables
         let currentShapeMode = 'square'; // 'square' | 'rect'
         let quizAnswers = { 1: null, 2: null, 3: null, 4: null, 5: null };
         const correctKey = { 1: 'A', 2: 'B', 3: 'B', 4: 'B', 5: 'B' };
 
-        // Audio Context for sound effects (Web Audio API)
+        // Quiz explanations
+        const quizExplanations = {
+            1: {
+                correct: '正方形必需同時滿足「4 條邊都一樣長」與「4 個角都是直角」。',
+                wrong: '正方形必需同時滿足「4 條邊都一樣長」與「4 個角都是直角」。'
+            },
+            2: {
+                correct: '長方形的特性是長邊與長邊相等、短邊與短邊相等（對邊相等）。',
+                wrong: '長方形的特性是長邊與長邊相等、短邊與短邊相等（對邊相等）。'
+            },
+            3: {
+                correct: '圖形旋轉方向不會改變邊長與角的特性，4 邊等長且 4 角直角就依然是正方形。',
+                wrong: '旋轉只改變方向，只要 4 條邊一樣長且 4 個角依然是直角，它就還是正方形。'
+            },
+            4: {
+                correct: '長邊 (7cm) 與短邊 (3cm) 長度不同，且 4 個角均為直角，這是標準的長方形。',
+                wrong: '長邊 (7cm) 與短邊 (3cm) 長度不同，且 4 個角均為直角，這是標準的長方形。'
+            },
+            5: {
+                correct: '正方形與長方形都屬於四邊形，且兩者都恰好擁有 4 個直角。',
+                wrong: '正方形與長方形共同擁有的關鍵特徵是「都有 4 個直角」而且都是四邊形。'
+            }
+        };
+
+        const classifierData = {
+            'ㄅ': {
+                title: '圖形 ㄅ：長方形',
+                tags: ['長 7 cm', '寬 5 cm', '4 個直角'],
+                desc: '這個圖形的上下兩條邊一樣長、左右兩條邊一樣長（對邊相等），且 4 個角都是直角，所以是「長方形」。',
+                svg: `<rect x="25" y="15" width="50" height="70" fill="rgba(56, 189, 248, 0.2)" stroke="#38bdf8" stroke-width="2.5"/>`
+            },
+            'ㄆ': {
+                title: '圖形 ㄆ：非長方形或正方形',
+                tags: ['邊長不平行', '邊線彎曲/無直角'],
+                desc: '兩側邊線有彎曲弧度，角也不是直角，因此它既不是正方形也不是長方形。',
+                svg: `<path d="M 30,20 L 70,20 Q 65,50 70,80 L 30,80 Q 35,50 30,20 Z" fill="rgba(244, 63, 94, 0.2)" stroke="#f43f5e" stroke-width="2.5"/>`
+            },
+            'ㄇ': {
+                title: '圖形 ㄇ：正方形',
+                tags: ['邊長 3 cm', '4 邊等長', '4 個直角'],
+                desc: '4 條邊的長度完全一樣長，且 4 個角都是完美的直角，這是標準的「正方形」。',
+                svg: `<rect x="35" y="35" width="30" height="30" fill="rgba(168, 85, 247, 0.2)" stroke="#a855f7" stroke-width="2.5"/>`
+            },
+            'ㄈ': {
+                title: '圖形 ㄈ：梯形（四邊形）',
+                tags: ['斜邊不平行', '沒有直角'],
+                desc: '雖然有 4 條直直的邊，但是邊長不相等且沒有 4 個直角，不是正方形也不是長方形。',
+                svg: `<polygon points="30,25 70,25 80,75 20,75" fill="rgba(234, 179, 8, 0.2)" stroke="#eab308" stroke-width="2.5"/>`
+            },
+            'ㄉ': {
+                title: '圖形 ㄉ：傾斜放置的長方形',
+                tags: ['旋轉 25 度', '長邊相等', '短邊相等', '4 個直角'],
+                desc: '雖然旋轉了 25 度放置，但長邊對長邊相等、短邊對短邊相等，且 4 個角依然都是直角，所以它依然是「長方形」！',
+                svg: `<g transform="rotate(25 50 50)"><rect x="20" y="30" width="60" height="40" fill="rgba(52, 211, 153, 0.2)" stroke="#34d399" stroke-width="2.5"/></g>`
+            },
+            'ㄊ': {
+                title: '圖形 ㄊ：傾斜放置的正方形',
+                tags: ['旋轉 45 度', '4 邊等長', '4 個直角'],
+                desc: '擺成斜斜的樣子（看起來像菱形），但量一量發現 4 條邊都一樣長、4 個角依然都是直角，所以它還是「正方形」！',
+                svg: `<g transform="rotate(45 50 50)"><rect x="28" y="28" width="44" height="44" fill="rgba(244, 114, 182, 0.2)" stroke="#f472b6" stroke-width="2.5"/></g>`
+            }
+        };
+
         function playTone(freq = 523.25, type = 'sine', duration = 0.15) {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -476,152 +524,299 @@
                 gain.connect(ctx.destination);
                 osc.start();
                 osc.stop(ctx.currentTime + duration);
-            } catch(e) { /* audio context fallback */ }
+            } catch(e) { /* Audio Context fallback */ }
         }
 
-        // Switch Navigation Tabs
-        function switchTab(tab) {
-            document.querySelectorAll('main').forEach(m => m.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(b => {
-                b.classList.remove('active');
-                b.classList.add('glass-card-subtle', 'text-slate-300');
+        function switchTab(tabId) {
+            ['lab', 'classify', 'quiz'].forEach(t => {
+                document.getElementById(`section-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).classList.remove('active');
+                document.getElementById(`tab-${t}`).classList.add('glass-card-subtle', 'text-slate-300');
             });
 
-            document.getElementById(`section-${tab}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`tab-${tab}`);
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabId}`);
             activeBtn.classList.add('active');
             activeBtn.classList.remove('glass-card-subtle', 'text-slate-300');
+
             playTone(440, 'sine', 0.1);
         }
 
-        // Mode Switching (Square vs Rectangle)
         function setShapeMode(mode) {
             currentShapeMode = mode;
             const btnSquare = document.getElementById('mode-square');
             const btnRect = document.getElementById('mode-rect');
-            const heightContainer = document.getElementById('height-container');
-            const sliderHeight = document.getElementById('slider-height');
-            const widthLabel = document.getElementById('width-label');
 
             if (mode === 'square') {
                 btnSquare.className = "py-2.5 px-3 rounded-xl border border-sky-400/50 bg-sky-500/20 text-sky-200 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all";
                 btnRect.className = "py-2.5 px-3 rounded-xl border border-white/10 bg-slate-800/40 text-slate-300 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all";
-                heightContainer.classList.add('opacity-50');
-                sliderHeight.disabled = true;
-                widthLabel.innerText = "邊長 (公分):";
             } else {
                 btnRect.className = "py-2.5 px-3 rounded-xl border border-pink-400/50 bg-pink-500/20 text-pink-200 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all";
                 btnSquare.className = "py-2.5 px-3 rounded-xl border border-white/10 bg-slate-800/40 text-slate-300 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all";
-                heightContainer.classList.remove('opacity-50');
-                sliderHeight.disabled = false;
-                widthLabel.innerText = "長邊 (公分):";
             }
+
             updateShape();
-            playTone(587.33, 'triangle', 0.1);
+            playTone(587.33, 'sine', 0.1);
         }
 
         function updateShape() {
-            const widthCm = parseInt(document.getElementById('slider-width').value);
-            let heightCm = parseInt(document.getElementById('slider-height').value);
-            if (currentShapeMode === 'square') {
-                heightCm = widthCm;
-            }
-            const angle = parseInt(document.getElementById('slider-angle').value);
-
+            const mode = currentShapeMode;
+            const w = parseInt(document.getElementById('slider-width').value) || 4;
+            let h = parseInt(document.getElementById('slider-height').value) || 3;
+            const angleDeg = parseInt(document.getElementById('slider-angle').value) || 0;
             const showLengths = document.getElementById('toggle-lengths').checked;
             const showAngles = document.getElementById('toggle-angles').checked;
+            const showGrid = document.getElementById('toggle-grid').checked;
 
-            // Update readout texts
-            document.getElementById('val-width').innerText = widthCm;
-            document.getElementById('val-height').innerText = heightCm;
-            document.getElementById('val-angle').innerText = angle;
+            document.getElementById('val-width').innerText = w;
+            document.getElementById('val-angle').innerText = angleDeg;
 
-            // Render SVG Shape
-            const svg = document.getElementById('geo-svg');
-            const scale = 25; // 1cm = 25px
-            const pxWidth = widthCm * scale;
-            const pxHeight = heightCm * scale;
-
-            const cx = 200;
-            const cy = 160;
-
-            const isSquare = (widthCm === heightCm);
-
-            // Shape Styling colors
-            const strokeColor = isSquare ? '#38bdf8' : '#f472b6';
-            const fillColor = isSquare ? 'rgba(56, 189, 248, 0.25)' : 'rgba(244, 114, 182, 0.25)';
-
-            let svgContent = `<g transform="translate(${cx}, ${cy}) rotate(${angle})">`;
-
-            // Quad rectangle path centered at origin (0,0)
-            const x0 = -pxWidth / 2;
-            const y0 = -pxHeight / 2;
-
-            svgContent += `<rect x="${x0}" y="${y0}" width="${pxWidth}" height="${pxHeight}" 
-                fill="${fillColor}" stroke="${strokeColor}" stroke-width="3" rx="2" />`;
-
-            // Draw Right Angle Indicators (┐) at 4 corners
-            if (showAngles) {
-                const markSize = 12;
-                // Top-Left
-                svgContent += `<path d="M ${x0 + markSize} ${y0} L ${x0 + markSize} ${y0 + markSize} L ${x0} ${y0 + markSize}" fill="none" stroke="#fb7185" stroke-width="2"/>`;
-                // Top-Right
-                svgContent += `<path d="M ${x0 + pxWidth - markSize} ${y0} L ${x0 + pxWidth - markSize} ${y0 + markSize} L ${x0 + pxWidth} ${y0 + markSize}" fill="none" stroke="#fb7185" stroke-width="2"/>`;
-                // Bottom-Right
-                svgContent += `<path d="M ${x0 + pxWidth} ${y0 + pxHeight - markSize} L ${x0 + pxWidth - markSize} ${y0 + pxHeight - markSize} L ${x0 + pxWidth - markSize} ${y0 + pxHeight}" fill="none" stroke="#fb7185" stroke-width="2"/>`;
-                // Bottom-Left
-                svgContent += `<path d="M ${x0} ${y0 + pxHeight - markSize} L ${x0 + markSize} ${y0 + pxHeight - markSize} L ${x0 + markSize} ${y0 + pxHeight}" fill="none" stroke="#fb7185" stroke-width="2"/>`;
+            if (mode === 'square') {
+                h = w;
+                document.getElementById('slider-height').value = w;
+                document.getElementById('val-height').innerText = w;
+                document.getElementById('slider-height').disabled = true;
+                document.getElementById('height-container').classList.add('opacity-40');
+                document.getElementById('width-label').innerText = '邊長 (公分):';
+            } else {
+                document.getElementById('val-height').innerText = h;
+                document.getElementById('slider-height').disabled = false;
+                document.getElementById('height-container').classList.remove('opacity-40');
+                document.getElementById('width-label').innerText = '長邊/寬 (公分):';
             }
 
-            // Draw Length Labels
-            if (showLengths) {
-                // Top Label (Width)
-                svgContent += `<text x="0" y="${y0 - 10}" fill="#7dd3fc" font-size="13" font-weight="bold" text-anchor="middle">${widthCm} cm</text>`;
-                // Bottom Label (Width)
-                svgContent += `<text x="0" y="${y0 + pxHeight + 18}" fill="#7dd3fc" font-size="13" font-weight="bold" text-anchor="middle">${widthCm} cm</text>`;
-                // Left Label (Height)
-                svgContent += `<text x="${x0 - 12}" y="4" fill="#f472b6" font-size="13" font-weight="bold" text-anchor="end">${heightCm} cm</text>`;
-                // Right Label (Height)
-                svgContent += `<text x="${x0 + pxWidth + 12}" y="4" fill="#f472b6" font-size="13" font-weight="bold" text-anchor="start">${heightCm} cm</text>`;
-            }
-
-            svgContent += `</g>`;
-            svg.innerHTML = svgContent;
-
-            // Update Dynamic Analysis Summary
+            // Real-time analysis text update
             const propList = document.getElementById('property-list');
             const conceptText = document.getElementById('concept-text');
 
-            if (isSquare) {
+            if (mode === 'square') {
                 propList.innerHTML = `
-                    <li class="flex items-center gap-1.5"><i class="fa-solid fa-check text-emerald-400"></i> 4 條邊長度：<b>全部均為 ${widthCm} cm（完全相等）</b></li>
-                    <li class="flex items-center gap-1.5"><i class="fa-solid fa-check text-emerald-400"></i> 4 個角：<b>均為 90 度（直角）</b></li>
-                    <li class="flex items-center gap-1.5"><i class="fa-solid fa-award text-amber-400"></i> 判斷結論：<b>此圖形符合「正方形」定義！</b></li>
+                    <li><i class="fa-solid fa-check text-emerald-400 mr-1"></i> 4 條邊長度：<strong>全為 ${w} cm</strong>（4邊完全等長）</li>
+                    <li><i class="fa-solid fa-check text-emerald-400 mr-1"></i> 4 個夾角：<strong>全為 90° 直角</strong></li>
+                    <li><i class="fa-solid fa-sync text-amber-400 mr-1"></i> 旋轉角度：<strong>${angleDeg}°</strong>（旋轉後幾何特徵不變）</li>
                 `;
-                conceptText.innerHTML = `正方形特性：<span class="text-sky-300 font-bold">4條邊等長 + 4個直角</span>。即使旋轉 ${angle}°，它依然是標準正方形！`;
+                conceptText.innerHTML = `正方形特性：4 條邊都一樣長 (${w} cm)，4 個角都是直角。傾斜旋轉放依然是正方形！`;
             } else {
                 propList.innerHTML = `
-                    <li class="flex items-center gap-1.5"><i class="fa-solid fa-check text-emerald-400"></i> 邊長特性：<b>長邊 (${widthCm}cm) 對邊相等，短邊 (${heightCm}cm) 對邊相等</b></li>
-                    <li class="flex items-center gap-1.5"><i class="fa-solid fa-check text-emerald-400"></i> 4 個角：<b>均為 90 度（直角）</b></li>
-                    <li class="flex items-center gap-1.5"><i class="fa-solid fa-award text-amber-400"></i> 判斷結論：<b>此圖形符合「長方形」定義！</b></li>
+                    <li><i class="fa-solid fa-check text-emerald-400 mr-1"></i> 兩對邊長度：<strong>長邊 ${Math.max(w, h)} cm，短邊 ${Math.min(w, h)} cm</strong>（對邊相等）</li>
+                    <li><i class="fa-solid fa-check text-emerald-400 mr-1"></i> 4 個夾角：<strong>全為 90° 直角</strong></li>
+                    <li><i class="fa-solid fa-sync text-amber-400 mr-1"></i> 旋轉角度：<strong>${angleDeg}°</strong>（旋轉後幾何特徵不變）</li>
                 `;
-                conceptText.innerHTML = `長方形特性：<span class="text-pink-300 font-bold">長邊對邊相等、短邊對邊相等 + 4個直角</span>。`;
+                conceptText.innerHTML = `長方形特性：長邊對長邊相等、短邊對短邊相等，且 4 個角都是直角。`;
+            }
+
+            // SVG Construction
+            const svg = document.getElementById('geo-svg');
+            const unit = 30; // 1 cm = 30 px
+            const cx = 240, cy = 220; // Center of 480x440 canvas
+            
+            const wPx = w * unit;
+            const hPx = h * unit;
+
+            const rad = (angleDeg * Math.PI) / 180;
+            const cos = Math.cos(rad);
+            const sin = Math.sin(rad);
+
+            // Unrotated corners relative to center
+            const cornersRel = [
+                { x: -wPx / 2, y: -hPx / 2 },
+                { x: wPx / 2, y: -hPx / 2 },
+                { x: wPx / 2, y: hPx / 2 },
+                { x: -wPx / 2, y: hPx / 2 }
+            ];
+
+            // Rotate and translate corners
+            const corners = cornersRel.map(pt => ({
+                x: cx + (pt.x * cos - pt.y * sin),
+                y: cy + (pt.x * sin + pt.y * cos)
+            }));
+
+            let svgHtml = '';
+
+            // 1. Grid Background (aligned with grid lines)
+            if (showGrid) {
+                svgHtml += `<g stroke="rgba(255, 255, 255, 0.15)" stroke-width="1">`;
+                for (let y = cy - 210; y <= cy + 210; y += unit) {
+                    svgHtml += `<line x1="${cx - 220}" y1="${y}" x2="${cx + 220}" y2="${y}" />`;
+                }
+                for (let x = cx - 210; x <= cx + 210; x += unit) {
+                    svgHtml += `<line x1="${x}" y1="${cy - 210}" x2="${x}" y2="${cy + 210}" />`;
+                }
+                svgHtml += `</g>`;
+            }
+
+            // 2. Main Polygon Shape
+            const pointsAttr = corners.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+            const strokeColor = mode === 'square' ? '#38bdf8' : '#f43f5e';
+            const fillColor = mode === 'square' ? 'rgba(56, 189, 248, 0.25)' : 'rgba(244, 63, 94, 0.25)';
+            svgHtml += `<polygon points="${pointsAttr}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="3.5" stroke-linejoin="round" />`;
+
+            // 3. Right Angle Marks
+            if (showAngles) {
+                const markSize = 12;
+                for (let i = 0; i < 4; i++) {
+                    const p = corners[i];
+                    const prevP = corners[(i + 3) % 4];
+                    const nextP = corners[(i + 1) % 4];
+
+                    const edge1Len = (i % 2 === 0) ? wPx : hPx;
+                    const edge2Len = (i % 2 === 0) ? hPx : wPx;
+
+                    const v1 = { x: (nextP.x - p.x) / edge1Len, y: (nextP.y - p.y) / edge1Len };
+                    const v2 = { x: (prevP.x - p.x) / edge2Len, y: (prevP.y - p.y) / edge2Len };
+
+                    const p1 = { x: p.x + v1.x * markSize, y: p.y + v1.y * markSize };
+                    const p2 = { x: p.x + v1.x * markSize + v2.x * markSize, y: p.y + v1.y * markSize + v2.y * markSize };
+                    const p3 = { x: p.x + v2.x * markSize, y: p.y + v2.y * markSize };
+
+                    svgHtml += `<path d="M ${p1.x.toFixed(1)},${p1.y.toFixed(1)} L ${p2.x.toFixed(1)},${p2.y.toFixed(1)} L ${p3.x.toFixed(1)},${p3.y.toFixed(1)}" fill="none" stroke="#fb7185" stroke-width="2" />`;
+                }
+            }
+
+            // 4. Side Length Labels
+            if (showLengths) {
+                const sideConfigs = [
+                    { text: `${w} cm`, color: '#38bdf8', p1: corners[0], p2: corners[1] },
+                    { text: `${h} cm`, color: '#f43f5e', p1: corners[1], p2: corners[2] },
+                    { text: `${w} cm`, color: '#38bdf8', p1: corners[2], p2: corners[3] },
+                    { text: `${h} cm`, color: '#f43f5e', p1: corners[3], p2: corners[0] }
+                ];
+
+                sideConfigs.forEach(lbl => {
+                    const midX = (lbl.p1.x + lbl.p2.x) / 2;
+                    const midY = (lbl.p1.y + lbl.p2.y) / 2;
+
+                    const dx = lbl.p2.x - lbl.p1.x;
+                    const dy = lbl.p2.y - lbl.p1.y;
+                    const len = Math.hypot(dx, dy) || 1;
+
+                    let nx = -dy / len;
+                    let ny = dx / len;
+
+                    // Outward direction check
+                    if ((midX + nx * 10 - cx) ** 2 + (midY + ny * 10 - cy) ** 2 < (midX - cx) ** 2 + (midY - cy) ** 2) {
+                        nx = -nx;
+                        ny = -ny;
+                    }
+
+                    const labelX = midX + nx * 22;
+                    const labelY = midY + ny * 22;
+
+                    svgHtml += `
+                        <g transform="translate(${labelX.toFixed(1)}, ${labelY.toFixed(1)})">
+                            <rect x="-26" y="-13" width="52" height="24" rx="12" fill="rgba(15, 23, 42, 0.88)" stroke="${lbl.color}" stroke-width="1.5" />
+                            <text x="0" y="4" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="bold">${lbl.text}</text>
+                        </g>
+                    `;
+                });
+            }
+
+            svg.innerHTML = svgHtml;
+        }
+
+        function inspectClassifier(id) {
+            const data = classifierData[id];
+            if (!data) return;
+
+            const panel = document.getElementById('inspection-panel');
+            const iconDiv = document.getElementById('inspect-icon');
+            const titleEl = document.getElementById('inspect-title');
+            const tagsDiv = document.getElementById('inspect-tags');
+            const descEl = document.getElementById('inspect-desc');
+
+            iconDiv.innerHTML = `<svg class="w-20 h-20" viewBox="0 0 100 100">${data.svg}</svg>`;
+            titleEl.innerText = data.title;
+            
+            tagsDiv.innerHTML = data.tags.map(t => 
+                `<span class="bg-sky-500/20 text-sky-300 border border-sky-400/30 text-xs px-2.5 py-1 rounded-full font-semibold">${t}</span>`
+            ).join('');
+
+            descEl.innerText = data.desc;
+            panel.classList.remove('hidden');
+
+            playTone(600, 'sine', 0.12);
+        }
+
+        function selectOption(qNum, choice) {
+            quizAnswers[qNum] = choice;
+
+            const buttons = document.querySelectorAll(`.q-opt-${qNum}`);
+            buttons.forEach(b => {
+                b.classList.remove('bg-sky-500/30', 'border-sky-400', 'ring-2', 'ring-sky-400/50', 'bg-emerald-500/30', 'border-emerald-400', 'bg-rose-500/30', 'border-rose-400');
+            });
+
+            const selectedBtn = document.getElementById(`btn-${qNum}-${choice}`);
+            if (selectedBtn) {
+                selectedBtn.classList.add('bg-sky-500/30', 'border-sky-400', 'ring-2', 'ring-sky-400/50');
+            }
+
+            playTone(520, 'sine', 0.08);
+        }
+
+        function submitQuiz() {
+            let total = 0;
+
+            for (let q = 1; q <= 5; q++) {
+                const userChoice = quizAnswers[q];
+                const fb = document.getElementById(`q-feedback-${q}`);
+                const buttons = document.querySelectorAll(`.q-opt-${q}`);
+
+                buttons.forEach(b => {
+                    b.classList.remove('bg-sky-500/30', 'border-sky-400', 'ring-2', 'ring-sky-400/50', 'bg-emerald-500/30', 'border-emerald-400', 'bg-rose-500/30', 'border-rose-400');
+                });
+
+                fb.className = "mt-3 text-xs font-bold p-2.5 rounded-xl border";
+
+                if (!userChoice) {
+                    // Blank / Unanswered state: ONLY show "未作答。" in yellow/amber style
+                    fb.classList.add('bg-amber-500/20', 'text-amber-300', 'border-amber-400/30');
+                    fb.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i>未作答。`;
+                } else if (userChoice === correctKey[q]) {
+                    // Correct answer
+                    total += 20;
+                    const selectedBtn = document.getElementById(`btn-${q}-${userChoice}`);
+                    if (selectedBtn) {
+                        selectedBtn.classList.add('bg-emerald-500/30', 'border-emerald-400');
+                    }
+                    fb.classList.add('bg-emerald-500/20', 'text-emerald-300', 'border-emerald-400/30');
+                    fb.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5"></i>答對了！${quizExplanations[q].correct}`;
+                } else {
+                    // Wrong answer
+                    const selectedBtn = document.getElementById(`btn-${q}-${userChoice}`);
+                    if (selectedBtn) {
+                        selectedBtn.classList.add('bg-rose-500/30', 'border-rose-400');
+                    }
+                    fb.classList.add('bg-rose-500/20', 'text-rose-300', 'border-rose-400/30');
+                    fb.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1.5"></i>答錯了。${quizExplanations[q].wrong}`;
+                }
+
+                fb.classList.remove('hidden');
+            }
+
+            document.getElementById('quiz-score').innerText = `${total} / 100`;
+
+            if (total === 100) {
+                playTone(880, 'sine', 0.25);
+            } else {
+                playTone(660, 'sine', 0.15);
             }
         }
 
-        // Toggle Grid Background display
-        function toggleGridBackground() {
-            const container = document.getElementById('svg-container');
-            const isChecked = document.getElementById('toggle-grid').checked;
-            if (isChecked) {
-                container.classList.add('svg-grid-bg');
-            } else {
-                container.classList.remove('svg-grid-bg');
+        function resetQuiz() {
+            quizAnswers = { 1: null, 2: null, 3: null, 4: null, 5: null };
+            document.getElementById('quiz-score').innerText = `-- / 100`;
+
+            for (let q = 1; q <= 5; q++) {
+                const fb = document.getElementById(`q-feedback-${q}`);
+                fb.classList.add('hidden');
+                const buttons = document.querySelectorAll(`.q-opt-${q}`);
+                buttons.forEach(b => {
+                    b.classList.remove('bg-sky-500/30', 'border-sky-400', 'ring-2', 'ring-sky-400/50', 'bg-emerald-500/30', 'border-emerald-400', 'bg-rose-500/30', 'border-rose-400');
+                });
             }
-            playTone(659.25, 'sine', 0.08);
+            playTone(523.25, 'sine', 0.1);
         }
 
-        // Reset Lab Controls
         function resetLab() {
             document.getElementById('slider-width').value = 4;
             document.getElementById('slider-height').value = 3;
@@ -629,140 +824,9 @@
             document.getElementById('toggle-lengths').checked = true;
             document.getElementById('toggle-angles').checked = true;
             document.getElementById('toggle-grid').checked = true;
-            toggleGridBackground();
             setShapeMode('square');
         }
 
-        const classifierData = {
-            'ㄅ': {
-                title: '圖形 ㄅ：標準立姿長方形',
-                tags: ['長邊對邊相等', '短邊對邊相等', '4個角皆直角'],
-                desc: '長邊為 7cm、短邊為 5cm，4個角經過直角板測量均為直角，因此是標準的長方形！',
-                isSquare: false, isRect: true, iconColor: 'text-sky-400'
-            },
-            'ㄆ': {
-                title: '圖形 ㄆ：非直角四邊形（彎曲腰）',
-                tags: ['兩側邊線彎曲', '非直角'],
-                desc: '這兩邊是曲線，不是直線，而且角不是直角。它既不是正方形，也不是長方形。',
-                isSquare: false, isRect: false, iconColor: 'text-rose-400'
-            },
-            'ㄇ': {
-                title: '圖形 ㄇ：小正方形',
-                tags: ['4條邊皆等長', '4個角皆直角'],
-                desc: '經測量 4 條邊均為 3cm，且 4 個角均為直角，因此它是正方形！',
-                isSquare: true, isRect: false, iconColor: 'text-purple-400'
-            },
-            'ㄈ': {
-                title: '圖形 ㄈ：梯形',
-                tags: ['只有一組對邊平行', '角落非直角'],
-                desc: '上方邊與下方邊不等長，左右兩邊傾斜且角非直角。它不是正方形也不是長方形。',
-                isSquare: false, isRect: false, iconColor: 'text-amber-400'
-            },
-            'ㄉ': {
-                title: '圖形 ㄉ：旋轉 25 度的長方形',
-                tags: ['長邊對邊相等', '短邊對邊相等', '旋轉傾斜', '4個角皆直角'],
-                desc: '雖然它擺放的角度斜斜的，但經量測長邊相等、短邊相等，且 4 個角均為直角，所以它依然是長方形！',
-                isSquare: false, isRect: true, iconColor: 'text-emerald-400'
-            },
-            'ㄊ': {
-                title: '圖形 ㄊ：旋轉 45 度的正方形（菱形擺姿）',
-                tags: ['4條邊皆等長', '旋轉45度', '4個角皆直角'],
-                desc: '許多同學會以為擺成菱形就不是正方形，但它的 4 條邊等長且 4 個角都是直角！因此它確實是正方形！',
-                isSquare: true, isRect: false, iconColor: 'text-pink-400'
-            }
-        };
-
-        function inspectClassifier(key) {
-            const item = classifierData[key];
-            if (!item) return;
-
-            const panel = document.getElementById('inspection-panel');
-            const title = document.getElementById('inspect-title');
-            const tags = document.getElementById('inspect-tags');
-            const desc = document.getElementById('inspect-desc');
-            const icon = document.getElementById('inspect-icon');
-
-            panel.classList.remove('hidden');
-
-            title.innerText = item.title;
-            desc.innerText = item.desc;
-
-            tags.innerHTML = item.tags.map(t => 
-                `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-white/10 text-sky-200 border border-white/10">${t}</span>`
-            ).join('');
-
-            let badgeHtml = '';
-            if (item.isSquare) {
-                badgeHtml = `<div class="text-center"><i class="fa-regular fa-square text-3xl text-sky-400 mb-1 block"></i><span class="text-xs font-bold text-sky-300">正方形</span></div>`;
-            } else if (item.isRect) {
-                badgeHtml = `<div class="text-center"><i class="fa-regular fa-rectangle-list text-3xl text-pink-400 mb-1 block"></i><span class="text-xs font-bold text-pink-300">長方形</span></div>`;
-            } else {
-                badgeHtml = `<div class="text-center"><i class="fa-solid fa-xmark text-3xl text-slate-400 mb-1 block"></i><span class="text-xs font-bold text-slate-400">其他圖形</span></div>`;
-            }
-            icon.innerHTML = badgeHtml;
-
-            playTone(783.99, 'sine', 0.12);
-        }
-
-        function checkAnswer(qNum, choice) {
-            quizAnswers[qNum] = choice;
-            const isCorrect = (choice === correctKey[qNum]);
-            const fb = document.getElementById(`q-feedback-${qNum}`);
-            const card = document.getElementById(`q-card-${qNum}`);
-
-            // Style Selected Option Buttons
-            const buttons = document.querySelectorAll(`.q-opt-${qNum}`);
-            buttons.forEach(b => {
-                b.classList.remove('bg-sky-500/30', 'border-sky-400', 'bg-rose-500/30', 'border-rose-400');
-                if (b.innerText.startsWith(choice)) {
-                    if (isCorrect) {
-                        b.classList.add('bg-emerald-500/30', 'border-emerald-400');
-                    } else {
-                        b.classList.add('bg-rose-500/30', 'border-rose-400');
-                    }
-                }
-            });
-
-            fb.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-300', 'border-emerald-400/30', 'bg-rose-500/20', 'text-rose-300', 'border-rose-400/30');
-
-            if (isCorrect) {
-                fb.classList.add('bg-emerald-500/20', 'text-emerald-300', 'border', 'border-emerald-400/30');
-                fb.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> 答對了！非常棒！`;
-                playTone(880, 'sine', 0.15);
-            } else {
-                fb.classList.add('bg-rose-500/20', 'text-rose-300', 'border', 'border-rose-400/30');
-                fb.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> 差一點點，再想一想喔！`;
-                playTone(300, 'sawtooth', 0.2);
-            }
-
-            calculateScore();
-        }
-
-        function calculateScore() {
-            let total = 0;
-            for (let q = 1; q <= 5; q++) {
-                if (quizAnswers[q] === correctKey[q]) {
-                    total += 20;
-                }
-            }
-            document.getElementById('quiz-score').innerText = `${total} / 100`;
-        }
-
-        function resetQuiz() {
-            quizAnswers = { 1: null, 2: null, 3: null, 4: null, 5: null };
-            for (let q = 1; q <= 5; q++) {
-                const fb = document.getElementById(`q-feedback-${q}`);
-                fb.classList.add('hidden');
-                const buttons = document.querySelectorAll(`.q-opt-${q}`);
-                buttons.forEach(b => {
-                    b.classList.remove('bg-emerald-500/30', 'border-emerald-400', 'bg-rose-500/30', 'border-rose-400');
-                });
-            }
-            calculateScore();
-            playTone(523.25, 'sine', 0.1);
-        }
-
-        // Initialize on Window Load
         window.onload = function() {
             updateShape();
         };

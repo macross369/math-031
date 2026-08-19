@@ -125,7 +125,7 @@
             </button>
             <button id="tab-btn-3" onclick="switchTab(3)" class="tab-btn px-4 py-2.5 md:px-5 md:py-3 rounded-2xl glass-card border border-white/10 text-slate-300 hover:text-white font-bold text-xs md:text-sm flex items-center gap-2 transition-all duration-300 active:scale-95">
                 <i class="fa-solid fa-graduation-cap text-cyan-300"></i>
-                主題三：觀念自我挑戰 (5題)
+                闖關測驗
             </button>
         </nav>
 
@@ -182,24 +182,30 @@
                         <h3 class="font-bold text-sm text-cyan-300 mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-chart-column text-pink-300"></i> 各月總回收量動態比較圖
                         </h3>
-                        <div class="grid grid-cols-3 gap-4 items-end h-36 bg-black/30 p-4 rounded-2xl border border-white/10">
+                        <div class="grid grid-cols-3 gap-4 items-end h-40 bg-black/30 p-4 rounded-2xl border border-white/10">
                             <!-- 10月 Bar -->
                             <div class="flex flex-col items-center h-full justify-end">
                                 <span class="text-xs text-cyan-300 font-bold mb-1" id="bar-val-10">63 kg</span>
-                                <div class="w-full max-w-[60px] bg-gradient-to-t from-cyan-600 to-cyan-300 rounded-t-md transition-all duration-300" id="bar-10" style="height: 60%;"></div>
-                                <span class="text-xs text-slate-300 mt-2">10月</span>
+                                <div class="w-full flex-1 flex items-end justify-center py-1">
+                                    <div class="w-full max-w-[50px] bg-gradient-to-t from-cyan-600 to-cyan-300 rounded-t-md transition-all duration-300" id="bar-10" style="height: 100%;"></div>
+                                </div>
+                                <span class="text-xs text-slate-300 mt-1">10月</span>
                             </div>
                             <!-- 11月 Bar -->
                             <div class="flex flex-col items-center h-full justify-end">
                                 <span class="text-xs text-pink-300 font-bold mb-1" id="bar-val-11">48 kg</span>
-                                <div class="w-full max-w-[60px] bg-gradient-to-t from-pink-600 to-pink-300 rounded-t-md transition-all duration-300" id="bar-11" style="height: 45%;"></div>
-                                <span class="text-xs text-slate-300 mt-2">11月</span>
+                                <div class="w-full flex-1 flex items-end justify-center py-1">
+                                    <div class="w-full max-w-[50px] bg-gradient-to-t from-pink-600 to-pink-300 rounded-t-md transition-all duration-300" id="bar-11" style="height: 76%;"></div>
+                                </div>
+                                <span class="text-xs text-slate-300 mt-1">11月</span>
                             </div>
                             <!-- 12月 Bar -->
                             <div class="flex flex-col items-center h-full justify-end">
                                 <span class="text-xs text-amber-300 font-bold mb-1" id="bar-val-12">50 kg</span>
-                                <div class="w-full max-w-[60px] bg-gradient-to-t from-amber-600 to-amber-300 rounded-t-md transition-all duration-300" id="bar-12" style="height: 48%;"></div>
-                                <span class="text-xs text-slate-300 mt-2">12月</span>
+                                <div class="w-full flex-1 flex items-end justify-center py-1">
+                                    <div class="w-full max-w-[50px] bg-gradient-to-t from-amber-600 to-amber-300 rounded-t-md transition-all duration-300" id="bar-12" style="height: 79%;"></div>
+                                </div>
+                                <span class="text-xs text-slate-300 mt-1">12月</span>
                             </div>
                         </div>
                     </div>
@@ -300,7 +306,7 @@
                         <div>
                             <h2 class="text-xl md:text-2xl font-bold text-amber-300 flex items-center gap-2">
                                 <i class="fa-solid fa-graduation-cap text-cyan-300"></i>
-                                主題三：觀念自我挑戰測驗 (5題)
+                                闖關測驗
                             </h2>
                             <p class="text-xs md:text-sm text-slate-300 mt-1">
                                 測試你對二維表格的理解程度，每題都有即時回饋與詳細解析！
@@ -312,14 +318,23 @@
                     </div>
 
                     <!-- Quiz Items Container -->
-            <div class="space-y-6" id="quiz-container">
-                <!-- Quiz items rendered by JS -->
+                    <div class="space-y-6" id="quiz-container">
+                        <!-- Quiz items rendered by JS -->
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-8 flex justify-center gap-4 max-w-md mx-auto">
+                        <button onclick="submitQuiz()" class="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-2xl shadow-lg transition active:scale-95 text-xs md:text-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> 提交答案
+                        </button>
+                        <button onclick="resetQuiz()" class="flex-1 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold rounded-2xl shadow-lg transition active:scale-95 text-xs md:text-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rotate-right text-amber-300"></i> 重新測驗
+                        </button>
+                    </div>
+                </section>
             </div>
-        </section>
-    </div>
 
-</div>
-
+        </div>
     </div>
 
     <script>
@@ -436,15 +451,15 @@
             document.getElementById('col-total-12').textContent = sum12;
             document.getElementById('grand-total-rec').textContent = grand;
 
-            // Update Chart
+            // Update Chart: 用百分比精確呈現數值比例高低
             const maxVal = Math.max(sum10, sum11, sum12, 1);
             document.getElementById('bar-val-10').textContent = `${sum10} kg`;
             document.getElementById('bar-val-11').textContent = `${sum11} kg`;
             document.getElementById('bar-val-12').textContent = `${sum12} kg`;
 
-            document.getElementById('bar-10').style.height = `${Math.min(100, Math.round((sum10 / maxVal) * 85 + 10))}%`;
-            document.getElementById('bar-11').style.height = `${Math.min(100, Math.round((sum11 / maxVal) * 85 + 10))}%`;
-            document.getElementById('bar-12').style.height = `${Math.min(100, Math.round((sum12 / maxVal) * 85 + 10))}%`;
+            document.getElementById('bar-10').style.height = `${Math.round((sum10 / maxVal) * 100)}%`;
+            document.getElementById('bar-11').style.height = `${Math.round((sum11 / maxVal) * 100)}%`;
+            document.getElementById('bar-12').style.height = `${Math.round((sum12 / maxVal) * 100)}%`;
         }
 
         function resetRecyclingData() {
@@ -529,6 +544,7 @@
         ];
 
         let userAnswers = Array(quizQuestions.length).fill(null);
+        let isSubmitted = false;
 
         function renderQuiz() {
             const qContainer = document.getElementById('quiz-container');
@@ -541,7 +557,7 @@
                 card.className = "bg-black/20 p-5 rounded-2xl border border-white/10 space-y-3";
 
                 let optionsHTML = q.options.map((opt, oIdx) => `
-                    <button onclick="selectQuizOption(${qIdx}, ${oIdx})" id="q-${qIdx}-opt-${oIdx}" class="w-full text-left p-3 rounded-xl border border-white/10 hover:bg-white/10 transition text-xs md:text-sm flex items-center justify-between">
+                    <button onclick="selectQuizOption(${qIdx}, ${oIdx})" id="q-${qIdx}-opt-${oIdx}" class="w-full text-left p-3 rounded-xl border border-white/10 hover:bg-white/10 transition text-xs md:text-sm flex items-center justify-between text-slate-300">
                         <span>${['A','B','C','D'][oIdx]}. ${opt}</span>
                         <i class="fa-regular fa-circle text-slate-400" id="q-${qIdx}-icon-${oIdx}"></i>
                     </button>
@@ -550,44 +566,82 @@
                 card.innerHTML = `
                     <p class="font-bold text-sm md:text-base text-cyan-200">${q.q}</p>
                     <div class="space-y-2" id="q-options-${qIdx}">${optionsHTML}</div>
-                    <div id="q-exp-${qIdx}" class="hidden p-3 rounded-xl text-xs bg-cyan-950/40 border border-cyan-400/30 text-cyan-200 mt-2">
-                        💡 <strong>解析：</strong>${q.explanation}
-                    </div>
+                    <div id="q-exp-${qIdx}" class="hidden p-3 rounded-xl text-xs transition-all duration-300 mt-2"></div>
                 `;
                 qContainer.appendChild(card);
             });
         }
 
         function selectQuizOption(qIdx, oIdx) {
+            if (isSubmitted) return; // 提交後鎖定選擇
+
             userAnswers[qIdx] = oIdx;
             
-            // Update UI selection
+            // 僅更新選擇樣式，不計算分數與顯示解析
             quizQuestions[qIdx].options.forEach((_, idx) => {
                 const btn = document.getElementById(`q-${qIdx}-opt-${idx}`);
                 const icon = document.getElementById(`q-${qIdx}-icon-${idx}`);
                 if (idx === oIdx) {
                     btn.className = "w-full text-left p-3 rounded-xl border border-cyan-400 bg-cyan-500/20 text-white font-semibold text-xs md:text-sm flex items-center justify-between";
-                    icon.className = "fa-solid fa-circle-check text-cyan-300";
+                    icon.className = "fa-solid fa-circle-dot text-cyan-300";
                 } else {
                     btn.className = "w-full text-left p-3 rounded-xl border border-white/10 hover:bg-white/10 transition text-xs md:text-sm flex items-center justify-between text-slate-300";
                     icon.className = "fa-regular fa-circle text-slate-400";
                 }
             });
-
-            // Show explanation
-            document.getElementById(`q-exp-${qIdx}`).classList.remove('hidden');
-
-            updateQuizScore();
         }
 
-        function updateQuizScore() {
+        function submitQuiz() {
+            if (isSubmitted) return;
+            isSubmitted = true;
+
             let score = 0;
-            userAnswers.forEach((ans, idx) => {
-                if (ans === quizQuestions[idx].answer) {
-                    score += 20;
+
+            quizQuestions.forEach((q, qIdx) => {
+                const selectedOpt = userAnswers[qIdx];
+                const expBox = document.getElementById(`q-exp-${qIdx}`);
+                expBox.classList.remove('hidden');
+
+                if (selectedOpt === null) {
+                    // 未作答處理：僅顯示黃色「未作答。」，不公佈正確答案與解析
+                    expBox.className = "p-3 rounded-xl text-xs bg-amber-950/40 border border-amber-400/40 text-amber-300 font-bold flex items-center gap-1.5 mt-2";
+                    expBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 未作答。`;
+                } else {
+                    // 已作答處理
+                    const isCorrect = selectedOpt === q.answer;
+                    if (isCorrect) score += 20;
+
+                    // 標示選項對錯與公佈答案
+                    q.options.forEach((_, oIdx) => {
+                        const btn = document.getElementById(`q-${qIdx}-opt-${oIdx}`);
+                        const icon = document.getElementById(`q-${qIdx}-icon-${oIdx}`);
+
+                        if (oIdx === q.answer) {
+                            btn.className = "w-full text-left p-3 rounded-xl border border-emerald-400 bg-emerald-500/20 text-emerald-200 font-semibold text-xs md:text-sm flex items-center justify-between";
+                            icon.className = "fa-solid fa-circle-check text-emerald-400";
+                        } else if (oIdx === selectedOpt && !isCorrect) {
+                            btn.className = "w-full text-left p-3 rounded-xl border border-rose-400 bg-rose-500/20 text-rose-200 font-semibold text-xs md:text-sm flex items-center justify-between";
+                            icon.className = "fa-solid fa-circle-xmark text-rose-400";
+                        } else {
+                            btn.className = "w-full text-left p-3 rounded-xl border border-white/5 opacity-50 text-xs md:text-sm flex items-center justify-between text-slate-400";
+                            icon.className = "fa-regular fa-circle text-slate-500";
+                        }
+                    });
+
+                    // 顯示標準解析說明
+                    expBox.className = "p-3 rounded-xl text-xs bg-cyan-950/40 border border-cyan-400/30 text-cyan-200 mt-2";
+                    expBox.innerHTML = `💡 <strong>解析：</strong>${q.explanation}`;
                 }
             });
+
             document.getElementById('quiz-score').textContent = score;
+        }
+
+        function resetQuiz() {
+            userAnswers = Array(quizQuestions.length).fill(null);
+            isSubmitted = false;
+            document.getElementById('quiz-score').textContent = '0';
+            renderQuiz();
         }
 
         window.onload = function() {

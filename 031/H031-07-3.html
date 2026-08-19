@@ -119,8 +119,8 @@
                         <i class="fa-solid fa-weight-scale"></i>
                     </div>
                     <div class="text-left">
-                        <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-wide">國小三上數學 7-3 互動學習網頁</h1>
-                        <p class="text-xs text-pink-200 font-medium">幾公斤幾公克-3公斤秤與刻度報讀</p>
+                        <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-wide">幾公斤幾公克-3公斤秤與刻度報讀</h1>
+                        <p class="text-xs text-pink-200 font-medium">國小三上數學 7-3 互動學習網頁</p>
                     </div>
                 </div>
 
@@ -133,7 +133,7 @@
                         <i class="fa-solid fa-basket-shopping mr-1.5"></i>秤重實驗室
                     </button>
                     <button onclick="switchTab('quiz')" id="tab-quiz" class="px-4 py-2 rounded-xl font-bold text-sm transition-all text-slate-300 hover:text-white">
-                        <i class="fa-solid fa-pen-to-square mr-1.5"></i>歷程評量
+                        <i class="fa-solid fa-pen-to-square mr-1.5"></i>闖關測驗
                     </button>
                 </nav>
             </div>
@@ -181,7 +181,7 @@
                     <!-- 放大鏡細節視覺區 -->
                     <div class="w-full bg-slate-900 text-white rounded-2xl p-4 mt-2 shadow-inner flex flex-col sm:flex-row items-center gap-4">
                         <div class="relative shrink-0 w-full sm:w-auto flex justify-center">
-                            <canvas id="zoomCanvas" width="280" height="90" class="rounded-2xl border-2 border-pink-400 shadow-md bg-slate-950 w-full sm:w-[280px] h-[90px]"></canvas>
+                            <canvas id="zoomCanvas" width="560" height="180" class="rounded-2xl border-2 border-pink-400 shadow-md bg-slate-950 w-full sm:w-[280px] h-[90px]"></canvas>
                             <span class="absolute -bottom-1 -right-1 bg-pink-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">細節放大</span>
                         </div>
                         <div class="flex-1 text-center sm:text-left">
@@ -363,7 +363,7 @@
                         <i class="fa-solid fa-graduation-cap"></i>
                     </div>
                     <div>
-                        <h2 class="font-bold text-amber-300">3公斤秤報讀 — 歷程評量測驗：</h2>
+                        <h2 class="font-bold text-amber-300">闖關測驗：</h2>
                         <p class="text-sm text-slate-200">包含 5 題緊扣課本核心的概念與報讀題目，完成後可獲得即時回饋與評分！</p>
                     </div>
                 </div>
@@ -597,8 +597,8 @@
             const canvas = document.getElementById(canvasId);
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
-            const w = canvas.width;
-            const h = canvas.height;
+            const w = canvas.width;  // 高解析度 width (560)
+            const h = canvas.height; // 高解析度 height (180)
             const cx = w / 2;
 
             ctx.clearRect(0, 0, w, h);
@@ -610,7 +610,7 @@
             ctx.moveTo(cx, 0);
             ctx.lineTo(cx, h);
             ctx.strokeStyle = '#f43f5e';
-            ctx.lineWidth = 2.5;
+            ctx.lineWidth = 4;
             ctx.stroke();
 
             // 繪製周圍刻度條 - 加寬顯示範圍 (涵蓋指針前後 120g)
@@ -618,20 +618,20 @@
             for (let g = startGram; g <= startGram + 240; g += 10) {
                 let displayG = (g + 3000) % 3000;
                 let offsetG = g - weight;
-                let x = cx + offsetG * 2.0; // 每 10g 為 20 像素間距
+                let x = cx + offsetG * 4.0; // 放大渲染倍率，確保文字極致清晰
 
                 if (x >= 0 && x <= w) {
-                    let len = 10;
-                    let strokeW = 1;
+                    let len = 20;
+                    let strokeW = 2;
                     let color = '#94a3b8';
 
                     if (displayG % 100 === 0) {
-                        len = 32;          // 100g 大格 (長線)
-                        strokeW = 2.5;
+                        len = 64;          // 100g 大格 (長線)
+                        strokeW = 5;
                         color = '#38bdf8';
                     } else if (displayG % 50 === 0) {
-                        len = 20;          // 50g (每第 5 小格中線，長度介於短線與長線之間)
-                        strokeW = 1.8;
+                        len = 40;          // 50g 中線
+                        strokeW = 3.6;
                         color = '#38bdf8';
                     }
 
@@ -642,17 +642,18 @@
                     ctx.lineWidth = strokeW;
                     ctx.stroke();
 
-                    // 數字標籤 (提升清晰度與字級)
+                    // 數字標籤 (使用 HiDPI Canvas 繪製，高清晰度 sans-serif)
+                    ctx.textBaseline = 'bottom';
                     if (displayG % 100 === 0) {
-                        ctx.font = 'bold 13px "Noto Sans TC", sans-serif';
-                        ctx.fillStyle = '#ffffff'; // 純高亮白文字
+                        ctx.font = 'bold 24px system-ui, -apple-system, sans-serif';
+                        ctx.fillStyle = '#ffffff'; // 高對比白色
+                        ctx.textAlign = 'center';
+                        ctx.fillText(`${displayG}g`, x, h - len - 12);
+                    } else if (displayG % 50 === 0) {
+                        ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
+                        ctx.fillStyle = '#93c5fd'; // 明亮天藍色
                         ctx.textAlign = 'center';
                         ctx.fillText(`${displayG}g`, x, h - len - 8);
-                    } else if (displayG % 50 === 0) {
-                        ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
-                        ctx.fillStyle = '#93c5fd'; // 明亮天藍文字
-                        ctx.textAlign = 'center';
-                        ctx.fillText(`${displayG}g`, x, h - len - 6);
                     }
                 }
             }
@@ -799,6 +800,10 @@
             const container = document.getElementById('quizContainer');
             if (!container) return;
             container.innerHTML = '';
+            userQuizAnswers = {}; // 重置作答紀錄
+
+            const questionsWrapper = document.createElement('div');
+            questionsWrapper.className = 'space-y-8';
 
             quizQuestions.forEach((q) => {
                 const card = document.createElement('div');
@@ -808,7 +813,7 @@
                 q.options.forEach((opt, oIdx) => {
                     optionsHTML += `
                         <label class="flex items-center p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition text-xs font-semibold text-slate-700 gap-3">
-                            <input type="radio" name="q_${q.id}" value="${oIdx}" onchange="checkAnswer(${q.id}, ${oIdx})" class="w-4 h-4 text-pink-500 focus:ring-pink-400">
+                            <input type="radio" name="q_${q.id}" value="${oIdx}" onchange="recordAnswer(${q.id}, ${oIdx})" class="w-4 h-4 text-pink-500 focus:ring-pink-400">
                             <span>${opt}</span>
                         </label>
                     `;
@@ -822,36 +827,62 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                         ${optionsHTML}
                     </div>
-                    <div id="explain_${q.id}" class="hidden text-xs p-3 rounded-xl bg-slate-100 text-slate-700 leading-relaxed border border-slate-200">
-                        💡 <b>解析：</b> ${q.explain}
-                    </div>
+                    <div id="explain_${q.id}" class="hidden mt-3"></div>
                 `;
-                container.appendChild(card);
+                questionsWrapper.appendChild(card);
             });
+
+            container.appendChild(questionsWrapper);
+
+            // 新增底部按鈕區域 (提交答案與重新測驗，置中並排)
+            const actions = document.createElement('div');
+            actions.className = 'flex items-center justify-center gap-4 mt-8 pt-4 border-t border-slate-200';
+            actions.innerHTML = `
+                <button onclick="submitQuiz()" class="px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white font-bold text-sm rounded-xl shadow-md active:scale-95 transition">提交答案</button>
+                <button onclick="resetQuiz()" class="px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-sm rounded-xl shadow-sm active:scale-95 transition">重新測驗</button>
+            `;
+            container.appendChild(actions);
         }
 
-        function checkAnswer(qId, selectedIdx) {
-            const q = quizQuestions.find(item => item.id === qId);
-            if (!q) return;
+        function recordAnswer(qId, selectedIdx) {
+            userQuizAnswers[qId] = selectedIdx;
+        }
 
-            userQuizAnswers[qId] = (selectedIdx === q.correct);
+        function submitQuiz() {
+            let correctCount = 0;
 
-            const badge = document.getElementById(`badge_${qId}`);
-            const explain = document.getElementById(`explain_${qId}`);
+            quizQuestions.forEach(q => {
+                const selectedIdx = userQuizAnswers[q.id];
+                const badge = document.getElementById(`badge_${q.id}`);
+                const explain = document.getElementById(`explain_${q.id}`);
 
-            if (explain) explain.classList.remove('hidden');
+                explain.classList.remove('hidden');
 
-            if (badge) {
-                if (selectedIdx === q.correct) {
+                if (selectedIdx === undefined) {
+                    // 未作答狀態：黃色系，僅顯示未作答。
+                    badge.className = 'text-xs px-2.5 py-0.5 rounded-full font-bold bg-amber-100 text-amber-700';
+                    badge.innerText = '未作答';
+                    
+                    explain.className = 'text-xs p-3 rounded-xl leading-relaxed border mt-3 bg-amber-50 text-amber-800 border-amber-200';
+                    explain.innerHTML = '未作答。';
+                } else if (selectedIdx === q.correct) {
+                    // 正確：綠色系，顯示解析
+                    correctCount++;
                     badge.className = 'text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-700';
                     badge.innerText = '✓ 正確';
+                    
+                    explain.className = 'text-xs p-3 rounded-xl leading-relaxed border mt-3 bg-emerald-50 text-emerald-800 border-emerald-200';
+                    explain.innerHTML = `💡 <b>解析：</b> ${q.explain}`;
                 } else {
+                    // 錯誤：紅色系，客觀顯示解析，不使用矛盾字眼
                     badge.className = 'text-xs px-2.5 py-0.5 rounded-full font-bold bg-rose-100 text-rose-700';
                     badge.innerText = '✕ 需再想想';
+                    
+                    explain.className = 'text-xs p-3 rounded-xl leading-relaxed border mt-3 bg-rose-50 text-rose-800 border-rose-200';
+                    explain.innerHTML = `💡 <b>觀念釐清：</b> ${q.explain}`;
                 }
-            }
+            });
 
-            let correctCount = Object.values(userQuizAnswers).filter(Boolean).length;
             const score = correctCount * 20;
             const scoreDisplay = document.getElementById('scoreDisplay');
             if (scoreDisplay) {
@@ -861,6 +892,18 @@
             if (score === 100) {
                 confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             }
+            
+            // 滾動回測驗頂部方便看分數
+            document.getElementById('sec-quiz').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function resetQuiz() {
+            initQuiz();
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            if (scoreDisplay) {
+                scoreDisplay.innerText = `0 / 100`;
+            }
+            document.getElementById('sec-quiz').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function switchTab(tab) {

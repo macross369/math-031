@@ -8,8 +8,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -28,7 +26,7 @@
                         }
                     },
                     fontFamily: {
-                        sans: ['"Zen Maru Gothic"', '"Noto Sans TC"', 'sans-serif'],
+                        sans: ['Arial', 'sans-serif'],
                     }
                 }
             }
@@ -37,7 +35,7 @@
 
     <style>
         body {
-            font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+            font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #2b5876 0%, #4e4376 40%, #ff7e5f 80%, #feb47b 100%);
             background-attachment: fixed;
             min-height: 100vh;
@@ -116,14 +114,14 @@
 
         .strike-through {
             position: relative;
-            color: #94a3b8;
+            display: inline-block;
         }
         .strike-through::after {
             content: '';
             position: absolute;
-            left: 20%;
+            left: 10%;
             top: 50%;
-            width: 60%;
+            width: 80%;
             height: 3px;
             background-color: #ef4444;
             transform: rotate(-25deg);
@@ -184,7 +182,7 @@
                     <i class="fa-solid fa-flask mr-1.5"></i>動態直式探究區
                 </button>
                 <button id="tab-quiz-btn" onclick="switchTab('quiz')" class="px-6 py-2.5 rounded-full font-bold text-sm transition-all bg-white/80 text-slate-700 hover:bg-white shadow-sm">
-                    <i class="fa-solid fa-pen-ruler mr-1.5"></i>歷程性隨堂測驗 (5題)
+                    <i class="fa-solid fa-pen-ruler mr-1.5"></i>闖關測驗
                 </button>
             </div>
         </header>
@@ -316,7 +314,7 @@
 
                                 <!-- Number Row B -->
                                 <div class="grid grid-cols-3 text-center text-2xl font-bold text-slate-800 py-1 border-b-2 border-slate-800">
-                                    <div id="col-op-sign" class="text-slate-600 font-bold text-xl">+</div>
+                                    <div id="col-op-sign" class="text-slate-800 font-black text-2xl flex items-center justify-center">−</div>
                                     <div id="col-b-cm">2</div>
                                     <div id="col-b-mm">5</div>
                                 </div>
@@ -407,18 +405,15 @@
             <div class="glass-card rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-4">
                 <div>
                     <h2 class="text-2xl font-bold text-slate-800">
-                        <i class="fa-solid fa-list-ol text-indigo-600 mr-2"></i>長度加減法 - 隨堂歷程測驗
+                        <i class="fa-solid fa-list-ol text-indigo-600 mr-2"></i>長度加減法 - 闖關測驗
                     </h2>
                     <p class="text-slate-600 text-sm mt-1">根據課本核心概念設計，請計算出正確的公分與毫米數值。</p>
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="text-right">
-                        <div class="text-xs text-slate-500 font-bold">總分進度</div>
-                        <div id="quiz-score-text" class="text-2xl font-black text-indigo-600">0 / 5 題</div>
+                        <div class="text-xs text-slate-500 font-bold">測驗得分</div>
+                        <div id="quiz-score-text" class="text-2xl font-black text-indigo-600">0 / 100 分</div>
                     </div>
-                    <button onclick="resetQuiz()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl transition">
-                        <i class="fa-solid fa-rotate-left mr-1"></i>重設測驗
-                    </button>
                 </div>
             </div>
 
@@ -427,48 +422,18 @@
                 <!-- Dynamic Questions rendered via JS -->
             </div>
 
-        </main>
-
-    </div>
-
-    <!-- TEACHER EMBED GUIDE MODAL -->
-    <div id="teacher-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 space-y-4 shadow-2xl relative">
-            <button onclick="toggleTeacherModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center">
-                ✕
-            </button>
-            <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
-                <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
-                    <i class="fa-solid fa-code"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-slate-800">如何嵌入 Google 協作平台？</h3>
-                    <p class="text-xs text-slate-500">簡單三步驟，輕鬆將此互動網頁融入課堂</p>
-                </div>
-            </div>
-
-            <ol class="list-decimal list-inside space-y-3 text-sm text-slate-700 leading-relaxed">
-                <li class="font-medium">
-                    <b>複製檔案代碼：</b>將此 HTML 網頁的完整代碼儲存為 <code class="bg-slate-100 px-1.5 py-0.5 rounded text-indigo-600 font-mono">index.html</code>。
-                </li>
-                <li class="font-medium">
-                    <b>開啟 Google 協作平台：</b>進入編輯頁面，點擊右側選單的 <b>「嵌入」</b> 按鈕。
-                </li>
-                <li class="font-medium">
-                    <b>貼上嵌入程式碼：</b>選擇 <b>「嵌入程式碼」</b> 分頁，將整個 HTML 內容貼入並點選下一步發佈即可！
-                </li>
-            </ol>
-
-            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-600">
-                <i class="fa-solid fa-circle-info text-sky-500 mr-1"></i>提示：此網頁完全不依賴任何外部伺服器資料庫，所有計算均在瀏覽器端即時運行，學生可安全使用。
-            </div>
-
-            <div class="text-right pt-2">
-                <button onclick="toggleTeacherModal()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm shadow-md">
-                    了解，關閉視窗
+            <!-- Bottom Action Controls -->
+            <div class="flex justify-center items-center gap-4 pt-4 pb-6">
+                <button id="submit-quiz-btn" onclick="submitAllAnswers()" class="px-8 py-3 bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-600 hover:to-sky-600 text-white font-bold text-base rounded-2xl shadow-lg transition transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-paper-plane mr-2"></i>提交答案
+                </button>
+                <button onclick="resetQuiz()" class="px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-base rounded-2xl transition">
+                    <i class="fa-solid fa-rotate-left mr-2"></i>重新測驗
                 </button>
             </div>
-        </div>
+
+        </main>
+
     </div>
 
     <!-- JAVASCRIPT LOGIC -->
@@ -565,8 +530,7 @@
             }
 
             // UI Column Updates
-            document.getElementById('col-op-sign').innerText = currentOp;
-            document.getElementById('col-a-cm').innerText = aCm;
+            document.getElementById('col-op-sign').innerText = currentOp === '-' ? '−' : '+';
             document.getElementById('col-a-mm').innerText = aMm;
             document.getElementById('col-b-cm').innerText = bCm;
             document.getElementById('col-b-mm').innerText = bMm;
@@ -580,6 +544,7 @@
             let ansMm = 0;
 
             if (currentOp === '+') {
+                document.getElementById('col-a-cm').innerText = aCm;
                 const rawMmSum = aMm + bMm;
                 const carry = Math.floor(rawMmSum / 10);
                 const remMm = rawMmSum % 10;
@@ -617,15 +582,17 @@
                     badge.className = "px-3 py-1 bg-rose-100 text-rose-800 font-bold text-xs rounded-full border border-rose-300 animate-pulse";
                     badge.innerText = "退位借值：毫米不夠減，從公分借 1 (化為 10 毫米)";
 
-                    noteCm.innerHTML = `<span class="strike-through text-slate-400 mr-1">${aCm}</span><span class="text-rose-600">${aCm - 1}</span>`;
-                    noteMm.innerHTML = `<span class="bg-rose-100 text-rose-700 rounded-lg px-1.5 py-0.5 text-xs border border-rose-300">+10 (${10 + aMm})</span>`;
+                    // 直接在原列式的公分數字上加劃線，上方僅呈現退位後的數字
+                    document.getElementById('col-a-cm').innerHTML = `<span class="strike-through text-slate-700">${aCm}</span>`;
+                    noteCm.innerHTML = `<span class="text-rose-600 font-bold text-base">${aCm - 1}</span>`;
+                    noteMm.innerHTML = `<span class="bg-rose-100 text-rose-700 rounded-lg px-1.5 py-0.5 text-xs border border-rose-300">+10</span>`;
 
                     ansMm = (aMm + 10) - bMm;
                     ansCm = (aCm - 1) - bCm;
 
                     explanationList.innerHTML = `
                         <li><b>步驟 1 (檢查毫米)：</b> ${aMm} 毫米不夠減 ${bMm} 毫米。</li>
-                        <li><b>步驟 2 (退位換算)：</b> 向公分借 1 公分 (1 公分 = 10 毫米)，公分剩下 <b class="text-rose-600">${aCm - 1}</b>，毫米變為 ${10 + aMm} 毫米。</li>
+                        <li><b>步驟 2 (退位換算)：</b> 向公分借 1 公分 (1 公分 = 10 毫米)，公分劃掉改為 <b class="text-rose-600">${aCm - 1}</b>，毫米獲得 +10 毫米。</li>
                         <li><b>步驟 3 (毫米相減)：</b> ${10 + aMm} - ${bMm} = ${ansMm} 毫米。</li>
                         <li><b>步驟 4 (公分相減)：</b> ${aCm - 1} - ${bCm} = ${ansCm} 公分。</li>
                         <li class="text-emerald-700 font-bold">👉 相差答案為：${ansCm} 公分 ${ansMm} 毫米。</li>
@@ -633,6 +600,7 @@
                 } else {
                     badge.className = "px-3 py-1 bg-emerald-100 text-emerald-800 font-bold text-xs rounded-full border border-emerald-300";
                     badge.innerText = "直式減法：無需退位";
+                    document.getElementById('col-a-cm').innerText = aCm;
                     noteCm.innerHTML = ``;
                     noteMm.innerHTML = ``;
 
@@ -721,7 +689,7 @@
             const container = document.getElementById('quiz-container');
             container.innerHTML = '';
 
-            quizData.forEach((q, idx) => {
+            quizData.forEach((q) => {
                 const card = document.createElement('div');
                 card.className = "glass-card rounded-3xl p-6 space-y-4 relative border border-white/60";
                 card.id = `q-card-${q.id}`;
@@ -748,19 +716,15 @@
                         
                         <div class="flex items-center gap-1.5">
                             <input type="number" id="input-cm-${q.id}" placeholder="0" min="0" 
-                                class="w-16 px-3 py-1.5 rounded-xl border border-slate-300 text-center font-bold text-indigo-600 focus:ring-2 focus:ring-indigo-400 outline-none">
+                                class="w-20 px-3 py-1.5 rounded-xl border border-slate-300 text-center font-bold text-indigo-600 focus:ring-2 focus:ring-indigo-400 outline-none">
                             <span class="font-bold text-slate-600 text-sm">公分</span>
                         </div>
 
                         <div class="flex items-center gap-1.5">
                             <input type="number" id="input-mm-${q.id}" placeholder="0" min="0" max="9" 
-                                class="w-16 px-3 py-1.5 rounded-xl border border-slate-300 text-center font-bold text-pink-600 focus:ring-2 focus:ring-pink-400 outline-none">
+                                class="w-20 px-3 py-1.5 rounded-xl border border-slate-300 text-center font-bold text-pink-600 focus:ring-2 focus:ring-pink-400 outline-none">
                             <span class="font-bold text-slate-600 text-sm">毫米</span>
                         </div>
-
-                        <button onclick="checkAnswer(${q.id})" class="ml-auto px-5 py-2 bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-600 hover:to-sky-600 text-white font-bold text-xs rounded-xl shadow-md transition">
-                            提交驗證
-                        </button>
                     </div>
 
                     <!-- Feedback Output -->
@@ -771,58 +735,65 @@
             });
         }
 
-        let answeredCount = 0;
-        let scoreState = {};
+        function submitAllAnswers() {
+            let totalScore = 0;
 
-        function checkAnswer(id) {
-            const q = quizData.find(item => item.id === id);
-            const userCm = parseInt(document.getElementById(`input-cm-${id}`).value);
-            const userMm = parseInt(document.getElementById(`input-mm-${id}`).value);
-            const feedbackBox = document.getElementById(`feedback-${id}`);
+            quizData.forEach(q => {
+                const cmInput = document.getElementById(`input-cm-${q.id}`).value.trim();
+                const mmInput = document.getElementById(`input-mm-${q.id}`).value.trim();
+                const feedbackBox = document.getElementById(`feedback-${q.id}`);
 
-            if (isNaN(userCm) || isNaN(userMm)) {
-                feedbackBox.className = "p-4 rounded-2xl text-xs md:text-sm font-bold bg-amber-100 text-amber-900 border border-amber-300 block";
-                feedbackBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> 請輸入完整的公分與毫米數值！`;
-                return;
-            }
+                feedbackBox.classList.remove('hidden');
 
-            feedbackBox.classList.remove('hidden');
-
-            if (userCm === q.ansCm && userMm === q.ansMm) {
-                feedbackBox.className = "p-4 rounded-2xl text-xs md:text-sm font-medium bg-emerald-50 text-emerald-900 border border-emerald-200 block";
-                feedbackBox.innerHTML = `
-                    <div class="font-bold text-emerald-700 text-base mb-1 flex items-center">
-                        <i class="fa-solid fa-circle-check text-emerald-500 mr-2 text-lg"></i>答對了！太棒了！ 🎉
-                    </div>
-                    <b>解析：</b>${q.hint}
-                `;
-                if (!scoreState[id]) {
-                    scoreState[id] = true;
-                    answeredCount++;
+                // 檢查是否未作答 (兩格均空白 或 單格空白)
+                if (cmInput === '' && mmInput === '') {
+                    feedbackBox.className = "p-4 rounded-2xl text-xs md:text-sm font-bold bg-amber-100 text-amber-900 border border-amber-300 block";
+                    feedbackBox.innerHTML = `未作答。`;
+                    return;
+                } else if (cmInput === '' || mmInput === '') {
+                    feedbackBox.className = "p-4 rounded-2xl text-xs md:text-sm font-bold bg-amber-100 text-amber-900 border border-amber-300 block";
+                    feedbackBox.innerHTML = `有一格未作答`;
+                    return;
                 }
-            } else {
-                feedbackBox.className = "p-4 rounded-2xl text-xs md:text-sm font-medium bg-rose-50 text-rose-900 border border-rose-200 block";
-                feedbackBox.innerHTML = `
-                    <div class="font-bold text-rose-700 text-base mb-1 flex items-center">
-                        <i class="fa-solid fa-circle-xmark text-rose-500 mr-2 text-lg"></i>再想一想喔！💡
-                    </div>
-                    <b>觀念指引：</b>${q.hint}<br>
-                    <span class="text-xs text-rose-600 mt-1 inline-block">提示：記得滿 10 毫米要換成 1 公分，或是毫米不夠減時要向 1 公分借 10 毫米！</span>
-                `;
-            }
 
-            document.getElementById('quiz-score-text').innerText = `${answeredCount} / 5 題`;
+                const userCm = parseInt(cmInput, 10);
+                const userMm = parseInt(mmInput, 10);
+
+                if (userCm === q.ansCm && userMm === q.ansMm) {
+                    totalScore += 20; // 每題 20 分，滿分 100 分
+                    feedbackBox.className = "p-4 rounded-2xl text-xs md:text-sm font-medium bg-emerald-50 text-emerald-900 border border-emerald-200 block";
+                    feedbackBox.innerHTML = `
+                        <div class="font-bold text-emerald-700 text-base mb-1 flex items-center">
+                            <i class="fa-solid fa-circle-check text-emerald-500 mr-2 text-lg"></i>答對了！太棒了！ 🎉
+                        </div>
+                        <b>解析：</b>${q.hint}
+                    `;
+                } else {
+                    feedbackBox.className = "p-4 rounded-2xl text-xs md:text-sm font-medium bg-rose-50 text-rose-900 border border-rose-200 block";
+                    feedbackBox.innerHTML = `
+                        <div class="font-bold text-rose-700 text-base mb-1 flex items-center">
+                            <i class="fa-solid fa-circle-xmark text-rose-500 mr-2 text-lg"></i>再想一想喔！💡
+                        </div>
+                        <b>觀念指引：</b>${q.hint}<br>
+                        <span class="text-xs text-rose-600 mt-1 inline-block">提示：記得滿 10 毫米要換成 1 公分，或是毫米不夠減時要向 1 公分借 10 毫米！</span>
+                    `;
+                }
+            });
+
+            document.getElementById('quiz-score-text').innerText = `${totalScore} / 100 分`;
         }
 
         function resetQuiz() {
-            answeredCount = 0;
-            scoreState = {};
-            document.getElementById('quiz-score-text').innerText = `0 / 5 題`;
-            renderQuiz();
+            quizData.forEach(q => {
+                document.getElementById(`input-cm-${q.id}`).value = '';
+                document.getElementById(`input-mm-${q.id}`).value = '';
+                const feedbackBox = document.getElementById(`feedback-${q.id}`);
+                feedbackBox.className = "hidden p-4 rounded-2xl text-xs md:text-sm font-medium leading-relaxed";
+                feedbackBox.innerHTML = '';
+            });
+            document.getElementById('quiz-score-text').innerText = `0 / 100 分`;
         }
 
-        // -------------------------------------------------------------
-        // 4. UI TAB SWITCHER & MODALS
         // -------------------------------------------------------------
         // 4. UI TAB SWITCHER
         // -------------------------------------------------------------

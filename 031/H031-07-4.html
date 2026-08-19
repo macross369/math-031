@@ -121,7 +121,7 @@
                     <i class="fa-solid fa-scale-balanced"></i> 實作體驗：動態天平
                 </button>
                 <button id="tab-btn-3" onclick="switchTab(3)" class="px-5 py-2.5 rounded-2xl font-bold transition-all duration-300 bg-white/70 text-slate-700 hover:bg-white flex items-center gap-2">
-                    <i class="fa-solid fa-award"></i> 歷程評量：隨堂大挑戰
+                    <i class="fa-solid fa-award"></i> 闖關測驗
                 </button>
             </div>
         </header>
@@ -343,13 +343,13 @@
                             3
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold text-slate-800">隨堂觀念挑戰賽</h2>
+                            <h2 class="text-xl font-bold text-slate-800">闖關測驗</h2>
                             <p class="text-xs text-slate-500">共 5 題，測試你對重量換算與比較的掌握度！</p>
                         </div>
                     </div>
                     <div class="text-right">
                         <span class="text-xs text-slate-500 font-bold block">目前得分</span>
-                        <span id="quiz-score" class="text-2xl font-black text-emerald-600">0 / 50</span>
+                        <span id="quiz-score" class="text-2xl font-black text-emerald-600">0 / 100</span>
                     </div>
                 </div>
 
@@ -364,7 +364,6 @@
                         <div class="flex flex-wrap items-center gap-3">
                             <input type="number" id="q1-input" placeholder="輸入數字" class="px-4 py-2 border rounded-xl w-32 font-bold text-center">
                             <span class="font-bold text-slate-600">公斤</span>
-                            <button onclick="checkQ1()" class="ml-auto px-4 py-2 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:bg-emerald-600 transition-all">檢查答案</button>
                         </div>
                         <div id="q1-feedback" class="mt-2 text-xs font-bold hidden"></div>
                     </div>
@@ -378,7 +377,6 @@
                         <div class="flex flex-wrap items-center gap-3">
                             <input type="number" id="q2-input" placeholder="輸入數字" class="px-4 py-2 border rounded-xl w-36 font-bold text-center">
                             <span class="font-bold text-slate-600">公克</span>
-                            <button onclick="checkQ2()" class="ml-auto px-4 py-2 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:bg-emerald-600 transition-all">檢查答案</button>
                         </div>
                         <div id="q2-feedback" class="mt-2 text-xs font-bold hidden"></div>
                     </div>
@@ -394,7 +392,6 @@
                             <span class="font-bold text-slate-600">公斤</span>
                             <input type="number" id="q3-g" placeholder="公克" class="px-3 py-2 border rounded-xl w-28 font-bold text-center">
                             <span class="font-bold text-slate-600">公克</span>
-                            <button onclick="checkQ3()" class="ml-auto px-4 py-2 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:bg-emerald-600 transition-all">檢查答案</button>
                         </div>
                         <div id="q3-feedback" class="mt-2 text-xs font-bold hidden"></div>
                     </div>
@@ -412,7 +409,6 @@
                                 <option value="<">＜ (小於)</option>
                                 <option value="=">＝ (等於)</option>
                             </select>
-                            <button onclick="checkQ4()" class="ml-auto px-4 py-2 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:bg-emerald-600 transition-all">檢查答案</button>
                         </div>
                         <div id="q4-feedback" class="mt-2 text-xs font-bold hidden"></div>
                     </div>
@@ -430,9 +426,18 @@
                             <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer ml-4">
                                 <input type="radio" name="q5-radio" value="pig" class="w-4 h-4 text-emerald-600"> 豬寶寶
                             </label>
-                            <button onclick="checkQ5()" class="ml-auto px-4 py-2 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:bg-emerald-600 transition-all">檢查答案</button>
                         </div>
                         <div id="q5-feedback" class="mt-2 text-xs font-bold hidden"></div>
+                    </div>
+
+                    <!-- Submit & Reset Action Buttons -->
+                    <div class="flex flex-wrap justify-center items-center gap-4 pt-4 border-t border-slate-200/60">
+                        <button onclick="submitQuiz()" class="px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-2xl font-bold text-base shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> 提交答案
+                        </button>
+                        <button onclick="resetQuiz()" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-2xl font-bold text-base shadow-sm transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-rotate-left"></i> 重新測驗
+                        </button>
                     </div>
                 </div>
             </div>
@@ -503,14 +508,6 @@
                 blocksContainer.appendChild(block);
             }
 
-            // Add remaining g block
-            if (g > 0) {
-                const block = document.createElement('div');
-                block.className = "px-3 py-1.5 bg-teal-400 text-teal-950 font-black rounded-lg text-xs shadow border border-teal-300 flex items-center gap-1";
-                block.innerHTML = `<i class="fa-solid fa-shapes"></i> ${g}g`;
-                blocksContainer.appendChild(block);
-            }
-
             if (kg === 0 && g === 0) {
                 blocksContainer.innerHTML = `<span class="text-xs text-sky-200/70">請滑動上方滑桿設定重量</span>`;
             }
@@ -563,15 +560,15 @@
 
             if (leftTotalG > rightTotalG) {
                 symbolDisp.innerText = '＞';
-                conclusionBox.innerText = `${leftName} (${leftTotalG}g) 比 ${rightName} (${rightTotalG}g) 重！`;
+                conclusionBox.innerText = `${leftName} (${leftTotalG}公克) 比 ${rightName} (${rightTotalG}公克) 重！`;
                 conclusionBox.className = "mt-2 text-sm text-center text-amber-200 font-bold bg-amber-500/20 px-4 py-2 rounded-xl border border-amber-400/30";
             } else if (leftTotalG < rightTotalG) {
                 symbolDisp.innerText = '＜';
-                conclusionBox.innerText = `${rightName} (${rightTotalG}g) 比 ${leftName} (${leftTotalG}g) 重！`;
+                conclusionBox.innerText = `${rightName} (${rightTotalG}公克) 比 ${leftName} (${leftTotalG}公克) 重！`;
                 conclusionBox.className = "mt-2 text-sm text-center text-cyan-200 font-bold bg-cyan-500/20 px-4 py-2 rounded-xl border border-cyan-400/30";
             } else {
                 symbolDisp.innerText = '＝';
-                conclusionBox.innerText = `${leftName} 與 ${rightName} 一樣重 (${leftTotalG}g)！`;
+                conclusionBox.innerText = `${leftName} 與 ${rightName} 一樣重 (${leftTotalG}公克)！`;
                 conclusionBox.className = "mt-2 text-sm text-center text-emerald-200 font-bold bg-emerald-500/20 px-4 py-2 rounded-xl border border-emerald-400/30";
             }
         }
@@ -581,92 +578,115 @@
 
         function updateScoreDisplay() {
             let total = 0;
-            Object.values(scoreState).forEach(val => { if(val) total += 10; });
-            document.getElementById('quiz-score').innerText = `${total} / 50`;
+            Object.values(scoreState).forEach(val => { if(val) total += 20; });
+            document.getElementById('quiz-score').innerText = `${total} / 100`;
         }
 
-        function setFeedback(elementId, isCorrect, msg) {
+        function setFeedback(elementId, status, msg) {
             const el = document.getElementById(elementId);
-            el.classList.remove('hidden', 'text-emerald-600', 'text-rose-500');
-            if (isCorrect) {
+            el.classList.remove('hidden', 'text-emerald-600', 'text-rose-500', 'text-amber-600');
+            
+            if (status === 'correct') {
                 el.classList.add('text-emerald-600');
                 el.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> ${msg}`;
-            } else {
+            } else if (status === 'wrong') {
                 el.classList.add('text-rose-500');
                 el.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> ${msg}`;
+            } else if (status === 'blank') {
+                el.classList.add('text-amber-600');
+                el.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-1"></i> 未作答。`;
             }
         }
 
-        function checkQ1() {
-            const val = parseInt(document.getElementById('q1-input').value);
-            if (val === 4) {
+        function submitQuiz() {
+            // Q1
+            const q1Val = document.getElementById('q1-input').value.trim();
+            if (q1Val === '') {
+                scoreState.q1 = false;
+                setFeedback('q1-feedback', 'blank');
+            } else if (parseInt(q1Val) === 4) {
                 scoreState.q1 = true;
-                setFeedback('q1-feedback', true, '答對了！4000 公克就是 4 公斤！');
+                setFeedback('q1-feedback', 'correct', '答對了！4000 公克就是 4 公斤！');
             } else {
                 scoreState.q1 = false;
-                setFeedback('q1-feedback', false, '再想想看！1000 公克 = 1 公斤喔。');
+                setFeedback('q1-feedback', 'wrong', '答錯了！提示：1000 公克 = 1 公斤喔。');
             }
-            updateScoreDisplay();
-        }
 
-        function checkQ2() {
-            const val = parseInt(document.getElementById('q2-input').value);
-            if (val === 4250) {
+            // Q2
+            const q2Val = document.getElementById('q2-input').value.trim();
+            if (q2Val === '') {
+                scoreState.q2 = false;
+                setFeedback('q2-feedback', 'blank');
+            } else if (parseInt(q2Val) === 4250) {
                 scoreState.q2 = true;
-                setFeedback('q2-feedback', true, '太棒了！4公斤是 4000g，加上 250g 一共是 4250g！');
+                setFeedback('q2-feedback', 'correct', '答對了！4公斤是 4000公克，加上 250公克 一共是 4250公克！');
             } else {
                 scoreState.q2 = false;
-                setFeedback('q2-feedback', false, '算算看：4公斤 = 4000公克，再加 250 公克等於多少呢？');
+                setFeedback('q2-feedback', 'wrong', '答錯了！提示：4公斤 = 4000公克，再加 250 公克等於多少呢？');
             }
-            updateScoreDisplay();
-        }
 
-        function checkQ3() {
-            const kg = parseInt(document.getElementById('q3-kg').value);
-            const g = parseInt(document.getElementById('q3-g').value);
-            if (kg === 3 && g === 780) {
+            // Q3
+            const q3KgVal = document.getElementById('q3-kg').value.trim();
+            const q3GVal = document.getElementById('q3-g').value.trim();
+            if (q3KgVal === '' || q3GVal === '') {
+                scoreState.q3 = false;
+                setFeedback('q3-feedback', 'blank');
+            } else if (parseInt(q3KgVal) === 3 && parseInt(q3GVal) === 780) {
                 scoreState.q3 = true;
-                setFeedback('q3-feedback', true, '完全正確！3780g = 3000g + 780g = 3kg 780g！');
+                setFeedback('q3-feedback', 'correct', '答對了！3780公克 = 3000公克 + 780公克 = 3公斤 780公克！');
             } else {
                 scoreState.q3 = false;
-                setFeedback('q3-feedback', false, '提示：把 3780 拆成 3000 和 780 看看！');
+                setFeedback('q3-feedback', 'wrong', '答錯了！提示：把 3780 拆成 3000 和 780 看看！');
             }
-            updateScoreDisplay();
-        }
 
-        function checkQ4() {
-            const val = document.getElementById('q4-select').value;
-            if (val === '>') {
+            // Q4
+            const q4Val = document.getElementById('q4-select').value;
+            if (q4Val === '') {
+                scoreState.q4 = false;
+                setFeedback('q4-feedback', 'blank');
+            } else if (q4Val === '>') {
                 scoreState.q4 = true;
-                setFeedback('q4-feedback', true, '答對了！8公斤100公克 (8100公克) ＞ 8公斤10公克 (8010公克)。');
+                setFeedback('q4-feedback', 'correct', '答對了！8公斤100公克 (8100公克) ＞ 8公斤10公克 (8010公克)。');
             } else {
                 scoreState.q4 = false;
-                setFeedback('q4-feedback', false, '提示：換算成公克比比看，8100公克 和 8010公克 哪一個大？');
+                setFeedback('q4-feedback', 'wrong', '答錯了！提示：換算成公克比比看，8100公克 和 8010公克 哪一個大？');
             }
+
+            // Q5
+            const q5Selected = document.querySelector('input[name="q5-radio"]:checked');
+            if (!q5Selected) {
+                scoreState.q5 = false;
+                setFeedback('q5-feedback', 'blank');
+            } else if (q5Selected.value === 'capybara') {
+                scoreState.q5 = true;
+                setFeedback('q5-feedback', 'correct', '答對了！水豚寶寶 1350公克 ＞ 豬寶寶 1100公克 (1公斤100公克)！');
+            } else {
+                scoreState.q5 = false;
+                setFeedback('q5-feedback', 'wrong', '答錯了！提示：豬寶寶 1公斤100公克 等於 1100公克 喔！');
+            }
+
             updateScoreDisplay();
         }
 
-        function checkQ5() {
-            const selected = document.querySelector('input[name="q5-radio"]:checked');
-            if (selected && selected.value === 'capybara') {
-                scoreState.q5 = true;
-                setFeedback('q5-feedback', true, '答對了！水豚寶寶 1350公克 ＞ 豬寶寶 1100公克 (1公斤100公克)！');
-            } else {
-                scoreState.q5 = false;
-                setFeedback('q5-feedback', false, '提示：豬寶寶 1公斤100公克 等於 1100公克 喔！');
-            }
-            updateScoreDisplay();
-        }
+        function resetQuiz() {
+            // Reset input values
+            document.getElementById('q1-input').value = '';
+            document.getElementById('q2-input').value = '';
+            document.getElementById('q3-kg').value = '';
+            document.getElementById('q3-g').value = '';
+            document.getElementById('q4-select').value = '';
+            const radioChecked = document.querySelector('input[name="q5-radio"]:checked');
+            if (radioChecked) radioChecked.checked = false;
 
-        function checkQ5() {
-            const selected = document.querySelector('input[name="q5-radio"]:checked');
-            if (selected && selected.value === 'capybara') {
-                scoreState.q5 = true;
-                setFeedback('q5-feedback', true, '答對了！水豚寶寶 1350g ＞ 豬寶寶 1100g (1kg 100g)！');
-            } else {
-                scoreState.q5 = false;
-                setFeedback('q5-feedback', false, '提示：豬寶寶 1kg 100g 等於 1100g 喔！');
-            }
+            // Hide feedbacks
+            ['q1-feedback', 'q2-feedback', 'q3-feedback', 'q4-feedback', 'q5-feedback'].forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.add('hidden');
+                el.innerHTML = '';
+            });
+
+            // Reset score state
+            scoreState = { q1: false, q2: false, q3: false, q4: false, q5: false };
             updateScoreDisplay();
         }
 

@@ -139,7 +139,7 @@
                     <i class="fa-solid fa-ruler-combined"></i> 4. 刻度間距與規律
                 </button>
                 <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn px-4 py-2 rounded-xl font-bold text-xs md:text-sm bg-amber-100 text-amber-800 hover:bg-amber-200 flex items-center gap-2">
-                    <i class="fa-solid fa-trophy"></i> 5. 歷程評量測驗
+                    <i class="fa-solid fa-trophy"></i> 5. 闖關測驗
                 </button>
             </div>
         </header>
@@ -307,33 +307,40 @@
                 </div>
 
                 <p class="text-gray-600 text-sm mb-4">
-                    🔍 數線上每一格不一定只能代表 1！切換不同的「單位刻度」，觀察空格裡應該填入什麼數字。
+                    🔍 <b>觀察重點：</b> 數線上每一格不一定都是 1。點擊下方按鈕切換「每一格代表多少」，觀察數線上的刻度變化並猜猜看問號處的數字！
                 </p>
 
-                <div class="flex flex-wrap gap-3 mb-6">
-                    <button onclick="setScaleStep(1)" id="scale-btn-1" class="px-4 py-2 rounded-xl text-sm font-bold bg-blue-600 text-white shadow">一格代表 1</button>
-                    <button onclick="setScaleStep(5)" id="scale-btn-5" class="px-4 py-2 rounded-xl text-sm font-bold bg-white text-gray-700 border hover:bg-gray-50">一格代表 5</button>
-                    <button onclick="setScaleStep(10)" id="scale-btn-10" class="px-4 py-2 rounded-xl text-sm font-bold bg-white text-gray-700 border hover:bg-gray-50">一格代表 10</button>
-                    <button onclick="setScaleStep(100)" id="scale-btn-100" class="px-4 py-2 rounded-xl text-sm font-bold bg-white text-gray-700 border hover:bg-gray-50">一格代表 100</button>
-                </div>
-
-                <div class="bg-white p-4 rounded-xl shadow-inner border border-gray-100 overflow-hidden">
-                    <svg id="svg-sec4" viewBox="0 0 800 180" class="w-full h-auto"></svg>
-                </div>
-
-                <div class="mt-6 flex justify-center">
-                    <button onclick="revealScaleAnswers()" class="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-lg transition flex items-center gap-2">
-                        <i class="fa-solid fa-eye"></i> 顯示 / 隱藏空格答案
+                <!-- 控制按鈕區 -->
+                <div class="flex flex-wrap items-center justify-between gap-4 bg-amber-50/70 p-4 rounded-xl border border-amber-100 mb-6">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-xs md:text-sm font-bold text-gray-700 mr-2">切換刻度間距：</span>
+                        <button id="scale-btn-1" onclick="setScaleStep(1)" class="px-4 py-2 rounded-xl text-sm font-bold bg-blue-600 text-white shadow">一格代表 1</button>
+                        <button id="scale-btn-5" onclick="setScaleStep(5)" class="px-4 py-2 rounded-xl text-sm font-bold bg-white text-gray-700 border hover:bg-gray-50">一格代表 5</button>
+                        <button id="scale-btn-10" onclick="setScaleStep(10)" class="px-4 py-2 rounded-xl text-sm font-bold bg-white text-gray-700 border hover:bg-gray-50">一格代表 10</button>
+                        <button id="scale-btn-100" onclick="setScaleStep(100)" class="px-4 py-2 rounded-xl text-sm font-bold bg-white text-gray-700 border hover:bg-gray-50">一格代表 100</button>
+                    </div>
+                    <button onclick="revealScaleAnswers()" class="px-4 py-2 rounded-xl text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-eye"></i> 顯示 / 隱藏答案
                     </button>
+                </div>
+
+                <!-- SVG 數線繪製區 (模組 4) -->
+                <div class="bg-white p-4 rounded-xl shadow-inner border border-gray-100 overflow-hidden">
+                    <svg id="svg-sec4" viewBox="0 0 800 200" class="w-full h-auto" style="overflow: visible;"></svg>
+                </div>
+
+                <div class="mt-4 p-4 bg-sky-50 rounded-xl border border-sky-200 text-xs md:text-sm text-sky-900">
+                    <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i>
+                    <b>觀念總結：</b> 數線上的相鄰刻度距離永遠相等，當一格代表 N 時，往右每多一格就增加 N！
                 </div>
             </section>
 
-            <!-- 模組 5: 歷程評量測驗 -->
+            <!-- 模組 5: 闖關測驗 -->
             <section id="sec-quiz" class="glass-card p-6 hidden">
                 <div class="flex items-center justify-between border-b pb-4 mb-4">
                     <h2 class="text-lg md:text-xl font-bold text-gray-800 flex items-center gap-2">
                         <span class="bg-amber-500 text-white w-7 h-7 rounded-lg flex items-center justify-center text-sm"><i class="fa-solid fa-star"></i></span>
-                        數線大挑戰：歷程性評量測驗 (5 題)
+                        數線大挑戰：闖關測驗 (5 題)
                     </h2>
                     <span id="quiz-score-badge" class="text-sm font-black bg-amber-100 text-amber-900 px-3 py-1 rounded-full">得分：0 / 100</span>
                 </div>
@@ -342,9 +349,12 @@
                     <!-- 題目會由 JS 自動動態渲染 -->
                 </div>
 
-                <div class="mt-8 text-center">
+                <div class="mt-8 text-center flex flex-wrap justify-center gap-4">
                     <button onclick="submitQuiz()" class="px-8 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-lg rounded-2xl shadow-xl hover:opacity-90 transition transform hover:-translate-y-0.5">
-                        <i class="fa-solid fa-paper-plane mr-2"></i> 提交測驗解答
+                        <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案
+                    </button>
+                    <button onclick="resetQuiz()" class="px-8 py-3.5 bg-slate-500 hover:bg-slate-600 text-white font-black text-lg rounded-2xl shadow-xl transition transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-rotate-left mr-2"></i> 重新測驗
                     </button>
                 </div>
             </section>
@@ -412,8 +422,8 @@
                 </marker>
             </defs>`;
 
-            // 主軸線
-            html += `<line x1="${startX - 20}" y1="${lineY}" x2="${endX + 25}" y2="${lineY}" stroke="#3b82f6" stroke-width="4" marker-end="url(#arrow1)" stroke-linecap="round"/>`;
+            // 主軸線：從 0 刻度 (startX) 正式開始，移除 0 左邊的線段
+            html += `<line x1="${startX}" y1="${lineY}" x2="${endX + 25}" y2="${lineY}" stroke="#3b82f6" stroke-width="4" marker-end="url(#arrow1)" stroke-linecap="round"/>`;
 
             // 繪製刻度與結構
             for(let i = 0; i <= maxVal; i++) {
@@ -469,10 +479,10 @@
 
             const maxVal = 14;
             const width = 800;
-            const startX = 60;
-            const endX = width - 60;
+            const startX = 75; // 預留左側空間放置圖示
+            const endX = width - 45;
             const stepWidth = (endX - startX) / maxVal;
-            const lineY = 145; // 下移主線，為頂部弧線與動態跳躍預留足夠空間
+            const lineY = 145; 
 
             let html = `<defs>
                 <marker id="arrow2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -480,8 +490,13 @@
                 </marker>
             </defs>`;
 
-            // 數線主體
-            html += `<line x1="${startX - 20}" y1="${lineY}" x2="${endX + 25}" y2="${lineY}" stroke="#64748b" stroke-width="3.5" marker-end="url(#arrow2)"/>`;
+            // 數線左側角色圖示 (並列同一排)
+            html += `<g transform="translate(30, ${lineY})">
+                <text x="0" y="0" font-size="30" text-anchor="middle" dominant-baseline="central">🐜</text>
+            </g>`;
+
+            // 數線主體：從 0 刻度 (startX) 正式開始
+            html += `<line x1="${startX}" y1="${lineY}" x2="${endX + 25}" y2="${lineY}" stroke="#64748b" stroke-width="3.5" marker-end="url(#arrow2)"/>`;
 
             // 刻度與數字
             for(let i = 0; i <= maxVal; i++) {
@@ -512,14 +527,14 @@
                     html += `<path d="M ${x1} ${lineY - 5} Q ${x1 + stepWidth/2} ${lineY - 22} ${x2} ${lineY - 5}" fill="none" stroke="#f59e0b" stroke-width="2"/>`;
                 }
 
-                // 小螞蟻角色 Icon 在當前位置 (完美置中對齊刻度，確保完整呈現)
-                html += `<g transform="translate(${targetX}, ${lineY - 22})" class="hop-animation">
-                    <text x="0" y="0" font-size="34" text-anchor="middle" dominant-baseline="central">🐜</text>
+                // 目標位置指示標記 (📍)
+                html += `<g transform="translate(${targetX}, ${lineY - 22})">
+                    <text x="0" y="0" font-size="26" text-anchor="middle" dominant-baseline="central">📍</text>
                 </g>`;
             } else {
-                // 在 0 的位置 (完美置中對齊刻度)
+                // 起點 0 標記
                 html += `<g transform="translate(${startX}, ${lineY - 22})">
-                    <text x="0" y="0" font-size="34" text-anchor="middle" dominant-baseline="central">🐜</text>
+                    <text x="0" y="0" font-size="24" text-anchor="middle" dominant-baseline="central">📍</text>
                 </g>`;
             }
 
@@ -535,11 +550,9 @@
             const op = document.getElementById('calc-op').value;
             const stepInput = document.getElementById('calc-step');
 
-            // 根據運算符與起始位置，動態計算允許的最大與最小移動格數
             let maxStep = (op === '+') ? (15 - startPos) : startPos;
             let minStep = (maxStep === 0) ? 0 : 1;
 
-            // 動態更新滑桿範圍限制
             stepInput.min = minStep;
             stepInput.max = maxStep;
 
@@ -551,14 +564,11 @@
             document.getElementById('calc-start-val').innerText = startPos;
             document.getElementById('calc-step-val').innerText = `${step} 格`;
 
-            // 計算最終結果（自動約束在 0 ~ 15 之間）
             let endPos = (op === '+') ? (startPos + step) : (startPos - step);
 
-            // 更新算式文字
             const opSymbol = (op === '+') ? '+' : '-';
             document.getElementById('calc-equation-display').innerText = `${startPos} ${opSymbol} ${step} = ${endPos}`;
 
-            // 更新解說
             const animal = (op === '+') ? '🐝 蜜蜂' : '🐸 青蛙';
             const action = (op === '+') ? '往右飛' : '往左跳';
             document.getElementById('calc-explanation').innerHTML = `
@@ -568,10 +578,10 @@
 
             const maxVal = 15;
             const width = 800;
-            const startX = 60;
-            const endX = width - 60;
+            const startX = 75; // 預留左側空間
+            const endX = width - 45;
             const stepWidth = (endX - startX) / maxVal;
-            const lineY = 145; // 下移主線，增加頂部安全距離
+            const lineY = 145;
 
             let html = `<defs>
                 <marker id="arrow3" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -579,8 +589,14 @@
                 </marker>
             </defs>`;
 
-            // 數線主軸
-            html += `<line x1="${startX - 20}" y1="${lineY}" x2="${endX + 25}" y2="${lineY}" stroke="#64748b" stroke-width="3.5" marker-end="url(#arrow3)"/>`;
+            // 數線左側角色圖示 (並列同一排)
+            const animalIcon = (op === '+') ? '🐝' : '🐸';
+            html += `<g transform="translate(30, ${lineY})">
+                <text x="0" y="0" font-size="30" text-anchor="middle" dominant-baseline="central">${animalIcon}</text>
+            </g>`;
+
+            // 數線主軸：從 0 刻度 (startX) 正式開始
+            html += `<line x1="${startX}" y1="${lineY}" x2="${endX + 25}" y2="${lineY}" stroke="#64748b" stroke-width="3.5" marker-end="url(#arrow3)"/>`;
 
             // 刻度
             for(let i = 0; i <= maxVal; i++) {
@@ -593,7 +609,7 @@
                 html += `<text x="${x}" y="${lineY + 28}" fill="${isHighlight ? '#0284c7' : '#1e293b'}" font-size="14" font-weight="${isHighlight ? '900':'700'}" text-anchor="middle">${i}</text>`;
             }
 
-            // 第一段：從 0 到 startPos 的藍色線弧
+            // 第一段弧線
             if(startPos > 0) {
                 const x0 = startX;
                 const x1 = startX + startPos * stepWidth;
@@ -604,7 +620,7 @@
                 html += `<text x="${midX1}" y="${lineY - 15 - arcH1}" fill="#1d4ed8" font-size="12" font-weight="bold" text-anchor="middle">${startPos}格</text>`;
             }
 
-            // 第二段：從 startPos 到 endPos 的加減運算弧線
+            // 第二段加減運算弧線
             const xA = startX + startPos * stepWidth;
             const xB = startX + endPos * stepWidth;
             const midX2 = (xA + xB) / 2;
@@ -617,10 +633,9 @@
                 <text x="0" y="0" fill="white" font-size="12" font-weight="black" text-anchor="middle" dominant-baseline="middle">${opSymbol}${step}格</text>
             </g>`;
 
-            // 角色圖示停在終點 (完美置中對齊刻度，確保完整呈現)
-            const animalIcon = (op === '+') ? '🐝' : '🐸';
-            html += `<g transform="translate(${xB}, ${lineY - 22})" class="hop-animation">
-                <text x="0" y="0" font-size="34" text-anchor="middle" dominant-baseline="central">${animalIcon}</text>
+            // 終點標記 (📍)
+            html += `<g transform="translate(${xB}, ${lineY - 22})">
+                <text x="0" y="0" font-size="26" text-anchor="middle" dominant-baseline="central">📍</text>
             </g>`;
 
             svg.innerHTML = html;
@@ -673,7 +688,8 @@
                 </marker>
             </defs>`;
 
-            html += `<line x1="${startX - 20}" y1="${lineY}" x2="${endX + 25}" y2="${lineY}" stroke="#2563eb" stroke-width="3.5" marker-end="url(#arrow4)"/>`;
+            // 數線主軸：從 0 刻度 (startX) 正式開始
+            html += `<line x1="${startX}" y1="${lineY}" x2="${endX + 25}" y2="${lineY}" stroke="#2563eb" stroke-width="3.5" marker-end="url(#arrow4)"/>`;
 
             const blankIndices = [2, 4, 6];
 
@@ -771,15 +787,21 @@
                 const selected = document.querySelector(`input[name="quiz-${idx}"]:checked`);
                 const feedbackEl = document.getElementById(`quiz-feedback-${idx}`);
                 if(feedbackEl) {
-                    feedbackEl.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+                    feedbackEl.className = "p-3 rounded-xl text-xs font-bold mt-2";
 
-                    if(selected && parseInt(selected.value) === q.answer) {
+                    if(!selected) {
+                        // 當未作答時，僅顯示「未作答。」(黃色系)
+                        feedbackEl.classList.add('bg-amber-100', 'text-amber-800', 'border', 'border-amber-300');
+                        feedbackEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> 未作答。`;
+                    } else if(parseInt(selected.value) === q.answer) {
+                        // 答對
                         score += 20;
-                        feedbackEl.classList.add('bg-emerald-100', 'text-emerald-800');
+                        feedbackEl.classList.add('bg-emerald-100', 'text-emerald-800', 'border', 'border-emerald-300');
                         feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> 回答正確！ ${q.explain}`;
                     } else {
-                        feedbackEl.classList.add('bg-rose-100', 'text-rose-800');
-                        feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> 回答錯誤或未作答。解析：${q.explain}`;
+                        // 答錯
+                        feedbackEl.classList.add('bg-rose-100', 'text-rose-800', 'border', 'border-rose-300');
+                        feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> 回答錯誤！解析：${q.explain}`;
                     }
                 }
             });
@@ -795,6 +817,21 @@
                     origin: { y: 0.6 }
                 });
             }
+        }
+
+        // 重新測驗功能
+        function resetQuiz() {
+            quizData.forEach((q, idx) => {
+                const radios = document.querySelectorAll(`input[name="quiz-${idx}"]`);
+                radios.forEach(r => r.checked = false);
+                const feedbackEl = document.getElementById(`quiz-feedback-${idx}`);
+                if(feedbackEl) {
+                    feedbackEl.className = "hidden p-3 rounded-xl text-xs font-bold mt-2";
+                    feedbackEl.innerHTML = "";
+                }
+            });
+            const badge = document.getElementById('quiz-score-badge');
+            if(badge) badge.innerText = `得分：0 / 100`;
         }
 
         // 初始化

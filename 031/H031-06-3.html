@@ -154,7 +154,7 @@
             <i class="fa-solid fa-magnifying-glass-chart mr-1.5"></i> 2. 直式部位與「試商」解密
         </button>
         <button id="tab-btn-3" onclick="switchTab(3)" class="tab-btn px-5 py-2.5 rounded-xl text-sm md:text-base font-bold transition-all bg-white/30 text-white hover:bg-white/40">
-            <i class="fa-solid fa-square-check mr-1.5"></i> 3. 歷程性小測驗
+            <i class="fa-solid fa-square-check mr-1.5"></i> 3. 闖關測驗
         </button>
     </nav>
 
@@ -389,6 +389,10 @@
                         <div class="text-xs text-sky-400 font-bold uppercase tracking-wider">互動試商檢驗區：45 ÷ 6</div>
                         <div id="trial-output-title" class="text-xl font-bold text-amber-300">請點擊上方三種做法進行比對！</div>
                         <p id="trial-output-desc" class="text-sm text-slate-300 leading-relaxed max-w-md">
+                            請點擊上方不同做法，觀察「試商」的直式記錄與餘數變化！
+                        </p>
+                    </div>
+
                     <!-- 即時試商直式模擬 (位數與橫線精準對齊版) -->
                     <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 min-w-[200px] flex flex-col items-center">
                         <div class="text-xs text-slate-400 mb-3 font-medium">直式試算模擬</div>
@@ -426,13 +430,13 @@
             </div>
         </section>
 
-        <!-- Tab 3: 歷程性小測驗 -->
+        <!-- Tab 3: 闖關測驗 -->
         <section id="tab-content-3" class="tab-content hidden">
             <div class="glass-card p-6 rounded-2xl max-w-3xl mx-auto space-y-6">
                 <div class="flex items-center justify-between border-b border-slate-200 pb-4">
                     <div>
                         <h2 class="text-2xl font-black text-slate-800 flex items-center">
-                            <i class="fa-solid fa-pen-ruler text-pink-500 mr-2.5"></i> 除法小達人歷程評量
+                            <i class="fa-solid fa-pen-ruler text-pink-500 mr-2.5"></i> 闖關測驗
                         </h2>
                         <p class="text-xs text-slate-500 mt-1">共 5 題，測試你對除法直式與觀念的理解！</p>
                     </div>
@@ -447,10 +451,13 @@
                     <!-- JS 動態渲染 5 道題目 -->
                 </div>
 
-                <!-- 測驗交卷按鈕 -->
-                <div class="pt-4 text-center">
+                <!-- 測驗提交與重新測驗按鈕 -->
+                <div class="pt-4 flex items-center justify-center gap-4">
                     <button onclick="submitQuiz()" class="shinkai-btn px-8 py-3 rounded-xl text-white font-bold text-lg shadow-lg">
-                        <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案與對解答
+                        <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案
+                    </button>
+                    <button onclick="resetQuiz()" class="px-6 py-3 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-lg shadow transition">
+                        <i class="fa-solid fa-rotate-right mr-2"></i> 重新測驗
                     </button>
                 </div>
             </div>
@@ -773,7 +780,10 @@
                 const resBox = document.getElementById(`quiz-result-${q.id}`);
                 resBox.classList.remove('hidden');
 
-                if (userAns === q.answer) {
+                if (userAns === undefined || userAns === null) {
+                    resBox.className = "p-3 rounded-lg text-xs mt-2 bg-amber-50 border border-amber-200 text-amber-800 font-medium";
+                    resBox.innerHTML = `<i class="fa-solid fa-circle-exclamation text-amber-600 mr-1.5"></i>未作答。`;
+                } else if (userAns === q.answer) {
                     score += 20;
                     resBox.className = "p-3 rounded-lg text-xs mt-2 bg-emerald-50 border border-emerald-200 text-emerald-800 font-medium";
                     resBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i><strong>回答正確！</strong> ${q.explanation}`;
@@ -784,6 +794,24 @@
             });
 
             document.getElementById('quiz-score').innerText = score;
+        }
+
+        // 重新測驗功能
+        function resetQuiz() {
+            state.userAnswers = {};
+            document.getElementById('quiz-score').innerText = 0;
+            
+            // 清除選項選取狀態與結果對話框
+            quizData.forEach((q) => {
+                const radios = document.getElementsByName(`quiz-${q.id}`);
+                radios.forEach(r => r.checked = false);
+
+                const resBox = document.getElementById(`quiz-result-${q.id}`);
+                if (resBox) {
+                    resBox.classList.add('hidden');
+                    resBox.innerHTML = '';
+                }
+            });
         }
     </script>
 </body>

@@ -8,8 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Zen Maru Gothic & Noto Sans TC -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Noto Sans TC Only -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -17,7 +17,7 @@
                 extend: {
                     fontFamily: {
                         sans: ['"Noto Sans TC"', 'sans-serif'],
-                        cute: ['"Zen Maru Gothic"', 'sans-serif'],
+                        cute: ['"Noto Sans TC"', 'sans-serif'],
                     },
                     colors: {
                         shinkai: {
@@ -41,6 +41,7 @@
             background: linear-gradient(135deg, #0d1322 0%, #1d253b 25%, #3d2c4b 50%, #733e54 75%, #b86450 100%);
             background-attachment: fixed;
             color: #2b2d42;
+            font-family: 'Noto Sans TC', sans-serif;
             min-height: 100vh;
         }
 
@@ -65,14 +66,7 @@
             border-radius: 1.5rem;
         }
 
-        .glass-dark {
-            background: rgba(20, 27, 45, 0.82);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-        }
-
-        /* Fraction formatting fix */
+        /* Standard Vertical Fraction formatting */
         .fraction-math {
             display: inline-flex;
             flex-direction: column;
@@ -148,11 +142,11 @@
                 <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
             </div>
 
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-white text-xs md:text-sm font-cute tracking-wide mb-3 border border-white/30 shadow-md">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-white text-xs md:text-sm font-bold tracking-wide mb-3 border border-white/30 shadow-md">
                 <i class="fa-solid fa-sun text-amber-300 animate-spin-slow"></i>
                 <span>國小三上數學 8-2 互動學習網頁</span>
             </div>
-            <h1 class="text-3xl md:text-5xl font-black font-cute text-white tracking-wider drop-shadow-lg mb-3">
+            <h1 class="text-3xl md:text-5xl font-black text-white tracking-wider drop-shadow-lg mb-3">
                 天空光影魔法：分數與 <span class="text-amber-300 underline decoration-wavy decoration-orange-400">1</span> 的祕密
             </h1>
             <p class="text-slate-100 text-sm md:text-base font-medium max-w-2xl mx-auto drop-shadow-sm">
@@ -165,13 +159,13 @@
 
         <!-- Main Navigation Tabs -->
         <div class="flex items-center justify-center gap-2 md:gap-4 mb-2 bg-slate-900/40 p-2 rounded-2xl backdrop-blur-md border border-white/20 shadow-xl">
-            <button id="main-tab-btn-playground" onclick="switchMainTab('playground')" class="flex-1 max-w-[220px] py-2.5 px-4 rounded-xl font-cute font-bold text-sm md:text-base transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-lg border border-white/40">
+            <button id="main-tab-btn-playground" onclick="switchMainTab('playground')" class="flex-1 max-w-[220px] py-2.5 px-4 rounded-xl font-bold text-sm md:text-base transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-lg border border-white/40">
                 <i class="fa-solid fa-shapes text-amber-300"></i>
                 <span>自由探究區</span>
             </button>
-            <button id="main-tab-btn-quiz" onclick="switchMainTab('quiz')" class="flex-1 max-w-[220px] py-2.5 px-4 rounded-xl font-cute font-bold text-sm md:text-base transition-all flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 text-white/90 border border-white/20">
+            <button id="main-tab-btn-quiz" onclick="switchMainTab('quiz')" class="flex-1 max-w-[220px] py-2.5 px-4 rounded-xl font-bold text-sm md:text-base transition-all bg-white/20 hover:bg-white/30 text-white/90 border border-white/20">
                 <i class="fa-solid fa-pen-ruler text-amber-300"></i>
-                <span>觀念小試身手</span>
+                <span>闖關測驗</span>
             </button>
         </div>
 
@@ -186,7 +180,7 @@
                         1
                     </span>
                     <div>
-                        <h2 class="text-xl md:text-2xl font-bold font-cute text-slate-800">自由探究區：具體教具切分與累積</h2>
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-800">自由探究區：具體教具切分與累積</h2>
                         <p class="text-xs md:text-sm text-slate-500">切換不同教具，點擊區域或拉動滑桿體驗數值變化</p>
                     </div>
                 </div>
@@ -317,34 +311,46 @@
         </section>
         </div>
 
-        <!-- TAB 2: Formative Assessment -->
+        <!-- TAB 2: Quiz Tab (闖關測驗) -->
         <div id="tab-content-quiz" class="hidden">
             <section class="glass-card p-5 md:p-8 shadow-2xl">
-            <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-200/80 pb-4 mb-6 gap-3">
-                <div class="flex items-center gap-3">
-                    <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-white flex items-center justify-center font-black text-xl shadow-md">
-                        2
-                    </span>
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-bold font-cute text-slate-800">觀念小試身手（歷程性評量）</h2>
-                        <p class="text-xs md:text-sm text-slate-500">回答 5 道課本重點挑戰題，測驗自己的理解程度！</p>
+                <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-200/80 pb-4 mb-6 gap-3">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-white flex items-center justify-center font-black text-xl shadow-md">
+                            2
+                        </span>
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold text-slate-800">闖關測驗</h2>
+                            <p class="text-xs md:text-sm text-slate-500">完成 5 道課本重點挑戰題，點擊「提交答案」即可核對成績！</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Score Pill (Max 100) -->
+                    <div class="flex items-center gap-3 self-start md:self-auto">
+                        <div class="bg-amber-100 text-amber-900 font-bold px-4 py-2 rounded-xl border border-amber-300 flex items-center gap-2 text-sm md:text-base shadow-sm">
+                            <i class="fa-solid fa-trophy text-amber-500 text-lg"></i>
+                            <span>得分：<span id="quiz-score" class="text-xl font-black text-orange-600">0</span> / 100</span>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- Score & Progress Pill -->
-                <div class="flex items-center gap-3 self-start md:self-auto">
-                    <div class="bg-amber-100 text-amber-900 font-bold px-4 py-2 rounded-xl border border-amber-300 flex items-center gap-2 text-sm md:text-base">
-                        <i class="fa-solid fa-trophy text-amber-500 text-lg"></i>
-                        <span>得分：<span id="quiz-score" class="text-xl font-black text-orange-600">0</span> / 50</span>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Quiz Items Container -->
-            <div id="quiz-box" class="space-y-6">
-                <!-- JS dynamically renders questions -->
-            </div>
-        </section>
+                <!-- Quiz Items Container -->
+                <div id="quiz-box" class="space-y-6">
+                    <!-- JS dynamically renders questions -->
+                </div>
+
+                <!-- Action Buttons: Submit & Reset -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 pt-6 border-t border-slate-200">
+                    <button onclick="submitQuiz()" class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 text-base">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>提交答案</span>
+                    </button>
+                    <button onclick="resetQuiz()" class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-slate-500 to-slate-600 hover:from-slate-600 hover:to-slate-700 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 text-base">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>重新測驗</span>
+                    </button>
+                </div>
+            </section>
         </div>
 
     </main>
@@ -355,16 +361,16 @@
             <div id="modal-icon-wrap" class="w-16 h-16 rounded-full mx-auto flex items-center justify-center text-3xl">
                 <!-- Icon -->
             </div>
-            <h3 id="modal-title" class="text-2xl font-black font-cute text-slate-800"></h3>
+            <h3 id="modal-title" class="text-2xl font-black text-slate-800"></h3>
             <div id="modal-msg" class="text-slate-600 font-medium text-sm leading-relaxed"></div>
             <button onclick="closeModal()" class="w-full py-3 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95">
-                明白了，繼續探究！
+                明白了！
             </button>
         </div>
     </div>
 
+    <!-- JavaScript Logic -->
     <script>
-        // Web Audio API Synthesizer for sound effects
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         let audioCtx = null;
 
@@ -389,7 +395,6 @@
                     osc.start(now);
                     osc.stop(now + 0.08);
                 } else if (type === 'win') {
-                    // Win fanfare chime
                     const freqs = [523.25, 659.25, 783.99, 1046.50];
                     freqs.forEach((f, index) => {
                         const o = audioCtx.createOscillator();
@@ -425,54 +430,57 @@
             }
         }
 
-        // Global State
-        let currentMode = 'ribbon'; // 'ribbon', 'loaf', 'pie'
+        // Global State Variables
+        let currentMode = 'ribbon';
         let denominator = 3;
         let numerator = 1;
+        
+        // Quiz State
+        let userSelections = {}; // { qId: selectedOptionIdx }
+        let isSubmitted = false;
         let quizScore = 0;
-        let answeredQuestions = {};
 
-        // Question database
+        // Question database with standard fraction HTML rendering
         const quizData = [
             {
                 id: 1,
-                question: "有一條彩帶平分成 3 等分，其中的 2 等分是幾個 1/3 條彩帶？也就是幾分之幾條？",
+                question: "有一條彩帶平分成 3 等分，其中的 2 等分是幾個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>3</span></span> 條彩帶？也就是幾分之幾條？",
                 options: [
-                    "2 個 1/3 條，也就是 2/3 條",
-                    "3 個 1/3 條，也就是 3/3 條",
-                    "1 個 1/3 條，也就是 1/3 條",
-                    "2 個 1/2 條，也就是 2/2 條"
+                    "2 個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>3</span></span> 條，也就是 <span class='fraction-math'><span class='fraction-numerator'>2</span><span class='fraction-denominator'>3</span></span> 條",
+                    "3 個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>3</span></span> 條，也就是 <span class='fraction-math'><span class='fraction-numerator'>3</span><span class='fraction-denominator'>3</span></span> 條",
+                    "1 個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>3</span></span> 條，也就是 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>3</span></span> 條",
+                    "2 個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>2</span></span> 條，也就是 <span class='fraction-math'><span class='fraction-numerator'>2</span><span class='fraction-denominator'>2</span></span> 條"
                 ],
                 answer: 0,
-                explain: "把 1 條彩帶平分成 3 等分，每 1 等分就是 1/3 條；2 等分包含 2 個 1/3 條，合起來記作 2/3 條彩帶。"
+                explain: "把 1 條彩帶平分成 3 等分，每 1 等分就是 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>3</span></span> 條；2 等分包含 2 個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>3</span></span> 條，合起來記作 <span class='fraction-math'><span class='fraction-numerator'>2</span><span class='fraction-denominator'>3</span></span> 條彩帶。"
             },
             {
                 id: 2,
                 question: "一盒蘿蔔糕平分成 7 片。小甲拿了 7 片蘿蔔糕，也就是幾分之幾盒？和 1 盒一樣多嗎？",
                 options: [
-                    "7/7 盒，和 1 盒不一樣多",
-                    "7/7 盒，和 1 盒一樣多",
-                    "1/7 盒，和 1 盒一樣多",
-                    "6/7 盒，比 1 盒少"
+                    "<span class='fraction-math'><span class='fraction-numerator'>7</span><span class='fraction-denominator'>7</span></span> 盒，和 1 盒不一樣多",
+                    "<span class='fraction-math'><span class='fraction-numerator'>7</span><span class='fraction-denominator'>7</span></span> 盒，和 1 盒一樣多",
+                    "<span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>7</span></span> 盒，和 1 盒一樣多",
+                    "<span class='fraction-math'><span class='fraction-numerator'>6</span><span class='fraction-denominator'>7</span></span> 盒，比 1 盒少"
                 ],
                 answer: 1,
-                explain: "7 片是 7 個 1/7 盒，記作 7/7 盒。因為把 7 片全部拿完了，所以 7/7 盒和完整的 1 盒一樣多，即 7/7 = 1。"
+                explain: "7 片是 7 個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>7</span></span> 盒，記作 <span class='fraction-math'><span class='fraction-numerator'>7</span><span class='fraction-denominator'>7</span></span> 盒。因為把 7 片全部拿完了，所以 <span class='fraction-math'><span class='fraction-numerator'>7</span><span class='fraction-denominator'>7</span></span> 盒和完整的 1 盒一樣多，即 <span class='fraction-math'><span class='fraction-numerator'>7</span><span class='fraction-denominator'>7</span></span> = 1。"
             },
             {
                 id: 3,
-                question: "一條吐司平分成 8 等分。4 片是幾個 1/8 條吐司？也就是幾分之幾條？",
+                question: "一條吐司平分成 8 等分。4 片是幾個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>8</span></span> 條吐司？也就是幾分之幾條？",
                 options: [
-                    "8 個 1/4 條，就是 8/4 條",
-                    "4 個 1/8 條，就是 4/8 條",
-                    "2 個 1/8 條，就是 2/8 條",
-                    "4 個 1/4 條，就是 4/4 條"
+                    "8 個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>4</span></span> 條，就是 <span class='fraction-math'><span class='fraction-numerator'>8</span><span class='fraction-denominator'>4</span></span> 條",
+                    "4 個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>8</span></span> 條，就是 <span class='fraction-math'><span class='fraction-numerator'>4</span><span class='fraction-denominator'>8</span></span> 條",
+                    "2 個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>8</span></span> 條，就是 <span class='fraction-math'><span class='fraction-numerator'>2</span><span class='fraction-denominator'>8</span></span> 條",
+                    "4 個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>4</span></span> 條，就是 <span class='fraction-math'><span class='fraction-numerator'>4</span><span class='fraction-denominator'>4</span></span> 條"
                 ],
                 answer: 1,
-                explain: "平分成 8 等分，每片是 1/8 條；4 片就是 4 個 1/8 條，合起來是 4/8 條吐司。"
+                explain: "平分成 8 等分，每片是 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>8</span></span> 條；4 片就是 4 個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>8</span></span> 條，合起來是 <span class='fraction-math'><span class='fraction-numerator'>4</span><span class='fraction-denominator'>8</span></span> 條吐司。"
             },
             {
                 id: 4,
-                question: "皮皮買了一個草莓派平分成 6 等分，吃了 6/6 個；丹丹買了同大小草莓派平分成 10 等分，吃了 10/10 個。誰吃得比較多？",
+                question: "皮皮買了一個草莓派平分成 6 等分，吃了 <span class='fraction-math'><span class='fraction-numerator'>6</span><span class='fraction-denominator'>6</span></span> 個；丹丹買了同大小草莓派平分成 10 等分，吃了 <span class='fraction-math'><span class='fraction-numerator'>10</span><span class='fraction-denominator'>10</span></span> 個。誰吃得比較多？",
                 options: [
                     "皮皮吃得比較多",
                     "丹丹吃得比較多",
@@ -480,19 +488,19 @@
                     "無法比較"
                 ],
                 answer: 2,
-                explain: "6/6 個草莓派代表 6 個 1/6，等於 1 個完整的派；10/10 個也是 1 個完整的派。所以兩人吃得一樣多！"
+                explain: "<span class='fraction-math'><span class='fraction-numerator'>6</span><span class='fraction-denominator'>6</span></span> 個草莓派代表 6 個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>6</span></span>，等於 1 個完整的派；<span class='fraction-math'><span class='fraction-numerator'>10</span><span class='fraction-denominator'>10</span></span> 個也是 1 個完整的派，所以兩人吃得一樣多。"
             },
             {
                 id: 5,
-                question: "拿一個圓形分數板平分成 4 等分。如果要把整個圓形塗滿，需要塗幾個 1/4 個圓？分數怎麼記？",
+                question: "拿一個圓形分數板平分成 4 等分。如果要把整個圓形塗滿，需要塗幾個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>4</span></span> 個圓？分數怎麼記？",
                 options: [
-                    "塗 3 個，記作 3/4 個圓",
-                    "塗 4 個，記作 4/4 個圓（等於 1 個圓）",
-                    "塗 1 個，記作 1/4 個圓",
-                    "塗 5 個，記作 5/4 個圓"
+                    "塗 3 個，記作 <span class='fraction-math'><span class='fraction-numerator'>3</span><span class='fraction-denominator'>4</span></span> 個圓",
+                    "塗 4 個，記作 <span class='fraction-math'><span class='fraction-numerator'>4</span><span class='fraction-denominator'>4</span></span> 個圓（等於 1 個圓）",
+                    "塗 1 個，記作 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>4</span></span> 個圓",
+                    "塗 5 個，記作 <span class='fraction-math'><span class='fraction-numerator'>5</span><span class='fraction-denominator'>4</span></span> 個圓"
                 ],
                 answer: 1,
-                explain: "平分成 4 等分，塗滿整個圓需要 4 個 1/4 個圓，記作 4/4 個圓，也就是 1 個完整的圓。"
+                explain: "平分成 4 等分，塗滿整個圓需要 4 個 <span class='fraction-math'><span class='fraction-numerator'>1</span><span class='fraction-denominator'>4</span></span> 個圓，記作 <span class='fraction-math'><span class='fraction-numerator'>4</span><span class='fraction-denominator'>4</span></span> 個圓，也就是 1 個完整的圓。"
             }
         ];
 
@@ -502,7 +510,6 @@
             renderQuiz();
         };
 
-        // Main Tab Switcher Logic
         function switchMainTab(tabName) {
             playSound('click');
             const tabs = ['playground', 'quiz'];
@@ -512,10 +519,10 @@
                 const content = document.getElementById(`tab-content-${t}`);
                 
                 if (t === tabName) {
-                    btn.className = "flex-1 max-w-[220px] py-2.5 px-4 rounded-xl font-cute font-bold text-sm md:text-base transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-lg border border-white/40";
+                    btn.className = "flex-1 max-w-[220px] py-2.5 px-4 rounded-xl font-bold text-sm md:text-base transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-lg border border-white/40";
                     content.classList.remove('hidden');
                 } else {
-                    btn.className = "flex-1 max-w-[220px] py-2.5 px-4 rounded-xl font-cute font-bold text-sm md:text-base transition-all flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 text-white/90 border border-white/20";
+                    btn.className = "flex-1 max-w-[220px] py-2.5 px-4 rounded-xl font-bold text-sm md:text-base transition-all bg-white/20 hover:bg-white/30 text-white/90 border border-white/20";
                     content.classList.add('hidden');
                 }
             });
@@ -550,7 +557,6 @@
             const loafView = document.getElementById('loaf-view');
             const pieView = document.getElementById('pie-view');
 
-            // Reset tab styles
             [btnRibbon, btnLoaf, btnPie].forEach(b => {
                 b.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold text-xs md:text-sm transition-all text-slate-600 hover:text-slate-900";
             });
@@ -614,7 +620,6 @@
         }
 
         function renderSandbox() {
-            // Update labels
             document.getElementById('math-unit-num').innerText = '1';
             document.getElementById('math-unit-den').innerText = denominator;
             document.getElementById('math-curr-num').innerText = numerator;
@@ -643,7 +648,6 @@
                 explBox.innerHTML = `這是 <b>${numerator}</b> 個 <span class="fraction-math"><span class="fraction-numerator">1</span><span class="fraction-denominator">${denominator}</span></span>，讀作「<b>${numberToChinese(denominator)}分之${numberToChinese(numerator)}</b>」，記作 <span class="fraction-math text-purple-700"><span class="fraction-numerator">${numerator}</span><span class="fraction-denominator">${denominator}</span></span>。`;
             }
 
-            // Build addition expression: e.g., 1/3 + 1/3 = 2/3
             if (numerator > 0) {
                 let parts = [];
                 for (let i = 0; i < numerator; i++) {
@@ -654,7 +658,6 @@
                 additionBox.innerHTML = `單位分數累積： 0`;
             }
 
-            // Render specific components
             renderRibbon();
             renderLoaf();
             renderPie();
@@ -773,7 +776,6 @@
 
                 svg.appendChild(path);
 
-                // Add text label inside wedge
                 if (denominator <= 8) {
                     const midAngle = startAngle + angleStep / 2;
                     const tx = cx + (radius * 0.6) * Math.cos(midAngle);
@@ -800,76 +802,139 @@
                 const card = document.createElement('div');
                 card.className = "bg-white/90 rounded-2xl p-4 md:p-6 border border-slate-200 shadow-sm transition-all";
                 
+                const selectedIdx = userSelections[item.id];
                 let optionsHtml = '';
+
                 item.options.forEach((opt, optIdx) => {
+                    let btnStyle = "border-slate-200 hover:border-sky-400 hover:bg-sky-50 text-slate-700";
+                    let iconHtml = '<i class="fa-regular fa-circle text-slate-300 group-hover:text-sky-500"></i>';
+
+                    if (!isSubmitted) {
+                        // Pre-submission: highlight selected option
+                        if (selectedIdx === optIdx) {
+                            btnStyle = "border-2 border-sky-500 bg-sky-50 text-sky-900 font-bold shadow-sm";
+                            iconHtml = '<i class="fa-solid fa-circle-dot text-sky-600"></i>';
+                        }
+                    } else {
+                        // Post-submission evaluation
+                        if (selectedIdx === undefined) {
+                            btnStyle = "border-slate-200 text-slate-400 opacity-70";
+                        } else if (optIdx === item.answer && selectedIdx === item.answer) {
+                            btnStyle = "border-2 border-emerald-500 bg-emerald-50 text-emerald-900 font-bold";
+                            iconHtml = '<i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>';
+                        } else if (optIdx === selectedIdx && selectedIdx !== item.answer) {
+                            btnStyle = "border-2 border-rose-400 bg-rose-50 text-rose-900 font-bold";
+                            iconHtml = '<i class="fa-solid fa-circle-xmark text-rose-500 text-lg"></i>';
+                        } else if (optIdx === item.answer) {
+                            btnStyle = "border-2 border-emerald-400 bg-emerald-50/60 text-emerald-800 font-bold";
+                            iconHtml = '<i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>';
+                        } else {
+                            btnStyle = "border-slate-200 text-slate-400 opacity-60";
+                        }
+                    }
+
                     optionsHtml += `
-                        <button onclick="checkAnswer(${item.id}, ${optIdx})" 
-                                id="q-${item.id}-opt-${optIdx}"
-                                class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-sky-400 hover:bg-sky-50 font-medium text-slate-700 text-xs md:text-sm transition-all flex items-center justify-between group active:scale-[0.99]">
-                            <span><b class="mr-1.5 text-sky-600">(${['A','B','C','D'][optIdx]})</b> ${opt}</span>
-                            <i class="fa-regular fa-circle text-slate-300 group-hover:text-sky-500"></i>
+                        <button onclick="selectOption(${item.id}, ${optIdx})" 
+                                ${isSubmitted ? 'disabled' : ''}
+                                class="w-full text-left p-3 rounded-xl border ${btnStyle} font-medium text-xs md:text-sm transition-all flex items-center justify-between group active:scale-[0.99] cursor-pointer">
+                            <span class="flex items-center flex-wrap gap-1"><b class="mr-1 text-sky-600">(${['A','B','C','D'][optIdx]})</b> ${opt}</span>
+                            ${iconHtml}
                         </button>
                     `;
                 });
+
+                // Explanation Box Handling
+                let explainHtml = '';
+                if (isSubmitted) {
+                    if (selectedIdx === undefined) {
+                        // Unanswered question -> Yellow box with ONLY "未作答。"
+                        explainHtml = `
+                            <div class="mt-4 p-3 bg-amber-50 border border-amber-300 rounded-xl text-amber-800 font-bold text-xs md:text-sm">
+                                未作答。
+                            </div>
+                        `;
+                    } else if (selectedIdx === item.answer) {
+                        // Correct answer -> Green explanation box
+                        explainHtml = `
+                            <div class="mt-4 p-3 bg-emerald-50 border border-emerald-300 rounded-xl text-xs md:text-sm text-emerald-900 leading-relaxed">
+                                <span class="font-bold text-emerald-700">【答對】</span> ${item.explain}
+                            </div>
+                        `;
+                    } else {
+                        // Incorrect answer -> Red explanation box with correct answer
+                        explainHtml = `
+                            <div class="mt-4 p-3 bg-rose-50 border border-rose-300 rounded-xl text-xs md:text-sm text-rose-900 leading-relaxed">
+                                <span class="font-bold text-rose-700">【答錯】</span> 正確答案為：<b>(${['A','B','C','D'][item.answer]}) ${item.options[item.answer]}</b>。<br>${item.explain}
+                            </div>
+                        `;
+                    }
+                }
 
                 card.innerHTML = `
                     <div class="flex items-start gap-2.5 mb-3">
                         <span class="bg-sky-100 text-sky-800 font-black px-2.5 py-1 rounded-lg text-xs md:text-sm shrink-0">
                             第 ${idx + 1} 題
                         </span>
-                        <h4 class="text-sm md:text-base font-bold text-slate-800 leading-snug">
+                        <h4 class="text-sm md:text-base font-bold text-slate-800 leading-snug flex flex-wrap items-center gap-1">
                             ${item.question}
                         </h4>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 mt-3">
                         ${optionsHtml}
                     </div>
-                    <div id="explain-q-${item.id}" class="hidden mt-4 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs md:text-sm leading-relaxed"></div>
+                    ${explainHtml}
                 `;
 
                 container.appendChild(card);
             });
         }
 
-        function checkAnswer(qId, selectedIdx) {
-            if (answeredQuestions[qId]) return;
+        function selectOption(qId, optIdx) {
+            if (isSubmitted) return;
+            playSound('click');
+            userSelections[qId] = optIdx;
+            renderQuiz();
+        }
 
-            const q = quizData.find(item => item.id === qId);
-            const isCorrect = (selectedIdx === q.answer);
-            answeredQuestions[qId] = true;
+        function submitQuiz() {
+            playSound('click');
+            isSubmitted = true;
+            
+            quizScore = 0;
+            let answeredCount = 0;
 
-            const btn = document.getElementById(`q-${qId}-opt-${selectedIdx}`);
-            const explainDiv = document.getElementById(`explain-q-${qId}`);
+            quizData.forEach(item => {
+                const sel = userSelections[item.id];
+                if (sel !== undefined) {
+                    answeredCount++;
+                    if (sel === item.answer) {
+                        quizScore += 20; // 5 questions * 20 pts = 100 max
+                    }
+                }
+            });
 
-            if (isCorrect) {
-                playSound('correct');
-                quizScore += 10;
-                document.getElementById('quiz-score').innerText = quizScore;
-                btn.className = "w-full text-left p-3 rounded-xl border-2 border-green-500 bg-green-50 font-bold text-green-800 text-xs md:text-sm flex items-center justify-between";
-                btn.querySelector('i').className = "fa-solid fa-circle-check text-green-600 text-lg";
+            document.getElementById('quiz-score').innerText = quizScore;
+            renderQuiz();
 
-                showModal(
-                    true,
-                    "答對了！太厲害了！ 🎉",
-                    `獲得 10 分！<br><br><span class="text-xs text-slate-500">${q.explain}</span>`
-                );
-            } else {
+            if (quizScore === 100) {
+                playSound('win');
+                showModal(true, "太棒了！獲得滿分 100 分！ 🎉", "你已經完全掌握分數與 1 的概念了！繼續保持！");
+            } else if (answeredCount < quizData.length) {
                 playSound('wrong');
-                btn.className = "w-full text-left p-3 rounded-xl border-2 border-rose-400 bg-rose-50 font-bold text-rose-800 text-xs md:text-sm flex items-center justify-between";
-                btn.querySelector('i').className = "fa-solid fa-circle-xmark text-rose-500 text-lg";
-
-                const correctBtn = document.getElementById(`q-${qId}-opt-${q.answer}`);
-                correctBtn.className = "w-full text-left p-3 rounded-xl border-2 border-green-500 bg-green-50 font-bold text-green-800 text-xs md:text-sm flex items-center justify-between";
-
-                showModal(
-                    false,
-                    "再思考一下喔！ 💪",
-                    `正確答案是：<b>(${['A','B','C','D'][q.answer]}) ${q.options[q.answer]}</b><br><br><span class="text-xs text-slate-500">${q.explain}</span>`
-                );
+                showModal(false, "測驗完成！", `本次得分：<b>${quizScore}</b> / 100 分<br>注意：部分題目<span class="text-amber-600 font-bold">未作答</span>，請參考解析並點擊「重新測驗」再試一次！`);
+            } else {
+                playSound('correct');
+                showModal(true, "測驗完成！", `本次得分：<b>${quizScore}</b> / 100 分<br>可參考下方解析檢視錯題，訂正後點選「重新測驗」再次挑戰！`);
             }
+        }
 
-            explainDiv.classList.remove('hidden');
-            explainDiv.innerHTML = `<span class="font-bold ${isCorrect ? 'text-green-700' : 'text-rose-600'}">【教學解析】</span> ${q.explain}`;
+        function resetQuiz() {
+            playSound('click');
+            userSelections = {};
+            isSubmitted = false;
+            quizScore = 0;
+            document.getElementById('quiz-score').innerText = "0";
+            renderQuiz();
         }
 
         function showModal(isSuccess, title, msg) {
@@ -879,7 +944,7 @@
             const msgEl = document.getElementById('modal-msg');
 
             if (isSuccess) {
-                iconWrap.className = "w-16 h-16 rounded-full mx-auto flex items-center justify-center text-3xl bg-green-100 text-green-600 border-2 border-green-300";
+                iconWrap.className = "w-16 h-16 rounded-full mx-auto flex items-center justify-center text-3xl bg-emerald-100 text-emerald-600 border-2 border-emerald-300";
                 iconWrap.innerHTML = '<i class="fa-solid fa-award"></i>';
             } else {
                 iconWrap.className = "w-16 h-16 rounded-full mx-auto flex items-center justify-center text-3xl bg-amber-100 text-amber-600 border-2 border-amber-300";

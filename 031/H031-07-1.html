@@ -113,7 +113,7 @@
                     <i class="fa-solid fa-flask"></i> 秤重探究實驗室
                 </button>
                 <button id="tab-quiz-btn" onclick="switchTab('quiz')" class="tab-btn flex-1 py-3 px-6 rounded-xl font-bold text-base md:text-lg text-slate-200 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-list-check"></i> 隨堂小測驗
+                    <i class="fa-solid fa-list-check"></i> 闖關測驗
                 </button>
             </div>
         </header>
@@ -332,7 +332,7 @@
             <div class="glass-card rounded-2xl p-5 flex justify-between items-center flex-wrap gap-4">
                 <div>
                     <h2 class="text-xl font-bold text-amber-200 flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap"></i> 7-1 認識公斤隨堂小測驗
+                        <i class="fa-solid fa-graduation-cap"></i> 闖關測驗
                     </h2>
                     <p class="text-slate-300 text-sm mt-1">請回答下列 5 道題目，檢測自己是否掌握重量觀念與報讀方法。</p>
                 </div>
@@ -347,10 +347,13 @@
                 <!-- 題目將由 JavaScript 自動動態渲染 -->
             </div>
 
-            <!-- 測驗結算按鈕 -->
-            <div class="text-center pt-4">
-                <button onclick="checkAllAnswers()" class="px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-2xl shadow-lg transition-all transform hover:scale-105 active:scale-95 text-lg">
-                    <i class="fa-solid fa-paper-plane"></i> 提交測驗並檢查答案
+            <!-- 測驗結算與重置按鈕區 -->
+            <div class="flex justify-center items-center gap-4 pt-4 flex-wrap">
+                <button onclick="checkAllAnswers()" class="px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-2xl shadow-lg transition-all transform hover:scale-105 active:scale-95 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> 提交答案
+                </button>
+                <button onclick="resetQuiz()" class="px-8 py-3 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white font-bold rounded-2xl shadow-lg transition-all transform hover:scale-105 active:scale-95 text-lg flex items-center gap-2 border border-white/20">
+                    <i class="fa-solid fa-rotate-right"></i> 重新測驗
                 </button>
             </div>
         </main>
@@ -574,7 +577,7 @@
             quizQuestions.forEach((q) => {
                 const selected = document.querySelector(`input[name="q-${q.id}"]:checked`);
                 const feedbackEl = document.getElementById(`feedback-${q.id}`);
-                feedbackEl.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+                feedbackEl.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800', 'bg-amber-100', 'text-amber-800');
 
                 if (selected) {
                     answeredCount++;
@@ -589,17 +592,33 @@
                     }
                 } else {
                     feedbackEl.classList.add('bg-amber-100', 'text-amber-800');
-                    feedbackEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-600"></i> 尚未作答此題！`;
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-600"></i> 未作答。`;
                 }
             });
 
             document.getElementById('quiz-score').innerText = `${score} / 100`;
 
             if (answeredCount < quizQuestions.length) {
-                showToast("⚠️ 請完成所有題目後再檢查答案喔！");
+                showToast("⚠️ 有題目尚未作答喔！");
             } else {
                 showToast(`🎉 測驗完成！您獲得了 ${score} 分！`);
             }
+        }
+
+        // Reset Quiz Logic
+        function resetQuiz() {
+            quizQuestions.forEach((q) => {
+                const selectedInputs = document.querySelectorAll(`input[name="q-${q.id}"]`);
+                selectedInputs.forEach(input => input.checked = false);
+                
+                const feedbackEl = document.getElementById(`feedback-${q.id}`);
+                if (feedbackEl) {
+                    feedbackEl.classList.add('hidden');
+                    feedbackEl.innerHTML = '';
+                }
+            });
+            document.getElementById('quiz-score').innerText = '0 / 100';
+            showToast("🔄 已重置測驗，可以重新開始作答囉！");
         }
 
         // Custom Toast Notification (Replacing alert)

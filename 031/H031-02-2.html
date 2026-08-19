@@ -41,8 +41,8 @@
 
         /* Square Place Value Blocks Styling with Numbers */
         .block-unit {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             background: #f43f5e;
             border-radius: 6px;
             box-shadow: inset -1px -1px 0 rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.1);
@@ -84,15 +84,6 @@
             justify-content: center;
         }
 
-        /* Subtrahend Target Dotted Frame */
-        .frame-box {
-            border: 2px dashed #f43f5e;
-            background-color: rgba(244, 63, 94, 0.08);
-            border-radius: 8px;
-            padding: 6px;
-            transition: all 0.3s ease;
-        }
-
         /* Regrouping Pulse Effect */
         .pulse-btn {
             animation: pulse-glow 1.8s infinite;
@@ -123,20 +114,27 @@
 <body class="shinkai-bg pb-12">
 
     <!-- Header Title Banner -->
-    <header class="py-8 text-center text-white px-4">
+    <header class="py-6 text-center px-4">
         <div class="max-w-5xl mx-auto">
             <!-- 閒雲數學小棧 Logo Banner -->
-            <!-- 修改：使用轉換後的 Google Drive 直接連結 -->
-            <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
-                <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
-                <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
+            <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2">
+                <div class="bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-pink-200 shadow-sm flex items-center">
+                    <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-2.5 object-contain drop-shadow bg-pink-100 p-1 rounded-full" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
+                    <span class="text-lg md:text-xl font-black bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent tracking-wider">閒雲數學小棧</span>
+                </div>
             </div>
 
-            <span class="bg-indigo-500/30 text-indigo-100 text-xs font-semibold px-3 py-1 rounded-full border border-indigo-300/30 tracking-widest uppercase">國小三上數學 2-2 互動學習網頁</span>
-            <h1 class="text-3xl md:text-5xl font-black mt-2 tracking-wide drop-shadow-md">
-                <i class="fa-solid fa-calculator text-amber-300 mr-3"></i>萬以內減法與驗算探究寶典
+            <!-- Shinkai Glassmorphism Subtitle Badge -->
+            <span class="bg-white/80 backdrop-blur-md text-indigo-900 text-xs md:text-sm font-extrabold px-4 py-1.5 rounded-full border border-purple-200 shadow-sm tracking-widest inline-block mb-2">國小三上數學 2-2 互動學習網頁</span>
+            
+            <!-- Vibrant Magenta to Purple Gradient Title (Matching User Image) -->
+            <h1 class="text-3xl md:text-5xl font-black mt-2 tracking-wide drop-shadow-sm flex items-center justify-center gap-2 flex-wrap">
+                <i class="fa-solid fa-calculator text-amber-400"></i>
+                <span class="bg-gradient-to-r from-fuchsia-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">萬以內減法與驗算探究寶典</span>
             </h1>
-            <p class="text-indigo-100 text-sm md:text-base mt-2 font-medium opacity-90">
+            
+            <!-- Macaron Soft Subtitle -->
+            <p class="text-purple-900/90 text-sm md:text-base mt-2 font-bold">
                 結合估算、位值積木退位拆解、加法驗算與數字卡互動探究
             </p>
         </div>
@@ -155,7 +153,7 @@
                 <i class="fa-solid fa-wand-magic-sparkles"></i> 3. 巧算與數字拼圖
             </button>
             <button onclick="switchTab(4)" id="tab-btn-4" class="tab-btn px-5 py-3 rounded-2xl font-bold transition-all text-sm md:text-base flex items-center gap-2 glass-card text-gray-700">
-                <i class="fa-solid fa-pen-to-square"></i> 4. 歷程性小評量
+                <i class="fa-solid fa-pen-to-square"></i> 4. 闖關測驗
             </button>
         </div>
 
@@ -163,144 +161,103 @@
              TAB 1: 估算與加法驗算
              ========================================== -->
         <div id="tab-content-1" class="tab-panel space-y-6">
-            <div class="glass-card rounded-3xl p-6 md:p-8">
-                <div class="flex items-center gap-3 border-b border-indigo-100 pb-4 mb-6">
+            <div class="glass-card rounded-3xl p-6 md:p-8 space-y-6">
+                <div class="flex items-center gap-3 border-b border-indigo-100 pb-4">
                     <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xl font-bold">1</div>
                     <div>
-                        <h2 class="text-xl md:text-2xl font-bold text-gray-800">四位數減法估算與加法驗算</h2>
-                        <p class="text-xs md:text-sm text-gray-500">透過條形圖觀察「被減數 = 減數 + 差」的關係，並體驗取整數估算。</p>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-800">萬以內減法估算與加法驗算</h2>
+                        <p class="text-xs md:text-sm text-gray-500">拖動滑桿觀察被減數與減數變化，並驗證加法與減法的逆運算關係。</p>
                     </div>
                 </div>
 
-                <!-- Input Slider Controls -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-indigo-50/60 p-6 rounded-2xl mb-8 border border-indigo-100">
+                <!-- Interactive Controls -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-indigo-50/50 p-5 rounded-2xl border border-indigo-100">
                     <div>
-                        <div class="flex justify-between items-center mb-2">
-                            <label class="font-bold text-indigo-900">被減數 (包心菜總數 / 元):</label>
-                            <span id="label-minuend" class="text-2xl font-black text-indigo-600">3986</span>
-                        </div>
-                        <input type="range" id="input-minuend" min="1000" max="9999" value="3986" step="1" 
-                               class="w-full h-3 bg-indigo-200 rounded-lg appearance-none cursor-pointer accent-indigo-600" oninput="updateTab1()">
-                        <div class="flex justify-between text-xs text-gray-500 mt-1">
-                            <span>1000</span>
-                            <span>估算接近: <strong id="approx-minuend" class="text-indigo-600">4000</strong></span>
-                            <span>9999</span>
-                        </div>
+                        <label class="block font-bold text-gray-700 mb-2 flex justify-between">
+                            <span>被減數 (原本數量)：<strong id="label-minuend" class="text-indigo-600">3986</strong></span>
+                        </label>
+                        <input type="range" id="input-minuend" min="1000" max="9999" value="3986" step="1" oninput="updateTab1()" class="w-full accent-indigo-600 cursor-pointer">
                     </div>
-
                     <div>
-                        <div class="flex justify-between items-center mb-2">
-                            <label class="font-bold text-purple-900">減數 (賣掉數量 / 花費):</label>
-                            <span id="label-subtrahend" class="text-2xl font-black text-purple-600">2132</span>
+                        <label class="block font-bold text-gray-700 mb-2 flex justify-between">
+                            <span>減數 (扣除數量)：<strong id="label-subtrahend" class="text-rose-600">2132</strong></span>
+                            <span class="text-xs text-gray-400">上限: <span id="max-sub-label">3986</span></span>
+                        </label>
+                        <input type="range" id="input-subtrahend" min="0" max="3986" value="2132" step="1" oninput="updateTab1()" class="w-full accent-rose-600 cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Estimation Visual Box -->
+                <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200">
+                    <h3 class="font-bold text-amber-900 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-lightbulb text-amber-500"></i> 快速估算 (概數思考)
+                    </h3>
+                    <p id="estimation-explanation" class="text-sm text-amber-800 leading-relaxed"></p>
+                </div>
+
+                <!-- Part-Whole Visual Bar -->
+                <div class="bg-white p-5 rounded-2xl border border-indigo-100 shadow-sm">
+                    <h3 class="font-bold text-gray-800 mb-3 text-center">部分與整體數量關係圖</h3>
+                    <div class="mb-2 text-center text-sm font-bold text-indigo-900" id="bar-total-text">3986 (被減數)</div>
+                    <div class="w-full bg-gray-200 h-10 rounded-xl flex overflow-hidden p-1 gap-1 border border-gray-300">
+                        <div id="bar-part-sub" class="bg-rose-500 h-full rounded-lg text-white font-bold text-xs flex items-center justify-center transition-all duration-300" style="width: 53.5%;">
+                            <span id="bar-sub-text">2132 (減數)</span>
                         </div>
-                        <input type="range" id="input-subtrahend" min="100" max="3986" value="2132" step="1" 
-                               class="w-full h-3 bg-purple-200 rounded-lg appearance-none cursor-pointer accent-purple-600" oninput="updateTab1()">
-                        <div class="flex justify-between text-xs text-gray-500 mt-1">
-                            <span>100</span>
-                            <span>估算接近: <strong id="approx-subtrahend" class="text-purple-600">2000</strong></span>
-                            <span id="max-sub-label">3986</span>
+                        <div id="bar-part-diff" class="bg-indigo-600 h-full rounded-lg text-white font-bold text-xs flex items-center justify-center transition-all duration-300" style="width: 46.5%;">
+                            <span id="bar-diff-text">1854 (差)</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Interactive Bar & Calculations Display -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
-                    <!-- Visual Bar Diagram -->
-                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                        <h3 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-ruler-horizontal text-indigo-500"></i> 數量關係長條圖
-                        </h3>
-                        
-                        <!-- Total Bar -->
-                        <div class="mb-4">
-                            <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
-                                <span>被減數 (全部)</span>
-                                <span id="bar-total-val">3986</span>
-                            </div>
-                            <div class="w-full bg-indigo-500 h-8 rounded-xl text-white flex items-center justify-center font-bold text-sm shadow-inner transition-all">
-                                <span id="bar-total-text">3986</span>
-                            </div>
-                        </div>
+                <!-- Dual Vertical Algorithms (Subtraction & Addition Verification) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
+                    <!-- Subtraction Vertical -->
+                    <div class="bg-white p-6 rounded-2xl border border-rose-100 shadow-sm flex flex-col items-center">
+                        <span class="bg-rose-100 text-rose-800 text-xs font-bold px-3 py-1 rounded-full mb-4">減法算式 (求剩餘)</span>
+                        <div class="grid grid-cols-5 gap-x-3 gap-y-1 text-center font-mono text-xl md:text-2xl font-black w-48 text-gray-800 border-b-2 border-gray-800 pb-2">
+                            <!-- Column Header -->
+                            <span class="text-xs text-gray-400 font-sans"></span>
+                            <span class="text-xs text-gray-400 font-sans">千</span>
+                            <span class="text-xs text-gray-400 font-sans">百</span>
+                            <span class="text-xs text-gray-400 font-sans">十</span>
+                            <span class="text-xs text-gray-400 font-sans">個</span>
 
-                        <!-- Split Bar -->
-                        <div>
-                            <div class="flex justify-between text-xs font-bold text-gray-600 mb-1">
-                                <span>減數 + 差 (賣掉 + 剩下)</span>
-                                <span>驗算相加合</span>
-                            </div>
-                            <div class="w-full flex h-8 rounded-xl overflow-hidden shadow-inner font-bold text-xs text-white">
-                                <div id="bar-part-sub" class="bg-purple-500 flex items-center justify-center transition-all" style="width: 53.5%;">
-                                    <span id="bar-sub-text">2132 (減數)</span>
-                                </div>
-                                <div id="bar-part-diff" class="bg-emerald-500 flex items-center justify-center transition-all" style="width: 46.5%;">
-                                    <span id="bar-diff-text">1854 (差)</span>
-                                </div>
-                            </div>
-                        </div>
+                            <!-- Minuend -->
+                            <span></span>
+                            <span id="vm-th">3</span><span id="vm-h">9</span><span id="vm-t">8</span><span id="vm-u">6</span>
 
-                        <!-- Estimation Alert Box -->
-                        <div class="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm flex items-start gap-3">
-                            <i class="fa-solid fa-lightbulb text-amber-500 text-xl mt-0.5"></i>
-                            <div>
-                                <span class="font-bold">小甲的估算智慧：</span>
-                                <p id="estimation-explanation">
-                                    把 3986 看成接近 4000，2132 看成接近 2000。<br>
-                                    估算答案大約是：<strong class="text-amber-700">4000 - 2000 = 2000</strong>。
-                                </p>
-                            </div>
+                            <!-- Subtrahend -->
+                            <span class="text-rose-600 font-sans">-</span>
+                            <span id="vs-th" class="text-rose-600">2</span><span id="vs-h" class="text-rose-600">1</span><span id="vs-t" class="text-rose-600">3</span><span id="vs-u" class="text-rose-600">2</span>
+                        </div>
+                        <div class="grid grid-cols-5 gap-x-3 text-center font-mono text-xl md:text-2xl font-black w-48 text-indigo-600 pt-2">
+                            <span></span>
+                            <span id="vd-th">1</span><span id="vd-h">8</span><span id="vd-t">5</span><span id="vd-u">4</span>
                         </div>
                     </div>
 
-                    <!-- Side-by-side Vertical Algorithms -->
-                    <div class="space-y-4">
-                        <!-- Subtraction Vertical -->
-                        <div class="bg-indigo-50/80 p-4 rounded-2xl border border-indigo-200">
-                            <div class="text-xs font-bold text-indigo-700 mb-3 flex justify-between items-center">
-                                <span>【減法直式】計算</span>
-                            </div>
-                            <div class="font-mono text-xl font-bold text-gray-800 max-w-[200px] mx-auto">
-                                <!-- 5-Column Place Value Header -->
-                                <div class="grid grid-cols-5 text-center text-xs font-bold text-indigo-600 mb-1 border-b border-indigo-200/50 pb-1">
-                                    <span></span><span>千</span><span>百</span><span>十</span><span>個</span>
-                                </div>
-                                <!-- Minuend Row -->
-                                <div class="grid grid-cols-5 text-center py-0.5">
-                                    <span></span><span id="vm-th">3</span><span id="vm-h">9</span><span id="vm-t">8</span><span id="vm-u">6</span>
-                                </div>
-                                <!-- Subtrahend Row with minus sign in 5th position and bottom line extending across all 5 cols -->
-                                <div class="grid grid-cols-5 text-center border-b-2 border-gray-800 pb-1 py-0.5">
-                                    <span class="text-indigo-600 font-black">-</span><span id="vs-th">2</span><span id="vs-h">1</span><span id="vs-t">3</span><span id="vs-u">2</span>
-                                </div>
-                                <!-- Difference Row -->
-                                <div class="grid grid-cols-5 text-center text-indigo-600 pt-1">
-                                    <span></span><span id="vd-th">1</span><span id="vd-h">8</span><span id="vd-t">5</span><span id="vd-u">4</span>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Addition Verification Vertical -->
+                    <div class="bg-white p-6 rounded-2xl border border-indigo-100 shadow-sm flex flex-col items-center">
+                        <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full mb-4">加法驗算 (差 + 減數 = 被減數)</span>
+                        <div class="grid grid-cols-5 gap-x-3 gap-y-1 text-center font-mono text-xl md:text-2xl font-black w-48 text-gray-800 border-b-2 border-gray-800 pb-2">
+                            <!-- Column Header -->
+                            <span class="text-xs text-gray-400 font-sans"></span>
+                            <span class="text-xs text-gray-400 font-sans">千</span>
+                            <span class="text-xs text-gray-400 font-sans">百</span>
+                            <span class="text-xs text-gray-400 font-sans">十</span>
+                            <span class="text-xs text-gray-400 font-sans">個</span>
 
-                        <!-- Verification Vertical -->
-                        <div class="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-200">
-                            <div class="text-xs font-bold text-emerald-700 mb-3 flex justify-between items-center">
-                                <span>【加法驗算】差 + 減數</span>
-                            </div>
-                            <div class="font-mono text-xl font-bold text-gray-800 max-w-[200px] mx-auto">
-                                <!-- 5-Column Place Value Header -->
-                                <div class="grid grid-cols-5 text-center text-xs font-bold text-emerald-600 mb-1 border-b border-emerald-200/50 pb-1">
-                                    <span></span><span>千</span><span>百</span><span>十</span><span>個</span>
-                                </div>
-                                <!-- Check Diff Row -->
-                                <div class="grid grid-cols-5 text-center text-emerald-600 py-0.5">
-                                    <span></span><span id="vcd-th">1</span><span id="vcd-h">8</span><span id="vcd-t">5</span><span id="vcd-u">4</span>
-                                </div>
-                                <!-- Check Subtrahend Row with plus sign in 5th position and bottom line extending across all 5 cols -->
-                                <div class="grid grid-cols-5 text-center border-b-2 border-gray-800 pb-1 py-0.5">
-                                    <span class="text-emerald-600 font-black">+</span><span id="vcs-th">2</span><span id="vcs-h">1</span><span id="vcs-t">3</span><span id="vcs-u">2</span>
-                                </div>
-                                <!-- Check Sum Row -->
-                                <div class="grid grid-cols-5 text-center text-indigo-600 pt-1">
-                                    <span></span><span id="vcsum-th">3</span><span id="vcsum-h">9</span><span id="vcsum-t">8</span><span id="vcsum-u">6</span>
-                                </div>
-                            </div>
+                            <!-- Difference -->
+                            <span></span>
+                            <span id="vcd-th" class="text-indigo-600">1</span><span id="vcd-h" class="text-indigo-600">8</span><span id="vcd-t" class="text-indigo-600">5</span><span id="vcd-u" class="text-indigo-600">4</span>
+
+                            <!-- Subtrahend -->
+                            <span class="text-emerald-600 font-sans">+</span>
+                            <span id="vcs-th" class="text-emerald-600">2</span><span id="vcs-h" class="text-emerald-600">1</span><span id="vcs-t" class="text-emerald-600">3</span><span id="vcs-u" class="text-emerald-600">2</span>
+                        </div>
+                        <div class="grid grid-cols-5 gap-x-3 text-center font-mono text-xl md:text-2xl font-black w-48 text-gray-900 pt-2">
+                            <span></span>
+                            <span id="vcsum-th">3</span><span id="vcsum-h">9</span><span id="vcsum-t">8</span><span id="vcsum-u">6</span>
                         </div>
                     </div>
                 </div>
@@ -311,140 +268,97 @@
              TAB 2: 位值積木與退位直式
              ========================================== -->
         <div id="tab-content-2" class="tab-panel hidden space-y-6">
-            <div class="glass-card rounded-3xl p-6 md:p-8">
-                <div class="flex items-center justify-between border-b border-indigo-100 pb-4 mb-6 flex-wrap gap-4">
+            <div class="glass-card rounded-3xl p-6 md:p-8 space-y-6">
+                <div class="flex flex-wrap items-center justify-between border-b border-indigo-100 pb-4 gap-4">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center text-xl font-bold">2</div>
                         <div>
-                            <h2 class="text-xl md:text-2xl font-bold text-gray-800">位值積木扣減與退位 (1換10) 探究</h2>
-                            <p class="text-xs md:text-sm text-gray-500">觀察「現有積木」中被標示紅框的扣除數量，若積木不足（出現虛線缺框）請按退位鈕進行拆解！</p>
+                            <h2 class="text-xl md:text-2xl font-bold text-gray-800">位值積木拆解與退位直式</h2>
+                            <p class="text-xs md:text-sm text-gray-500">當位值不夠減時，點擊黃色退位按鈕進行「1換10」積木拆解。</p>
                         </div>
                     </div>
-
-                    <!-- Preset Selector -->
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold text-gray-600">經典教材例題：</span>
-                        <select id="preset-select" onchange="loadPreset(this.value)" class="bg-white border border-indigo-200 rounded-xl px-3 py-2 text-sm font-bold text-indigo-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                            <option value="2196-375">例題：2196 - 375 (千位退到百位)</option>
-                            <option value="3018-2825">例題：3018 - 2825 (連續退位，首位為0)</option>
-                            <option value="2000-925">例題：2000 - 925 (整千數退位)</option>
-                        </select>
+                    <!-- Preset Selection Buttons -->
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="loadPreset('2196-375')" class="px-3 py-1.5 rounded-xl bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold text-xs transition">單次退位 (2196-375)</button>
+                        <button onclick="loadPreset('3018-2825')" class="px-3 py-1.5 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-800 font-bold text-xs transition">二次退位 (3018-2825)</button>
+                        <button onclick="loadPreset('2000-925')" class="px-3 py-1.5 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold text-xs transition">整千連續退位 (2000-925)</button>
                     </div>
                 </div>
 
-                <!-- Interactive Regrouping Main Display -->
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    
-                    <!-- Left Column: Step-by-step Vertical Algorithm -->
-                    <div class="lg:col-span-1 bg-gradient-to-b from-slate-900 to-indigo-950 text-white p-6 rounded-2xl flex flex-col justify-between shadow-xl">
-                        <div>
-                            <h3 class="text-xs font-bold tracking-widest uppercase text-indigo-300 mb-4 border-b border-indigo-800 pb-2">
-                                <i class="fa-solid fa-list-ol mr-1"></i> 直式退位紀錄表
-                            </h3>
+                <!-- Regroup Hint Box -->
+                <div id="tab2-hint-box" class="p-3.5 bg-amber-50 border border-amber-200 rounded-2xl text-xs md:text-sm text-amber-900 font-medium"></div>
 
-                            <!-- Dynamic Vertical Math Table -->
-                            <div class="font-mono text-center my-6">
-                                <!-- Place Value Headers -->
-                                <div class="grid grid-cols-4 text-xs font-bold text-amber-300 border-b border-indigo-800 pb-1 mb-2">
-                                    <span>千</span><span>百</span><span>十</span><span>個</span>
-                                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Vertical Subtraction Algorithm Display -->
+                    <div class="lg:col-span-4 bg-white p-6 rounded-2xl border border-indigo-100 shadow-sm flex flex-col items-center justify-center">
+                        <h3 class="font-bold text-gray-700 text-sm mb-4">退位直式計算過程</h3>
+                        <div class="grid grid-cols-5 gap-x-2 gap-y-1 text-center font-mono text-xl md:text-2xl font-black w-44 border-b-2 border-gray-800 pb-2">
+                            <!-- Headers -->
+                            <span class="text-xs text-gray-400 font-sans"></span>
+                            <span class="text-xs text-gray-400 font-sans">千</span>
+                            <span class="text-xs text-gray-400 font-sans">百</span>
+                            <span class="text-xs text-gray-400 font-sans">十</span>
+                            <span class="text-xs text-gray-400 font-sans">個</span>
 
-                                <!-- Regroup Borrow Markers Row -->
-                                <div id="v2-borrow-row" class="grid grid-cols-4 text-xs text-rose-400 font-bold h-6 items-center">
-                                    <span id="b-th"></span><span id="b-h"></span><span id="b-t"></span><span id="b-u"></span>
-                                </div>
+                            <!-- Borrowed markings -->
+                            <span></span>
+                            <span></span>
+                            <span id="b-h" class="text-xs text-amber-600 font-sans h-4"></span>
+                            <span id="b-t" class="text-xs text-amber-600 font-sans h-4"></span>
+                            <span id="b-u" class="text-xs text-amber-600 font-sans h-4"></span>
 
-                                <!-- Minuend Digits -->
-                                <div id="v2-minuend-row" class="grid grid-cols-4 text-xl font-black text-white tracking-wider my-1">
-                                    <span id="m-th">2</span><span id="m-h">1</span><span id="m-t">9</span><span id="m-u">6</span>
-                                </div>
+                            <!-- Minuend -->
+                            <span></span>
+                            <span id="m-th">2</span><span id="m-h">1</span><span id="m-t">9</span><span id="m-u">6</span>
 
-                                <!-- Subtrahend Digits -->
-                                <div class="grid grid-cols-4 text-xl font-black text-indigo-200 tracking-wider border-b-2 border-white pb-2 my-1">
-                                    <span id="s-th">-</span><span id="s-h">3</span><span id="s-t">7</span><span id="s-u">5</span>
-                                </div>
-
-                                <!-- Difference Result Digits -->
-                                <div class="grid grid-cols-4 text-2xl font-black text-emerald-400 tracking-wider pt-2">
-                                    <span id="r-th">?</span><span id="r-h">?</span><span id="r-t">?</span><span id="r-u">?</span>
-                                </div>
-                            </div>
+                            <!-- Subtrahend -->
+                            <span class="text-rose-600 font-sans">-</span>
+                            <span id="s-th" class="text-rose-600"></span><span id="s-h" class="text-rose-600">3</span><span id="s-t" class="text-rose-600">7</span><span id="s-u" class="text-rose-600">5</span>
+                        </div>
+                        <div class="grid grid-cols-5 gap-x-2 text-center font-mono text-xl md:text-2xl font-black w-44 text-indigo-600 pt-2">
+                            <span></span>
+                            <span id="r-th">?</span><span id="r-h">?</span><span id="r-t">?</span><span id="r-u">?</span>
                         </div>
 
-                        <!-- Action Buttons -->
-                        <div class="space-y-2 mt-4">
-                            <button onclick="executeSubtractStep()" id="btn-sub-step" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-play"></i> 執行扣減計算
+                        <!-- Action Controls -->
+                        <div class="mt-6 flex flex-col gap-2 w-full">
+                            <button onclick="executeSubtractStep()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl shadow transition text-xs md:text-sm">
+                                <i class="fa-solid fa-play mr-1"></i> 執行扣減計算
                             </button>
-                            <button onclick="resetTab2()" class="w-full bg-indigo-800/60 hover:bg-indigo-800 text-indigo-200 font-medium py-2 rounded-xl text-xs transition">
-                                <i class="fa-solid fa-rotate-left"></i> 重置題目狀態
+                            <button onclick="resetTab2()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 rounded-xl transition text-xs">
+                                <i class="fa-solid fa-rotate-left mr-1"></i> 重置積木
                             </button>
                         </div>
                     </div>
 
-                    <!-- Right 3 Columns: Interactive Place Value Blocks Visualization -->
-                    <div class="lg:col-span-3 bg-indigo-50/40 p-4 rounded-2xl border border-indigo-100 flex flex-col justify-between">
-                        
-                        <!-- Visual Legend -->
-                        <div class="flex flex-wrap items-center justify-end gap-3 md:gap-5 text-xs font-bold text-gray-600 mb-3 px-1">
-                            <span class="flex items-center gap-1.5">
-                                <span class="w-3.5 h-3.5 rounded-sm bg-indigo-500 inline-block shadow-sm"></span> 現有實心積木
-                            </span>
-                            <span class="flex items-center gap-1.5">
-                                <span class="w-3.5 h-3.5 rounded-sm border-2 border-dashed border-rose-500 bg-rose-200 inline-block shadow-sm"></span> 🟥 紅框 = 減數欲扣除
-                            </span>
-                            <span class="flex items-center gap-1.5">
-                                <span class="w-3.5 h-3.5 rounded-sm border-2 border-dashed border-rose-500 bg-rose-50 inline-block"></span> 虛線缺框 = 需退位拆解
-                            </span>
+                    <!-- Place Value Blocks Board -->
+                    <div class="lg:col-span-8 bg-slate-50/80 p-5 rounded-2xl border border-gray-200 grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <!-- Thousand Column -->
+                        <div class="bg-white p-3 rounded-xl border border-purple-100 flex flex-col items-center min-h-[220px]">
+                            <span class="font-bold text-xs text-purple-700 mb-2">千位 (1000)</span>
+                            <div id="regroup-btn-th-container" class="mb-2 min-h-[24px]"></div>
+                            <div id="blocks-thousand" class="flex flex-wrap gap-1.5 justify-center"></div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-center">
-                            
-                            <!-- Thousand Column -->
-                            <div class="bg-white p-3 rounded-xl border border-indigo-100 flex flex-col items-center">
-                                <div class="text-xs font-bold text-purple-700 bg-purple-100 px-3 py-1 rounded-full mb-2 w-full">千位 (1000)</div>
-                                <div id="regroup-btn-th-container" class="h-8 mb-2"></div>
-                                <div class="w-full flex-1 bg-slate-50 p-2.5 rounded-xl border border-slate-200 min-h-[160px] flex flex-col items-center justify-start">
-                                    <span class="text-[10px] font-bold text-gray-400 mb-2">現有積木與扣除框</span>
-                                    <div id="blocks-thousand" class="flex flex-wrap gap-1.5 justify-center items-center w-full"></div>
-                                </div>
-                            </div>
-
-                            <!-- Hundred Column -->
-                            <div class="bg-white p-3 rounded-xl border border-indigo-100 flex flex-col items-center">
-                                <div class="text-xs font-bold text-blue-700 bg-blue-100 px-3 py-1 rounded-full mb-2 w-full">百位 (100)</div>
-                                <div id="regroup-btn-h-container" class="h-8 mb-2"></div>
-                                <div class="w-full flex-1 bg-slate-50 p-2.5 rounded-xl border border-slate-200 min-h-[160px] flex flex-col items-center justify-start">
-                                    <span class="text-[10px] font-bold text-gray-400 mb-2">現有積木與扣除框</span>
-                                    <div id="blocks-hundred" class="flex flex-wrap gap-1.5 justify-center items-center w-full"></div>
-                                </div>
-                            </div>
-
-                            <!-- Ten Column -->
-                            <div class="bg-white p-3 rounded-xl border border-indigo-100 flex flex-col items-center">
-                                <div class="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full mb-2 w-full">十位 (10)</div>
-                                <div id="regroup-btn-t-container" class="h-8 mb-2"></div>
-                                <div class="w-full flex-1 bg-slate-50 p-2.5 rounded-xl border border-slate-200 min-h-[160px] flex flex-col items-center justify-start">
-                                    <span class="text-[10px] font-bold text-gray-400 mb-2">現有積木與扣除框</span>
-                                    <div id="blocks-ten" class="flex flex-wrap gap-1.5 justify-center items-center w-full"></div>
-                                </div>
-                            </div>
-
-                            <!-- Unit Column -->
-                            <div class="bg-white p-3 rounded-xl border border-indigo-100 flex flex-col items-center">
-                                <div class="text-xs font-bold text-rose-700 bg-rose-100 px-3 py-1 rounded-full mb-2 w-full">個位 (1)</div>
-                                <div id="regroup-btn-u-container" class="h-8 mb-2"></div>
-                                <div class="w-full flex-1 bg-slate-50 p-2.5 rounded-xl border border-slate-200 min-h-[160px] flex flex-col items-center justify-start">
-                                    <span class="text-[10px] font-bold text-gray-400 mb-2">現有積木與扣除框</span>
-                                    <div id="blocks-unit" class="flex flex-wrap gap-1.5 justify-center items-center w-full"></div>
-                                </div>
-                            </div>
-
+                        <!-- Hundred Column -->
+                        <div class="bg-white p-3 rounded-xl border border-blue-100 flex flex-col items-center min-h-[220px]">
+                            <span class="font-bold text-xs text-blue-700 mb-2">百位 (100)</span>
+                            <div id="regroup-btn-h-container" class="mb-2 min-h-[24px]"></div>
+                            <div id="blocks-hundred" class="flex flex-wrap gap-1.5 justify-center"></div>
                         </div>
 
-                        <!-- Feedback hint -->
-                        <div id="tab2-hint-box" class="mt-4 p-3 rounded-xl bg-indigo-100/70 text-indigo-900 text-xs font-medium flex items-center justify-between">
-                            <span><i class="fa-solid fa-circle-info text-indigo-600 mr-1.5"></i> 狀態說明：請觀察積木數量，若出現紅色虛線缺框，請按下黃色的「退位」按鈕！</span>
+                        <!-- Ten Column -->
+                        <div class="bg-white p-3 rounded-xl border border-emerald-100 flex flex-col items-center min-h-[220px]">
+                            <span class="font-bold text-xs text-emerald-700 mb-2">十位 (10)</span>
+                            <div id="regroup-btn-t-container" class="mb-2 min-h-[24px]"></div>
+                            <div id="blocks-ten" class="flex flex-wrap gap-1.5 justify-center"></div>
+                        </div>
+
+                        <!-- Unit Column -->
+                        <div class="bg-white p-3 rounded-xl border border-rose-100 flex flex-col items-center min-h-[220px]">
+                            <span class="font-bold text-xs text-rose-700 mb-2">個位 (1)</span>
+                            <div class="mb-2 min-h-[24px]"></div>
+                            <div id="blocks-unit" class="flex flex-wrap gap-1.5 justify-center"></div>
                         </div>
                     </div>
                 </div>
@@ -455,122 +369,80 @@
              TAB 3: 巧算與數字拼圖
              ========================================== -->
         <div id="tab-content-3" class="tab-panel hidden space-y-6">
-            <div class="glass-card rounded-3xl p-6 md:p-8">
-                <div class="flex items-center gap-3 border-b border-indigo-100 pb-4 mb-6">
+            <div class="glass-card rounded-3xl p-6 md:p-8 space-y-6">
+                <div class="flex items-center gap-3 border-b border-indigo-100 pb-4">
                     <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xl font-bold">3</div>
                     <div>
-                        <h2 class="text-xl md:text-2xl font-bold text-gray-800">整千數巧算與數字卡推理拼圖</h2>
-                        <p class="text-xs md:text-sm text-gray-500">學習 2000-925 的巧算妙招，以及挑戰素養導向的減法數字卡排法。</p>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-800">巧算策略與數字卡素養拼圖</h2>
+                        <p class="text-xs md:text-sm text-gray-500">學習整千數巧算技巧，並運用 2~9 數字卡不重複排成指定減法算式。</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Section A: Smart Thousand Subtraction Trick -->
-                    <div class="bg-amber-50/60 p-6 rounded-2xl border border-amber-200">
-                        <h3 class="font-bold text-amber-900 text-lg mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-bolt text-amber-500"></i> 整千數巧算法 (少 1 變 999 妙招)
-                        </h3>
-                        <p class="text-xs text-gray-600 mb-4">當遇到 2000 - 925 連續退位較繁瑣時，可以先借 1 變成 1999 扣減，最後再把 1 加回來！</p>
+                <!-- Smart Calculation Trick Showcase -->
+                <div class="bg-indigo-50/70 p-5 rounded-2xl border border-indigo-100">
+                    <h3 class="font-bold text-indigo-900 text-base mb-2">💡 整千數減法巧算 (少 1 變成 999 思想)</h3>
+                    <p class="text-xs md:text-sm text-gray-700 mb-3 leading-relaxed">
+                        計算 <code class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-bold">2000 - 925</code> 時，若連續退位容易出錯，可將 2000 看成 <code class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">1999 + 1</code>：
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <button onclick="demoSmartTrick(2000, 925)" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition">演示 2000 - 925</button>
+                        <button onclick="demoSmartTrick(5000, 3246)" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-xs transition">演示 5000 - 3246</button>
+                    </div>
+                    <div id="smart-demo-box" class="p-4 bg-white rounded-xl border border-indigo-100 text-xs md:text-sm leading-relaxed"></div>
+                </div>
 
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-amber-100 space-y-3 font-mono text-sm">
-                            <div class="flex items-center justify-between bg-slate-50 p-2 rounded-lg">
-                                <span class="font-bold text-gray-700">原本算式：</span>
-                                <span class="text-base font-black text-indigo-600">2000 - 925 = ?</span>
-                            </div>
-                            <div class="flex items-center justify-between bg-amber-100/50 p-2 rounded-lg text-amber-900">
-                                <span class="font-bold">步驟 1 (先減 1):</span>
-                                <span class="font-bold">1999 - 925 = <strong class="text-emerald-600">1074</strong></span>
-                            </div>
-                            <div class="flex items-center justify-between bg-emerald-100/50 p-2 rounded-lg text-emerald-900">
-                                <span class="font-bold">步驟 2 (答案再加 1):</span>
-                                <span class="font-bold">1074 + 1 = <strong class="text-indigo-700 text-lg">1075</strong></span>
-                            </div>
+                <!-- Digit Cards Puzzle Game -->
+                <div class="bg-white p-6 rounded-2xl border border-indigo-100 shadow-sm space-y-4">
+                    <h3 class="font-bold text-gray-800 text-base text-center">🧩 數字卡素養挑戰：排成差為 1122 的算式</h3>
+                    <p class="text-xs text-gray-500 text-center">將數字卡 2, 3, 4, 5, 6, 7, 8, 9 填入下方空格中，每個數字只能用一次，使算式成立！</p>
+
+                    <!-- Card Deck -->
+                    <div class="flex justify-center items-center gap-2 py-2 flex-wrap" id="card-deck"></div>
+
+                    <!-- Vertical Grid for Puzzle Slots -->
+                    <div class="max-w-xs mx-auto bg-slate-50 p-6 rounded-2xl border border-gray-200 flex flex-col items-center">
+                        <div class="grid grid-cols-5 gap-2 text-center text-xs font-bold text-gray-400 mb-1 w-full">
+                            <span></span><span>千</span><span>百</span><span>十</span><span>個</span>
+                        </div>
+                        <!-- Minuend Slots -->
+                        <div class="grid grid-cols-5 gap-2 w-full mb-2">
+                            <span></span>
+                            <div onclick="clearSlot(0)" id="slot-0" class="h-10 border-2 border-dashed border-indigo-400 rounded-xl bg-white flex items-center justify-center font-black text-lg text-indigo-700 cursor-pointer shadow-sm">?</div>
+                            <div onclick="clearSlot(1)" id="slot-1" class="h-10 border-2 border-dashed border-indigo-400 rounded-xl bg-white flex items-center justify-center font-black text-lg text-indigo-700 cursor-pointer shadow-sm">?</div>
+                            <div onclick="clearSlot(2)" id="slot-2" class="h-10 border-2 border-dashed border-indigo-400 rounded-xl bg-white flex items-center justify-center font-black text-lg text-indigo-700 cursor-pointer shadow-sm">?</div>
+                            <div onclick="clearSlot(3)" id="slot-3" class="h-10 border-2 border-dashed border-indigo-400 rounded-xl bg-white flex items-center justify-center font-black text-lg text-indigo-700 cursor-pointer shadow-sm">?</div>
                         </div>
 
-                        <!-- Interactive Demo Slider for Smart Trick -->
-                        <div class="mt-6">
-                            <label class="text-xs font-bold text-gray-700 block mb-2">試試看切換整千數：</label>
-                            <div class="flex gap-2">
-                                <button onclick="demoSmartTrick(2000, 925)" class="px-3 py-1.5 bg-amber-500 text-white rounded-lg text-xs font-bold shadow hover:bg-amber-600">2000 - 925</button>
-                                <button onclick="demoSmartTrick(5000, 3246)" class="px-3 py-1.5 bg-amber-500 text-white rounded-lg text-xs font-bold shadow hover:bg-amber-600">5000 - 3246</button>
-                                <button onclick="demoSmartTrick(3000, 1428)" class="px-3 py-1.5 bg-amber-500 text-white rounded-lg text-xs font-bold shadow hover:bg-amber-600">3000 - 1428</button>
-                            </div>
-                            <div id="smart-demo-box" class="mt-3 p-3 bg-white rounded-lg border border-amber-200 text-xs text-amber-950 font-bold">
-                                點擊上方按鈕觀看巧算動態解析！
-                            </div>
+                        <!-- Subtrahend Slots -->
+                        <div class="grid grid-cols-5 gap-2 w-full border-b-2 border-gray-800 pb-3 mb-3">
+                            <span class="font-black text-xl text-rose-600 my-auto">-</span>
+                            <div onclick="clearSlot(4)" id="slot-4" class="h-10 border-2 border-dashed border-rose-400 rounded-xl bg-white flex items-center justify-center font-black text-lg text-rose-700 cursor-pointer shadow-sm">?</div>
+                            <div onclick="clearSlot(5)" id="slot-5" class="h-10 border-2 border-dashed border-rose-400 rounded-xl bg-white flex items-center justify-center font-black text-lg text-rose-700 cursor-pointer shadow-sm">?</div>
+                            <div onclick="clearSlot(6)" id="slot-6" class="h-10 border-2 border-dashed border-rose-400 rounded-xl bg-white flex items-center justify-center font-black text-lg text-rose-700 cursor-pointer shadow-sm">?</div>
+                            <div onclick="clearSlot(7)" id="slot-7" class="h-10 border-2 border-dashed border-rose-400 rounded-xl bg-white flex items-center justify-center font-black text-lg text-rose-700 cursor-pointer shadow-sm">?</div>
+                        </div>
+
+                        <!-- Target Difference Result -->
+                        <div class="grid grid-cols-5 gap-2 w-full text-center font-mono font-black text-xl text-emerald-600">
+                            <span></span><span>1</span><span>1</span><span>2</span><span>2</span>
                         </div>
                     </div>
 
-                    <!-- Section B: Digit Cards Puzzle (Textbook Page 27) -->
-                    <div class="bg-indigo-50/60 p-6 rounded-2xl border border-indigo-200">
-                        <h3 class="font-bold text-indigo-900 text-lg mb-2 flex items-center justify-between">
-                            <span><i class="fa-solid fa-puzzle-piece text-indigo-500"></i> 素養評量：數字卡拼圖</span>
-                            <span class="text-xs bg-indigo-200 text-indigo-800 px-2 py-0.5 rounded-full">教材第27頁</span>
-                        </h3>
-                        <p class="text-xs text-gray-600 mb-4">將數字卡 <span class="font-bold text-indigo-600">2, 3, 4, 5, 6, 7, 8, 9</span> 選填入空格，使減法直式成立！（每個數字限用一次）</p>
-
-                        <!-- Puzzle Board Area -->
-                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-indigo-100 flex flex-col items-center">
-                            
-                            <!-- Place Value Headers -->
-                            <div class="flex gap-2 mb-2 pl-8 text-xs font-bold text-indigo-400">
-                                <span class="w-10 text-center">千</span>
-                                <span class="w-10 text-center">百</span>
-                                <span class="w-10 text-center">十</span>
-                                <span class="w-10 text-center">個</span>
-                            </div>
-
-                            <!-- Subtraction Slots with Strict Alignment -->
-                            <div class="font-mono text-xl space-y-2 mb-6 inline-block">
-                                <!-- Minuend Slots -->
-                                <div class="flex gap-2 items-center justify-end">
-                                    <span class="w-6 text-center font-bold invisible">-</span>
-                                    <button onclick="clearSlot(0)" id="slot-0" class="w-10 h-12 rounded-xl border-2 border-indigo-300 bg-indigo-50 flex items-center justify-center font-black text-indigo-700 shadow-inner">?</button>
-                                    <button onclick="clearSlot(1)" id="slot-1" class="w-10 h-12 rounded-xl border-2 border-indigo-300 bg-indigo-50 flex items-center justify-center font-black text-indigo-700 shadow-inner">?</button>
-                                    <button onclick="clearSlot(2)" id="slot-2" class="w-10 h-12 rounded-xl border-2 border-indigo-300 bg-indigo-50 flex items-center justify-center font-black text-indigo-700 shadow-inner">?</button>
-                                    <button onclick="clearSlot(3)" id="slot-3" class="w-10 h-12 rounded-xl border-2 border-indigo-300 bg-indigo-50 flex items-center justify-center font-black text-indigo-700 shadow-inner">?</button>
-                                </div>
-                                <!-- Subtrahend Slots -->
-                                <div class="flex gap-2 items-center justify-end border-b-2 border-gray-800 pb-2">
-                                    <span class="w-6 text-center font-bold text-rose-500">-</span>
-                                    <button onclick="clearSlot(4)" id="slot-4" class="w-10 h-12 rounded-xl border-2 border-rose-300 bg-rose-50 flex items-center justify-center font-black text-rose-700 shadow-inner">?</button>
-                                    <button onclick="clearSlot(5)" id="slot-5" class="w-10 h-12 rounded-xl border-2 border-rose-300 bg-rose-50 flex items-center justify-center font-black text-rose-700 shadow-inner">?</button>
-                                    <button onclick="clearSlot(6)" id="slot-6" class="w-10 h-12 rounded-xl border-2 border-rose-300 bg-rose-50 flex items-center justify-center font-black text-rose-700 shadow-inner">?</button>
-                                    <button onclick="clearSlot(7)" id="slot-7" class="w-10 h-12 rounded-xl border-2 border-rose-300 bg-rose-50 flex items-center justify-center font-black text-rose-700 shadow-inner">?</button>
-                                </div>
-                                <!-- Result Target -->
-                                <div class="flex gap-2 items-center justify-end font-black text-emerald-600 pt-1">
-                                    <span class="w-6 text-center invisible">-</span>
-                                    <div class="w-10 text-center">1</div>
-                                    <div class="w-10 text-center">1</div>
-                                    <div class="w-10 text-center">2</div>
-                                    <div class="w-10 text-center">2</div>
-                                </div>
-                            </div>
-
-                            <!-- Cards Deck -->
-                            <div class="w-full">
-                                <span class="text-xs font-bold text-gray-500 mb-2 block text-center">可用的卡片 (點擊可放入第一個空白格)：</span>
-                                <div id="card-deck" class="flex flex-wrap justify-center gap-2"></div>
-                            </div>
-
-                            <!-- Puzzle Controls -->
-                            <div class="flex gap-3 mt-6 w-full">
-                                <button onclick="checkPuzzle()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition text-sm shadow">
-                                    <i class="fa-solid fa-circle-check"></i> 驗證拼圖答案
-                                </button>
-                                <button onclick="resetPuzzle()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-4 py-2.5 rounded-xl transition text-sm">
-                                    重置
-                                </button>
-                            </div>
-                        </div>
+                    <!-- Controls -->
+                    <div class="flex justify-center gap-3 pt-2">
+                        <button onclick="checkPuzzle()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow transition">
+                            <i class="fa-solid fa-check mr-1"></i> 檢查算式
+                        </button>
+                        <button onclick="resetPuzzle()" class="px-6 py-2.5 bg-slate-600 hover:bg-slate-700 text-white font-bold rounded-xl text-sm shadow transition">
+                            <i class="fa-solid fa-rotate-left mr-1"></i> 重置卡片
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- ==========================================
-             TAB 4: 歷程性小評量
+             TAB 4: 闖關測驗
              ========================================== -->
         <div id="tab-content-4" class="tab-panel hidden space-y-6">
             <div class="glass-card rounded-3xl p-6 md:p-8">
@@ -578,7 +450,7 @@
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xl font-bold">4</div>
                         <div>
-                            <h2 class="text-xl md:text-2xl font-bold text-gray-800">萬以內減法歷程性評量</h2>
+                            <h2 class="text-xl md:text-2xl font-bold text-gray-800">萬以內減法闖關測驗</h2>
                             <p class="text-xs md:text-sm text-gray-500">測試你對估算、位值退位與加法驗算的理解程度！</p>
                         </div>
                     </div>
@@ -590,10 +462,13 @@
                 <!-- Quiz Questions Container -->
                 <div id="quiz-container" class="space-y-6"></div>
 
-                <!-- Submit Quiz Button -->
-                <div class="mt-8 text-center">
+                <!-- Submit & Reset Quiz Buttons -->
+                <div class="mt-8 flex flex-wrap justify-center gap-4">
                     <button onclick="submitQuiz()" id="btn-submit-quiz" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-black px-8 py-3.5 rounded-2xl shadow-xl transition transform hover:scale-105 text-base">
-                        <i class="fa-solid fa-paper-plane mr-2"></i> 提交測驗並檢視解析
+                        <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案
+                    </button>
+                    <button onclick="resetQuiz()" id="btn-reset-quiz" class="bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white font-black px-8 py-3.5 rounded-2xl shadow-xl transition transform hover:scale-105 text-base">
+                        <i class="fa-solid fa-rotate-left mr-2"></i> 重新測驗
                     </button>
                 </div>
             </div>
@@ -685,10 +560,15 @@
                 btn.classList.add('text-gray-700');
             });
 
-            document.getElementById(`tab-content-${tabIndex}`).classList.remove('hidden');
+            const targetPanel = document.getElementById(`tab-content-${tabIndex}`);
+            if (targetPanel) {
+                targetPanel.classList.remove('hidden');
+            }
             const activeBtn = document.getElementById(`tab-btn-${tabIndex}`);
-            activeBtn.classList.add('active');
-            activeBtn.classList.remove('text-gray-700');
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                activeBtn.classList.remove('text-gray-700');
+            }
         }
 
         /* ----------------------------------------------------
@@ -698,14 +578,16 @@
             const minuendInput = document.getElementById('input-minuend');
             const subtrahendInput = document.getElementById('input-subtrahend');
 
-            state.minuend = parseInt(minuendInput.value);
+            if (!minuendInput || !subtrahendInput) return;
+
+            state.minuend = parseInt(minuendInput.value) || 3986;
             
             // Ensure subtrahend cannot exceed minuend
             subtrahendInput.max = state.minuend;
             if (parseInt(subtrahendInput.value) > state.minuend) {
                 subtrahendInput.value = state.minuend;
             }
-            state.subtrahend = parseInt(subtrahendInput.value);
+            state.subtrahend = parseInt(subtrahendInput.value) || 0;
 
             const diff = state.minuend - state.subtrahend;
 
@@ -717,15 +599,12 @@
             // Estimation Approximations
             const approxM = Math.round(state.minuend / 1000) * 1000;
             const approxS = Math.round(state.subtrahend / 1000) * 1000;
-            document.getElementById('approx-minuend').innerText = approxM;
-            document.getElementById('approx-subtrahend').innerText = approxS;
 
             document.getElementById('estimation-explanation').innerHTML = 
                 `把 ${state.minuend} 看成接近 ${approxM}，${state.subtrahend} 看成接近 ${approxS}。<br>` +
                 `估算答案大約是：<strong class="text-amber-700">${approxM} - ${approxS} = ${approxM - approxS}</strong>。`;
 
             // Update Bar Chart
-            document.getElementById('bar-total-val').innerText = state.minuend;
             document.getElementById('bar-total-text').innerText = `${state.minuend} (被減數)`;
             
             const subPercent = ((state.subtrahend / state.minuend) * 100).toFixed(1);
@@ -749,10 +628,15 @@
 
         function setGridDigits(prefix, num) {
             const s = num.toString().padStart(4, ' ');
-            document.getElementById(`${prefix}-th`).innerText = s[0] === ' ' ? '' : s[0];
-            document.getElementById(`${prefix}-h`).innerText = s[1] === ' ' ? '' : s[1];
-            document.getElementById(`${prefix}-t`).innerText = s[2] === ' ' ? '' : s[2];
-            document.getElementById(`${prefix}-u`).innerText = s[3] === ' ' ? '' : s[3];
+            const th = document.getElementById(`${prefix}-th`);
+            const h = document.getElementById(`${prefix}-h`);
+            const t = document.getElementById(`${prefix}-t`);
+            const u = document.getElementById(`${prefix}-u`);
+
+            if (th) th.innerText = s[0] === ' ' ? '' : s[0];
+            if (h) h.innerText = s[1] === ' ' ? '' : s[1];
+            if (t) t.innerText = s[2] === ' ' ? '' : s[2];
+            if (u) u.innerText = s[3] === ' ' ? '' : s[3];
         }
 
         /* ----------------------------------------------------
@@ -782,6 +666,10 @@
             document.getElementById('r-h').innerText = '?';
             document.getElementById('r-t').innerText = '?';
             document.getElementById('r-u').innerText = '?';
+
+            document.getElementById('b-h').innerText = '';
+            document.getElementById('b-t').innerText = '';
+            document.getElementById('b-u').innerText = '';
 
             renderTab2();
         }
@@ -842,6 +730,7 @@
 
         function renderColumnBlocks(containerId, mCount, sCount, baseCss, unitName) {
             const container = document.getElementById(containerId);
+            if (!container) return;
             container.innerHTML = '';
 
             if (mCount === 0 && sCount === 0) {
@@ -856,17 +745,15 @@
             else if (unitName === '十') unitVal = "10";
             else if (unitName === '個') unitVal = "1";
 
-            // Render existing minuend blocks (overlaying red subtraction highlight frames)
+            // Render existing minuend blocks
             for (let i = 0; i < mCount; i++) {
                 const el = document.createElement('div');
                 if (i < sCount) {
-                    // Block is targeted for removal by subtrahend
-                    el.className = `${baseCss} relative border-2 border-dashed border-rose-500 ring-2 ring-rose-400/80 bg-rose-200/80 scale-95 transition-all flex items-center justify-center font-black text-rose-800 text-[11px] select-none`;
+                    el.className = `${baseCss} relative border-2 border-dashed border-rose-500 ring-2 ring-rose-400/80 bg-rose-200/80 scale-95 transition-all flex items-center justify-center font-black text-rose-800 text-[10px] select-none`;
                     el.innerText = unitVal;
                     el.title = `減數欲扣除的${unitName}位積木 (${unitVal})`;
                 } else {
-                    // Unaffected minuend block
-                    el.className = `${baseCss} flex items-center justify-center font-black text-white text-[11px] select-none`;
+                    el.className = `${baseCss} flex items-center justify-center font-black text-white text-[10px] select-none`;
                     el.innerText = unitVal;
                 }
                 container.appendChild(el);
@@ -877,7 +764,7 @@
                 const missing = sCount - mCount;
                 for (let j = 0; j < missing; j++) {
                     const el = document.createElement('div');
-                    el.className = `${baseCss} border-2 border-dashed border-rose-500 bg-rose-50/80 flex items-center justify-center text-rose-600 font-bold text-[10px] animate-pulse select-none`;
+                    el.className = `${baseCss} border-2 border-dashed border-rose-500 bg-rose-50/80 flex items-center justify-center text-rose-600 font-bold text-[9px] animate-pulse select-none`;
                     el.innerText = `缺${unitVal}`;
                     el.title = `現有積木不足，請點選退位按鈕`;
                     container.appendChild(el);
@@ -886,7 +773,6 @@
         }
 
         function executeSubtractStep() {
-            // Check if any column is still deficient
             if (state.mU < state.sU || state.mT < state.sT || state.mH < state.sH || state.mTh < state.sTh) {
                 showModal("還有欄位的積木不足！", "請先點選黃色的【退位 (1換10)】按鈕進行拆解，再執行扣減計算。");
                 return;
@@ -907,7 +793,6 @@
             document.getElementById('r-t').innerHTML = showT;
             document.getElementById('r-u').innerText = rU;
 
-            // Render remaining blocks (after subtraction)
             renderColumnBlocks('blocks-thousand', rTh, 0, 'block-thousand', '千');
             renderColumnBlocks('blocks-hundred', rH, 0, 'block-hundred', '百');
             renderColumnBlocks('blocks-ten', rT, 0, 'block-ten', '十');
@@ -960,6 +845,7 @@
         /* Digit Cards Puzzle Engine */
         function renderPuzzleDeck() {
             const deck = document.getElementById('card-deck');
+            if (!deck) return;
             deck.innerHTML = '';
             state.availableCards.forEach(num => {
                 const btn = document.createElement('button');
@@ -998,6 +884,7 @@
         function updatePuzzleSlots() {
             for (let i = 0; i < 8; i++) {
                 const slotEl = document.getElementById(`slot-${i}`);
+                if (!slotEl) continue;
                 if (state.puzzleSlots[i] !== null) {
                     slotEl.innerText = state.puzzleSlots[i];
                     slotEl.classList.add('bg-indigo-200', 'text-indigo-900');
@@ -1039,6 +926,7 @@
          * ---------------------------------------------------- */
         function renderQuiz() {
             const container = document.getElementById('quiz-container');
+            if (!container) return;
             container.innerHTML = '';
 
             quizData.forEach((q, qIdx) => {
@@ -1066,15 +954,17 @@
 
         function submitQuiz() {
             let score = 0;
-            let unanswered = false;
 
             quizData.forEach((q, qIdx) => {
                 const selected = document.querySelector(`input[name="quiz-q-${qIdx}"]:checked`);
                 const explainBox = document.getElementById(`quiz-explain-${qIdx}`);
-                explainBox.classList.remove('hidden', 'bg-emerald-50', 'bg-rose-50', 'text-emerald-800', 'text-rose-800');
+                if (!explainBox) return;
+
+                explainBox.className = "p-3 rounded-xl text-xs font-medium mt-3";
 
                 if (!selected) {
-                    unanswered = true;
+                    explainBox.classList.add('bg-amber-50', 'text-amber-800', 'border', 'border-amber-200');
+                    explainBox.innerHTML = `<i class="fa-solid fa-circle-exclamation text-amber-500 mr-1"></i> 未作答。`;
                 } else {
                     const userAns = parseInt(selected.value);
                     if (userAns === q.answer) {
@@ -1083,20 +973,33 @@
                         explainBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> <strong>回答正確！</strong> ${q.explanation}`;
                     } else {
                         explainBox.classList.add('bg-rose-50', 'text-rose-800', 'border', 'border-rose-200');
-                        explainBox.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 mr-1"></i> <strong>回答錯誤。</strong> 正確答案為 (${q.answer + 1})。${q.explanation}`;
+                        explainBox.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 mr-1"></i> <strong>回答錯誤。</strong> 正確答案為 (${q.answer + 1}) ${q.options[q.answer]}。${q.explanation}`;
                     }
                 }
             });
 
-            if (unanswered) {
-                showModal("尚未完成", "請回答完所有測驗題目再提交喔！");
-                return;
-            }
-
             document.getElementById('quiz-score-badge').classList.remove('hidden');
             document.getElementById('quiz-score').innerText = score;
+        }
 
-            showModal("測驗完成！", `您的總分是 ${score} 分！可以向下滾動檢視詳細解析與複習。`);
+        function resetQuiz() {
+            quizData.forEach((q, qIdx) => {
+                const radios = document.querySelectorAll(`input[name="quiz-q-${qIdx}"]`);
+                radios.forEach(radio => radio.checked = false);
+
+                const explainBox = document.getElementById(`quiz-explain-${qIdx}`);
+                if (explainBox) {
+                    explainBox.classList.add('hidden');
+                    explainBox.className = "hidden p-3 rounded-xl text-xs font-medium mt-3";
+                    explainBox.innerHTML = '';
+                }
+            });
+
+            const scoreBadge = document.getElementById('quiz-score-badge');
+            if (scoreBadge) {
+                scoreBadge.classList.add('hidden');
+            }
+            document.getElementById('quiz-score').innerText = '0';
         }
 
         /* Modal Dialog Utility */
@@ -1113,6 +1016,7 @@
         window.onload = function() {
             updateTab1();
             renderTab2();
+            demoSmartTrick(2000, 925);
             resetPuzzle();
             renderQuiz();
         };

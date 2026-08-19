@@ -112,7 +112,7 @@
                     <i class="fa-solid fa-pen-ruler"></i> 精準劃線
                 </button>
                 <button id="tab-quiz" onclick="switchTab('quiz')" class="px-3.5 py-2 rounded-lg text-sm font-bold transition-all text-slate-700 hover:bg-white flex items-center gap-1.5">
-                    <i class="fa-solid fa-graduation-cap"></i> 隨堂測驗
+                    <i class="fa-solid fa-graduation-cap"></i> 闖關測驗
                 </button>
             </nav>
         </header>
@@ -320,7 +320,7 @@
             <div class="flex items-center justify-between border-b border-slate-200 pb-3">
                 <div class="flex items-center gap-2">
                     <span class="px-3 py-1 bg-emerald-100 text-emerald-700 font-bold text-xs rounded-full">單元四</span>
-                    <h2 class="text-xl font-bold text-slate-800">毫米學習隨堂測驗 (5 題)</h2>
+                    <h2 class="text-xl font-bold text-slate-800">毫米學習闖關測驗 (5 題)</h2>
                 </div>
                 <div id="quiz-score-badge" class="px-3 py-1 bg-emerald-500 text-white font-bold text-xs rounded-full shadow-sm">
                     得分：0 / 100
@@ -332,9 +332,12 @@
                 <!-- 5 Questions rendered dynamically via JavaScript -->
             </div>
 
-            <div class="flex justify-center pt-4">
+            <div class="flex flex-wrap justify-center items-center gap-4 pt-4">
                 <button onclick="submitAllQuiz()" class="px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black text-base rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">
-                    <i class="fa-solid fa-paper-plane mr-2"></i> 批改全部測驗題
+                    <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案
+                </button>
+                <button onclick="resetQuiz()" class="px-8 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-black text-base rounded-xl shadow-md transition transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> 重新測驗
                 </button>
             </div>
         </section>
@@ -789,7 +792,7 @@
                     "28 毫米"
                 ],
                 answer: 1,
-                explanation: "起點不是 0 時，用終點 minus 起點：6 公分 8 毫米 - 2 公分 = 4 公分 8 毫米 (48 mm)。"
+                explanation: "起點不是 0 時，用終點減去起點：6 公分 8 毫米 - 2 公分 = 4 公分 8 毫米 (48 mm)。"
             },
             {
                 id: 4,
@@ -837,7 +840,7 @@
                                 </label>
                             `).join('')}
                         </div>
-                        <div id="quiz-exp-${q.id}" class="hidden pl-8 p-3 rounded-lg text-xs font-bold bg-slate-100 text-slate-700"></div>
+                        <div id="quiz-exp-${q.id}" class="hidden pl-8 p-3 rounded-lg text-xs font-bold"></div>
                     </div>
                 `;
             });
@@ -853,7 +856,10 @@
                 const expBox = document.getElementById(`quiz-exp-${q.id}`);
                 expBox.classList.remove('hidden');
 
-                if (selected && parseInt(selected.value) === q.answer) {
+                if (!selected) {
+                    expBox.className = "pl-8 p-3 rounded-lg text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300";
+                    expBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-600 mr-1"></i> 未作答。`;
+                } else if (parseInt(selected.value) === q.answer) {
                     correctCount++;
                     expBox.className = "pl-8 p-3 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
                     expBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> 答對了！ ${q.explanation}`;
@@ -872,6 +878,23 @@
             } else {
                 scoreBadge.className = "px-3 py-1 bg-amber-500 text-white font-bold text-xs rounded-full shadow-md";
             }
+        }
+
+        function resetQuiz() {
+            quizData.forEach(function(q) {
+                const radios = document.querySelectorAll(`input[name="quiz-${q.id}"]`);
+                radios.forEach(r => r.checked = false);
+
+                const expBox = document.getElementById(`quiz-exp-${q.id}`);
+                if (expBox) {
+                    expBox.classList.add('hidden');
+                    expBox.innerHTML = '';
+                }
+            });
+
+            const scoreBadge = document.getElementById('quiz-score-badge');
+            scoreBadge.innerText = '得分：0 / 100';
+            scoreBadge.className = 'px-3 py-1 bg-emerald-500 text-white font-bold text-xs rounded-full shadow-sm';
         }
 
         // 頁面載入後自動初始化 (Window Onload Handler)

@@ -8,12 +8,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Noto Sans TC (思源黑體) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     
     <style>
         body {
-            font-family: 'Zen Maru Gothic', 'Microsoft JhengHei', sans-serif;
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
             background-size: 400% 400%;
             animation: shinkaiSky 20s ease infinite;
@@ -104,7 +104,7 @@
                 <i class="fa-solid fa-puzzle-piece"></i> 2. 角度分類大挑戰
             </button>
             <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn px-5 py-2.5 rounded-full font-bold text-gray-700 bg-white/80 hover:bg-white flex items-center gap-2">
-                <i class="fa-solid fa-circle-question"></i> 3. 隨堂小測驗
+                <i class="fa-solid fa-circle-question"></i> 3. 闖關測驗
             </button>
         </div>
 
@@ -265,7 +265,7 @@
             <div class="border-b pb-4 mb-6 flex justify-between items-center">
                 <div>
                     <h2 class="text-2xl font-bold text-indigo-900 flex items-center gap-2">
-                        <i class="fa-solid fa-clipboard-check text-purple-500"></i> 觀念整合隨堂測驗
+                        <i class="fa-solid fa-clipboard-check text-purple-500"></i> 闖關測驗
                     </h2>
                     <p class="text-gray-600 text-sm mt-1">共 5 題，測試看看你對角度特性的理解吧！</p>
                 </div>
@@ -289,7 +289,7 @@
                             <input type="radio" name="q1" value="C"> C. 鈍角
                         </label>
                     </div>
-                    <div id="feedback-q1" class="hidden mt-2 text-xs sm:text-sm font-bold p-2 rounded-lg"></div>
+                    <div id="feedback-q1" class="hidden mt-2 text-xs sm:text-sm font-bold p-2.5 rounded-lg"></div>
                 </div>
 
                 <!-- Q2 -->
@@ -306,7 +306,7 @@
                             <input type="radio" name="q2" value="C"> C. 鈍角
                         </label>
                     </div>
-                    <div id="feedback-q2" class="hidden mt-2 text-xs sm:text-sm font-bold p-2 rounded-lg"></div>
+                    <div id="feedback-q2" class="hidden mt-2 text-xs sm:text-sm font-bold p-2.5 rounded-lg"></div>
                 </div>
 
                 <!-- Q3 -->
@@ -323,7 +323,7 @@
                             <input type="radio" name="q3" value="C"> C. 完全不會改變
                         </label>
                     </div>
-                    <div id="feedback-q3" class="hidden mt-2 text-xs sm:text-sm font-bold p-2 rounded-lg"></div>
+                    <div id="feedback-q3" class="hidden mt-2 text-xs sm:text-sm font-bold p-2.5 rounded-lg"></div>
                 </div>
 
                 <!-- Q4 -->
@@ -340,7 +340,7 @@
                             <input type="radio" name="q4" value="C"> C. 鈍角
                         </label>
                     </div>
-                    <div id="feedback-q4" class="hidden mt-2 text-xs sm:text-sm font-bold p-2 rounded-lg"></div>
+                    <div id="feedback-q4" class="hidden mt-2 text-xs sm:text-sm font-bold p-2.5 rounded-lg"></div>
                 </div>
 
                 <!-- Q5 -->
@@ -357,12 +357,16 @@
                             <input type="radio" name="q5" value="C"> C. 鈍角
                         </label>
                     </div>
-                    <div id="feedback-q5" class="hidden mt-2 text-xs sm:text-sm font-bold p-2 rounded-lg"></div>
+                    <div id="feedback-q5" class="hidden mt-2 text-xs sm:text-sm font-bold p-2.5 rounded-lg"></div>
                 </div>
 
-                <div class="text-center pt-4">
-                    <button type="button" onclick="checkQuiz()" class="shinkai-btn text-white font-bold text-lg px-8 py-3 rounded-full shadow-lg">
-                        <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案並檢視解析
+                <!-- Submit & Reset Buttons -->
+                <div class="flex flex-wrap justify-center items-center gap-4 pt-4">
+                    <button type="button" onclick="checkQuiz()" class="shinkai-btn text-white font-bold text-base sm:text-lg px-8 py-3 rounded-full shadow-lg flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> 提交答案
+                    </button>
+                    <button type="button" onclick="resetQuiz()" class="bg-gray-500 hover:bg-gray-600 text-white font-bold text-base sm:text-lg px-8 py-3 rounded-full shadow-lg transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> 重新測驗
                     </button>
                 </div>
             </form>
@@ -536,7 +540,7 @@
                 cardEl.dataset.type = card.type;
                 cardEl.className = "bg-white border border-indigo-200 text-indigo-900 font-bold px-3.5 py-2 rounded-xl shadow-sm cursor-grab hover:shadow-md transition-all flex items-center gap-2 select-none text-sm";
                 
-                // Render SVG icon if angle degree is specified, set square SVG if specified, otherwise render font icon
+                // Render SVG icon if angle degree is specified, set square SVG if specified
                 let iconContent = '';
                 if (card.angle !== undefined) {
                     iconContent = getAngleSvgHtml(card.angle);
@@ -616,11 +620,11 @@
         // SECTION 3: Formative Quiz Evaluation
         // ==========================================
         const answers = {
-            q1: { ans: 'B', exp: '正確！三角板上最大的角剛好是直角 (90°)。' },
-            q2: { ans: 'A', exp: '正確！比直角小的角稱為「銳角」。' },
-            q3: { ans: 'C', exp: '正確！邊長變長或變短，都不會改變張開的角度大小！' },
-            q4: { ans: 'B', exp: '正確！3 點整時，時針指向 3、分針指向 12，夾角為 90° 直角。' },
-            q5: { ans: 'C', exp: '正確！135° 大於 90°，因此屬於「鈍角」。' }
+            q1: { ans: 'B', exp: '三角板上最大的角剛好是直角 (90°)。' },
+            q2: { ans: 'A', exp: '比直角小的角稱為「銳角」。' },
+            q3: { ans: 'C', exp: '邊長變長或變短，都不會改變張開的角度大小！' },
+            q4: { ans: 'B', exp: '3 點整時，時針指向 3、分針指向 12，夾角為 90° 直角。' },
+            q5: { ans: 'C', exp: '135° 大於 90°，因此屬於「鈍角」。' }
         };
 
         function checkQuiz() {
@@ -632,24 +636,46 @@
                 const selected = document.querySelector(`input[name="${qKey}"]:checked`);
                 const feedbackEl = document.getElementById(`feedback-${qKey}`);
 
-                feedbackEl.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+                // Reset feedback element classes
+                feedbackEl.className = "hidden mt-2 text-xs sm:text-sm font-bold p-2.5 rounded-lg";
 
                 if (selected) {
                     if (selected.value === answers[qKey].ans) {
                         score += 20;
-                        feedbackEl.classList.add('bg-emerald-100', 'text-emerald-800');
-                        feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${answers[qKey].exp}`;
+                        feedbackEl.classList.remove('hidden');
+                        feedbackEl.classList.add('bg-emerald-100', 'text-emerald-800', 'border', 'border-emerald-300');
+                        feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> 太棒了，答對了！${answers[qKey].exp}`;
                     } else {
-                        feedbackEl.classList.add('bg-rose-100', 'text-rose-800');
-                        feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> 答錯囉！提示：${answers[qKey].exp}`;
+                        feedbackEl.classList.remove('hidden');
+                        feedbackEl.classList.add('bg-rose-100', 'text-rose-800', 'border', 'border-rose-300');
+                        feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 mr-1"></i> 答錯囉！解析：${answers[qKey].exp}`;
                     }
                 } else {
-                    feedbackEl.classList.add('bg-rose-100', 'text-rose-800');
-                    feedbackEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 請選擇一個答案！`;
+                    // Blank option: Only display "未作答。" in yellow tone without showing full answer/explanation
+                    feedbackEl.classList.remove('hidden');
+                    feedbackEl.classList.add('bg-amber-100', 'text-amber-800', 'border', 'border-amber-300');
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-600 mr-1"></i> 未作答。`;
                 }
             }
 
             document.getElementById('scoreDisplay').innerText = `得分：${score} / 100`;
+        }
+
+        function resetQuiz() {
+            // Reset all radio buttons
+            document.querySelectorAll('#quizForm input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+            });
+
+            // Hide and clear all feedback blocks
+            for (let i = 1; i <= 5; i++) {
+                const feedbackEl = document.getElementById(`feedback-q${i}`);
+                feedbackEl.className = "hidden mt-2 text-xs sm:text-sm font-bold p-2.5 rounded-lg";
+                feedbackEl.innerHTML = '';
+            }
+
+            // Reset score counter display
+            document.getElementById('scoreDisplay').innerText = `得分：0 / 100`;
         }
     </script>
 </body>

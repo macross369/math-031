@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>分數的大小比較與合成 - 互動探究學習網</title>
+    <title>國小三上數學 8-3 互動學習網頁</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -43,23 +43,12 @@
             min-height: 100vh;
         }
 
-        /* 夢幻雲朵與光芒裝飾 */
-        .shinkai-glow {
-            box-shadow: 0 10px 30px -5px rgba(255, 255, 255, 0.3), 0 0 20px rgba(255, 200, 150, 0.2);
-        }
-
         /* 玻璃擬物化面板 */
         .glass-card {
-            background: rgba(255, 255, 255, 0.88);
+            background: rgba(255, 255, 255, 0.90);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.6);
-        }
-
-        .glass-card-dark {
-            background: rgba(30, 41, 59, 0.75);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         /* 自訂滑桿樣式 */
@@ -94,35 +83,33 @@
             transform: scale(1.15);
         }
 
-        /* 分數數學符號直式樣式 */
+        /* 標準直式分數樣式（分子在上、分母在下、中間橫線、完美垂直置中） */
         .fraction {
             display: inline-flex;
             flex-direction: column;
             vertical-align: middle;
             text-align: center;
-            padding: 0 0.25em;
-            font-weight: 700;
+            padding: 0 4px;
+            font-weight: bold;
             line-height: 1;
             margin: 0 2px;
-            position: relative;
-            top: -0.05em;
         }
         .fraction .numerator {
             border-bottom: 2px solid currentColor;
-            padding-bottom: 1px;
+            padding-bottom: 2px;
             display: block;
             line-height: 1;
         }
         .fraction .denominator {
-            padding-top: 1px;
+            padding-top: 2px;
             display: block;
             line-height: 1;
         }
 
         /* 動畫效果 */
         @keyframes pulseGlow {
-            0%, 100% { opacity: 0.8; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.03); }
+            0%, 100% { opacity: 0.9; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
         }
         .animate-pulse-glow {
             animation: pulseGlow 3s infinite ease-in-out;
@@ -137,7 +124,6 @@
         <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
     </div>
 
-    <!-- 頂部標題區 -->
     <header class="max-w-5xl mx-auto mb-6 text-center text-white relative">
         <h1 class="text-3xl md:text-4xl font-black tracking-wide drop-shadow-md bg-clip-text text-transparent bg-gradient-to-r from-amber-200 via-white to-sky-200">
             國小三上數學 8-3 互動學習網頁
@@ -147,7 +133,6 @@
         </p>
     </header>
 
-    <!-- 主要內容區 -->
     <main class="max-w-5xl mx-auto space-y-8">
 
         <!-- 導覽頁籤 -->
@@ -159,7 +144,7 @@
                 <i class="fa-solid fa-pizza-slice mr-1 text-red-400"></i> 單元 2：披薩分割探究
             </button>
             <button id="tab3-btn" onclick="switchTab(3)" class="flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 text-white hover:bg-white/10">
-                <i class="fa-solid fa-pen-to-square mr-1 text-emerald-400"></i> 隨堂測驗 (5題)
+                <i class="fa-solid fa-trophy mr-1 text-emerald-400"></i> 闖關測驗
             </button>
         </div>
 
@@ -181,18 +166,15 @@
                         <span class="font-bold text-slate-700 flex items-center text-base">
                             <i class="fa-solid fa-face-smile text-amber-500 mr-2 text-xl"></i> 皮皮吃的蛋糕
                         </span>
-                        <div class="text-xl font-black text-amber-600">
-                            <span class="fraction"><span class="numerator" id="pipi-num-text">4</span><span class="denominator" id="pipi-den-text">6</span></span> 條
+                        <div class="text-xl font-black text-amber-600 flex items-center">
+                            <span id="pipi-num-text-box"></span> 條
                         </div>
                     </div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">調整皮皮吃的塊數（分子）：</label>
                     <input type="range" id="pipi-slider" min="0" max="6" value="4" oninput="updateCakeComparison()">
-                    <div class="text-xs text-slate-500 mt-2 bg-white/80 p-2 rounded-lg border border-amber-100 flex items-center flex-wrap gap-1">
-                        <span>相當於</span>
-                        <span id="pipi-count-text" class="font-bold text-amber-600">4</span>
-                        <span>個</span>
-                        <span class="fraction text-xs"><span class="numerator">1</span><span class="denominator" id="pipi-unit-den">6</span></span>
-                        <span>條蛋糕</span>
+                    <div class="text-xs text-slate-500 mt-3 bg-white/80 p-2.5 rounded-lg border border-amber-100 flex items-center">
+                        相當於 <span id="pipi-count-text" class="font-bold text-amber-600 mx-1">4</span> 個 
+                        <span id="pipi-unit-frac" class="mx-1"></span> 條蛋糕
                     </div>
                 </div>
 
@@ -202,18 +184,15 @@
                         <span class="font-bold text-slate-700 flex items-center text-base">
                             <i class="fa-solid fa-face-laugh-beam text-sky-500 mr-2 text-xl"></i> 丹丹吃的蛋糕
                         </span>
-                        <div class="text-xl font-black text-sky-600">
-                            <span class="fraction"><span class="numerator" id="dandan-num-text">2</span><span class="denominator" id="dandan-den-text">6</span></span> 條
+                        <div class="text-xl font-black text-sky-600 flex items-center">
+                            <span id="dandan-num-text-box"></span> 條
                         </div>
                     </div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">調整丹丹吃的塊數（分子）：</label>
                     <input type="range" id="dandan-slider" min="0" max="6" value="2" oninput="updateCakeComparison()">
-                    <div class="text-xs text-slate-500 mt-2 bg-white/80 p-2 rounded-lg border border-sky-100 flex items-center flex-wrap gap-1">
-                        <span>相當於</span>
-                        <span id="dandan-count-text" class="font-bold text-sky-600">2</span>
-                        <span>個</span>
-                        <span class="fraction text-xs"><span class="numerator">1</span><span class="denominator" id="dandan-unit-den">6</span></span>
-                        <span>條蛋糕</span>
+                    <div class="text-xs text-slate-500 mt-3 bg-white/80 p-2.5 rounded-lg border border-sky-100 flex items-center">
+                        相當於 <span id="dandan-count-text" class="font-bold text-sky-600 mx-1">2</span> 個 
+                        <span id="dandan-unit-frac" class="mx-1"></span> 條蛋糕
                     </div>
                 </div>
             </div>
@@ -231,26 +210,22 @@
                 </div>
             </div>
 
-            <!-- 動態 SVG 蛋糕展示區域 -->
+            <!-- 動態蛋糕展示區域 -->
             <div class="space-y-6 bg-white/90 p-6 rounded-2xl border border-slate-100 shadow-inner">
                 <div>
-                    <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                    <div class="flex justify-between items-center text-xs font-bold text-slate-600 mb-2">
                         <span>皮皮的瑞士卷：</span>
-                        <span id="pipi-svg-label">4 / 6</span>
+                        <span id="pipi-svg-label flex items-center"></span>
                     </div>
-                    <div id="pipi-cake-container" class="w-full h-16 bg-slate-100 rounded-xl overflow-hidden shadow-inner flex p-1 gap-1 border border-amber-200">
-                        <!-- SVG / HTML 蛋糕塊動態渲染 -->
-                    </div>
+                    <div id="pipi-cake-container" class="w-full h-16 bg-slate-100 rounded-xl overflow-hidden shadow-inner flex p-1 gap-1 border border-amber-200"></div>
                 </div>
 
                 <div>
-                    <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                    <div class="flex justify-between items-center text-xs font-bold text-slate-600 mb-2">
                         <span>丹丹的瑞士卷：</span>
-                        <span id="dandan-svg-label">2 / 6</span>
+                        <span id="dandan-svg-label flex items-center"></span>
                     </div>
-                    <div id="dandan-cake-container" class="w-full h-16 bg-slate-100 rounded-xl overflow-hidden shadow-inner flex p-1 gap-1 border border-sky-200">
-                        <!-- SVG / HTML 蛋糕塊動態渲染 -->
-                    </div>
+                    <div id="dandan-cake-container" class="w-full h-16 bg-slate-100 rounded-xl overflow-hidden shadow-inner flex p-1 gap-1 border border-sky-200"></div>
                 </div>
             </div>
 
@@ -268,12 +243,8 @@
                     </div>
                 </div>
                 <div class="bg-white/20 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/30 text-center">
-                    <span class="text-xs block text-slate-100 mb-0.5">數學算式記錄</span>
-                    <span id="cake-math-expr" class="text-2xl font-black tracking-widest">
-                        <span class="fraction"><span class="numerator">4</span><span class="denominator">6</span></span> 
-                        &gt; 
-                        <span class="fraction"><span class="numerator">2</span><span class="denominator">6</span></span>
-                    </span>
+                    <span class="text-xs block text-slate-100 mb-1">數學算式記錄</span>
+                    <span id="cake-math-expr" class="text-xl md:text-2xl font-black tracking-widest inline-flex items-center justify-center"></span>
                 </div>
             </div>
         </section>
@@ -293,7 +264,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                     <div>
                         <div class="text-xs text-rose-100 font-bold uppercase">固定吃的塊數（分子相同）</div>
-                        <div class="text-xl font-black">大家人都吃了 <span id="shared-num-val" class="text-3xl text-yellow-300 mx-1">3</span> 塊披薩</div>
+                        <div class="text-xl font-black">大家都吃了 <span id="shared-num-val" class="text-3xl text-yellow-300 mx-1">3</span> 塊披薩</div>
                     </div>
                     <div class="w-full md:w-1/2">
                         <label class="block text-xs font-semibold mb-1">拉動調整大家吃了幾塊：</label>
@@ -308,16 +279,16 @@
                 <div class="bg-white/80 p-5 rounded-2xl border border-rose-100 shadow-md flex flex-col items-center">
                     <div class="w-full flex justify-between items-center mb-4">
                         <span class="font-bold text-slate-700"><i class="fa-solid fa-pizza-slice text-rose-500 mr-1"></i> 美美（切成 4 等份）</span>
-                        <span class="text-lg font-black text-rose-600">
-                            <span class="fraction"><span class="numerator" id="pizzaA-num">3</span><span class="denominator" id="pizzaA-den">4</span></span> 個
+                        <span class="text-lg font-black text-rose-600 flex items-center">
+                            <span id="pizzaA-frac-box"></span> 個
                         </span>
                     </div>
                     <!-- SVG 披薩 A -->
                     <div class="relative my-2">
                         <svg id="pizzaA-svg" width="200" height="200" viewBox="0 0 200 200" class="drop-shadow-md"></svg>
                     </div>
-                    <div class="w-full mt-4 bg-rose-50 p-3 rounded-xl text-xs text-slate-600 space-y-1">
-                        <div class="flex items-center flex-wrap gap-1">• 每一等份是：<span class="fraction font-bold text-rose-600"><span class="numerator">1</span><span class="denominator" id="pizzaA-unit-den">4</span></span> 個披薩</div>
+                    <div class="w-full mt-4 bg-rose-50 p-3 rounded-xl text-xs text-slate-600 space-y-2">
+                        <div class="flex items-center">• 每一等份是：<span id="pizzaA-unit-frac" class="mx-1"></span> 個披薩</div>
                         <div>• 每一塊的大小：<span class="font-bold text-rose-600">較大 🍕</span></div>
                     </div>
                 </div>
@@ -326,16 +297,16 @@
                 <div class="bg-white/80 p-5 rounded-2xl border border-indigo-100 shadow-md flex flex-col items-center">
                     <div class="w-full flex justify-between items-center mb-4">
                         <span class="font-bold text-slate-700"><i class="fa-solid fa-pizza-slice text-indigo-500 mr-1"></i> 多多（切成 8 等份）</span>
-                        <span class="text-lg font-black text-indigo-600">
-                            <span class="fraction"><span class="numerator" id="pizzaB-num">3</span><span class="denominator" id="pizzaB-den">8</span></span> 個
+                        <span class="text-lg font-black text-indigo-600 flex items-center">
+                            <span id="pizzaB-frac-box"></span> 個
                         </span>
                     </div>
                     <!-- SVG 披薩 B -->
                     <div class="relative my-2">
                         <svg id="pizzaB-svg" width="200" height="200" viewBox="0 0 200 200" class="drop-shadow-md"></svg>
                     </div>
-                    <div class="w-full mt-4 bg-indigo-50 p-3 rounded-xl text-xs text-slate-600 space-y-1">
-                        <div class="flex items-center flex-wrap gap-1">• 每一等份是：<span class="fraction font-bold text-indigo-600"><span class="numerator">1</span><span class="denominator" id="pizzaB-unit-den">8</span></span> 個披薩</div>
+                    <div class="w-full mt-4 bg-indigo-50 p-3 rounded-xl text-xs text-slate-600 space-y-2">
+                        <div class="flex items-center">• 每一等份是：<span id="pizzaB-unit-frac" class="mx-1"></span> 個披薩</div>
                         <div>• 每一塊的大小：<span class="font-bold text-indigo-600">較小 🍕</span></div>
                     </div>
                 </div>
@@ -347,28 +318,25 @@
                     <div class="text-3xl text-amber-300 mt-1"><i class="fa-solid fa-lightbulb"></i></div>
                     <div>
                         <h3 class="text-lg font-bold text-amber-200 mb-1">觀察與觀念歸納：</h3>
-                        <p id="pizza-summary-text" class="text-sm text-slate-200 leading-relaxed">
-                            美美和多多都吃了 3 等份，但是美美的披薩只切成 4 塊，多多的披薩切成了 8 塊。<br>
-                            因為 <span class="fraction"><span class="numerator">1</span><span class="denominator">4</span></span> &gt; <span class="fraction"><span class="numerator">1</span><span class="denominator">8</span></span>，所以美美吃的披薩比較多！
-                        </p>
-                        <div class="mt-4 pt-3 border-t border-white/20 text-xl font-black text-center text-amber-300">
-                            <span class="fraction"><span class="numerator" id="summary-num1">3</span><span class="denominator">4</span></span> 
-                            &gt; 
-                            <span class="fraction"><span class="numerator" id="summary-num2">3</span><span class="denominator">8</span></span>
+                        <div id="pizza-summary-text" class="text-sm text-slate-200 leading-relaxed space-y-2"></div>
+                        <div class="mt-4 pt-3 border-t border-white/20 text-xl font-black text-center text-amber-300 flex items-center justify-center">
+                            <span id="summary-math-expr"></span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 單元 3：歷程性評量測驗 (5 題) -->
+        <!-- 單元 3：闖關測驗 -->
         <section id="section3" class="glass-card rounded-3xl p-5 md:p-8 shadow-2xl hidden transition-all duration-500">
             <div class="flex justify-between items-center mb-6 border-b border-slate-200/80 pb-4">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-black text-xl shadow-lg">3</div>
+                    <div class="w-10 h-10 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-black text-xl shadow-lg">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
                     <div>
-                        <h2 class="text-xl md:text-2xl font-bold text-slate-800">觀念小挑戰 (歷程評量)</h2>
-                        <p class="text-xs text-slate-500">回答 5 道題目，立即檢視學習成效！</p>
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-800">闖關測驗</h2>
+                        <p class="text-xs text-slate-500">請選出正確答案，作答完畢後點擊底部「提交答案」！</p>
                     </div>
                 </div>
                 <!-- 得分顯示 -->
@@ -378,121 +346,113 @@
             </div>
 
             <!-- 測驗題目容器 -->
-            <div id="quiz-container" class="space-y-6">
-                <!-- 由 JavaScript 自動產生題目卡片 -->
+            <div id="quiz-container" class="space-y-6"></div>
+
+            <!-- 操作按鈕區域 -->
+            <div class="flex flex-row justify-center gap-4 mt-8 pt-4 border-t border-slate-200/80 max-w-md mx-auto w-full">
+                <button onclick="submitQuiz()" class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-2xl shadow-lg hover:shadow-xl transition flex items-center justify-center text-base">
+                    <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案
+                </button>
+                <button onclick="resetQuiz()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 px-6 rounded-2xl transition flex items-center justify-center text-base">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> 重新測驗
+                </button>
             </div>
 
             <!-- 測驗完成獎勵 Modal / Panel -->
-            <div id="quiz-complete-panel" class="hidden mt-8 p-6 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-center shadow-2xl animate-pulse-glow">
-                <i class="fa-solid fa-trophy text-5xl text-yellow-300 mb-3"></i>
-                <h3 class="text-2xl font-black mb-2">太棒了！完成評量挑戰！</h3>
-                <p id="quiz-final-eval" class="text-sm text-emerald-100 mb-4">你已經順利掌握同分母與異分母分數大小比較的觀念囉！</p>
-                <button onclick="resetQuiz()" class="bg-white text-teal-800 font-bold px-6 py-2.5 rounded-xl shadow-md hover:bg-emerald-50 transition">
-                    <i class="fa-solid fa-rotate-right mr-2"></i> 再挑戰一次
-                </button>
+            <div id="quiz-complete-panel" class="hidden mt-6 p-6 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-center shadow-2xl animate-pulse-glow">
+                <i class="fa-solid fa-award text-5xl text-yellow-300 mb-3"></i>
+                <h3 class="text-2xl font-black mb-2">完成闖關測驗！</h3>
+                <p id="quiz-final-eval" class="text-sm text-emerald-100 mb-4"></p>
             </div>
         </section>
 
     </main>
 
-    <!-- 頁尾 -->
-    <footer class="max-w-5xl mx-auto mt-12 text-center text-xs text-white/70 pb-8">
-    </footer>
+    <footer class="max-w-5xl mx-auto mt-12 text-center text-xs text-white/70 pb-8"></footer>
 
     <script>
-        /* ----------------------------------------------------
-           1. 頁籤切換邏輯
-        ---------------------------------------------------- */
+        /* 輔助函式：產生標準直式 HTML 分數 */
+        function createFractionHTML(numerator, denominator) {
+            return `<span class="fraction"><span class="numerator">${numerator}</span><span class="denominator">${denominator}</span></span>`;
+        }
+
+        /* 1. 頁籤切換邏輯 */
         function switchTab(tabIndex) {
             const tabs = [1, 2, 3];
             tabs.forEach(i => {
                 const sec = document.getElementById(`section${i}`);
                 const btn = document.getElementById(`tab${i}-btn`);
                 if (i === tabIndex) {
-                sec.classList.remove('hidden');
-                btn.className = "flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 bg-white text-slate-800 shadow-md";
-            } else {
-                sec.classList.add('hidden');
-                btn.className = "flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 text-white hover:bg-white/10";
-            }
-        });
-    }
-
-    /* 輔助函式：統一產生標準直式分數 HTML */
-    function formatFraction(num, den) {
-        return `<span class="fraction"><span class="numerator">${num}</span><span class="denominator">${den}</span></span>`;
-    }
-
-    /* ----------------------------------------------------
-       2. 單元 1：蛋糕比較邏輯 (Cake Comparison)
-    ---------------------------------------------------- */
-    let cakeDen = 6;
-
-    function changeCakeDenominator() {
-        cakeDen = parseInt(document.getElementById('cake-den-slider').value);
-        document.getElementById('cake-den-val').innerText = `${cakeDen} 等份`;
-
-        // 更新皮皮與丹丹滑桿最大值
-        const pipiSlider = document.getElementById('pipi-slider');
-        const dandanSlider = document.getElementById('dandan-slider');
-        pipiSlider.max = cakeDen;
-        dandanSlider.max = cakeDen;
-
-        if (parseInt(pipiSlider.value) > cakeDen) pipiSlider.value = cakeDen;
-        if (parseInt(dandanSlider.value) > cakeDen) dandanSlider.value = cakeDen;
-
-        updateCakeComparison();
-    }
-
-    function updateCakeComparison() {
-        const pipiVal = parseInt(document.getElementById('pipi-slider').value);
-        const dandanVal = parseInt(document.getElementById('dandan-slider').value);
-
-        // 更新文字顯示
-        document.getElementById('pipi-num-text').innerText = pipiVal;
-        document.getElementById('pipi-den-text').innerText = cakeDen;
-        document.getElementById('pipi-count-text').innerText = pipiVal;
-        document.getElementById('pipi-unit-den').innerText = cakeDen;
-        document.getElementById('pipi-svg-label').innerHTML = formatFraction(pipiVal, cakeDen);
-
-        document.getElementById('dandan-num-text').innerText = dandanVal;
-        document.getElementById('dandan-den-text').innerText = cakeDen;
-        document.getElementById('dandan-count-text').innerText = dandanVal;
-        document.getElementById('dandan-unit-den').innerText = cakeDen;
-        document.getElementById('dandan-svg-label').innerHTML = formatFraction(dandanVal, cakeDen);
-
-        // 渲染蛋糕視圖
-        renderCakeContainer('pipi-cake-container', pipiVal, cakeDen, '#f59e0b', '#fef3c7');
-        renderCakeContainer('dandan-cake-container', dandanVal, cakeDen, '#0284c7', '#e0f2fe');
-
-        // 比較與更新算式
-        const exprBox = document.getElementById('cake-math-expr');
-        const resultText = document.getElementById('cake-result-text');
-        const resultIcon = document.getElementById('result-icon');
-
-        let symbol = '=';
-        if (pipiVal > dandanVal) {
-            symbol = '>';
-            resultText.innerHTML = `皮皮吃的蛋糕比較多！ (${formatFraction(pipiVal, cakeDen)} &gt; ${formatFraction(dandanVal, cakeDen)})`;
-            resultIcon.innerHTML = `<i class="fa-solid fa-face-smile text-amber-300"></i>`;
-        } else if (pipiVal < dandanVal) {
-            symbol = '<';
-            resultText.innerHTML = `丹丹吃的蛋糕比較多！ (${formatFraction(pipiVal, cakeDen)} &lt; ${formatFraction(dandanVal, cakeDen)})`;
-            resultIcon.innerHTML = `<i class="fa-solid fa-face-laugh-beam text-sky-300"></i>`;
-        } else {
-            symbol = '=';
-            resultText.innerHTML = `皮皮和丹丹吃得一樣多！ (${formatFraction(pipiVal, cakeDen)} = ${formatFraction(dandanVal, cakeDen)})`;
-            resultIcon.innerHTML = `<i class="fa-solid fa-handshake text-emerald-300"></i>`;
+                    sec.classList.remove('hidden');
+                    btn.className = "flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 bg-white text-slate-800 shadow-md";
+                } else {
+                    sec.classList.add('hidden');
+                    btn.className = "flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 text-white hover:bg-white/10";
+                }
+            });
         }
 
-        exprBox.innerHTML = `
-            ${formatFraction(pipiVal, cakeDen)} 
-            <span class="mx-2 text-yellow-300 font-extrabold">${symbol}</span> 
-            ${formatFraction(dandanVal, cakeDen)}
-        `;
-    }
+        let cakeDen = 6;
 
-    function renderCakeContainer(containerId, activeCount, totalCount, activeColor, inactiveColor) {
+        function changeCakeDenominator() {
+            cakeDen = parseInt(document.getElementById('cake-den-slider').value);
+            document.getElementById('cake-den-val').innerText = `${cakeDen} 等份`;
+
+            const pipiSlider = document.getElementById('pipi-slider');
+            const dandanSlider = document.getElementById('dandan-slider');
+            pipiSlider.max = cakeDen;
+            dandanSlider.max = cakeDen;
+
+            if (parseInt(pipiSlider.value) > cakeDen) pipiSlider.value = cakeDen;
+            if (parseInt(dandanSlider.value) > cakeDen) dandanSlider.value = cakeDen;
+
+            updateCakeComparison();
+        }
+
+        function updateCakeComparison() {
+            const pipiVal = parseInt(document.getElementById('pipi-slider').value);
+            const dandanVal = parseInt(document.getElementById('dandan-slider').value);
+
+            document.getElementById('pipi-num-text-box').innerHTML = createFractionHTML(pipiVal, cakeDen);
+            document.getElementById('pipi-count-text').innerText = pipiVal;
+            document.getElementById('pipi-unit-frac').innerHTML = createFractionHTML(1, cakeDen);
+            document.getElementById('pipi-svg-label flex items-center').innerHTML = createFractionHTML(pipiVal, cakeDen);
+
+            document.getElementById('dandan-num-text-box').innerHTML = createFractionHTML(dandanVal, cakeDen);
+            document.getElementById('dandan-count-text').innerText = dandanVal;
+            document.getElementById('dandan-unit-frac').innerHTML = createFractionHTML(1, cakeDen);
+            document.getElementById('dandan-svg-label flex items-center').innerHTML = createFractionHTML(dandanVal, cakeDen);
+
+            renderCakeContainer('pipi-cake-container', pipiVal, cakeDen, '#f59e0b', '#fef3c7');
+            renderCakeContainer('dandan-cake-container', dandanVal, cakeDen, '#0284c7', '#e0f2fe');
+
+            const exprBox = document.getElementById('cake-math-expr');
+            const resultText = document.getElementById('cake-result-text');
+            const resultIcon = document.getElementById('result-icon');
+
+            let symbol = '=';
+            if (pipiVal > dandanVal) {
+                symbol = '>';
+                resultText.innerText = `皮皮吃的蛋糕比較多！`;
+                resultIcon.innerHTML = `<i class="fa-solid fa-face-smile text-amber-300"></i>`;
+            } else if (pipiVal < dandanVal) {
+                symbol = '<';
+                resultText.innerText = `丹丹吃的蛋糕比較多！`;
+                resultIcon.innerHTML = `<i class="fa-solid fa-face-laugh-beam text-sky-300"></i>`;
+            } else {
+                symbol = '=';
+                resultText.innerText = `皮皮和丹丹吃得一樣多！`;
+                resultIcon.innerHTML = `<i class="fa-solid fa-handshake text-emerald-300"></i>`;
+            }
+
+            exprBox.innerHTML = `
+                ${createFractionHTML(pipiVal, cakeDen)}
+                <span class="mx-3 text-yellow-300 font-extrabold text-2xl">${symbol}</span> 
+                ${createFractionHTML(dandanVal, cakeDen)}
+            `;
+        }
+
+        function renderCakeContainer(containerId, activeCount, totalCount, activeColor, inactiveColor) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
             for (let i = 0; i < totalCount; i++) {
@@ -512,147 +472,200 @@
             }
         }
 
-        /* ----------------------------------------------------
-           3. 單元 2：披薩分割邏輯 (Pizza Comparison SVG)
-        ---------------------------------------------------- */
         function updatePizzaComparison() {
             const sharedNum = parseInt(document.getElementById('shared-num-slider').value);
             document.getElementById('shared-num-val').innerText = sharedNum;
 
-            document.getElementById('pizzaA-num').innerText = sharedNum;
-            document.getElementById('pizzaB-num').innerText = sharedNum;
-            document.getElementById('summary-num1').innerText = sharedNum;
-            document.getElementById('summary-num2').innerText = sharedNum;
+            document.getElementById('pizzaA-frac-box').innerHTML = createFractionHTML(sharedNum, 4);
+            document.getElementById('pizzaB-frac-box').innerHTML = createFractionHTML(sharedNum, 8);
+            document.getElementById('pizzaA-unit-frac').innerHTML = createFractionHTML(1, 4);
+            document.getElementById('pizzaB-unit-frac').innerHTML = createFractionHTML(1, 8);
 
-            // 繪製 SVG 披薩
-            drawPizzaSVG('pizzaA-svg', 4, sharedNum, '#f43f5e');
-            drawPizzaSVG('pizzaB-svg', 8, sharedNum, '#6366f1');
+            /* 修改：使用馬卡龍色系（蜜桃粉與淡紫藍） */
+            drawPizzaSVG('pizzaA-svg', 4, sharedNum, '#ff9aa2');
+            drawPizzaSVG('pizzaB-svg', 8, sharedNum, '#b8c0ff');
 
-            // 觀念摘要更新
             const summary = document.getElementById('pizza-summary-text');
             summary.innerHTML = `
-                美美和多多都吃了 <strong>${sharedNum}</strong> 塊披薩。<br>
-                美美將披薩切成 <strong>4</strong> 等份，每一塊是 <span class="fraction"><span class="numerator">1</span><span class="denominator">4</span></span> 個披薩；<br>
-                多多將披薩切成 <strong>8</strong> 等份，每一塊是 <span class="fraction"><span class="numerator">1</span><span class="denominator">8</span></span> 個披薩。<br>
-                因為切割份數越少，單塊面積越大（<span class="fraction"><span class="numerator">1</span><span class="denominator">4</span></span> &gt; <span class="fraction"><span class="numerator">1</span><span class="denominator">8</span></span>），所以吃的總量是美美比較多！
+                <div class="flex items-center flex-wrap gap-1">
+                    美美和多多都吃了 <strong>${sharedNum}</strong> 塊披薩。
+                </div>
+                <div class="flex items-center flex-wrap gap-1">
+                    美美將披薩切成 <strong>4</strong> 等份，每一塊是 ${createFractionHTML(1, 4)} 個披薩；
+                </div>
+                <div class="flex items-center flex-wrap gap-1">
+                    多多將披薩切成 <strong>8</strong> 等份，每一塊是 ${createFractionHTML(1, 8)} 個披薩。
+                </div>
+                <div class="flex items-center flex-wrap gap-1 mt-1 text-amber-200">
+                    因為切割份數越少，單塊面積越大（${createFractionHTML(1, 4)} &gt; ${createFractionHTML(1, 8)}），所以吃的總量是美美比較多！
+                </div>
+            `;
+
+            document.getElementById('summary-math-expr').innerHTML = `
+                ${createFractionHTML(sharedNum, 4)}
+                <span class="mx-3 text-amber-300 font-extrabold text-2xl">&gt;</span>
+                ${createFractionHTML(sharedNum, 8)}
             `;
         }
 
+        /* 重構 SVG 披薩繪製 logic：馬卡龍色系 + 半透明 + 橙色虛線分割線 */
         function drawPizzaSVG(svgId, totalSlices, eatenSlices, activeColor) {
             const svg = document.getElementById(svgId);
             svg.innerHTML = '';
-            const cx = 100, cy = 100, r = 85;
+            const cx = 100, cy = 100, r = 80;
 
-            // 繪製披薩底盤圓圈
-            const bgCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            bgCircle.setAttribute('cx', cx);
-            bgCircle.setAttribute('cy', cy);
-            bgCircle.setAttribute('r', r);
-            bgCircle.setAttribute('fill', '#fef3c7');
-            bgCircle.setAttribute('stroke', '#d97706');
-            bgCircle.setAttribute('stroke-width', '4');
-            svg.appendChild(bgCircle);
+            // 1. 金黃餅皮外邊
+            const crust = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            crust.setAttribute('cx', cx);
+            crust.setAttribute('cy', cy);
+            crust.setAttribute('r', r + 4);
+            crust.setAttribute('fill', '#f59e0b');
+            svg.appendChild(crust);
 
-            const sliceAngle = (2 * Math.PI) / totalSlices;
+            // 2. 底層馬卡龍柔黃乳酪底 (未食用塊)
+            const cheese = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            cheese.setAttribute('cx', cx);
+            cheese.setAttribute('cy', cy);
+            cheese.setAttribute('r', r);
+            cheese.setAttribute('fill', '#fff9e6');
+            svg.appendChild(cheese);
 
-            for (let i = 0; i < totalSlices; i++) {
-                const startAngle = i * sliceAngle - Math.PI / 2;
-                const endAngle = (i + 1) * sliceAngle - Math.PI / 2;
+            const angleStep = (2 * Math.PI) / totalSlices;
 
-                const x1 = cx + r * Math.cos(startAngle);
-                const y1 = cy + r * Math.sin(startAngle);
-                const x2 = cx + r * Math.cos(endAngle);
-                const y2 = cy + r * Math.sin(endAngle);
+            // 3. 繪製已食用的馬卡龍半透明扇形塊
+            for (let i = 0; i < eatenSlices; i++) {
+                const startA = -Math.PI / 2 + i * angleStep;
+                const endA = -Math.PI / 2 + (i + 1) * angleStep;
+
+                const x1 = (cx + r * Math.cos(startA)).toFixed(3);
+                const y1 = (cy + r * Math.sin(startA)).toFixed(3);
+                const x2 = (cx + r * Math.cos(endA)).toFixed(3);
+                const y2 = (cy + r * Math.sin(endA)).toFixed(3);
+
+                const largeArc = angleStep > Math.PI ? 1 : 0;
+                const pathD = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
 
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                const d = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2} Z`;
-                path.setAttribute('d', d);
-
-                if (i < eatenSlices) {
-                    path.setAttribute('fill', activeColor);
-                    path.setAttribute('stroke', '#ffffff');
-                    path.setAttribute('stroke-width', '2');
-                    path.setAttribute('opacity', '0.9');
-                } else {
-                    path.setAttribute('fill', '#f1f5f9');
-                    path.setAttribute('stroke', '#cbd5e1');
-                    path.setAttribute('stroke-width', '1.5');
-                }
+                path.setAttribute('d', pathD);
+                path.setAttribute('fill', activeColor);
+                /* 修改：加上半透明度 */
+                path.setAttribute('opacity', '0.72');
                 svg.appendChild(path);
 
-                // 加上切線 divider
+                // 臘腸點綴
+                const midA = startA + angleStep / 2;
+                const topX = (cx + (r * 0.55) * Math.cos(midA)).toFixed(3);
+                const topY = (cy + (r * 0.55) * Math.sin(midA)).toFixed(3);
+                const topping = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                topping.setAttribute('cx', topX);
+                topping.setAttribute('cy', topY);
+                topping.setAttribute('r', totalSlices > 6 ? '5' : '7');
+                topping.setAttribute('fill', '#ff6b6b');
+                topping.setAttribute('opacity', '0.8');
+                svg.appendChild(topping);
+            }
+
+            // 4. 繪製精確穿心橙色虛線分割線 (Orange Dashed Lines)
+            const numDiameters = totalSlices / 2;
+            for (let i = 0; i < numDiameters; i++) {
+                const angle = -Math.PI / 2 + i * angleStep;
+                const x1 = (cx + r * Math.cos(angle)).toFixed(3);
+                const y1 = (cy + r * Math.sin(angle)).toFixed(3);
+                const x2 = (cx - r * Math.cos(angle)).toFixed(3);
+                const y2 = (cy - r * Math.sin(angle)).toFixed(3);
+
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.setAttribute('x1', cx);
-                line.setAttribute('y1', cy);
-                line.setAttribute('x2', x1);
-                line.setAttribute('y2', y1);
-                line.setAttribute('stroke', '#b45309');
-                line.setAttribute('stroke-width', '1.5');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+                /* 修改：鮮明橙色與虛線樣式 */
+                line.setAttribute('stroke', '#f97316');
+                line.setAttribute('stroke-dasharray', '5 3');
+                line.setAttribute('stroke-width', '2.5');
+                line.setAttribute('stroke-linecap', 'round');
                 svg.appendChild(line);
             }
+
+            // 5. 圓心連接節點
+            const centerPoint = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            centerPoint.setAttribute('cx', cx);
+            centerPoint.setAttribute('cy', cy);
+            centerPoint.setAttribute('r', '4');
+            centerPoint.setAttribute('fill', '#ea580c');
+            svg.appendChild(centerPoint);
+
+            // 6. 外圈邊框
+            const borderCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            borderCircle.setAttribute('cx', cx);
+            borderCircle.setAttribute('cy', cy);
+            borderCircle.setAttribute('r', r);
+            borderCircle.setAttribute('fill', 'none');
+            borderCircle.setAttribute('stroke', '#f97316');
+            borderCircle.setAttribute('stroke-width', '2');
+            svg.appendChild(borderCircle);
         }
 
-        /* ----------------------------------------------------
-           4. 單元 3：隨堂測驗題目資料與邏輯
-        ---------------------------------------------------- */
         const quizData = [
             {
                 id: 1,
-                question: "1條蛋糕平分成 6 等份，皮皮吃了 <span class='fraction'><span class='numerator'>4</span><span class='denominator'>6</span></span> 條，丹丹吃了 <span class='fraction'><span class='numerator'>2</span><span class='denominator'>6</span></span> 條，誰吃的蛋糕比較多？",
+                question: `1條蛋糕平分成 6 等份，皮皮吃了 ${createFractionHTML(4, 6)} 條，丹丹吃了 ${createFractionHTML(2, 6)} 條，誰吃的蛋糕比較多？`,
                 options: ["皮皮", "丹丹", "一樣多", "無法比較"],
                 answer: 0,
-                explanation: "分母都是 6 時，分子 4 大於 2，所以皮皮吃的 4/6 條比丹丹的 2/6 條多！"
+                explanation: `分母都是 6 時，分子 4 大於 2，所以皮皮吃的 ${createFractionHTML(4, 6)} 條比丹丹的 ${createFractionHTML(2, 6)} 條多！`
             },
             {
                 id: 2,
-                question: "一張郵票平分成 8 枚，7 個 <span class='fraction'><span class='numerator'>1</span><span class='denominator'>8</span></span> 張大張郵票，合起來是多少張郵票？",
+                question: `一張郵票平分成 8 枚，7 個 ${createFractionHTML(1, 8)} 張大張郵票，合起來是多少張郵票？`,
                 options: [
-                    "<span class='fraction'><span class='numerator'>1</span><span class='denominator'>8</span></span> 張",
-                    "<span class='fraction'><span class='numerator'>6</span><span class='denominator'>8</span></span> 張",
-                    "<span class='fraction'><span class='numerator'>7</span><span class='denominator'>8</span></span> 張",
+                    `${createFractionHTML(1, 8)} 張`,
+                    `${createFractionHTML(6, 8)} 張`,
+                    `${createFractionHTML(7, 8)} 張`,
                     "7 張"
                 ],
                 answer: 2,
-                explanation: "7 個 1/8 合起來就是 7/8 張郵票。"
+                explanation: `7 個 ${createFractionHTML(1, 8)} 合起來就是 ${createFractionHTML(7, 8)} 張郵票。`
             },
             {
                 id: 3,
-                question: "美美和多多各有一個大小相同的披薩。美美吃了 <span class='fraction'><span class='numerator'>3</span><span class='denominator'>4</span></span> 個，多多吃了 <span class='fraction'><span class='numerator'>3</span><span class='denominator'>8</span></span> 個，誰吃的披薩比較多？",
+                question: `美美和多多各有一個大小相同的披薩。美美吃了 ${createFractionHTML(3, 4)} 個，多多吃了 ${createFractionHTML(3, 8)} 個，誰吃的披薩比較多？`,
                 options: ["美美", "多多", "一樣多", "不一定"],
                 answer: 0,
-                explanation: "分子相同（都是 3 塊）時，分母越小代表每一塊越大。1/4 塊比 1/8 塊大，所以美美吃的 3/4 個比較多！"
+                explanation: `分子相同（都是 3 塊）時，分母越小代表每一塊越大。${createFractionHTML(1, 4)} 塊比 ${createFractionHTML(1, 8)} 塊大，所以美美吃的 ${createFractionHTML(3, 4)} 個比較多！`
             },
             {
                 id: 4,
-                question: "一張印度大餅平分成 10 等份。妹妹拿了 <span class='fraction'><span class='numerator'>6</span><span class='denominator'>10</span></span> 張，姐姐拿了 <span class='fraction'><span class='numerator'>4</span><span class='denominator'>10</span></span> 張，請問妹妹比姐姐多拿了多少張？",
+                question: `一張印度大餅平分成 10 等份。妹妹拿了 ${createFractionHTML(6, 10)} 張，姐姐拿了 ${createFractionHTML(4, 10)} 張，請問妹妹比姐姐多拿了多少張？`,
                 options: [
-                    "<span class='fraction'><span class='numerator'>2</span><span class='denominator'>10</span></span> 張",
-                    "<span class='fraction'><span class='numerator'>10</span><span class='denominator'>10</span></span> 張",
+                    `${createFractionHTML(2, 10)} 張`,
+                    `${createFractionHTML(10, 10)} 張`,
                     "2 張",
-                    "<span class='fraction'><span class='numerator'>6</span><span class='denominator'>4</span></span> 張"
+                    `${createFractionHTML(6, 4)} 張`
                 ],
                 answer: 0,
-                explanation: "6 個 1/10 扣掉 4 個 1/10，還多出 2 個 1/10，即 2/10 張。"
+                explanation: `6 個 ${createFractionHTML(1, 10)} 扣掉 4 個 ${createFractionHTML(1, 10)}，還多出 2 個 ${createFractionHTML(1, 10)}，即 ${createFractionHTML(2, 10)} 張。`
             },
             {
                 id: 5,
-                question: "關於分數「<span class='fraction'><span class='numerator'>1</span><span class='denominator'>6</span></span>」與「<span class='fraction'><span class='numerator'>1</span><span class='denominator'>8</span></span>」的比較，下列敘述何者正確？",
+                question: `關於分數「${createFractionHTML(1, 6)}」與「${createFractionHTML(1, 8)}」的比較，下列敘述何者正確？`,
                 options: [
-                    "<span class='fraction'><span class='numerator'>1</span><span class='denominator'>6</span></span> 比 <span class='fraction'><span class='numerator'>1</span><span class='denominator'>8</span></span> 小，因為 6 比 8 小",
-                    "<span class='fraction'><span class='numerator'>1</span><span class='denominator'>6</span></span> 比 <span class='fraction'><span class='numerator'>1</span><span class='denominator'>8</span></span> 大，因為平分成 6 份的每一份比較大",
+                    `${createFractionHTML(1, 6)} 比 ${createFractionHTML(1, 8)} 小，因為 6 比 8 小`,
+                    `${createFractionHTML(1, 6)} 比 ${createFractionHTML(1, 8)} 大，因為平分成 6 份的每一份比較大`,
                     "兩者一樣大",
                     "分母越大代表分數越大"
                 ],
                 answer: 1,
-                explanation: "同一個整體，平分切成的份數越少（分母越小），每一等份的面積反而越大！"
+                explanation: `同一個整體，平分切成的份數越少（分母越小），每一等份的面積反而越大！`
             }
         ];
 
         let userAnswers = {};
+        let isSubmitted = false;
 
         function initQuiz() {
             const container = document.getElementById('quiz-container');
             container.innerHTML = '';
+            isSubmitted = false;
 
             quizData.forEach((q, index) => {
                 const card = document.createElement('div');
@@ -663,7 +676,7 @@
                     optionsHTML += `
                         <button onclick="selectQuizOption(${q.id}, ${optIndex})" id="btn-q${q.id}-${optIndex}" 
                             class="w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-sky-50 transition flex items-center justify-between font-medium text-slate-700 text-sm">
-                            <span>${String.fromCharCode(65 + optIndex)}. ${opt}</span>
+                            <span class="flex items-center flex-wrap">${String.fromCharCode(65 + optIndex)}. ${opt}</span>
                             <i id="icon-q${q.id}-${optIndex}" class="fa-regular fa-circle text-slate-300 text-lg"></i>
                         </button>
                     `;
@@ -671,8 +684,8 @@
 
                 card.innerHTML = `
                     <div class="flex items-start space-x-3">
-                        <span class="bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded-lg font-bold text-xs">第 ${index + 1} 題</span>
-                        <h3 class="text-base font-bold text-slate-800 flex-1">${q.question}</h3>
+                        <span class="bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded-lg font-bold text-xs whitespace-nowrap">第 ${index + 1} 題</span>
+                        <div class="text-base font-bold text-slate-800 flex-1 flex items-center flex-wrap gap-1">${q.question}</div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pt-2">
                         ${optionsHTML}
@@ -683,59 +696,84 @@
             });
         }
 
+        /* 選擇選項邏輯（提交前僅進行點選標記，不顯示答案與解析） */
         function selectQuizOption(qId, optIndex) {
+            if (isSubmitted) return; // 提交後鎖定選擇
+
             const q = quizData.find(item => item.id === qId);
             userAnswers[qId] = optIndex;
 
-            // 重置該題選項按鈕樣式
             q.options.forEach((_, i) => {
                 const btn = document.getElementById(`btn-q${qId}-${i}`);
                 const icon = document.getElementById(`icon-q${qId}-${i}`);
-                btn.className = "w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-sky-50 transition flex items-center justify-between font-medium text-slate-700 text-sm";
-                icon.className = "fa-regular fa-circle text-slate-300 text-lg";
+                if (i === optIndex) {
+                    btn.className = "w-full text-left p-3 rounded-xl border-2 border-indigo-500 bg-indigo-50 text-indigo-900 font-bold transition flex items-center justify-between text-sm";
+                    icon.className = "fa-solid fa-circle-dot text-indigo-600 text-lg";
+                } else {
+                    btn.className = "w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-sky-50 transition flex items-center justify-between font-medium text-slate-700 text-sm";
+                    icon.className = "fa-regular fa-circle text-slate-300 text-lg";
+                }
             });
-
-            const selectedBtn = document.getElementById(`btn-q${qId}-${optIndex}`);
-            const selectedIcon = document.getElementById(`icon-q${qId}-${optIndex}`);
-            const explainBox = document.getElementById(`explain-q${qId}`);
-
-            explainBox.classList.remove('hidden');
-
-            if (optIndex === q.answer) {
-                selectedBtn.className = "w-full text-left p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 font-bold transition flex items-center justify-between text-sm";
-                selectedIcon.className = "fa-solid fa-circle-check text-emerald-500 text-lg";
-                explainBox.className = "p-3 rounded-xl text-xs bg-emerald-100/80 text-emerald-800 border border-emerald-200";
-                explainBox.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> <strong>答對了！</strong> ${q.explanation}`;
-            } else {
-                selectedBtn.className = "w-full text-left p-3 rounded-xl border-2 border-rose-400 bg-rose-50 text-rose-900 font-bold transition flex items-center justify-between text-sm";
-                selectedIcon.className = "fa-solid fa-circle-xmark text-rose-500 text-lg";
-                explainBox.className = "p-3 rounded-xl text-xs bg-rose-100/80 text-rose-800 border border-rose-200";
-                explainBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> <strong>再想想看！</strong> ${q.explanation}`;
-            }
-
-            calculateScore();
         }
 
-        function calculateScore() {
+        /* 提交答案邏輯 */
+        function submitQuiz() {
+            if (isSubmitted) return;
+            isSubmitted = true;
+
             let score = 0;
-            let answeredCount = 0;
 
             quizData.forEach(q => {
-                if (userAnswers[q.id] !== undefined) {
-                    answeredCount++;
-                    if (userAnswers[q.id] === q.answer) {
+                const userOpt = userAnswers[q.id];
+                const explainBox = document.getElementById(`explain-q${q.id}`);
+                explainBox.classList.remove('hidden');
+
+                // 當未作答（空白）時：僅顯示未作答（黃色系），不顯示其他說明或正確答案
+                if (userOpt === undefined) {
+                    explainBox.className = "p-3 rounded-xl text-xs bg-amber-50 text-amber-800 border border-amber-300 font-bold flex items-center";
+                    explainBox.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-1.5 text-amber-500 text-sm"></i> 未作答。`;
+                } else {
+                    // 已作答題目：判定對錯
+                    q.options.forEach((_, i) => {
+                        const btn = document.getElementById(`btn-q${q.id}-${i}`);
+                        const icon = document.getElementById(`icon-q${q.id}-${i}`);
+
+                        if (i === q.answer) {
+                            btn.className = "w-full text-left p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 font-bold transition flex items-center justify-between text-sm";
+                            icon.className = "fa-solid fa-circle-check text-emerald-500 text-lg";
+                        } else if (i === userOpt) {
+                            btn.className = "w-full text-left p-3 rounded-xl border-2 border-rose-400 bg-rose-50 text-rose-900 font-bold transition flex items-center justify-between text-sm";
+                            icon.className = "fa-solid fa-circle-xmark text-rose-500 text-lg";
+                        }
+                    });
+
+                    if (userOpt === q.answer) {
                         score += 20;
+                        explainBox.className = "p-3 rounded-xl text-xs bg-emerald-100/90 text-emerald-900 border border-emerald-300";
+                        explainBox.innerHTML = `<i class="fa-solid fa-circle-check mr-1 text-emerald-600"></i> <strong>答對了！</strong> ${q.explanation}`;
+                    } else {
+                        explainBox.className = "p-3 rounded-xl text-xs bg-rose-100/90 text-rose-900 border border-rose-300";
+                        explainBox.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1 text-rose-600"></i> <strong>答錯了！</strong> ${q.explanation}`;
                     }
                 }
             });
 
             document.getElementById('quiz-score').innerText = score;
 
-            if (answeredCount === quizData.length) {
-                document.getElementById('quiz-complete-panel').classList.remove('hidden');
+            const completePanel = document.getElementById('quiz-complete-panel');
+            const finalEval = document.getElementById('quiz-final-eval');
+            completePanel.classList.remove('hidden');
+
+            if (score === 100) {
+                finalEval.innerText = "太優秀了！你獲得了滿分，完全掌握了分數比較的概念！";
+            } else if (score >= 60) {
+                finalEval.innerText = `表現得很好！你獲得了 ${score} 分，可以再檢視答錯的題目複習喔！`;
+            } else {
+                finalEval.innerText = `這次獲得了 ${score} 分，建議可以回到前兩個單元動態滑動練習，再試一次！`;
             }
         }
 
+        /* 重新測驗邏輯 */
         function resetQuiz() {
             userAnswers = {};
             document.getElementById('quiz-score').innerText = '0';
@@ -743,9 +781,7 @@
             initQuiz();
         }
 
-        /* ----------------------------------------------------
-           5. 初始化載入
-        ---------------------------------------------------- */
+        /* 5. 初始化載入 */
         window.onload = function() {
             changeCakeDenominator();
             updateCakeComparison();

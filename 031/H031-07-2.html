@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>國小三上數學 7-2 互動學習網頁 - 互動探究實驗室</title>
+    <title>認識公克與 1000g 磅秤 - 互動探究實驗室</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -104,9 +104,9 @@
                     </div>
                     <div>
                         <h1 class="text-xl md:text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-sky-300 via-amber-200 to-rose-300">
-                            國小三上數學 7-2 互動學習網頁
+                            認識公克與 1000g 磅秤
                         </h1>
-                        <p class="text-xs text-sky-200/80">認識公克與 1000g 磅秤</p>
+                        <p class="text-xs text-sky-200/80">國小三上數學 7-2 互動學習網頁</p>
                     </div>
                 </div>
 
@@ -119,7 +119,7 @@
                         <i class="fa-solid fa-lightbulb mr-1"></i> 核心概念
                     </button>
                     <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold text-slate-300 hover:text-white transition-all">
-                        <i class="fa-solid fa-graduation-cap mr-1"></i> 歷程評量 (5題)
+                        <i class="fa-solid fa-graduation-cap mr-1"></i> 闖關測驗
                     </button>
                 </div>
             </div>
@@ -380,7 +380,7 @@
                 <div class="flex items-center justify-between border-b border-slate-700/60 pb-4 mb-6">
                     <div>
                         <h2 class="text-xl font-black text-amber-300 flex items-center gap-2">
-                            <i class="fa-solid fa-clipboard-question"></i> 歷程性小評量 (全 5 題)
+                            <i class="fa-solid fa-clipboard-question"></i> 闖關測驗
                         </h2>
                         <p class="text-xs text-slate-300">請仔細觀察題幹與刻度，完成測驗立即獲得回饋！</p>
                     </div>
@@ -393,9 +393,14 @@
                     <!-- Questions will be rendered dynamically -->
                 </div>
 
-                <button onclick="checkAllAnswers()" class="w-full mt-8 py-4 bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-slate-950 font-black rounded-2xl text-lg shadow-xl glow-gold transition">
-                    提交答案，檢視評量結果
-                </button>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 max-w-md mx-auto">
+                    <button onclick="checkAllAnswers()" class="flex-1 w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold rounded-2xl text-base shadow-lg shadow-emerald-900/20 transition">
+                        <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案
+                    </button>
+                    <button onclick="resetQuiz()" class="flex-1 w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 font-bold rounded-2xl text-base transition">
+                        <i class="fa-solid fa-rotate-right mr-2"></i> 重新測驗
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -800,35 +805,59 @@
 
             quizData.forEach((q) => {
                 const fb = document.getElementById(`feedback_q_${q.id}`);
-                fb.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-300', 'border-emerald-500/40', 'bg-rose-500/20', 'text-rose-300', 'border-rose-500/40');
-                fb.classList.add('border');
-
+                // 重置該題回饋區塊樣式
+                fb.className = 'p-3 rounded-xl text-xs font-semibold leading-relaxed border mt-3';
+                
                 let isCorrect = false;
+                let isBlank = false;
 
                 if (q.type === 'radio') {
                     const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
-                    if (selected && parseInt(selected.value) === q.answer) {
+                    if (!selected) {
+                        isBlank = true;
+                    } else if (parseInt(selected.value) === q.answer) {
                         isCorrect = true;
                     }
                 } else if (q.type === 'input') {
                     const inputVal = document.getElementById(`input_q_${q.id}`).value.trim();
-                    if (inputVal === q.answer) {
+                    if (inputVal === "") {
+                        isBlank = true;
+                    } else if (inputVal === q.answer) {
                         isCorrect = true;
                     }
                 }
 
-                if (isCorrect) {
+                if (isBlank) {
+                    fb.classList.add('bg-amber-500/20', 'text-amber-300', 'border-amber-500/40');
+                    fb.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1 text-amber-400"></i> 未作答。`;
+                } else if (isCorrect) {
                     correctCount++;
                     fb.classList.add('bg-emerald-500/20', 'text-emerald-300', 'border-emerald-500/40');
                     fb.innerHTML = `<i class="fa-solid fa-circle-check mr-1 text-emerald-400"></i> 答對了！${q.explain}`;
                 } else {
                     fb.classList.add('bg-rose-500/20', 'text-rose-300', 'border-rose-500/40');
-                    fb.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1 text-rose-400"></i> 需要再想想看哦！解析：${q.explain}`;
+                    fb.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1 text-rose-400"></i> 答案不正確哦！解析：${q.explain}`;
                 }
             });
 
-            const finalScore = (correctCount / quizData.length) * 100;
+            const finalScore = Math.round((correctCount / quizData.length) * 100);
             document.getElementById('quiz-score').textContent = finalScore;
+        }
+
+        function resetQuiz() {
+            // 清除所有單選選項
+            document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+            // 清除所有填空輸入
+            document.querySelectorAll('input[type="number"]').forEach(i => i.value = '');
+            
+            // 隱藏並清空所有回饋區塊
+            document.querySelectorAll('[id^="feedback_q_"]').forEach(fb => {
+                fb.className = 'hidden p-3 rounded-xl text-xs font-semibold leading-relaxed';
+                fb.innerHTML = '';
+            });
+            
+            // 重置分數
+            document.getElementById('quiz-score').textContent = '0';
         }
     </script>
 </body>

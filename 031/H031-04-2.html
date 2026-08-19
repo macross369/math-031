@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>國小三上數學 4-2 三位數乘以一位數</title>
+    <title>國小三上數學 4-2 互動學習網頁</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -12,10 +12,13 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+
+        * {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
 
         body {
-            font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
             background: linear-gradient(160deg, #1e3c72 0%, #2a5298 25%, #61a4bc 50%, #b2a4d4 75%, #f7cad0 100%);
             background-size: 400% 400%;
             animation: shinkaiSky 25s ease infinite;
@@ -158,7 +161,7 @@
         <!-- 標題區域 (已移除"新海誠風格動態數學教室") -->
         <header class="text-center mb-6">
             <h1 class="text-3xl md:text-4xl font-black text-white drop-shadow-md tracking-wider">
-                國小三上數學 4-2 三位數乘以一位數
+                國小三上數學 4-2 互動學習網頁
             </h1>
             <p class="text-white/90 text-sm md:text-base mt-1 font-medium drop-shadow">
                 透過圖像化位值、錢幣拆解與動態直式，建構具體的乘法概念！
@@ -180,7 +183,7 @@
                 <i class="fa-solid fa-user-ninja text-purple-500"></i> 4. 錯題大偵探
             </button>
             <button onclick="switchTab('quiz')" id="tab-quiz" class="glass-tab px-4 py-2.5 rounded-xl font-bold text-sm md:text-base flex items-center gap-2">
-                <i class="fa-solid fa-graduation-cap text-emerald-500"></i> 5. 歷程評量 (5題)
+                <i class="fa-solid fa-graduation-cap text-emerald-500"></i> 5. 闖關測驗
             </button>
         </nav>
 
@@ -744,14 +747,14 @@
             </div>
         </main>
 
-        <!-- 內容卡片 5：5題歷程性評量 -->
+        <!-- 內容卡片 5：5題闖關測驗 -->
         <main id="content-quiz" class="glass-card rounded-2xl p-6 mb-8 hidden">
             <div class="flex justify-between items-center border-b pb-4 mb-6">
                 <div>
                     <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <i class="fa-solid fa-award text-emerald-500"></i> 觀念與計算隨堂測驗 (5 題)
+                        <i class="fa-solid fa-award text-emerald-500"></i> 闖關測驗
                     </h2>
-                    <p class="text-gray-600 text-sm">請完成下列題目，獲得即時對錯回饋與詳細解析！</p>
+                    <p class="text-gray-600 text-sm">請完成下列題目，點擊提交答案後可獲得對錯回饋與詳細解析！</p>
                 </div>
                 <div class="text-right">
                     <span class="text-xs text-gray-500 block">目前得分</span>
@@ -764,61 +767,71 @@
                 <div class="p-4 bg-white/90 rounded-xl border border-gray-200 shadow-sm" id="q1-box">
                     <div class="font-bold text-gray-800 mb-2">1. 【整百乘法】600 × 7 的計算結果是多少？</div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                        <button onclick="answerQuiz(1, 'A', false)" class="q1-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">A) 420</button>
-                        <button onclick="answerQuiz(1, 'B', true)" class="q1-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">B) 4200</button>
-                        <button onclick="answerQuiz(1, 'C', false)" class="q1-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">C) 42000</button>
-                        <button onclick="answerQuiz(1, 'D', false)" class="q1-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">D) 42</button>
+                        <button onclick="selectOption(1, 'A', false, this)" class="q1-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">A) 420</button>
+                        <button onclick="selectOption(1, 'B', true, this)" class="q1-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">B) 4200</button>
+                        <button onclick="selectOption(1, 'C', false, this)" class="q1-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">C) 42000</button>
+                        <button onclick="selectOption(1, 'D', false, this)" class="q1-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">D) 42</button>
                     </div>
-                    <div id="q1-feedback" class="mt-2 text-xs hidden p-2 rounded"></div>
+                    <div id="q1-feedback" class="mt-3 text-sm hidden p-3 rounded-lg font-medium"></div>
                 </div>
 
                 <!-- 題目 2 -->
                 <div class="p-4 bg-white/90 rounded-xl border border-gray-200 shadow-sm" id="q2-box">
                     <div class="font-bold text-gray-800 mb-2">2. 【位值理解】在計算 423 × 2 的直式中，百位數的 4 乘以 2 代表的是什麼意義？</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <button onclick="answerQuiz(2, 'A', false)" class="q2-btn p-2 border rounded-lg text-sm hover:bg-blue-50 text-left font-medium">A) 4 個 1 的 2 倍，等於 8</button>
-                        <button onclick="answerQuiz(2, 'B', false)" class="q2-btn p-2 border rounded-lg text-sm hover:bg-blue-50 text-left font-medium">B) 4 個 10 的 2 倍，等於 80</button>
-                        <button onclick="answerQuiz(2, 'C', true)" class="q2-btn p-2 border rounded-lg text-sm hover:bg-blue-50 text-left font-medium">C) 4 個 100 的 2 倍，等於 800</button>
-                        <button onclick="answerQuiz(2, 'D', false)" class="q2-btn p-2 border rounded-lg text-sm hover:bg-blue-50 text-left font-medium">D) 4 個 1000 的 2 倍，等於 8000</button>
+                        <button onclick="selectOption(2, 'A', false, this)" class="q2-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 text-left font-medium transition-colors">A) 4 個 1 的 2 倍，等於 8</button>
+                        <button onclick="selectOption(2, 'B', false, this)" class="q2-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 text-left font-medium transition-colors">B) 4 個 10 的 2 倍，等於 80</button>
+                        <button onclick="selectOption(2, 'C', true, this)" class="q2-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 text-left font-medium transition-colors">C) 4 個 100 的 2 倍，等於 800</button>
+                        <button onclick="selectOption(2, 'D', false, this)" class="q2-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 text-left font-medium transition-colors">D) 4 個 1000 的 2 倍，等於 8000</button>
                     </div>
-                    <div id="q2-feedback" class="mt-2 text-xs hidden p-2 rounded"></div>
+                    <div id="q2-feedback" class="mt-3 text-sm hidden p-3 rounded-lg font-medium"></div>
                 </div>
 
                 <!-- 題目 3 -->
                 <div class="p-4 bg-white/90 rounded-xl border border-gray-200 shadow-sm" id="q3-box">
                     <div class="font-bold text-gray-800 mb-2">3. 【進位計算】計算 438 × 6 的正確答案為多少？</div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                        <button onclick="answerQuiz(3, 'A', false)" class="q3-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">A) 2428</button>
-                        <button onclick="answerQuiz(3, 'B', true)" class="q3-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">B) 2628</button>
-                        <button onclick="answerQuiz(3, 'C', false)" class="q3-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">C) 2618</button>
-                        <button onclick="answerQuiz(3, 'D', false)" class="q3-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">D) 2408</button>
+                        <button onclick="selectOption(3, 'A', false, this)" class="q3-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">A) 2428</button>
+                        <button onclick="selectOption(3, 'B', true, this)" class="q3-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">B) 2628</button>
+                        <button onclick="selectOption(3, 'C', false, this)" class="q3-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">C) 2618</button>
+                        <button onclick="selectOption(3, 'D', false, this)" class="q3-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">D) 2408</button>
                     </div>
-                    <div id="q3-feedback" class="mt-2 text-xs hidden p-2 rounded"></div>
+                    <div id="q3-feedback" class="mt-3 text-sm hidden p-3 rounded-lg font-medium"></div>
                 </div>
 
                 <!-- 題目 4 -->
                 <div class="p-4 bg-white/90 rounded-xl border border-gray-200 shadow-sm" id="q4-box">
                     <div class="font-bold text-gray-800 mb-2">4. 【十位為0】一罐糖果有 308 顆，爺爺買了 4 罐，共有多少顆糖果？</div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                        <button onclick="answerQuiz(4, 'A', false)" class="q4-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">A) 1202 顆</button>
-                        <button onclick="answerQuiz(4, 'B', false)" class="q4-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">C) 1230 顆</button>
-                        <button onclick="answerQuiz(4, 'C', true)" class="q4-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">B) 1232 顆</button>
-                        <button onclick="answerQuiz(4, 'D', false)" class="q4-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">D) 1200 顆</button>
+                        <button onclick="selectOption(4, 'A', false, this)" class="q4-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">A) 1202 顆</button>
+                        <button onclick="selectOption(4, 'B', false, this)" class="q4-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">C) 1230 顆</button>
+                        <button onclick="selectOption(4, 'C', true, this)" class="q4-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">B) 1232 顆</button>
+                        <button onclick="selectOption(4, 'D', false, this)" class="q4-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">D) 1200 顆</button>
                     </div>
-                    <div id="q4-feedback" class="mt-2 text-xs hidden p-2 rounded"></div>
+                    <div id="q4-feedback" class="mt-3 text-sm hidden p-3 rounded-lg font-medium"></div>
                 </div>
 
                 <!-- 題目 5 -->
                 <div class="p-4 bg-white/90 rounded-xl border border-gray-200 shadow-sm" id="q5-box">
                     <div class="font-bold text-gray-800 mb-2">5. 【素養推理】多多做題目時不小心弄髒了：<span class="bg-gray-800 text-white px-2 py-0.5 rounded font-mono">9 💧 6 × 8 = 7408</span>，請幫他算出被遮住的數字是多少？</div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                        <button onclick="answerQuiz(5, 'A', false)" class="q5-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">A) 0</button>
-                        <button onclick="answerQuiz(5, 'B', true)" class="q5-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">B) 2</button>
-                        <button onclick="answerQuiz(5, 'C', false)" class="q5-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">C) 4</button>
-                        <button onclick="answerQuiz(5, 'D', false)" class="q5-btn p-2 border rounded-lg text-sm hover:bg-blue-50 font-medium">D) 6</button>
+                        <button onclick="selectOption(5, 'A', false, this)" class="q5-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">A) 0</button>
+                        <button onclick="selectOption(5, 'B', true, this)" class="q5-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">B) 2</button>
+                        <button onclick="selectOption(5, 'C', false, this)" class="q5-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">C) 4</button>
+                        <button onclick="selectOption(5, 'D', false, this)" class="q5-btn p-2 border-2 border-gray-200 rounded-lg text-sm hover:bg-gray-50 font-medium transition-colors">D) 6</button>
                     </div>
-                    <div id="q5-feedback" class="mt-2 text-xs hidden p-2 rounded"></div>
+                    <div id="q5-feedback" class="mt-3 text-sm hidden p-3 rounded-lg font-medium"></div>
                 </div>
+            </div>
+
+            <!-- 提交與重置按鈕區 -->
+            <div class="mt-8 pt-6 border-t border-gray-200 flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="submitQuiz()" class="px-8 py-2.5 rounded-xl font-bold text-white bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/30 transition-colors flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> 提交答案
+                </button>
+                <button onclick="resetQuiz()" class="px-6 py-2.5 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i> 重新測驗
+                </button>
             </div>
         </main>
 
@@ -1203,37 +1216,60 @@
             }
         }
 
-        // --- 模組 5: 5 題歷程性評量邏輯 ---
-        const quizScores = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+        // --- 模組 5: 闖關測驗邏輯 ---
+        let userSelections = { 1: null, 2: null, 3: null, 4: null, 5: null };
+        let userCorrectness = { 1: null, 2: null, 3: null, 4: null, 5: null };
 
-        function answerQuiz(qNum, option, isCorrect) {
-            const feedbackEl = document.getElementById(`q${qNum}-feedback`);
+        function selectOption(qNum, option, isCorrect, btnElement) {
+            // 清除該題所有按鈕的選取樣式
             const btns = document.querySelectorAll(`.q${qNum}-btn`);
+            btns.forEach(btn => {
+                btn.classList.remove('bg-blue-50', 'border-blue-400', 'text-blue-800', 'shadow-sm');
+                btn.classList.add('border-gray-200', 'hover:bg-gray-50');
+            });
+            
+            // 加入當前選取的按鈕樣式
+            btnElement.classList.remove('border-gray-200', 'hover:bg-gray-50');
+            btnElement.classList.add('bg-blue-50', 'border-blue-400', 'text-blue-800', 'shadow-sm');
 
-            btns.forEach(btn => btn.classList.remove('bg-blue-100', 'border-blue-500', 'bg-emerald-100', 'bg-red-100'));
-            feedbackEl.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-red-100', 'text-red-800');
+            // 記錄選擇
+            userSelections[qNum] = option;
+            userCorrectness[qNum] = isCorrect;
+        }
 
-            if (isCorrect) {
-                quizScores[qNum] = 20;
-                feedbackEl.classList.add('bg-emerald-100', 'text-emerald-800');
+        function submitQuiz() {
+            let totalScore = 0;
+            for (let qNum = 1; qNum <= 5; qNum++) {
+                const feedbackEl = document.getElementById(`q${qNum}-feedback`);
                 
-                let exp = "";
-                if (qNum === 1) exp = "答對了！600 × 7 = 6 個百 × 7 = 42 個百 = 4200。";
-                if (qNum === 2) exp = "答對了！4 在百位代表 400，乘以 2 就是 800。";
-                if (qNum === 3) exp = "答對了！8×6=48(進4)，3×6+4=22(進2)，4×6+2=26，總共 2628。";
-                if (qNum === 4) exp = "答對了！8×4=32(進3)，0×4+3=3，3×4=12，答案為 1232。";
-                if (qNum === 5) exp = "答對了！900×8=7200，6×8=48，7408 - 7248 = 160，160 是 8 個 20，因此被遮住的數字是 2！";
+                // 重置所有回饋狀態
+                feedbackEl.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-red-100', 'text-red-800', 'bg-amber-100', 'text-amber-900', 'border-emerald-300', 'border-red-300', 'border-amber-300');
+                feedbackEl.classList.add('border');
 
-                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> 太棒了！${exp}`;
-            } else {
-                quizScores[qNum] = 0;
-                feedbackEl.classList.add('bg-red-100', 'text-red-800');
-                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> 答案不太對喔！再仔細想想或利用頁籤 1 與 2 的動態元件觀察看看！`;
+                if (userSelections[qNum] === null) {
+                    // 未作答
+                    feedbackEl.classList.add('bg-amber-100', 'text-amber-900', 'border-amber-300');
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 未作答。`;
+                    feedbackEl.classList.remove('hidden');
+                } else if (userCorrectness[qNum]) {
+                    // 答對
+                    totalScore += 20;
+                    feedbackEl.classList.add('bg-emerald-100', 'text-emerald-800', 'border-emerald-300');
+                    let exp = getExplanation(qNum);
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> 恭喜答對！${exp}`;
+                    feedbackEl.classList.remove('hidden');
+                } else {
+                    // 答錯
+                    feedbackEl.classList.add('bg-red-100', 'text-red-800', 'border-red-300');
+                    feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> 答案不正確喔！請再仔細思考，或利用前面頁籤的動態元件觀察看看。`;
+                    feedbackEl.classList.remove('hidden');
+                }
             }
 
-            const totalScore = Object.values(quizScores).reduce((a, b) => a + b, 0);
+            // 更新分數顯示
             document.getElementById('quiz-score').innerText = `${totalScore} / 100`;
 
+            // 滿分煙火效果
             if (totalScore === 100) {
                 confetti({
                     particleCount: 100,
@@ -1241,6 +1277,35 @@
                     origin: { y: 0.6 }
                 });
             }
+        }
+
+        function resetQuiz() {
+            // 重置選擇資料與分數
+            userSelections = { 1: null, 2: null, 3: null, 4: null, 5: null };
+            userCorrectness = { 1: null, 2: null, 3: null, 4: null, 5: null };
+            document.getElementById('quiz-score').innerText = `0 / 100`;
+
+            for (let qNum = 1; qNum <= 5; qNum++) {
+                // 重置按鈕樣式
+                const btns = document.querySelectorAll(`.q${qNum}-btn`);
+                btns.forEach(btn => {
+                    btn.classList.remove('bg-blue-50', 'border-blue-400', 'text-blue-800', 'shadow-sm');
+                    btn.classList.add('border-gray-200', 'hover:bg-gray-50');
+                });
+                
+                // 隱藏解析框
+                const feedbackEl = document.getElementById(`q${qNum}-feedback`);
+                feedbackEl.classList.add('hidden');
+            }
+        }
+
+        function getExplanation(qNum) {
+            if (qNum === 1) return "600 × 7 = 6 個百 × 7 = 42 個百 = 4200。";
+            if (qNum === 2) return "4 在百位代表 400，乘以 2 就是 800。";
+            if (qNum === 3) return "8×6=48(進4)，3×6+4=22(進2)，4×6+2=26，總共 2628。";
+            if (qNum === 4) return "8×4=32(進3)，0×4+3=3，3×4=12，答案為 1232。";
+            if (qNum === 5) return "900×8=7200，6×8=48，7408 - 7248 = 160，160 是 8 個 20，因此被遮住的數字是 2！";
+            return "";
         }
 
         // 初始化載入

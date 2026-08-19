@@ -8,12 +8,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome 圖示 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts 字體更新：思源黑體 Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 
     <style>
         body {
-            font-family: 'Zen Maru Gothic', sans-serif, system-ui;
+            /* 全面更新字體為 Noto Sans TC */
+            font-family: 'Noto Sans TC', sans-serif, system-ui;
             /* 新海誠風格：湛藍與霞光粉紫漸層背景 */
             background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
             background-size: 400% 400%;
@@ -126,7 +127,7 @@
                 <i class="fa-solid fa-shapes"></i> 2. 數字卡組數大挑戰
             </button>
             <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn px-5 py-3 rounded-xl font-bold text-gray-700 bg-white/70 hover:bg-white transition flex items-center gap-2">
-                <i class="fa-solid fa-pen-to-square"></i> 3. 歷程隨堂小測驗
+                <i class="fa-solid fa-pen-to-square"></i> 3. 闖關測驗
             </button>
         </div>
 
@@ -301,15 +302,15 @@
             </div>
         </main>
 
-        <!-- ==================== 模組 3：歷程隨堂測驗 ==================== -->
+        <!-- ==================== 模組 3：闖關測驗 ==================== -->
         <main id="sec-quiz" class="tab-content hidden">
             <div class="glass-card p-6 mb-6">
                 <div class="flex justify-between items-center border-b pb-3 mb-6">
                     <h2 class="text-2xl font-bold text-indigo-900 flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap text-purple-600"></i> 四位數概念隨堂測驗
+                        <i class="fa-solid fa-graduation-cap text-purple-600"></i> 四位數概念闖關測驗
                     </h2>
                     <div class="text-right">
-                        <span id="quiz-score" class="text-xl font-black text-indigo-600">得分：0 / 50</span>
+                        <span id="quiz-score" class="text-xl font-black text-indigo-600">得分：0 / 100</span>
                     </div>
                 </div>
 
@@ -318,9 +319,12 @@
                     <!-- JS 動態生成 5 題觀念測驗 -->
                 </div>
 
-                <!-- 測驗結算按鈕 -->
-                <div class="mt-8 text-center">
-                    <button onclick="resetQuiz()" class="btn-shinkai px-8 py-3 text-white font-black rounded-xl text-lg shadow-lg">
+                <!-- 測驗操作按鈕 -->
+                <div class="mt-8 flex justify-center gap-4">
+                    <button onclick="submitQuiz()" class="btn-shinkai px-8 py-3 text-white font-black rounded-xl text-lg shadow-lg flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> 提交答案
+                    </button>
+                    <button onclick="resetQuiz()" class="px-8 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-black rounded-xl text-lg shadow-lg transition flex items-center gap-2">
                         <i class="fa-solid fa-arrow-rotate-right"></i> 重新測驗
                     </button>
                 </div>
@@ -608,6 +612,7 @@
         ];
 
         let userAnswers = Array(5).fill(null);
+        let isSubmitted = false;
 
         function renderQuiz() {
             const container = document.getElementById('quiz-container');
@@ -631,14 +636,24 @@
                 });
 
                 let feedbackHTML = '';
-                if (userAnswers[idx] !== null) {
-                    const isCorrect = userAnswers[idx] === q.correct;
-                    feedbackHTML = `
-                        <div class="mt-3 p-3 rounded-lg font-bold text-sm ${isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-                            ${isCorrect ? '✅ 回答正確！' : '❌ 答案不正確喔！'}
-                            <p class="font-normal text-xs mt-1 text-gray-700">${q.explanation}</p>
-                        </div>
-                    `;
+                // 只有在按下「提交答案」後才顯示解析與狀態
+                if (isSubmitted) {
+                    if (userAnswers[idx] === null) {
+                        // 未作答狀態：僅顯示黃色系「未作答。」，不顯示解析與正確答案
+                        feedbackHTML = `
+                            <div class="mt-3 p-3 rounded-lg font-bold text-sm bg-amber-100 text-amber-800 border border-amber-300">
+                                ⚠️ 未作答。
+                            </div>
+                        `;
+                    } else {
+                        const isCorrect = userAnswers[idx] === q.correct;
+                        feedbackHTML = `
+                            <div class="mt-3 p-3 rounded-lg font-bold text-sm ${isCorrect ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-rose-100 text-rose-800 border border-rose-300'}">
+                                ${isCorrect ? '✅ 回答正確！' : '❌ 答案不正確！'}
+                                <p class="font-normal text-xs mt-1 text-gray-700">${q.explanation}</p>
+                            </div>
+                        `;
+                    }
                 }
 
                 qBox.innerHTML = `
@@ -648,25 +663,34 @@
                 `;
                 container.appendChild(qBox);
             });
-
-            updateQuizScore();
         }
 
         function selectAnswer(qIdx, optIdx) {
             userAnswers[qIdx] = optIdx;
+            if (isSubmitted) {
+                updateQuizScore();
+            }
+            renderQuiz();
+        }
+
+        function submitQuiz() {
+            isSubmitted = true;
+            updateQuizScore();
             renderQuiz();
         }
 
         function updateQuizScore() {
             let score = 0;
             userAnswers.forEach((ans, idx) => {
-                if (ans === quizData[idx].correct) score += 10;
+                if (ans === quizData[idx].correct) score += 20; // 5題，每題20分，滿分100分
             });
-            document.getElementById('quiz-score').innerText = `得分：${score} / 50`;
+            document.getElementById('quiz-score').innerText = `得分：${score} / 100`;
         }
 
         function resetQuiz() {
             userAnswers = Array(5).fill(null);
+            isSubmitted = false;
+            updateQuizScore();
             renderQuiz();
         }
 

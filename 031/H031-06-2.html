@@ -168,7 +168,7 @@
       <i class="fa-solid fa-hand-holding-hand mr-2 text-amber-500"></i> 1. 動態平分探究區 (一步一步操作)
     </button>
     <button id="tabBtnQuiz" onclick="switchTab('quiz')" class="px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 bg-white/50 text-slate-600 hover:bg-white/80 flex items-center cursor-pointer">
-      <i class="fa-solid fa-graduation-cap mr-2 text-indigo-600"></i> 2. 歷程評量 (小試身手)
+      <i class="fa-solid fa-graduation-cap mr-2 text-indigo-600"></i> 2. 闖關測驗
     </button>
   </nav>
 
@@ -340,7 +340,7 @@
       <section class="shinkai-card p-5 md:p-7">
         <div class="flex items-center justify-between border-b border-indigo-100 pb-3 mb-5">
           <h2 class="text-xl font-bold text-indigo-900 flex items-center">
-            <i class="fa-solid fa-graduation-cap text-indigo-600 mr-2.5"></i> 2. 歷程評量 (小試身手 5 題)
+            <i class="fa-solid fa-graduation-cap text-indigo-600 mr-2.5"></i> 2. 闖關測驗
           </h2>
           <span id="scoreBadge" class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
             得分：0 / 100
@@ -355,10 +355,10 @@
               <span class="text-indigo-600 mr-1">Q1.</span> 有 12 顆彈珠要平分給 4 個人，每次每人分 1 顆，減掉了 4 顆。一共減了 3 次剛好減完，請問連減算式該如何記錄？
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(1, 0, false)">A) 12 - 3 - 3 - 3 - 3 = 0</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(1, 1, true)">B) 12 - 4 = 8, 8 - 4 = 4, 4 - 4 = 0</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(1, 2, false)">C) 12 - 12 = 0</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(1, 3, false)">D) 12 + 4 + 4 = 20</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(1, 0)">A) 12 − 3 − 3 − 3 − 3 = 0</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(1, 1)">B) 12 − 4 = 8, 8 − 4 = 4, 4 − 4 = 0</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(1, 2)">C) 12 − 12 = 0</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(1, 3)">D) 12 + 4 + 4 = 20</button>
             </div>
             <div class="feedback hidden mt-3 p-3 rounded-xl text-xs font-semibold"></div>
           </div>
@@ -369,10 +369,10 @@
               <span class="text-indigo-600 mr-1">Q2.</span> 有 18 張貼紙平分給 6 個人。若用乘法算式來預估每人可分幾張：6 × ( &nbsp; ) = 18，請問括號中填入的數字代表什麼意思？
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(2, 0, false)">A) 總共有 6 張貼紙</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(2, 1, false)">B) 平分給 18 個人</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(2, 2, true)">C) 每人分到的貼紙數量 (商數)</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(2, 3, false)">D) 剩下的貼紙數量 (餘數)</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(2, 0)">A) 總共有 6 張貼紙</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(2, 1)">B) 平分給 18 個人</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(2, 2)">C) 每人分到的貼紙數量 (商數)</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(2, 3)">D) 剩下的貼紙數量 (餘數)</button>
             </div>
             <div class="feedback hidden mt-3 p-3 rounded-xl text-xs font-semibold"></div>
           </div>
@@ -383,10 +383,10 @@
               <span class="text-indigo-600 mr-1">Q3.</span> 有 25 張椅子，要平分到 6 間教室。用除法上記錄為 25 ÷ 6 = 4 ⋯⋯ 1。請問算式中的「1」代表什麼？
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(3, 0, false)">A) 每間教室分到 1 張椅子</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(3, 1, true)">B) 盡量平分後，還剩下來 1 張椅子</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(3, 2, false)">C) 還差 1 張椅子就可以再分 1 間</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(3, 3, false)">D) 一共有 1 間教室</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(3, 0)">A) 每間教室分到 1 張椅子</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(3, 1)">B) 盡量平分後，還剩下來 1 張椅子</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(3, 2)">C) 還差 1 張椅子就可以再分 1 間</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(3, 3)">D) 一共有 1 間教室</button>
             </div>
             <div class="feedback hidden mt-3 p-3 rounded-xl text-xs font-semibold"></div>
           </div>
@@ -397,10 +397,10 @@
               <span class="text-indigo-600 mr-1">Q4.</span> 學校要把 50 包餅乾平分給 7 個班級，每個班級最多可分到幾包？還剩下幾包？
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(4, 0, false)">A) 分到 8 包，剩下 6 包</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(4, 1, true)">B) 分到 7 包，剩下 1 包</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(4, 2, false)">C) 分到 6 包，剩下 8 包</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(4, 3, false)">D) 分到 7 包，剩下 0 包</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(4, 0)">A) 分到 8 包，剩下 6 包</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(4, 1)">B) 分到 7 包，剩下 1 包</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(4, 2)">C) 分到 6 包，剩下 8 包</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(4, 3)">D) 分到 7 包，剩下 0 包</button>
             </div>
             <div class="feedback hidden mt-3 p-3 rounded-xl text-xs font-semibold"></div>
           </div>
@@ -411,15 +411,26 @@
               <span class="text-indigo-600 mr-1">Q5.</span> (思考題) 老師有十幾顆糖果，每 4 顆裝成一袋，盡量裝完。最後剩下來的數量「不可能」是幾顆？為什麼？
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(5, 0, false)">A) 0 顆 (可能剛好裝完)</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(5, 1, false)">B) 1 顆</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(5, 2, false)">C) 3 顆</button>
-              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="checkAnswer(5, 3, true)">D) 4 顆 (因為若剩下 4 顆就可以湊成滿滿一袋！餘數必須小於 4)</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(5, 0)">A) 0 顆 (可能剛好裝完)</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(5, 1)">B) 1 顆</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(5, 2)">C) 3 顆</button>
+              <button class="opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium" onclick="selectOption(5, 3)">D) 4 顆 (因為若剩下 4 顆就可以湊成滿滿一袋！餘數必須小於 4)</button>
             </div>
             <div class="feedback hidden mt-3 p-3 rounded-xl text-xs font-semibold"></div>
           </div>
 
         </div>
+
+        <!-- Quiz Control Buttons -->
+        <div class="mt-8 pt-5 border-t border-indigo-100 flex flex-wrap gap-3 justify-center items-center">
+          <button onclick="submitQuiz()" class="px-6 py-3 rounded-2xl font-black text-sm md:text-base bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md hover:from-emerald-600 hover:to-teal-700 transition transform active:scale-95 flex items-center cursor-pointer">
+            <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案
+          </button>
+          <button onclick="resetQuiz()" class="px-5 py-3 rounded-2xl font-bold text-sm bg-slate-200 text-slate-700 hover:bg-slate-300 transition flex items-center cursor-pointer">
+            <i class="fa-solid fa-rotate-left mr-2"></i> 重新測驗
+          </button>
+        </div>
+
       </section>
     </div>
 
@@ -442,7 +453,16 @@
       cookie: { icon: 'fa-cookie', color: 'text-amber-700', bg: 'bg-amber-100', name: '包餅乾' }
     };
 
-    let quizScores = {};
+    // Store user choices for quiz
+    let selectedAnswers = {};
+    const correctAnswers = { 1: 1, 2: 2, 3: 1, 4: 1, 5: 3 };
+    const answerExplanations = {
+      1: "每次平分給 4 個人會拿走 4 顆，連減記錄為 12 − 4 = 8，8 − 4 = 4，4 − 4 = 0。",
+      2: "乘法預估算式中的括號數字代表「每人可以平分到的數量（商數）」。",
+      3: "除法算式 25 ÷ 6 = 4 ⋯⋯ 1 中，最後的「1」代表盡量平分後所剩下的椅子張數（餘數）。",
+      4: "50 ÷ 7 = 7 ⋯⋯ 1，代表每個班級最多分到 7 包，還剩下 1 包。",
+      5: "餘數必須嚴格小於除數 (4)。若剩下 4 顆，表示還可以再裝成 1 袋，因此不可能剩下 4 顆。"
+    };
 
     function switchTab(tab) {
       const tabExplore = document.getElementById('tabExplore');
@@ -617,7 +637,7 @@
             stepDiv.className = 'p-2 rounded-xl bg-indigo-50/90 border border-indigo-100 flex items-center justify-between text-xs font-semibold text-slate-700 item-pop';
             stepDiv.innerHTML = `
               <span>第 ${step} 次：每人分 1 個，共拿走 ${groupCount} 個</span>
-              <span class="font-mono bg-white px-2 py-0.5 rounded border border-indigo-200 text-indigo-800 font-bold">${rem} - ${groupCount} = ${nextRem}</span>
+              <span class="font-mono bg-white px-2 py-0.5 rounded border border-indigo-200 text-indigo-800 font-bold">${rem} − ${groupCount} = ${nextRem}</span>
             `;
             subContainer.appendChild(stepDiv);
             rem = nextRem;
@@ -659,41 +679,94 @@
       }
     }
 
-    function checkAnswer(qid, optIndex, isCorrect) {
+    // Quiz selection handling
+    function selectOption(qid, optIndex) {
+      selectedAnswers[qid] = optIndex;
       const item = document.querySelector(`.quiz-item[data-qid="${qid}"]`);
       if (!item) return;
 
-      const feedback = item.querySelector('.feedback');
       const buttons = item.querySelectorAll('.opt-btn');
-
       buttons.forEach((btn, idx) => {
-        btn.classList.remove('bg-emerald-100', 'border-emerald-500', 'text-emerald-900', 'bg-rose-100', 'border-rose-500', 'text-rose-900');
+        btn.classList.remove('bg-indigo-100', 'border-indigo-500', 'text-indigo-900', 'font-bold');
         if (idx === optIndex) {
-          if (isCorrect) {
-            btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
-          } else {
-            btn.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-900');
-          }
+          btn.classList.add('bg-indigo-100', 'border-indigo-500', 'text-indigo-900', 'font-bold');
         }
       });
+    }
 
-      if (feedback) {
-        feedback.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
-        if (isCorrect) {
-          quizScores[qid] = 20;
-          feedback.classList.add('bg-emerald-100', 'text-emerald-800');
-          feedback.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> 答對了！非常棒，融會貫通囉！`;
-        } else {
-          quizScores[qid] = 0;
-          feedback.classList.add('bg-rose-100', 'text-rose-800');
-          feedback.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 mr-1.5"></i> 答錯囉，再想想看連減、除數與餘數的關係！`;
+    // Submit Quiz logic
+    function submitQuiz() {
+      let totalScore = 0;
+
+      for (let qid = 1; qid <= 5; qid++) {
+        const item = document.querySelector(`.quiz-item[data-qid="${qid}"]`);
+        if (!item) continue;
+
+        const feedback = item.querySelector('.feedback');
+        const buttons = item.querySelectorAll('.opt-btn');
+        const userChoice = selectedAnswers[qid];
+
+        // Reset button styling highlighting correct/incorrect
+        buttons.forEach((btn, idx) => {
+          btn.classList.remove('bg-emerald-100', 'border-emerald-500', 'text-emerald-900', 'bg-rose-100', 'border-rose-500', 'text-rose-900');
+          if (userChoice !== undefined && idx === userChoice) {
+            if (userChoice === correctAnswers[qid]) {
+              btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+            } else {
+              btn.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-900');
+            }
+          }
+        });
+
+        if (feedback) {
+          feedback.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800', 'bg-amber-100', 'text-amber-800');
+
+          if (userChoice === undefined) {
+            // Rule 3: Blank/unanswered question -> ONLY show "未作答。" in yellow, no extra explanation or correct answer
+            feedback.classList.add('bg-amber-100', 'text-amber-800');
+            feedback.innerHTML = `<i class="fa-solid fa-circle-exclamation text-amber-600 mr-1.5"></i> 未作答。`;
+          } else if (userChoice === correctAnswers[qid]) {
+            // Correct answer
+            totalScore += 20;
+            feedback.classList.add('bg-emerald-100', 'text-emerald-800');
+            feedback.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> 答對了！ ${answerExplanations[qid]}`;
+          } else {
+            // Rule 4: Incorrect answer -> clean error msg, no contradictory positive phrasing
+            feedback.classList.add('bg-rose-100', 'text-rose-800');
+            feedback.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 mr-1.5"></i> 答錯了！解析：${answerExplanations[qid]}`;
+          }
         }
       }
 
-      const totalScore = Object.values(quizScores).reduce((a, b) => a + b, 0);
       const scoreBadge = document.getElementById('scoreBadge');
       if (scoreBadge) {
         scoreBadge.innerText = `得分：${totalScore} / 100`;
+      }
+    }
+
+    // Reset Quiz logic
+    function resetQuiz() {
+      selectedAnswers = {};
+      const scoreBadge = document.getElementById('scoreBadge');
+      if (scoreBadge) {
+        scoreBadge.innerText = `得分：0 / 100`;
+      }
+
+      for (let qid = 1; qid <= 5; qid++) {
+        const item = document.querySelector(`.quiz-item[data-qid="${qid}"]`);
+        if (!item) continue;
+
+        const feedback = item.querySelector('.feedback');
+        const buttons = item.querySelectorAll('.opt-btn');
+
+        buttons.forEach((btn) => {
+          btn.className = "opt-btn p-2.5 rounded-xl border border-slate-200 bg-white/80 hover:bg-indigo-50 text-left transition font-medium";
+        });
+
+        if (feedback) {
+          feedback.classList.add('hidden');
+          feedback.innerHTML = '';
+        }
       }
     }
 

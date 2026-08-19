@@ -120,7 +120,7 @@
                 <i class="fa-solid fa-flask"></i> 1. 估算動態實驗室
             </button>
             <button onclick="switchTab('quiz')" id="tab-quiz" class="glass-card px-6 py-3 rounded-2xl font-bold text-slate-600 hover:text-sky-600 transition-all flex items-center gap-2">
-                <i class="fa-solid fa-clipboard-question"></i> 2. 歷程挑戰測驗 (5題)
+                <i class="fa-solid fa-clipboard-question"></i> 2. 闖關測驗
             </button>
         </div>
 
@@ -244,12 +244,12 @@
             <div class="glass-card rounded-3xl p-6 md:p-8">
                 <div class="flex justify-between items-center border-b pb-4 mb-6">
                     <div>
-                        <h2 class="text-2xl font-black text-slate-800">🎯 乘法估算小達人測驗</h2>
+                        <h2 class="text-2xl font-black text-slate-800">🎯 闖關測驗</h2>
                         <p class="text-sm text-slate-500 mt-1">根據課本核心概念設計，考驗你的心算與估算邏輯！</p>
                     </div>
                     <div class="text-right">
                         <div class="text-xs text-slate-400 font-bold uppercase">Score</div>
-                        <div id="quizScore" class="text-3xl font-black text-sky-600">0 / 5</div>
+                        <div id="quizScore" class="text-3xl font-black text-sky-600">0 / 100</div>
                     </div>
                 </div>
 
@@ -258,9 +258,12 @@
                     <!-- 題目將動態生成或靜態渲染 -->
                 </div>
 
-                <div class="mt-8 text-center">
-                    <button onclick="resetQuiz()" class="btn-shinkai text-white font-bold px-8 py-3 rounded-2xl shadow-lg">
-                        <i class="fa-solid fa-rotate-right mr-2"></i> 重新挑戰測驗
+                <div class="mt-8 text-center flex justify-center items-center gap-4 flex-wrap">
+                    <button onclick="submitQuiz()" class="btn-shinkai text-white font-bold px-8 py-3 rounded-2xl shadow-lg hover:scale-105 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> 提交答案
+                    </button>
+                    <button onclick="resetQuiz()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-8 py-3 rounded-2xl shadow transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> 重新測驗
                     </button>
                 </div>
             </div>
@@ -421,6 +424,7 @@
         ];
 
         let userAnswers = {};
+        let isSubmitted = false;
 
         function renderQuiz() {
             const container = document.getElementById('quizContainer');
@@ -432,8 +436,8 @@
                             <h3 class="font-bold text-slate-800 text-base md:text-lg mb-4">${q.question}</h3>
                             <div class="space-y-3">
                                 ${q.options.map((opt, optIdx) => `
-                                    <label onclick="selectAnswer(${q.id}, ${optIdx})" class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer transition text-sm md:text-base">
-                                        <input type="radio" name="q_${q.id}" value="${optIdx}" class="w-4 h-4 text-sky-600">
+                                    <label onclick="selectAnswer(${q.id}, ${optIdx})" id="label-${q.id}-${optIdx}" class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer transition text-sm md:text-base">
+                                        <input type="radio" name="q_${q.id}" value="${optIdx}" ${userAnswers[q.id] === optIdx ? 'checked' : ''} class="w-4 h-4 text-sky-600">
                                         <span class="text-slate-700">${opt}</span>
                                     </label>
                                 `).join('')}
@@ -446,34 +450,58 @@
         }
 
         function selectAnswer(qId, optionIdx) {
+            if (isSubmitted) return; // 提交後鎖定選擇
             userAnswers[qId] = optionIdx;
-            const q = quizData.find(item => item.id === qId);
-            const feedbackEl = document.getElementById(`feedback-${qId}`);
             
-            feedbackEl.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200');
-            
-            if (optionIdx === q.correct) {
-                feedbackEl.classList.add('bg-emerald-50', 'text-emerald-800', 'border', 'border-emerald-200');
-                feedbackEl.innerHTML = `<div class="font-bold flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i> 回答正確！</div><div class="mt-1">${q.explanation}</div>`;
-            } else {
-                feedbackEl.classList.add('bg-rose-50', 'text-rose-800', 'border', 'border-rose-200');
-                feedbackEl.innerHTML = `<div class="font-bold flex items-center gap-2"><i class="fa-solid fa-circle-xmark text-rose-500 text-lg"></i> 再思考看看喔！</div><div class="mt-1">${q.explanation}</div>`;
-            }
-
-            updateScore();
+            // 更新選項樣式高亮
+            quizData.find(q => q.id === qId).options.forEach((_, idx) => {
+                const label = document.getElementById(`label-${qId}-${idx}`);
+                if (label) {
+                    if (idx === optionIdx) {
+                        label.classList.add('bg-sky-100', 'border-sky-400');
+                    } else {
+                        label.classList.remove('bg-sky-100', 'border-sky-400');
+                    }
+                }
+            });
         }
 
-        function updateScore() {
-            let score = 0;
+        function submitQuiz() {
+            if (isSubmitted) return;
+            isSubmitted = true;
+            let correctCount = 0;
+
             quizData.forEach(q => {
-                if (userAnswers[q.id] === q.correct) score++;
+                const feedbackEl = document.getElementById(`feedback-${q.id}`);
+                const selectedIdx = userAnswers[q.id];
+
+                feedbackEl.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200', 'bg-amber-50', 'text-amber-800', 'border-amber-200');
+
+                if (selectedIdx === undefined || selectedIdx === null) {
+                    // 未作答：黃色警告，不提供說明與正確答案
+                    feedbackEl.classList.add('bg-amber-50', 'text-amber-800', 'border', 'border-amber-200');
+                    feedbackEl.innerHTML = `<div class="font-bold flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation text-amber-500 text-lg"></i> 未作答。</div>`;
+                } else if (selectedIdx === q.correct) {
+                    // 回答正確：綠色提示
+                    correctCount++;
+                    feedbackEl.classList.add('bg-emerald-50', 'text-emerald-800', 'border', 'border-emerald-200');
+                    feedbackEl.innerHTML = `<div class="font-bold flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i> 回答正確！</div><div class="mt-1">${q.explanation}</div>`;
+                } else {
+                    // 回答錯誤：紅色提示（不含矛盾敘述）
+                    feedbackEl.classList.add('bg-rose-50', 'text-rose-800', 'border', 'border-rose-200');
+                    feedbackEl.innerHTML = `<div class="font-bold flex items-center gap-2"><i class="fa-solid fa-circle-xmark text-rose-500 text-lg"></i> 解題提示：</div><div class="mt-1">${q.explanation}</div>`;
+                }
             });
-            document.getElementById('quizScore').innerText = `${score} / 5`;
+
+            // 每題 20 分，滿分 100 分
+            const totalScore = correctCount * 20;
+            document.getElementById('quizScore').innerText = `${totalScore} / 100`;
         }
 
         function resetQuiz() {
             userAnswers = {};
-            document.getElementById('quizScore').innerText = `0 / 5`;
+            isSubmitted = false;
+            document.getElementById('quizScore').innerText = `0 / 100`;
             renderQuiz();
         }
 

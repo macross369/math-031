@@ -131,7 +131,7 @@
                     <i class="fa-solid fa-calculator mr-2 text-indigo-500"></i>動態探索與直式運算
                 </button>
                 <button id="tabBtn2" onclick="switchTab('quiz')" class="px-6 py-3 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 flex items-center text-gray-600 hover:text-indigo-600 hover:bg-white/50">
-                    <i class="fa-solid fa-pen-to-square mr-2 text-purple-500"></i>歷程性學習評量
+                    <i class="fa-solid fa-pen-to-square mr-2 text-purple-500"></i>闖關測驗
                 </button>
             </div>
         </div>
@@ -287,7 +287,7 @@
                     <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 pb-4 border-b border-gray-200/80">
                         <div>
                             <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded-full uppercase tracking-wider">Formative Assessment</span>
-                            <h2 class="text-2xl font-bold text-gray-800 mt-1">歷程性學習自我評量 (共 5 題)</h2>
+                            <h2 class="text-2xl font-bold text-gray-800 mt-1">闖關測驗 (共 5 題)</h2>
                         </div>
                         <div id="quizScoreBadge" class="mt-3 md:mt-0 px-4 py-2 bg-indigo-600 text-white rounded-xl font-bold shadow-md flex items-center">
                             <i class="fa-solid fa-trophy mr-2 text-yellow-300"></i> 當前得分：<span id="scoreVal" class="text-xl ml-1">0</span> / 100
@@ -299,10 +299,13 @@
                         <!-- Quiz Items Generated dynamically by JS -->
                     </div>
 
-                    <!-- Quiz Reset / Summary Button -->
-                    <div class="mt-8 text-center">
-                        <button id="resetQuizBtn" onclick="resetQuiz()" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold rounded-xl shadow-lg hover:from-blue-600 hover:to-indigo-700 transition transform hover:-translate-y-0.5">
-                            <i class="fa-solid fa-rotate-right mr-2"></i> 重新練習所有測驗
+                    <!-- Quiz Action Buttons -->
+                    <div class="mt-8 flex flex-wrap justify-center gap-4">
+                        <button id="submitQuizBtn" onclick="submitQuiz()" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-xl shadow-lg hover:from-emerald-600 hover:to-teal-700 transition transform hover:-translate-y-0.5 flex items-center">
+                            <i class="fa-solid fa-paper-plane mr-2"></i> 提交答案
+                        </button>
+                        <button id="resetQuizBtn" onclick="resetQuiz()" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold rounded-xl shadow-lg hover:from-blue-600 hover:to-indigo-700 transition transform hover:-translate-y-0.5 flex items-center">
+                            <i class="fa-solid fa-rotate-right mr-2"></i> 重新測驗
                         </button>
                     </div>
                 </div>
@@ -366,150 +369,104 @@
             }
         ];
 
-        let quizUserAnswers = {};
+        let quizSelectedAnswers = {};
+        let quizSubmitted = false;
 
         // DOM Element References
         const tensSlider = document.getElementById('tensSlider');
         const onesSlider = document.getElementById('onesSlider');
         const multiplierSlider = document.getElementById('multiplierSlider');
 
-        const tensVal = document.getElementById('tensVal');
-        const onesVal = document.getElementById('onesVal');
-        const multiplierVal = document.getElementById('multiplierVal');
+        // Update visual display & calculation breakdown
+        function updateDisplay() {
+            tens = parseInt(tensSlider.value);
+            ones = parseInt(onesSlider.value);
+            multiplier = parseInt(multiplierSlider.value);
 
-        const mathEquation = document.getElementById('mathEquation');
-        const coinContainer = document.getElementById('coinContainer');
+            // Update label values
+            document.getElementById('tensVal').textContent = tens;
+            document.getElementById('onesVal').textContent = ones;
+            document.getElementById('multiplierVal').textContent = multiplier;
+            document.getElementById('mathEquation').innerHTML = `<span class="text-orange-500">${tens}</span>${ones} × <span class="text-purple-600">${multiplier}</span> = ?`;
 
-        // Initialize App
-        window.onload = function() {
-            setupEventListeners();
-            updateAllVisuals();
-            renderQuiz();
-        };
-
-        function setupEventListeners() {
-            tensSlider.addEventListener('input', (e) => {
-                tens = parseInt(e.target.value);
-                tensVal.textContent = tens;
-                updateAllVisuals();
-            });
-
-            onesSlider.addEventListener('input', (e) => {
-                ones = parseInt(e.target.value);
-                onesVal.textContent = ones;
-                updateAllVisuals();
-            });
-
-            multiplierSlider.addEventListener('input', (e) => {
-                multiplier = parseInt(e.target.value);
-                multiplierVal.textContent = multiplier;
-                updateAllVisuals();
-            });
-        }
-
-        // Master Visual Update Function
-        function updateAllVisuals() {
-            const multiplicand = tens * 10 + ones;
-            const total = multiplicand * multiplier;
-
-            // Update Equation Text with color coding (tens: orange, ones: blue, multiplier: purple)
-            mathEquation.innerHTML = `<span class="text-orange-500 font-extrabold">${tens}</span><span class="text-blue-600 font-extrabold">${ones}</span> × <span class="text-purple-600 font-extrabold">${multiplier}</span> = <span class="text-indigo-600 font-black">${total}</span>`;
-
-            // 1. Render Coin Visualizer
-            renderCoins();
-
-            // 2. Render Vertical Algorithm & Explanations
-            renderVerticalMath(multiplicand, total);
-        }
-
-        // Render Coins Grid
-        function renderCoins() {
+            // Render coins
+            const coinContainer = document.getElementById('coinContainer');
             coinContainer.innerHTML = '';
 
-            for (let r = 1; r <= multiplier; r++) {
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'bg-white/60 p-3 rounded-xl border border-white/80 flex flex-wrap items-center justify-between gap-2 transition hover:bg-white/80';
+            for (let i = 1; i <= multiplier; i++) {
+                const row = document.createElement('div');
+                row.className = 'flex flex-wrap items-center gap-2 p-2.5 bg-white/60 rounded-xl border border-white/80 shadow-sm';
+                
+                const label = document.createElement('span');
+                label.className = 'text-xs font-bold px-2 py-1 bg-purple-100 text-purple-700 rounded-lg shrink-0';
+                label.textContent = `第 ${i} 份`;
+                row.appendChild(label);
 
-                const rowLabel = document.createElement('span');
-                rowLabel.className = 'text-xs font-bold text-purple-700 bg-purple-100 px-2.5 py-1 rounded-lg border border-purple-200 shrink-0';
-                rowLabel.textContent = `第 ${r} 份：`;
+                const coinsDiv = document.createElement('div');
+                coinsDiv.className = 'flex flex-wrap items-center gap-1.5';
 
-                const coinsGroup = document.createElement('div');
-                coinsGroup.className = 'flex flex-wrap items-center gap-1.5 flex-1';
-
-                // Render Tens coins
+                // Tens coins (10 元)
                 for (let t = 0; t < tens; t++) {
-                    const coin10 = document.createElement('div');
-                    coin10.className = 'coin-10 w-9 h-9 rounded-full flex items-center justify-center font-black text-amber-900 text-xs shadow transform hover:scale-110 transition';
-                    coin10.innerHTML = '10';
-                    coinsGroup.appendChild(coin10);
+                    const c = document.createElement('div');
+                    c.className = 'coin-10 w-8 h-8 rounded-full flex items-center justify-center font-extrabold text-xs text-white drop-shadow';
+                    c.textContent = '10';
+                    coinsDiv.appendChild(c);
                 }
 
-                // Render Ones coins
+                // Ones coins (1 元)
                 for (let o = 0; o < ones; o++) {
-                    const coin1 = document.createElement('div');
-                    coin1.className = 'coin-1 w-8 h-8 rounded-full flex items-center justify-center font-black text-blue-900 text-xs shadow transform hover:scale-110 transition';
-                    coin1.innerHTML = '1';
-                    coinsGroup.appendChild(coin1);
+                    const c = document.createElement('div');
+                    c.className = 'coin-1 w-7 h-7 rounded-full flex items-center justify-center font-extrabold text-xs text-white drop-shadow ml-0.5';
+                    c.textContent = '1';
+                    coinsDiv.appendChild(c);
                 }
 
-                rowDiv.appendChild(rowLabel);
-                rowDiv.appendChild(coinsGroup);
-                coinContainer.appendChild(rowDiv);
+                row.appendChild(coinsDiv);
+                coinContainer.appendChild(row);
             }
-        }
 
-        // Render Vertical Algorithm Breakdown
-        function renderVerticalMath(multiplicand, total) {
+            // Vertical algorithm setup
+            const multiplicand = tens * 10 + ones;
             const onesResult = ones * multiplier;
-            const tensResult = tens * multiplier * 10;
+            const tensResult = tens * 10 * multiplier;
+            const total = multiplicand * multiplier;
 
-            // Top Number Inputs
-            document.getElementById('vHundred1').textContent = tens * 10 >= 100 ? '' : '';
+            // Line 1
             document.getElementById('vTen1').textContent = tens;
             document.getElementById('vOne1').textContent = ones;
             document.getElementById('vMultiplier').textContent = multiplier;
 
-            // Step 1: Ones Calculation Breakdown (Hide leading zero if single digit)
+            // Step 1: Ones breakdown
             if (onesResult < 10) {
-                document.getElementById('vStep1_H').textContent = '';
                 document.getElementById('vStep1_T').textContent = '';
-                document.getElementById('vStep1_O').textContent = onesResult.toString();
+                document.getElementById('vStep1_O').textContent = onesResult;
             } else {
-                const onesValStr = onesResult.toString();
-                document.getElementById('vStep1_H').textContent = '';
-                document.getElementById('vStep1_T').textContent = onesValStr[0];
-                document.getElementById('vStep1_O').textContent = onesValStr[1];
+                document.getElementById('vStep1_T').textContent = Math.floor(onesResult / 10);
+                document.getElementById('vStep1_O').textContent = onesResult % 10;
             }
 
-            // Step 2: Tens Calculation Breakdown
-            const tensValStr = tensResult.toString();
-            if (tensResult >= 100) {
-                document.getElementById('vStep2_H').textContent = tensValStr[0];
-                document.getElementById('vStep2_T').textContent = tensValStr[1];
-                document.getElementById('vStep2_O').textContent = tensValStr[2];
-            } else {
-                document.getElementById('vStep2_H').textContent = '';
-                document.getElementById('vStep2_T').textContent = tensValStr[0];
-                document.getElementById('vStep2_O').textContent = tensValStr[1];
-            }
-
-            // Total Sum
-            const totalStr = total.toString().padStart(3, ' ');
-            document.getElementById('vTotal_H').textContent = totalStr[0] !== ' ' ? totalStr[0] : '';
-            document.getElementById('vTotal_T').textContent = totalStr[1] !== ' ' ? totalStr[1] : '';
-            document.getElementById('vTotal_O').textContent = totalStr[2];
-
-            // Explanations update
-            document.getElementById('explainStep1').innerHTML = 
-                `先算個位：${ones} 個 1 的 ${multiplier} 倍是 <strong class="text-blue-600">${onesResult}</strong>。`;
-
-            document.getElementById('explainStep2').innerHTML = 
-                `再算十位：<strong class="text-orange-500">${tens}</strong> 個 10 的 <strong class="text-purple-600">${multiplier}</strong> 倍是 <strong class="text-orange-600">${tens * multiplier}</strong> 個 10 (即 ${tensResult})。`;
-
-            document.getElementById('explainTotal').innerHTML = 
-                `合起來共是：${onesResult} + ${tensResult} = <span class="text-emerald-600 font-extrabold text-lg">${total}</span>`;
+            // Step 2: Tens breakdown
+            const tensH = Math.floor(tensResult / 100);
+            const tensT = Math.floor((tensResult % 100) / 10);
             
+            document.getElementById('vStep2_H').textContent = tensH > 0 ? tensH : '';
+            document.getElementById('vStep2_T').textContent = tensT;
+            document.getElementById('vStep2_O').innerHTML = `<span class="text-gray-400">0</span>`;
+
+            // Final Total
+            const totalH = Math.floor(total / 100);
+            const totalT = Math.floor((total % 100) / 10);
+            const totalO = total % 10;
+
+            document.getElementById('vTotal_H').textContent = totalH > 0 ? totalH : '';
+            document.getElementById('vTotal_T').textContent = totalT;
+            document.getElementById('vTotal_O').textContent = totalO;
+
+            // Step explanations
+            document.getElementById('explainStep1').innerHTML = `先算個位：${ones} 個 1 的 ${multiplier} 倍是 <strong class="text-blue-600">${onesResult}</strong> 個 1。`;
+            document.getElementById('explainStep2').innerHTML = `再算十位：<span class="text-orange-500 font-bold">${tens}</span> 個 10 的 <span class="text-purple-600 font-bold">${multiplier}</span> 倍是 <strong class="text-orange-600">${tens * multiplier}</strong> 個 10，也就是 <strong class="text-orange-500">${tensResult}</strong>。`;
+            document.getElementById('explainTotal').innerHTML = `合起來共是：<strong class="text-emerald-600">${total}</strong>`;
+
             // Insight Note Logic
             const insight = document.getElementById('insightText');
             if (onesResult >= 10 && tensResult >= 100) {
@@ -523,12 +480,23 @@
             }
         }
 
+        // Event Listeners
+        tensSlider.addEventListener('input', updateDisplay);
+        onesSlider.addEventListener('input', updateDisplay);
+        multiplierSlider.addEventListener('input', updateDisplay);
+
+        // Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            updateDisplay();
+            renderQuiz();
+        });
+
         // Render Formative Assessment Questions
         function renderQuiz() {
             const container = document.getElementById('quizContainer');
             container.innerHTML = '';
 
-            quizData.forEach((q, index) => {
+            quizData.forEach((q) => {
                 const card = document.createElement('div');
                 card.className = 'bg-white/80 p-5 sm:p-6 rounded-2xl border border-white shadow-sm transition hover:shadow-md';
 
@@ -548,7 +516,7 @@
                     const btn = document.createElement('button');
                     btn.className = `opt-btn-${q.id}-${opt} py-2.5 px-4 rounded-xl font-bold border border-gray-200 bg-white hover:bg-indigo-50 hover:border-indigo-300 transition text-gray-800 text-center`;
                     btn.textContent = `${opt} 元`;
-                    btn.onclick = () => selectQuizAnswer(q.id, opt, q.ans, q.hint);
+                    btn.onclick = () => selectQuizOption(q.id, opt);
                     optionsGrid.appendChild(btn);
                 });
 
@@ -565,56 +533,77 @@
             });
         }
 
-        // Quiz Selection Logic
-        function selectQuizAnswer(qId, selectedOpt, correctAns, hintText) {
-            quizUserAnswers[qId] = (selectedOpt === correctAns);
+        // Handle user selecting an option before submission
+        function selectQuizOption(qId, selectedOpt) {
+            if (quizSubmitted) return; // Lock selections after submitting
 
-            // Update button styles
+            quizSelectedAnswers[qId] = selectedOpt;
+
             const q = quizData.find(item => item.id === qId);
             q.options.forEach(opt => {
                 const btn = document.querySelector(`.opt-btn-${qId}-${opt}`);
                 if (opt === selectedOpt) {
-                    if (selectedOpt === correctAns) {
-                        btn.className = 'py-2.5 px-4 rounded-xl font-bold bg-emerald-500 text-white border border-emerald-600 shadow';
-                    } else {
-                        btn.className = 'py-2.5 px-4 rounded-xl font-bold bg-rose-500 text-white border border-rose-600 shadow';
-                    }
+                    btn.className = 'py-2.5 px-4 rounded-xl font-bold bg-indigo-600 text-white border border-indigo-700 shadow ring-2 ring-indigo-300';
                 } else {
-                    btn.className = 'py-2.5 px-4 rounded-xl font-bold border border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed';
+                    btn.className = 'py-2.5 px-4 rounded-xl font-bold border border-gray-200 bg-white hover:bg-indigo-50 hover:border-indigo-300 transition text-gray-800 text-center';
                 }
             });
-
-            // Show Feedback
-            const fb = document.getElementById(`feedback-${qId}`);
-            fb.classList.remove('hidden');
-
-            if (selectedOpt === correctAns) {
-                fb.className = 'p-3.5 rounded-xl text-sm font-medium bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center';
-                fb.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 text-lg mr-2.5"></i> 答對了！非常棒！${hintText}`;
-            } else {
-                fb.className = 'p-3.5 rounded-xl text-sm font-medium bg-rose-100 text-rose-800 border border-rose-200 flex items-center';
-                fb.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 text-lg mr-2.5"></i> 答錯囉！提示：${hintText}`;
-            }
-
-            updateScore();
         }
 
-        // Score Calculator
-        function updateScore() {
-            const totalQuestions = quizData.length;
+        // Submit Quiz Logic
+        function submitQuiz() {
+            if (quizSubmitted) return;
+            quizSubmitted = true;
+
             let correctCount = 0;
 
-            Object.values(quizUserAnswers).forEach(isCorrect => {
-                if (isCorrect) correctCount++;
+            quizData.forEach((q) => {
+                const selectedOpt = quizSelectedAnswers[q.id];
+                const fb = document.getElementById(`feedback-${q.id}`);
+                fb.classList.remove('hidden');
+
+                if (selectedOpt === undefined) {
+                    // Unanswered case
+                    fb.className = 'p-3.5 rounded-xl text-sm font-medium bg-amber-100 text-amber-800 border border-amber-200 flex items-center';
+                    fb.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg mr-2.5"></i> 未作答。`;
+                } else if (selectedOpt === q.ans) {
+                    // Correct answer
+                    correctCount++;
+                    const btn = document.querySelector(`.opt-btn-${q.id}-${selectedOpt}`);
+                    if (btn) {
+                        btn.className = 'py-2.5 px-4 rounded-xl font-bold bg-emerald-500 text-white border border-emerald-600 shadow';
+                    }
+                    fb.className = 'p-3.5 rounded-xl text-sm font-medium bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center';
+                    fb.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 text-lg mr-2.5"></i> 答對了！非常棒！${q.hint}`;
+                } else {
+                    // Wrong answer
+                    const btn = document.querySelector(`.opt-btn-${q.id}-${selectedOpt}`);
+                    if (btn) {
+                        btn.className = 'py-2.5 px-4 rounded-xl font-bold bg-rose-500 text-white border border-rose-600 shadow';
+                    }
+                    fb.className = 'p-3.5 rounded-xl text-sm font-medium bg-rose-100 text-rose-800 border border-rose-200 flex items-center';
+                    fb.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 text-lg mr-2.5"></i> 答錯囉！觀念提示：${q.hint}`;
+                }
+
+                // Disable non-selected option buttons
+                q.options.forEach(opt => {
+                    if (opt !== selectedOpt) {
+                        const btn = document.querySelector(`.opt-btn-${q.id}-${opt}`);
+                        if (btn) {
+                            btn.classList.add('opacity-50', 'cursor-not-allowed');
+                        }
+                    }
+                });
             });
 
-            const score = Math.round((correctCount / totalQuestions) * 100);
+            const score = Math.round((correctCount / quizData.length) * 100);
             document.getElementById('scoreVal').textContent = score;
         }
 
         // Reset Quiz
         function resetQuiz() {
-            quizUserAnswers = {};
+            quizSelectedAnswers = {};
+            quizSubmitted = false;
             document.getElementById('scoreVal').textContent = '0';
             renderQuiz();
         }

@@ -125,7 +125,7 @@
             <button onclick="switchTab('tab-quiz')" id="btn-tab-quiz" 
                 class="tab-btn px-5 py-3 rounded-2xl font-bold transition-all shadow-lg flex items-center gap-2 bg-white/20 text-white hover:bg-white/30 backdrop-blur-md border border-white/20">
                 <i class="fa-solid fa-circle-question"></i>
-                <span>3. 觀念大挑戰</span>
+                <span>3. 闖關測驗</span>
             </button>
         </nav>
 
@@ -292,25 +292,34 @@
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-200/80 pb-6 mb-6 gap-4">
                     <div>
                         <h2 class="text-2xl font-black text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-award text-amber-500"></i> 觀念評量小挑戰
+                            <i class="fa-solid fa-award text-amber-500"></i> 闖關測驗
                         </h2>
                         <p class="text-sm text-slate-600 mt-1">
-                            完成以下 5 題測驗，看看你是否真正掌握「角的大小」觀念！
+                            完成以下 5 題測驗，選擇完成後點擊「提交答案」看看成績吧！
                         </p>
                     </div>
                     <div class="flex items-center gap-3">
                         <div class="bg-sky-100 text-sky-800 px-4 py-2 rounded-2xl font-bold text-sm border border-sky-200">
                             得分：<span id="quiz-score" class="text-xl font-black text-sky-600">0</span> / 100
                         </div>
-                        <button onclick="resetQuiz()" class="px-3.5 py-2 rounded-xl bg-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-300 transition-all">
-                            <i class="fa-solid fa-rotate-right mr-1"></i> 重新測驗
-                        </button>
                     </div>
                 </div>
 
                 <!-- Quiz Container -->
                 <div id="quiz-container" class="space-y-6">
                     <!-- Dynamic Question Cards will be rendered by JS -->
+                </div>
+
+                <!-- Bottom Action Buttons (提交答案 & 重新測驗) -->
+                <div class="flex flex-wrap items-center justify-center gap-4 mt-8" id="quiz-action-buttons">
+                    <button id="btn-submit-quiz" onclick="submitQuiz()" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>提交答案</span>
+                    </button>
+                    <button id="btn-reset-quiz" onclick="resetQuiz()" class="px-6 py-3 rounded-2xl bg-slate-200 text-slate-700 font-bold shadow hover:bg-slate-300 transition-all flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>重新測驗</span>
+                    </button>
                 </div>
 
                 <!-- Completion Banner -->
@@ -708,7 +717,8 @@
             }
         ];
 
-        let userAnswers = {};
+        let userSelections = {};
+        let isSubmitted = false;
 
         function renderQuiz() {
             const container = document.getElementById('quiz-container');
@@ -742,73 +752,112 @@
         }
 
         function selectOption(qIndex, optIndex) {
-            if (userAnswers[qIndex] !== undefined && userAnswers[qIndex].locked) return;
+            if (isSubmitted) return;
 
+            userSelections[qIndex] = optIndex;
+
+            // Visual update for selection before submission
             const q = quizData[qIndex];
-            const isCorrect = (optIndex === q.answer);
-
-            userAnswers[qIndex] = {
-                selected: optIndex,
-                correct: isCorrect,
-                locked: true
-            };
-
-            // Update UI
             q.options.forEach((_, idx) => {
                 const btn = document.getElementById(`opt-${qIndex}-${idx}`);
                 const icon = document.getElementById(`icon-${qIndex}-${idx}`);
 
-                if (idx === q.answer) {
-                    btn.className = "w-full text-left p-3.5 rounded-xl border text-sm font-bold bg-emerald-50 border-emerald-400 text-emerald-800";
-                    icon.className = "fa-solid fa-circle-check text-emerald-600 text-base";
-                } else if (idx === optIndex && !isCorrect) {
-                    btn.className = "w-full text-left p-3.5 rounded-xl border text-sm font-bold bg-rose-50 border-rose-300 text-rose-800";
-                    icon.className = "fa-solid fa-circle-xmark text-rose-500 text-base";
+                if (idx === optIndex) {
+                    btn.className = "w-full text-left p-3.5 rounded-xl border-2 text-sm font-bold bg-sky-50 border-sky-500 text-sky-800 shadow-sm";
+                    icon.className = "fa-solid fa-circle-dot text-sky-600 text-base";
                 } else {
-                    btn.className = "w-full text-left p-3.5 rounded-xl border text-sm text-slate-400 border-slate-100 opacity-60";
-                    icon.className = "fa-regular fa-circle text-slate-200";
+                    btn.className = "w-full text-left p-3.5 rounded-xl border text-sm font-medium transition-all hover:bg-sky-50 border-slate-200 text-slate-700 opacity-80";
+                    icon.className = "fa-regular fa-circle text-slate-300 text-base";
+                }
+            });
+        }
+
+        function submitQuiz() {
+            if (isSubmitted) return;
+            isSubmitted = true;
+
+            let correctCount = 0;
+
+            quizData.forEach((q, qIndex) => {
+                const selected = userSelections[qIndex];
+                const expBox = document.getElementById(`explanation-${qIndex}`);
+                expBox.classList.remove('hidden');
+
+                if (selected === undefined) {
+                    // Unanswered question rule: Display ONLY "未作答。" in yellow/amber style
+                    expBox.className = "mt-3 p-3 rounded-xl text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-300";
+                    expBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-600 mr-1"></i> 未作答。`;
+
+                    // Keep options disabled without revealing correct answer
+                    q.options.forEach((_, idx) => {
+                        const btn = document.getElementById(`opt-${qIndex}-${idx}`);
+                        btn.classList.add('pointer-events-none');
+                    });
+                } else {
+                    const isCorrect = (selected === q.answer);
+                    if (isCorrect) correctCount++;
+
+                    q.options.forEach((_, idx) => {
+                        const btn = document.getElementById(`opt-${qIndex}-${idx}`);
+                        const icon = document.getElementById(`icon-${qIndex}-${idx}`);
+                        btn.classList.add('pointer-events-none');
+
+                        if (idx === q.answer) {
+                            btn.className = "w-full text-left p-3.5 rounded-xl border text-sm font-bold bg-emerald-50 border-emerald-400 text-emerald-800 pointer-events-none";
+                            icon.className = "fa-solid fa-circle-check text-emerald-600 text-base";
+                        } else if (idx === selected && !isCorrect) {
+                            btn.className = "w-full text-left p-3.5 rounded-xl border text-sm font-bold bg-rose-50 border-rose-300 text-rose-800 pointer-events-none";
+                            icon.className = "fa-solid fa-circle-xmark text-rose-500 text-base";
+                        } else {
+                            btn.className = "w-full text-left p-3.5 rounded-xl border text-sm text-slate-400 border-slate-100 opacity-60 pointer-events-none";
+                            icon.className = "fa-regular fa-circle text-slate-200";
+                        }
+                    });
+
+                    if (isCorrect) {
+                        expBox.className = "mt-3 p-3 rounded-xl text-xs font-semibold bg-emerald-100/80 text-emerald-900 border border-emerald-200";
+                        expBox.innerHTML = `<i class="fa-solid fa-check-circle text-emerald-600 mr-1"></i> <b>答對了！</b> ${q.explanation}`;
+                    } else {
+                        expBox.className = "mt-3 p-3 rounded-xl text-xs font-semibold bg-rose-100/80 text-rose-900 border border-rose-200";
+                        expBox.innerHTML = `<i class="fa-solid fa-times-circle text-rose-600 mr-1"></i> <b>再想想看：</b> ${q.explanation}`;
+                    }
                 }
             });
 
-            // Show explanation
-            const expBox = document.getElementById(`explanation-${qIndex}`);
-            expBox.classList.remove('hidden');
-            if (isCorrect) {
-                expBox.className = "mt-3 p-3 rounded-xl text-xs font-semibold bg-emerald-100/80 text-emerald-900 border border-emerald-200";
-                expBox.innerHTML = `<i class="fa-solid fa-check-circle text-emerald-600 mr-1"></i> <b>答對了！</b> ${q.explanation}`;
-            } else {
-                expBox.className = "mt-3 p-3 rounded-xl text-xs font-semibold bg-rose-100/80 text-rose-900 border border-rose-200";
-                expBox.innerHTML = `<i class="fa-solid fa-times-circle text-rose-600 mr-1"></i> <b>再想想看：</b> ${q.explanation}`;
-            }
-
-            calculateScore();
-        }
-
-        function calculateScore() {
-            let correctCount = 0;
-            let answeredCount = 0;
-            Object.keys(userAnswers).forEach(key => {
-                answeredCount++;
-                if (userAnswers[key].correct) correctCount++;
-            });
-
+            // Calculate score
             const score = Math.round((correctCount / quizData.length) * 100);
             document.getElementById('quiz-score').innerText = score;
 
-            if (answeredCount === quizData.length) {
-                const completeCard = document.getElementById('quiz-completed-card');
+            // Only show completion card if score is 80 or 100
+            const completeCard = document.getElementById('quiz-completed-card');
+            if (score >= 80) {
                 completeCard.classList.remove('hidden');
                 document.getElementById('quiz-final-message').innerText = 
                     score === 100 
                         ? "太神了！你獲得滿分，對「角的大小」觀念非常透徹！" 
-                        : `你完成了所有題目，總得分為 ${score} 分！可以點擊「重新測驗」再次挑戰喔！`;
+                        : "太棒了！你獲得了 80 分，表現非常優異喔！";
+            } else {
+                completeCard.classList.add('hidden');
             }
+
+            // Update submit button style/state
+            const submitBtn = document.getElementById('btn-submit-quiz');
+            submitBtn.disabled = true;
+            submitBtn.className = "px-6 py-3 rounded-2xl bg-slate-300 text-slate-500 font-bold cursor-not-allowed flex items-center gap-2";
         }
 
         function resetQuiz() {
-            userAnswers = {};
+            userSelections = {};
+            isSubmitted = false;
             document.getElementById('quiz-score').innerText = '0';
             document.getElementById('quiz-completed-card').classList.add('hidden');
+
+            const submitBtn = document.getElementById('btn-submit-quiz');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.className = "px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 cursor-pointer";
+            }
+
             renderQuiz();
         }
 

@@ -37,7 +37,6 @@
             opacity: 0.7;
         }
 
-        /* 晨昏大光暈背景裝飾 */
         .shinkai-glow {
             position: fixed;
             top: -20vh;
@@ -51,7 +50,6 @@
             z-index: 0;
         }
 
-        /* 頂級玻璃擬態卡片 (Glassmorphism) */
         .glass-card {
             background: rgba(15, 23, 42, 0.55);
             backdrop-filter: blur(16px);
@@ -92,7 +90,6 @@
             border: 1px solid #dcfce7;
         }
 
-        /* 自訂漸層滑桿 */
         input[type=range] {
             -webkit-appearance: none;
             background: rgba(255, 255, 255, 0.15);
@@ -119,7 +116,7 @@
 
     <div class="shinkai-glow"></div>
 
-    <!-- 修改：使用轉換後的 Google Drive 直接連結 -->
+    <!-- 閒雲數學小棧 Logo 與標題 -->
     <div class="w-full max-w-6xl mx-auto flex items-center justify-start mb-4 px-2 fade-in relative z-20">
         <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
         <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
@@ -143,13 +140,12 @@
             📈 數列與累加減
         </button>
         <button onclick="switchTab('quiz')" id="tab-quiz" class="px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-300 glass-card hover:bg-slate-800/60 text-slate-300">
-            🏆 5題闖關測驗
+            🏆 闖關測驗
         </button>
     </div>
 
     <main class="max-w-6xl mx-auto relative z-10">
         
-        <!-- Tab 1: 積木與位值表 -->
         <section id="section-manipulative" class="space-y-6">
             <!-- 數值顯示面板 -->
             <div class="glass-card rounded-3xl p-6 md:p-8 border-indigo-400/30">
@@ -191,7 +187,6 @@
                     </div>
                 </div>
 
-                <!-- 控制滑桿區域 -->
                 <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6 pt-6 border-t border-slate-700/60">
                     <div>
                         <label class="flex justify-between text-xs font-bold text-amber-300 mb-2">
@@ -230,22 +225,18 @@
                     <span>🧊</span> 具象積木視覺化
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 min-h-[240px]">
-                    <!-- 千位積木展區 -->
                     <div class="p-4 rounded-2xl bg-slate-900/50 border border-amber-500/20 flex flex-col items-center">
                         <span class="text-xs text-amber-300 mb-3 font-bold">千位大正方體積木</span>
                         <div id="container-thousand" class="flex flex-wrap gap-2 justify-center items-center my-auto p-2"></div>
                     </div>
-                    <!-- 百位積木展區 -->
                     <div class="p-4 rounded-2xl bg-slate-900/50 border border-blue-500/20 flex flex-col items-center">
                         <span class="text-xs text-blue-300 mb-3 font-bold">百位平板積木</span>
                         <div id="container-hundred" class="flex flex-wrap gap-2 justify-center items-center my-auto p-2"></div>
                     </div>
-                    <!-- 十位積木展區 -->
                     <div class="p-4 rounded-2xl bg-slate-900/50 border border-red-500/20 flex flex-col items-center">
                         <span class="text-xs text-red-300 mb-3 font-bold">十位長條積木</span>
                         <div id="container-ten" class="flex flex-wrap gap-2 justify-center items-center my-auto p-2"></div>
                     </div>
-                    <!-- 個位積木展區 -->
                     <div class="p-4 rounded-2xl bg-slate-900/50 border border-emerald-500/20 flex flex-col items-center">
                         <span class="text-xs text-emerald-300 mb-3 font-bold">個位小正方體</span>
                         <div id="container-one" class="flex flex-wrap gap-1.5 justify-center items-center my-auto p-2"></div>
@@ -254,7 +245,6 @@
             </div>
         </section>
 
-        <!-- Tab 2: 數列與累加減 -->
         <section id="section-sequence" class="space-y-6 hidden">
             <div class="glass-card rounded-3xl p-6 md:p-8 border-pink-400/30">
                 <h3 class="text-xl font-bold text-pink-200 mb-2">🔄 數列規律探究 (Skip Counting)</h3>
@@ -319,17 +309,16 @@
             </div>
         </section>
 
-        <!-- Tab 3: 5題闖關測驗 -->
         <section id="section-quiz" class="space-y-6 hidden">
             <div class="glass-card rounded-3xl p-6 md:p-8 border-purple-400/30">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                     <div>
                         <h3 class="text-xl font-bold text-purple-200">🎯 歷程性小試身手測驗</h3>
-                        <p class="text-xs text-slate-300">檢測你對10000以內數的理解情況！</p>
+                        <p class="text-xs text-slate-300">檢測你對 10000 以內數的理解情況！</p>
                     </div>
                     <div class="bg-slate-900/60 px-5 py-2.5 rounded-2xl border border-purple-500/30 text-right">
                         <span class="text-xs text-slate-400">目前得分</span>
-                        <div id="quiz-score" class="text-2xl font-black text-amber-300 font-mono">0 / 5</div>
+                        <div id="quiz-score" class="text-2xl font-black text-amber-300 font-mono">0 / 100</div>
                     </div>
                 </div>
 
@@ -338,10 +327,13 @@
                     <!-- 題目將動態渲染 -->
                 </div>
 
-                <!-- 重新測驗按鈕 -->
-                <div class="text-center pt-6">
+                <!-- 測驗操作按鈕區 -->
+                <div class="flex flex-wrap justify-center gap-4 pt-6">
+                    <button onclick="submitQuiz()" class="px-8 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-500 font-bold text-white shadow-xl hover:brightness-110 transition transform hover:scale-105">
+                        📝 提交答案
+                    </button>
                     <button onclick="resetQuiz()" class="px-8 py-3 rounded-2xl bg-gradient-to-r from-purple-500 via-indigo-600 to-pink-500 font-bold text-white shadow-xl hover:brightness-110 transition transform hover:scale-105">
-                        🔄 重新開始測驗
+                        🔄 重新開始
                     </button>
                 </div>
             </div>
@@ -350,12 +342,10 @@
     </main>
 
     <script>
-        // 全域狀態控制
         let currentNumber = 2356;
         let seqNumber = 5990;
         let seqHistory = [5990];
 
-        // 測驗題目資料庫
         const quizData = [
             {
                 id: 1,
@@ -395,6 +385,7 @@
         ];
 
         let userAnswers = {};
+        let isSubmitted = false;
 
         window.onload = function() {
             renderManipulative();
@@ -402,7 +393,6 @@
             renderQuiz();
         };
 
-        // 標籤頁面切換 logic
         function switchTab(tab) {
             ['manipulative', 'sequence', 'quiz'].forEach(t => {
                 const sec = document.getElementById(`section-${t}`);
@@ -417,7 +407,6 @@
             });
         }
 
-        // 數字轉中文讀法演算法
         function numberToChinese(num) {
             if (num === 10000) return '一萬';
             if (num === 0) return '零';
@@ -431,36 +420,30 @@
 
             let result = '';
 
-            // 千位
             if (q > 0) result += digits[q] + '千';
 
-            // 百位
             if (b > 0) {
                 result += digits[b] + '百';
             } else if (q > 0 && (s > 0 || g > 0)) {
                 result += '零';
             }
 
-            // 十位
             if (s > 0) {
                 result += digits[s] + '十';
             } else if (b > 0 && g > 0) {
                 if (!result.endsWith('零')) result += '零';
             }
 
-            // 個位
             if (g > 0) {
                 result += digits[g];
             }
 
-            // 整理連續零的情況
             result = result.replace(/零+/g, '零');
             if (result.endsWith('零')) result = result.slice(0, -1);
 
             return result || '零';
         }
 
-        // 滑桿變更時更新全域數值與畫面
         function updateValuesFromSliders() {
             const q = parseInt(document.getElementById('range-q').value);
             const b = parseInt(document.getElementById('range-b').value);
@@ -471,7 +454,6 @@
             renderManipulative();
         }
 
-        // 渲染積木與位值展示
         function renderManipulative() {
             const str = currentNumber.toString().padStart(4, '0');
             const q = parseInt(str[0]);
@@ -479,7 +461,6 @@
             const s = parseInt(str[2]);
             const g = parseInt(str[3]);
 
-            // 更新文字與數字顯示
             document.getElementById('display-number').textContent = currentNumber;
             document.getElementById('display-chinese').textContent = numberToChinese(currentNumber);
 
@@ -498,7 +479,6 @@
             document.getElementById('range-s').value = s;
             document.getElementById('range-g').value = g;
 
-            // 繪製千位積木
             const cThousand = document.getElementById('container-thousand');
             cThousand.innerHTML = '';
             for (let i = 0; i < q; i++) {
@@ -508,7 +488,6 @@
                 cThousand.appendChild(el);
             }
 
-            // 繪製百位積木
             const cHundred = document.getElementById('container-hundred');
             cHundred.innerHTML = '';
             for (let i = 0; i < b; i++) {
@@ -518,7 +497,6 @@
                 cHundred.appendChild(el);
             }
 
-            // 繪製十位積木
             const cTen = document.getElementById('container-ten');
             cTen.innerHTML = '';
             for (let i = 0; i < s; i++) {
@@ -528,7 +506,6 @@
                 cTen.appendChild(el);
             }
 
-            // 繪製個位積木
             const cOne = document.getElementById('container-one');
             cOne.innerHTML = '';
             for (let i = 0; i < g; i++) {
@@ -539,13 +516,12 @@
             }
         }
 
-        // 數列累加累減邏輯
         function changeSeqNum(delta) {
             let nextVal = seqNumber + delta;
             if (nextVal >= 0 && nextVal <= 10000) {
                 seqNumber = nextVal;
                 seqHistory.push(seqNumber);
-                if (seqHistory.length > 8) seqHistory.shift(); // 保留最近8筆
+                if (seqHistory.length > 8) seqHistory.shift();
                 renderSeqExplorer();
             }
         }
@@ -580,12 +556,11 @@
             });
         }
 
-        // 測驗系統渲染
         function renderQuiz() {
             const container = document.getElementById('quiz-container');
             container.innerHTML = '';
 
-            quizData.forEach((q, idx) => {
+            quizData.forEach((q) => {
                 const qCard = document.createElement('div');
                 qCard.className = 'p-5 md:p-6 rounded-2xl bg-slate-900/60 border border-slate-700/70 space-y-4 backdrop-blur-md shadow-lg';
 
@@ -611,26 +586,42 @@
 
                 qCard.appendChild(optsGrid);
 
-                // 即時回饋與解析卡
-                if (userAnswers[q.id] !== undefined) {
+                // 提交答案後才顯示即時回饋與解析
+                if (isSubmitted) {
                     const feedback = document.createElement('div');
-                    const isCorrect = userAnswers[q.id] === q.answer;
-                    feedback.className = `p-4 rounded-xl text-xs md:text-sm font-medium mt-3 ${
-                        isCorrect ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-500/40' : 'bg-rose-500/20 text-rose-200 border border-rose-500/40'
-                    }`;
-                    feedback.innerHTML = `
-                        <div class="flex items-center gap-1.5 font-bold mb-1 text-base">
-                            <span>${isCorrect ? '✨ 回答正確！太棒了！' : '💡 再想想看，加油！'}</span>
-                        </div>
-                        <div class="leading-relaxed opacity-90">${q.explanation}</div>
-                    `;
+                    if (userAnswers[q.id] === undefined) {
+                        // 未作答時僅顯示「未作答。」，不給其他說明與答案
+                        feedback.className = 'p-4 rounded-xl text-xs md:text-sm font-medium mt-3 bg-amber-500/20 text-amber-200 border border-amber-500/40';
+                        feedback.innerHTML = `
+                            <div class="flex items-center gap-1.5 font-bold text-base">
+                                <span>⚠️ 未作答。</span>
+                            </div>
+                        `;
+                    } else {
+                        const isCorrect = userAnswers[q.id] === q.answer;
+                        feedback.className = `p-4 rounded-xl text-xs md:text-sm font-medium mt-3 ${
+                            isCorrect 
+                                ? 'bg-emerald-500/20 text-emerald-200 border border-emerald-500/40' 
+                                : 'bg-rose-500/20 text-rose-200 border border-rose-500/40'
+                        }`;
+                        feedback.innerHTML = `
+                            <div class="flex items-center gap-1.5 font-bold mb-1 text-base">
+                                <span>${isCorrect ? '✨ 回答正確！' : '❌ 回答錯誤'}</span>
+                            </div>
+                            <div class="leading-relaxed opacity-90">${q.explanation}</div>
+                        `;
+                    }
                     qCard.appendChild(feedback);
                 }
 
                 container.appendChild(qCard);
             });
 
-            calculateScore();
+            if (isSubmitted) {
+                calculateScore();
+            } else {
+                document.getElementById('quiz-score').textContent = `0 / 100`;
+            }
         }
 
         function selectAnswer(qId, optIdx) {
@@ -638,18 +629,24 @@
             renderQuiz();
         }
 
+        function submitQuiz() {
+            isSubmitted = true;
+            renderQuiz();
+        }
+
         function calculateScore() {
             let score = 0;
             quizData.forEach(q => {
                 if (userAnswers[q.id] === q.answer) {
-                    score++;
+                    score += 20; // 5 題滿分 100 分
                 }
             });
-            document.getElementById('quiz-score').textContent = `${score} / 5`;
+            document.getElementById('quiz-score').textContent = `${score} / 100`;
         }
 
         function resetQuiz() {
             userAnswers = {};
+            isSubmitted = false;
             renderQuiz();
         }
     </script>
