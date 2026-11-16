@@ -182,7 +182,7 @@
                             <!-- Height Slider (Disabled in Square mode) -->
                             <div id="height-container" class="opacity-40 transition-opacity">
                                 <div class="flex justify-between items-center text-xs font-semibold mb-1">
-                                    <span class="text-slate-200">短邊/高 (公分):</span>
+                                    <span class="text-slate-200">短邊 (公分):</span>
                                     <span class="text-pink-300 font-bold text-base"><span id="val-height">3</span> cm</span>
                                 </div>
                                 <input type="range" id="slider-height" min="1" max="8" step="1" value="3" oninput="updateShape()" disabled class="w-full">
@@ -553,6 +553,8 @@
             } else {
                 btnRect.className = "py-2.5 px-3 rounded-xl border border-pink-400/50 bg-pink-500/20 text-pink-200 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all";
                 btnSquare.className = "py-2.5 px-3 rounded-xl border border-white/10 bg-slate-800/40 text-slate-300 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all";
+                document.getElementById('slider-width').value = 6;
+                document.getElementById('slider-height').value = 4;
             }
 
             updateShape();
@@ -582,7 +584,7 @@
                 document.getElementById('val-height').innerText = h;
                 document.getElementById('slider-height').disabled = false;
                 document.getElementById('height-container').classList.remove('opacity-40');
-                document.getElementById('width-label').innerText = '長邊/寬 (公分):';
+                document.getElementById('width-label').innerText = '長邊 (公分):';
             }
 
             // Real-time analysis text update
@@ -613,11 +615,17 @@
             const wPx = w * unit;
             const hPx = h * unit;
 
+            // 若邊長為奇數格，將未旋轉時的左上角對齊網格交點（補償半格偏移）
+            const offsetX = (w % 2 !== 0) ? (unit / 2) : 0;
+            const offsetY = (h % 2 !== 0) ? (unit / 2) : 0;
+            const pivotX = cx - offsetX;
+            const pivotY = cy - offsetY;
+
             const rad = (angleDeg * Math.PI) / 180;
             const cos = Math.cos(rad);
             const sin = Math.sin(rad);
 
-            // Unrotated corners relative to center
+            // Unrotated corners relative to pivot
             const cornersRel = [
                 { x: -wPx / 2, y: -hPx / 2 },
                 { x: wPx / 2, y: -hPx / 2 },
@@ -627,8 +635,8 @@
 
             // Rotate and translate corners
             const corners = cornersRel.map(pt => ({
-                x: cx + (pt.x * cos - pt.y * sin),
-                y: cy + (pt.x * sin + pt.y * cos)
+                x: pivotX + (pt.x * cos - pt.y * sin),
+                y: pivotY + (pt.x * sin + pt.y * cos)
             }));
 
             let svgHtml = '';
@@ -694,7 +702,7 @@
                     let ny = dx / len;
 
                     // Outward direction check
-                    if ((midX + nx * 10 - cx) ** 2 + (midY + ny * 10 - cy) ** 2 < (midX - cx) ** 2 + (midY - cy) ** 2) {
+                    if ((midX + nx * 10 - pivotX) ** 2 + (midY + ny * 10 - pivotY) ** 2 < (midX - pivotX) ** 2 + (midY - pivotY) ** 2) {
                         nx = -nx;
                         ny = -ny;
                     }
