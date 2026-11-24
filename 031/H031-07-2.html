@@ -73,6 +73,15 @@
             transform-origin: 200px 200px;
         }
 
+        /* Fade in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -91,7 +100,7 @@
     <!-- Header -->
     <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-900/70 border-b border-indigo-500/30 px-4 py-3 mb-6">
         <div class="max-w-7xl mx-auto">
-            <!-- 修改：使用轉換後的 Google Drive 直接連結 (置於最左上方) -->
+            <!-- 修改：使用轉換後的 Google Drive 直接連結 (置於頁面最上方左上角、原標題之上) -->
             <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
                 <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
                 <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
@@ -246,7 +255,71 @@
 
             <!-- Right Panel: Controls & Item Dragging (5 cols) -->
             <div class="lg:col-span-5 space-y-6">
-                <!-- Precision Slider Control -->
+                <!-- Add Blocks & Preset Objects (移至上方) -->
+                <div class="shinkai-card rounded-3xl p-6">
+                    <h3 class="text-base font-bold text-sky-200 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-cubes text-sky-400"></i> 放上積木與物品
+                    </h3>
+
+                    <!-- 積木控制項 -->
+                    <div class="mb-5">
+                        <div class="text-base md:text-lg font-extrabold text-sky-300 mb-2.5 flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group text-lg md:text-xl"></i> 可累加
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="addBlocks(1, 5)" class="p-3.5 bg-slate-800/80 hover:bg-slate-700/80 border border-sky-400/30 rounded-2xl flex items-center gap-3 transition text-left group">
+                                <div class="w-11 h-11 rounded-xl bg-sky-500/20 text-sky-300 flex items-center justify-center font-bold text-base group-hover:scale-110 transition flex-shrink-0">
+                                    5g
+                                </div>
+                                <div class="text-sm md:text-base font-bold text-white leading-snug">
+                                    5 個 1g 積木 <span class="text-sky-300 font-semibold">+5g (1 小格)</span>
+                                </div>
+                            </button>
+
+                            <button onclick="addBlocks(1, 50)" class="p-3.5 bg-slate-800/80 hover:bg-slate-700/80 border border-amber-400/30 rounded-2xl flex items-center gap-3 transition text-left group">
+                                <div class="w-11 h-11 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold text-base group-hover:scale-110 transition flex-shrink-0">
+                                    50g
+                                </div>
+                                <div class="text-sm md:text-base font-bold text-white leading-snug">
+                                    50 個 1g 積木 <span class="text-amber-300 font-semibold">+50g (1 大格)</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 情境物品按鈕 (放大圖示與文字) -->
+                    <div>
+                        <div class="text-base md:text-lg font-extrabold text-amber-300 mb-2.5 flex items-center gap-2">
+                            <i class="fa-solid fa-cube text-lg md:text-xl"></i> 單一
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="setPresetItem('訂書機', 60)" class="p-3.5 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-600/50 rounded-2xl text-base md:text-lg font-bold flex items-center gap-3 transition">
+                                <i class="fa-solid fa-stapler text-rose-400 text-xl md:text-2xl"></i> 訂書機
+                            </button>
+                            <button onclick="setPresetItem('字典', 845)" class="p-3.5 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-600/50 rounded-2xl text-base md:text-lg font-bold flex items-center gap-3 transition">
+                                <i class="fa-solid fa-book text-amber-400 text-xl md:text-2xl"></i> 字典
+                            </button>
+                            <button onclick="setPresetItem('熱水壺', 750)" class="p-3.5 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-600/50 rounded-2xl text-base md:text-lg font-bold flex items-center gap-3 transition">
+                                <i class="fa-solid fa-mug-hot text-sky-400 text-xl md:text-2xl"></i> 熱水壺
+                            </button>
+                            <button onclick="setPresetItem('一包麵粉', 1000)" class="p-3.5 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-600/50 rounded-2xl text-base md:text-lg font-bold flex items-center gap-3 transition">
+                                <i class="fa-solid fa-wheat-awn text-emerald-400 text-xl md:text-2xl"></i> 一包麵粉
+                            </button>
+                            <button onclick="setPresetItem('一顆蘋果', 275)" class="p-3.5 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-600/50 rounded-2xl text-base md:text-lg font-bold flex items-center gap-3 transition">
+                                <i class="fa-solid fa-apple-whole text-red-400 text-xl md:text-2xl"></i> 一顆蘋果
+                            </button>
+                            <button onclick="setPresetItem('一盒餅乾', 555)" class="p-3.5 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-600/50 rounded-2xl text-base md:text-lg font-bold flex items-center gap-3 transition">
+                                <i class="fa-solid fa-cookie-bite text-orange-300 text-xl md:text-2xl"></i> 一盒餅乾
+                            </button>
+                        </div>
+                    </div>
+
+                    <button onclick="resetScale()" class="w-full mt-4 py-2.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-left"></i> 清空歸零
+                    </button>
+                </div>
+
+                <!-- Precision Slider Control (移至下方) -->
                 <div class="shinkai-card rounded-3xl p-6">
                     <h3 class="text-base font-bold text-amber-300 mb-3 flex items-center gap-2">
                         <i class="fa-solid fa-sliders text-amber-400"></i> 微調滑桿 (探究數值變化)
@@ -271,103 +344,53 @@
                         <button onclick="addWeight(50)" class="px-2 py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-xs font-bold transition">+50g</button>
                     </div>
                 </div>
-
-                <!-- Add Blocks & Preset Objects -->
-                <div class="shinkai-card rounded-3xl p-6">
-                    <h3 class="text-base font-bold text-sky-200 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-cubes text-sky-400"></i> 放上積木與課本物品
-                    </h3>
-
-                    <!-- 積木控制項 -->
-                    <div class="mb-4">
-                        <label class="text-xs font-bold text-slate-300 block mb-2">【積木組合】</label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button onclick="addBlocks(1, 5)" class="p-3 bg-slate-800/80 hover:bg-slate-700/80 border border-sky-400/30 rounded-2xl flex items-center gap-3 transition text-left group">
-                                <div class="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-300 flex items-center justify-center font-bold group-hover:scale-110 transition">
-                                    5g
-                                </div>
-                                <div>
-                                    <div class="text-xs font-bold text-white">5 個 1g 積木</div>
-                                    <div class="text-[10px] text-slate-400">+5g (1 小格)</div>
-                                </div>
-                            </button>
-
-                            <button onclick="addBlocks(1, 50)" class="p-3 bg-slate-800/80 hover:bg-slate-700/80 border border-amber-400/30 rounded-2xl flex items-center gap-3 transition text-left group">
-                                <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold group-hover:scale-110 transition">
-                                    50g
-                                </div>
-                                <div>
-                                    <div class="text-xs font-bold text-white">50 個 1g 積木</div>
-                                    <div class="text-[10px] text-slate-400">+50g (1 大格)</div>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 課本經典例題物品 -->
-                    <div>
-                        <label class="text-xs font-bold text-slate-300 block mb-2">【課本情境物品】</label>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="setPresetItem('訂書機', 60)" class="p-2.5 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-600/50 rounded-xl text-xs font-bold flex items-center gap-2 transition">
-                                <i class="fa-solid fa-stapler text-rose-400"></i> 訂書機 (60g)
-                            </button>
-                            <button onclick="setPresetItem('字典', 845)" class="p-2.5 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-600/50 rounded-xl text-xs font-bold flex items-center gap-2 transition">
-                                <i class="fa-solid fa-book text-amber-400"></i> 字典 (845g)
-                            </button>
-                            <button onclick="setPresetItem('熱水壺', 750)" class="p-2.5 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-600/50 rounded-xl text-xs font-bold flex items-center gap-2 transition">
-                                <i class="fa-solid fa-mug-hot text-sky-400"></i> 熱水壺 (750g)
-                            </button>
-                            <button onclick="setPresetItem('麵粉', 1000)" class="p-2.5 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-600/50 rounded-xl text-xs font-bold flex items-center gap-2 transition">
-                                <i class="fa-solid fa-wheat-awn text-emerald-400"></i> 一包麵粉 (1kg)
-                            </button>
-                        </div>
-                    </div>
-
-                    <button onclick="resetScale()" class="w-full mt-4 py-2.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-rotate-left"></i> 清空歸零
-                    </button>
-                </div>
             </div>
         </section>
 
         <!-- TAB 2: CORE CONCEPTS -->
-        <section id="sec-concept" class="tab-content hidden space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <section id="sec-concept" class="tab-content hidden max-w-5xl mx-auto space-y-6">
+            <div class="grid grid-cols-1 gap-6">
                 <!-- Concept Card 1 -->
-                <div class="shinkai-card-light rounded-3xl p-6 space-y-3">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-xl font-black shadow-lg">
-                        1
+                <div class="shinkai-card-light rounded-3xl p-8 md:p-10 space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-2xl font-black shadow-lg flex-shrink-0">
+                            1
+                        </div>
+                        <h3 class="text-2xl md:text-3xl font-black text-slate-800">認識 1 大格與 1 小格</h3>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-800">認識 1 大格與 1 小格</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed">
+                    <p class="text-lg md:text-xl text-slate-700 leading-relaxed pl-1">
                         在 1000g 磅秤上：<br>
-                        • 指針從 0 走到下一個標示數字的刻度，是 <strong class="text-amber-600">1 大格 = 50公克</strong>。<br>
-                        • 1 大格裡面平分成 10 個小格，所以 <strong class="text-amber-600">1 小格 = 5公克</strong>。
+                        • 指針從 0 走到下一個標示數字的刻度，是 <strong class="text-amber-600 font-black">1 大格 = 50 公克</strong>。<br>
+                        • 1 大格裡面平分成 10 個小格，所以 <strong class="text-amber-600 font-black">1 小格 = 5 公克</strong>。
                     </p>
                 </div>
 
                 <!-- Concept Card 2 -->
-                <div class="shinkai-card-light rounded-3xl p-6 space-y-3">
-                    <div class="w-12 h-12 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-xl font-black shadow-lg">
-                        2
+                <div class="shinkai-card-light rounded-3xl p-8 md:p-10 space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-2xl font-black shadow-lg flex-shrink-0">
+                            2
+                        </div>
+                        <h3 class="text-2xl md:text-3xl font-black text-slate-800">報讀指針位置的方法</h3>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-800">報讀指針位置的方法</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed">
-                        • 先找到指針前面<strong class="text-sky-600">最接近的大格數字</strong>（例如 800g）。<br>
+                    <p class="text-lg md:text-xl text-slate-700 leading-relaxed pl-1">
+                        • 先找到指針前面<strong class="text-sky-600 font-black">最接近的大格數字</strong>（例如 800g）。<br>
                         • 再數指針超過該數字後走了幾小格（每小格 5g）。<br>
-                        例如：800 往後數 9 小格 = 800 + 45 = <strong class="text-sky-600">845公克</strong>。
+                        • 例如：800 往後數 9 小格 = 800 + 45 = <strong class="text-sky-600 font-black">845 公克</strong>。
                     </p>
                 </div>
 
                 <!-- Concept Card 3 -->
-                <div class="shinkai-card-light rounded-3xl p-6 space-y-3">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-500 text-white flex items-center justify-center text-xl font-black shadow-lg">
-                        3
+                <div class="shinkai-card-light rounded-3xl p-8 md:p-10 space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-indigo-500 text-white flex items-center justify-center text-2xl font-black shadow-lg flex-shrink-0">
+                            3
+                        </div>
+                        <h3 class="text-2xl md:text-3xl font-black text-slate-800">重量單位換算 (g 與 kg)</h3>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-800">重量單位換算 (g 與 kg)</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed">
+                    <p class="text-lg md:text-xl text-slate-700 leading-relaxed pl-1">
                         當物品重達 1000 公克時：<br>
-                        • <strong class="text-indigo-600">1000 公克 (g) = 1 公斤 (kg)</strong>。<br>
+                        • <strong class="text-indigo-600 font-black">1000 公克 (g) = 1 公斤 (kg)</strong>。<br>
                         • 1000g 秤轉完一整圈正好就是 1 公斤。
                     </p>
                 </div>

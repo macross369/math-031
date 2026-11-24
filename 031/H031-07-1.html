@@ -248,13 +248,13 @@
                         </div>
 
                         <!-- 傳統 3 公斤秤 SVG 繪製 (依據真實 3kg 秤樣式擬真微調) -->
-                        <div id="dial-scale-container" class="relative w-80 h-80 my-2 flex flex-col items-center justify-center">
+                        <div id="dial-scale-container" class="relative w-80 h-80 my-2 flex flex-col items-center justify-center transition-all duration-300">
                             <!-- 頂部藍色秤盤 Tray -->
                             <div id="scale-plate" class="relative z-10 w-72 h-10 bg-gradient-to-b from-[#38cbe6] via-[#11b8d6] to-[#0ea5c0] rounded-t-xl border-t-2 border-cyan-200 shadow-lg flex items-center justify-center transition-transform duration-300">
                                 <div id="plate-items-icons" class="absolute -top-8 text-3xl flex items-end justify-center gap-1.5 drop-shadow"></div>
                             </div>
                             <!-- 秤盤雙黑色立柱 Support Posts -->
-                            <div class="relative z-0 w-28 h-4 flex justify-between px-6 -mt-0.5">
+                            <div id="scale-posts" class="relative z-0 w-28 h-4 flex justify-between px-6 -mt-0.5 transition-all duration-300">
                                 <div class="w-2.5 h-full bg-slate-900 rounded-sm"></div>
                                 <div class="w-2.5 h-full bg-slate-900 rounded-sm"></div>
                             </div>
@@ -300,25 +300,14 @@
                         </div>
 
                         <!-- 電子秤視窗與單位換算面板 -->
-                        <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div id="bottom-cards-grid" class="w-full grid grid-cols-1 gap-4 mt-4 transition-all duration-300">
                             <!-- 電子秤顯示面板 -->
-                            <div class="glass-card-light rounded-xl p-4 text-center border-2 border-sky-300">
+                            <div id="digital-scale-card" class="glass-card-light rounded-xl p-4 text-center border-2 border-sky-300 transition-all duration-300">
                                 <div class="text-xs font-bold text-slate-500 mb-1">🖥️ 電子秤液晶螢幕</div>
                                 <div class="bg-emerald-950 font-mono text-3xl font-black text-emerald-400 py-2 px-4 rounded-lg shadow-inner tracking-wider border border-emerald-700" id="digital-screen">
                                     0.000 <span class="text-sm text-emerald-300">kg</span>
                                 </div>
                                 <div class="text-xs text-slate-500 mt-2 font-medium">（讀值直接對應重量）</div>
-                            </div>
-
-                            <!-- 單位換算卡片 -->
-                            <div class="glass-card-light rounded-xl p-4 text-center border-2 border-amber-300 flex flex-col justify-center">
-                                <div class="text-xs font-bold text-slate-500 mb-1">💡 單位報讀與換算</div>
-                                <div class="text-lg font-bold text-indigo-900" id="readout-text">
-                                    0 公斤 0 公克
-                                </div>
-                                <div class="text-xs text-rose-600 font-bold mt-1" id="gram-text">
-                                    等於 0 公克 (g)
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -363,7 +352,7 @@
         // State Management
         let currentWeight = 0; // in grams
         let itemsOnScale = [];
-        let scaleTypeCombined = false;
+        let scaleViewMode = 0; // 0: 兩者併排, 1: 專注3公斤盤秤, 2: 專注電子秤
 
         // Quiz Questions Data (5 items from Taiwan math textbook curriculum)
         const quizQuestions = [
@@ -457,6 +446,28 @@
             ticksGroup.innerHTML = html;
         }
 
+        // 切換雙秤視角（兩者併排 / 專注盤秤 / 專注電子秤）
+        function toggleScaleType() {
+            scaleViewMode = (scaleViewMode + 1) % 3;
+            const btn = document.getElementById('toggle-scale-btn');
+            const dialContainer = document.getElementById('dial-scale-container');
+            const digitalCard = document.getElementById('digital-scale-card');
+
+            if (scaleViewMode === 0) {
+                btn.innerText = '切換視角：兩者併排';
+                dialContainer.classList.remove('hidden');
+                digitalCard.classList.remove('hidden');
+            } else if (scaleViewMode === 1) {
+                btn.innerText = '切換視角：僅看盤秤';
+                dialContainer.classList.remove('hidden');
+                digitalCard.classList.add('hidden');
+            } else {
+                btn.innerText = '切換視角：僅看電子秤';
+                dialContainer.classList.add('hidden');
+                digitalCard.classList.remove('hidden');
+            }
+        }
+
         // Tab Switching
         function switchTab(tab) {
             const labPage = document.getElementById('page-lab');
@@ -500,7 +511,7 @@
 
         function onSliderChange(val) {
             currentWeight = parseInt(val);
-            itemsOnScale = [{ grams: currentWeight, name: '自訂重量', icon: '⚖️' }];
+            itemsOnScale = currentWeight > 0 ? [{ grams: currentWeight, name: '自訂重量', icon: '⚖️' }] : [];
             updateScaleUI();
         }
 
@@ -511,7 +522,13 @@
             // Update Item List Icons on scale
             const itemListEl = document.getElementById('item-list');
             const plateIconsEl = document.getElementById('plate-items-icons');
-            const emptyMsg = document.getElementById('empty-msg');
+            const scalePlateEl = document.getElementById('scale-plate');
+
+            // 模擬秤盤受壓微幅下沉的物理動態回饋
+            const depression = Math.min((currentWeight / 3000) * 4, 4);
+            if (scalePlateEl) {
+                scalePlateEl.style.transform = `translateY(${depression}px)`;
+            }
 
             if (itemsOnScale.length === 0 || currentWeight === 0) {
                 itemListEl.innerHTML = '<span class="text-xs text-slate-400 w-full text-center py-1" id="empty-msg">秤盤上目前沒有東西（指向刻度 0）</span>';
@@ -535,25 +552,12 @@
             // Update Digital Scale Screen
             const kgVal = (currentWeight / 1000).toFixed(3);
             document.getElementById('digital-screen').innerHTML = `${kgVal} <span class="text-sm text-emerald-300">kg</span>`;
-
-            // Update Textual Readout
-            const fullKg = Math.floor(currentWeight / 1000);
-            const remGrams = currentWeight % 1000;
-            
-            let readoutStr = '';
-            if (fullKg > 0) {
-                readoutStr += `${fullKg} 公斤 `;
-            }
-            readoutStr += `${remGrams} 公克`;
-
-            document.getElementById('readout-text').innerText = readoutStr;
-            document.getElementById('gram-text').innerText = `等於 ${currentWeight} 公克 (g)`;
         }
 
         // Quiz Rendering
         function renderQuiz() {
             const container = document.getElementById('quiz-container');
-            container.innerHTML = quizQuestions.map((q, index) => `
+            container.innerHTML = quizQuestions.map((q) => `
                 <div class="glass-card-light rounded-2xl p-5 shadow-md">
                     <h3 class="font-bold text-slate-800 text-base md:text-lg mb-3">${q.question}</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
