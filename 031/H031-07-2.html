@@ -67,10 +67,16 @@
             box-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
         }
 
-        /* Smooth needle transition */
+        /* Smooth needle transition & drag cursor */
         .scale-needle {
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             transform-origin: 200px 200px;
+            cursor: grab;
+            touch-action: none;
+        }
+        .scale-needle.dragging {
+            transition: none;
+            cursor: grabbing;
         }
 
         /* Fade in animation */
@@ -100,7 +106,7 @@
     <!-- Header -->
     <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-900/70 border-b border-indigo-500/30 px-4 py-3 mb-6">
         <div class="max-w-7xl mx-auto">
-            <!-- 修改：使用轉換後的 Google Drive 直接連結 (置於頁面最上方左上角、原標題之上) -->
+            <!-- 閒雲數學小棧與 Logo (置於頁面最上方左上角) -->
             <div class="w-full max-w-4xl flex items-center justify-start mb-4 px-2 fade-in">
                 <img src="https://lh3.googleusercontent.com/d/1qUdM3yxfDP9U8S1PAlYScLXLG9riPxMt" alt="閒雲數學小棧Logo" class="h-8 w-auto mr-3 object-contain drop-shadow-md rounded-full bg-white/30 p-1" onerror="this.src='https://placehold.co/40x40/ffffff/333333?text=Logo'">
                 <span class="text-xl md:text-2xl font-bold text-white drop-shadow-lg tracking-wider" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">閒雲數學小棧</span>
@@ -147,20 +153,36 @@
                     <div class="absolute -top-12 -right-12 w-48 h-48 bg-sky-500/20 rounded-full blur-3xl pointer-events-none"></div>
                     <div class="absolute -bottom-12 -left-12 w-48 h-48 bg-rose-500/20 rounded-full blur-3xl pointer-events-none"></div>
 
-                    <div class="flex justify-between items-center mb-4">
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
                         <span class="text-xs font-bold uppercase tracking-wider text-sky-300 bg-sky-950/60 border border-sky-400/30 px-3 py-1 rounded-full">
                             <i class="fa-solid fa-eye mr-1"></i> 動態 1000g 磅秤觀察器
                         </span>
-                        <div class="flex items-center gap-2">
-                            <button onclick="toggleAnswer()" id="btn-toggle-ans" class="text-xs bg-amber-500/20 text-amber-300 border border-amber-400/40 px-3 py-1.5 rounded-lg font-semibold hover:bg-amber-500/30 transition">
-                                <i class="fa-solid fa-eye-slash mr-1"></i> 隱藏讀數(教學模式)
+                        <div class="flex flex-wrap items-center gap-2">
+                            <!-- 指針放大鏡開關與倍率控制 -->
+                            <div class="flex items-center bg-slate-900/70 border border-sky-400/30 rounded-lg p-0.5">
+                                <button onclick="toggleNeedleLens()" id="btn-toggle-lens" class="text-xs bg-sky-500/20 text-sky-300 px-2.5 py-1 rounded-md font-semibold hover:bg-sky-500/30 transition">
+                                    <i class="fa-solid fa-magnifying-glass-plus mr-1"></i> 指針放大鏡
+                                </button>
+                                <div id="lens-zoom-controls" class="hidden items-center gap-1 pl-1.5 pr-1 border-l border-slate-700 ml-1">
+                                    <span class="text-[10px] text-slate-400">倍率:</span>
+                                    <select id="lens-zoom-select" onchange="changeLensZoom(this.value)" class="bg-slate-800 text-amber-300 text-xs font-bold rounded px-1.5 py-0.5 border border-slate-600 focus:outline-none cursor-pointer">
+                                        <option value="1.5">1.5x</option>
+                                        <option value="2" selected>2.0x</option>
+                                        <option value="2.5">2.5x</option>
+                                        <option value="3">3.0x</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button onclick="toggleAnswer()" id="btn-toggle-ans" class="text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 px-3 py-1.5 rounded-lg font-semibold hover:bg-emerald-500/30 transition">
+                                <i class="fa-solid fa-eye mr-1"></i> 顯示讀數
                             </button>
                         </div>
                     </div>
 
                     <!-- Main Scale SVG Container -->
                     <div class="flex flex-col md:flex-row items-center justify-center gap-6 my-2">
-                        <!-- SVG Dial Scale -->
+                        <!-- SVG Dial Scale (保持原先位置) -->
                         <div class="relative w-72 h-72 md:w-80 md:h-80 flex-shrink-0 mt-6">
                             <!-- Support Pillar -->
                             <div class="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-8 bg-gradient-to-b from-slate-300 to-slate-400 border-x border-slate-500 z-0"></div>
@@ -170,7 +192,20 @@
                             </div>
 
                             <!-- Dial SVG -->
-                            <svg id="scale-svg" viewBox="0 0 400 400" class="w-full h-full drop-shadow-2xl relative z-20">
+                            <svg id="scale-svg" viewBox="0 0 400 400" class="w-full h-full drop-shadow-2xl relative z-20 select-none overflow-visible">
+                                <defs>
+                                    <!-- 指針圓形放大鏡裁切區域 (鏡心位於 200, 52，半徑加大至 84 以完整涵蓋刻度與數字) -->
+                                    <clipPath id="needle-lens-clip">
+                                        <circle cx="200" cy="52" r="84"/>
+                                    </clipPath>
+                                    <!-- 放大鏡玻璃反光漸層 -->
+                                    <radialGradient id="lens-glare" cx="35%" cy="30%" r="65%">
+                                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.45"/>
+                                        <stop offset="60%" stop-color="#38bdf8" stop-opacity="0.08"/>
+                                        <stop offset="100%" stop-color="#0f172a" stop-opacity="0.18"/>
+                                    </radialGradient>
+                                </defs>
+
                                 <!-- Scale Outer Rim -->
                                 <circle cx="200" cy="200" r="185" fill="#f8fafc" stroke="#3b82f6" stroke-width="8"/>
                                 <circle cx="200" cy="200" r="180" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
@@ -182,20 +217,56 @@
                                 <!-- Ticks & Labels Group generated by JS -->
                                 <g id="svg-ticks"></g>
 
-                                <!-- Needle -->
+                                <!-- Needle (支援直接拖動) -->
                                 <g id="needle-group" class="scale-needle">
+                                    <!-- 透明加寬感應區，讓滑鼠與手指更容易抓取指針 -->
+                                    <polygon points="200,230 176,200 186,10 214,10 224,200" fill="transparent"/>
+                                    <circle cx="200" cy="200" r="28" fill="transparent"/>
                                     <!-- Needle shadow -->
                                     <polygon points="200,205 194,200 200,30 206,200" fill="rgba(0,0,0,0.2)"/>
                                     <!-- Needle body -->
                                     <polygon points="200,215 193,200 198,25 200,15 202,25 207,200" fill="#ef4444"/>
                                     <circle cx="200" cy="200" r="14" fill="#dc2626"/>
                                     <circle cx="200" cy="200" r="6" fill="#fef08a"/>
+
+                                    <!-- 指針圓形放大鏡 (預設隱藏，開啟後隨指針同步旋轉並放大下方刻度) -->
+                                    <g id="needle-magnifier-lens" class="hidden" pointer-events="none">
+                                        <!-- 鏡片外陰影 -->
+                                        <circle cx="200" cy="56" r="86" fill="rgba(15, 23, 42, 0.35)"/>
+                                        <!-- 鏡片裁切內容區 -->
+                                        <g clip-path="url(#needle-lens-clip)">
+                                            <!-- 白色底色遮蔽原本未放大的刻度 -->
+                                            <circle cx="200" cy="52" r="86" fill="#ffffff"/>
+                                            <!-- 動態縮放與反向旋轉的刻度圖層 -->
+                                            <g id="magnified-dial-content">
+                                                <circle cx="200" cy="200" r="185" fill="#f8fafc" stroke="#3b82f6" stroke-width="8"/>
+                                                <circle cx="200" cy="200" r="180" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+                                                <circle cx="200" cy="200" r="172" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                                                <circle cx="200" cy="200" r="120" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.6"/>
+                                                <g id="magnified-svg-ticks"></g>
+                                            </g>
+                                            <!-- 放大後的細銳指針尖端 (精準對齊刻度且不遮擋數字) -->
+                                            <g id="magnified-needle-tip">
+                                                <polygon points="200,215 196.5,200 199,24 200,15 201,24 203.5,200" fill="#ef4444" opacity="0.88"/>
+                                            </g>
+                                            <!-- 玻璃光澤效果 -->
+                                            <circle cx="200" cy="52" r="84" fill="url(#lens-glare)"/>
+                                        </g>
+                                        <!-- 放大鏡金屬外框 -->
+                                        <circle cx="200" cy="52" r="84" fill="none" stroke="#f59e0b" stroke-width="5"/>
+                                        <circle cx="200" cy="52" r="81" fill="none" stroke="#fef08a" stroke-width="1.2" opacity="0.85"/>
+                                    </g>
                                 </g>
                             </svg>
+                            <div class="text-center mt-1.5">
+                                <span class="text-[11px] text-sky-200/80 bg-slate-900/50 px-2.5 py-0.5 rounded-full border border-sky-400/20">
+                                    <i class="fa-solid fa-hand-pointer text-amber-300 mr-1"></i>可直接按住紅色指針拖動旋轉
+                                </span>
+                            </div>
                         </div>
 
-                        <!-- Magnifier Glass Scope (局部刻度放大鏡) -->
-                        <div class="flex flex-col items-center">
+                        <!-- Magnifier Glass Scope (僅將局部刻度放大鏡往右移動，避免與指針放大鏡相交) -->
+                        <div class="flex flex-col items-center md:ml-10 lg:ml-14 flex-shrink-0">
                             <div class="relative w-48 h-48 rounded-full border-4 border-amber-400 bg-slate-900 shadow-2xl overflow-hidden flex flex-col items-center justify-center glow-gold">
                                 <div class="absolute inset-0 bg-gradient-to-b from-sky-500/10 to-transparent pointer-events-none"></div>
                                 
@@ -211,10 +282,10 @@
                                 </div>
 
                                 <div id="magnifier-text" class="text-xs font-bold text-sky-200 mt-1">
-                                    指針位置刻度細節
+                                    指針位置局部放大
                                 </div>
                             </div>
-                            <span class="text-xs text-slate-300 mt-2"><i class="fa-solid fa-circle-info text-amber-400 mr-1"></i>1大格=50g｜1小格=5g</span>
+                            <span id="magnifier-hint" class="invisible text-xs text-slate-300 mt-2 transition-opacity"><i class="fa-solid fa-circle-info text-amber-400 mr-1"></i>1大格=50g｜1小格=5g</span>
                         </div>
                     </div>
 
@@ -225,8 +296,10 @@
                             <div id="readout-box" class="flex items-baseline gap-2">
                                 <span id="weight-display-g" class="text-3xl md:text-4xl font-black text-amber-300 font-mono">0</span>
                                 <span class="text-lg font-bold text-slate-300">公克 (g)</span>
-                                <span class="text-slate-500 mx-1">|</span>
-                                <span id="weight-display-kg" class="text-xl font-bold text-sky-300 font-mono">0 公斤</span>
+                                <span id="kg-exact-badge" class="hidden items-baseline gap-2">
+                                    <span class="text-slate-500 mx-1">|</span>
+                                    <span class="text-xl font-bold text-sky-300 font-mono">1 公斤</span>
+                                </span>
                             </div>
                         </div>
                         <div id="readout-breakdown" class="text-xs bg-indigo-950/80 border border-indigo-400/30 px-3 py-2 rounded-xl text-indigo-200 leading-relaxed">
@@ -237,15 +310,20 @@
 
                 <!-- Dynamic Interactive Number Line (刻度數線) -->
                 <div class="shinkai-card rounded-3xl p-6">
-                    <div class="flex justify-between items-center mb-3">
+                    <div id="ruler-header" class="flex flex-wrap justify-between items-center gap-2">
                         <h3 class="text-sm font-bold text-sky-200 flex items-center gap-2">
                             <i class="fa-solid fa-ruler-horizontal text-sky-400"></i> 對應刻度數線 (0 ~ 1000g)
                         </h3>
-                        <span class="text-xs text-slate-300">把秤面刻度看成數線</span>
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-xs text-slate-300">把秤面刻度看成數線</span>
+                            <button onclick="toggleRuler()" id="btn-toggle-ruler" class="text-xs bg-sky-500/20 text-sky-300 border border-sky-400/40 px-3 py-1.5 rounded-lg font-semibold hover:bg-sky-500/30 transition">
+                                <i class="fa-solid fa-eye mr-1"></i> 顯示
+                            </button>
+                        </div>
                     </div>
 
-                    <!-- Number Line Container -->
-                    <div class="relative pt-6 pb-2 px-4 bg-slate-900/60 rounded-2xl border border-slate-700/50 overflow-x-auto">
+                    <!-- Number Line Container (預設隱藏) -->
+                    <div id="ruler-container" class="hidden relative pt-6 pb-2 px-4 mt-3 bg-slate-900/60 rounded-2xl border border-slate-700/50 overflow-x-auto">
                         <svg id="ruler-svg" viewBox="0 0 500 60" class="w-full min-w-[450px]">
                             <!-- Generated by JS -->
                         </svg>
@@ -255,7 +333,7 @@
 
             <!-- Right Panel: Controls & Item Dragging (5 cols) -->
             <div class="lg:col-span-5 space-y-6">
-                <!-- Add Blocks & Preset Objects (移至上方) -->
+                <!-- Add Blocks & Preset Objects (位於上方) -->
                 <div class="shinkai-card rounded-3xl p-6">
                     <h3 class="text-base font-bold text-sky-200 mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-cubes text-sky-400"></i> 放上積木與物品
@@ -272,7 +350,7 @@
                                     5g
                                 </div>
                                 <div class="text-sm md:text-base font-bold text-white leading-snug">
-                                    5 個 1g 積木 <span class="text-sky-300 font-semibold">+5g (1 小格)</span>
+                                    5 個 1g 積木 <span class="block-scale-hint hidden text-sky-300 font-semibold">+5g (1 小格)</span>
                                 </div>
                             </button>
 
@@ -281,13 +359,13 @@
                                     50g
                                 </div>
                                 <div class="text-sm md:text-base font-bold text-white leading-snug">
-                                    50 個 1g 積木 <span class="text-amber-300 font-semibold">+50g (1 大格)</span>
+                                    50 個 1g 積木 <span class="block-scale-hint hidden text-amber-300 font-semibold">+50g (1 大格)</span>
                                 </div>
                             </button>
                         </div>
                     </div>
 
-                    <!-- 情境物品按鈕 (放大圖示與文字) -->
+                    <!-- 情境物品按鈕 -->
                     <div>
                         <div class="text-base md:text-lg font-extrabold text-amber-300 mb-2.5 flex items-center gap-2">
                             <i class="fa-solid fa-cube text-lg md:text-xl"></i> 單一
@@ -319,7 +397,7 @@
                     </button>
                 </div>
 
-                <!-- Precision Slider Control (移至下方) -->
+                <!-- Precision Slider Control (位於下方) -->
                 <div class="shinkai-card rounded-3xl p-6">
                     <h3 class="text-base font-bold text-amber-300 mb-3 flex items-center gap-2">
                         <i class="fa-solid fa-sliders text-amber-400"></i> 微調滑桿 (探究數值變化)
@@ -433,7 +511,9 @@
         // --- STATE MANAGEMENT ---
         let currentWeight = 0;
         let currentItemName = "空";
-        let isAnswerHidden = false;
+        let isAnswerHidden = true;
+        let isNeedleLensActive = false;
+        let needleLensZoom = 2.0;
 
         // --- QUIZ QUESTIONS DATA ---
         const quizData = [
@@ -475,12 +555,12 @@
                 question: "4. 丹丹稱了一包麵粉重 1000 公克，1000 公克和多少公斤一樣重？",
                 type: "radio",
                 options: [
-                    "0.1 公斤",
                     "1 公斤",
                     "10 公斤",
-                    "100 公斤"
+                    "100 公斤",
+                    "1000 公斤"
                 ],
-                answer: 1,
+                answer: 0,
                 explain: "1000 公克 (g) = 1 公斤 (kg)。"
             },
             {
@@ -511,7 +591,69 @@
                 currentItemName = currentWeight > 0 ? "自訂重量" : "空";
                 updateScaleUI();
             });
+
+            // Bind Direct Needle Dragging
+            initNeedleDrag();
         };
+
+        // 初始化指針直接拖動旋轉功能 (支援滑鼠與觸控)
+        function initNeedleDrag() {
+            const scaleSvg = document.getElementById('scale-svg');
+            const needleGroup = document.getElementById('needle-group');
+            let isDragging = false;
+
+            function updateWeightFromPointer(clientX, clientY) {
+                const rect = scaleSvg.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                const dx = clientX - centerX;
+                const dy = clientY - centerY;
+
+                // 計算相對於正上方 (0g) 的順時針角度 (0 ~ 360度)
+                let deg = (Math.atan2(dy, dx) * 180 / Math.PI + 90 + 360) % 360;
+                let rawGrams = (deg / 360) * 1000;
+                let snappedGrams = Math.round(rawGrams / 5) * 5;
+
+                // 防止跨越 0g / 1000g 交界處時數值突然跳轉
+                if (currentWeight > 750 && snappedGrams < 250) {
+                    snappedGrams = 1000;
+                } else if (currentWeight < 250 && snappedGrams > 750) {
+                    snappedGrams = 0;
+                }
+
+                if (snappedGrams !== currentWeight) {
+                    currentWeight = snappedGrams;
+                    currentItemName = currentWeight > 0 ? "手動調整指針" : "空";
+                    updateScaleUI();
+                }
+            }
+
+            needleGroup.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                isDragging = true;
+                needleGroup.classList.add('dragging');
+                needleGroup.setPointerCapture(e.pointerId);
+                updateWeightFromPointer(e.clientX, e.clientY);
+            });
+
+            needleGroup.addEventListener('pointermove', (e) => {
+                if (!isDragging) return;
+                updateWeightFromPointer(e.clientX, e.clientY);
+            });
+
+            const stopDrag = (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                needleGroup.classList.remove('dragging');
+                if (needleGroup.hasPointerCapture(e.pointerId)) {
+                    needleGroup.releasePointerCapture(e.pointerId);
+                }
+            };
+
+            needleGroup.addEventListener('pointerup', stopDrag);
+            needleGroup.addEventListener('pointercancel', stopDrag);
+        }
 
         // Render main 360deg dial scale tick marks
         function renderScaleTicks() {
@@ -565,6 +707,12 @@
                     ticksGroup.appendChild(text);
                 }
             }
+
+            // 同步複製刻度至指針放大鏡內的圖層
+            const magTicksGroup = document.getElementById('magnified-svg-ticks');
+            if (magTicksGroup) {
+                magTicksGroup.innerHTML = ticksGroup.innerHTML;
+            }
         }
 
         // Main UI Update loop
@@ -580,21 +728,43 @@
             const angle = (currentWeight / 1000) * 360;
             document.getElementById('needle-group').style.transform = `rotate(${angle}deg)`;
 
+            // 更新指針圓形放大鏡的縮放倍率與反向補償旋轉 (以鏡心 200, 52 為基準)
+            const magDialContent = document.getElementById('magnified-dial-content');
+            const magNeedleTip = document.getElementById('magnified-needle-tip');
+            if (magDialContent && magNeedleTip) {
+                const zoomTransform = `translate(200, 52) scale(${needleLensZoom}) translate(-200, -52)`;
+                magDialContent.setAttribute('transform', `${zoomTransform} rotate(${-angle}, 200, 200)`);
+                magNeedleTip.setAttribute('transform', zoomTransform);
+            }
+
             // Readout Displays
             document.getElementById('tray-item-label').textContent = `物品：${currentItemName}`;
             
             const gDisp = document.getElementById('weight-display-g');
-            const kgDisp = document.getElementById('weight-display-kg');
+            const kgExactBadge = document.getElementById('kg-exact-badge');
             const breakdownText = document.getElementById('breakdown-text');
+            const magHint = document.getElementById('magnifier-hint');
+            const blockScaleHints = document.querySelectorAll('.block-scale-hint');
 
             if (isAnswerHidden) {
                 gDisp.textContent = "???";
-                kgDisp.textContent = "??? 公斤";
+                kgExactBadge.classList.add('hidden');
+                kgExactBadge.classList.remove('flex');
                 breakdownText.textContent = "點擊「顯示讀數」查看細節";
+                if (magHint) magHint.classList.add('invisible');
+                blockScaleHints.forEach(el => el.classList.add('hidden'));
             } else {
                 gDisp.textContent = currentWeight;
-                const kgVal = (currentWeight / 1000).toFixed(3).replace(/\.?0+$/, "");
-                kgDisp.textContent = `${kgVal} 公斤`;
+                if (magHint) magHint.classList.remove('invisible');
+                blockScaleHints.forEach(el => el.classList.remove('hidden'));
+                // 僅在整數 1000 公克時顯示「1 公斤」，避免出現小數
+                if (currentWeight === 1000) {
+                    kgExactBadge.classList.remove('hidden');
+                    kgExactBadge.classList.add('flex');
+                } else {
+                    kgExactBadge.classList.add('hidden');
+                    kgExactBadge.classList.remove('flex');
+                }
 
                 const major = Math.floor(currentWeight / 50);
                 const minor = Math.round((currentWeight % 50) / 5);
@@ -761,6 +931,47 @@
             currentWeight = 0;
             currentItemName = "空";
             updateScaleUI();
+        }
+
+        function toggleNeedleLens() {
+            isNeedleLensActive = !isNeedleLensActive;
+            const lensGroup = document.getElementById('needle-magnifier-lens');
+            const btn = document.getElementById('btn-toggle-lens');
+            const zoomControls = document.getElementById('lens-zoom-controls');
+
+            if (isNeedleLensActive) {
+                lensGroup.classList.remove('hidden');
+                zoomControls.classList.remove('hidden');
+                zoomControls.classList.add('flex');
+                btn.className = "text-xs bg-amber-500/30 text-amber-200 px-2.5 py-1 rounded-md font-semibold hover:bg-amber-500/40 transition";
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass-minus mr-1"></i> 關閉放大鏡';
+            } else {
+                lensGroup.classList.add('hidden');
+                zoomControls.classList.add('hidden');
+                zoomControls.classList.remove('flex');
+                btn.className = "text-xs bg-sky-500/20 text-sky-300 px-2.5 py-1 rounded-md font-semibold hover:bg-sky-500/30 transition";
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass-plus mr-1"></i> 指針放大鏡';
+            }
+            updateScaleUI();
+        }
+
+        function changeLensZoom(val) {
+            needleLensZoom = parseFloat(val) || 2.0;
+            updateScaleUI();
+        }
+
+        function toggleRuler() {
+            const container = document.getElementById('ruler-container');
+            const btn = document.getElementById('btn-toggle-ruler');
+            const isHidden = container.classList.toggle('hidden');
+
+            if (isHidden) {
+                btn.innerHTML = '<i class="fa-solid fa-eye mr-1"></i> 顯示';
+                btn.className = "text-xs bg-sky-500/20 text-sky-300 border border-sky-400/40 px-3 py-1.5 rounded-lg font-semibold hover:bg-sky-500/30 transition";
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-eye-slash mr-1"></i> 隱藏';
+                btn.className = "text-xs bg-amber-500/20 text-amber-300 border border-amber-400/40 px-3 py-1.5 rounded-lg font-semibold hover:bg-amber-500/30 transition";
+            }
         }
 
         function toggleAnswer() {
